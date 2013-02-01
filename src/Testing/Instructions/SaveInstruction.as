@@ -1,0 +1,25 @@
+package Testing.Instructions {
+	import flash.utils.Dictionary;
+	import Testing.Abstractions.InstructionAbstraction;
+	import Values.InstructionValue;
+	import Values.OpcodeValue;
+	/**
+	 * ...
+	 * @author Nicholas "PleasingFungus" Feinberg
+	 */
+	public class SaveInstruction extends RegInstruction {
+		
+		public function SaveInstruction(registers:Vector.<int>, abstract:InstructionAbstraction, noop:Boolean) {
+			super(registers, abstract, noop);
+		}
+		
+		override public function execute(memory:Dictionary, registers:Dictionary):void {
+			memory[registers[args[1].value]] = registers[args[0].value];
+		}
+		
+		override public function toMemValue():InstructionValue {
+			return new InstructionValue(OpcodeValue.OP_SAV, args[0].value, args[1].value, C.INT_NULL);
+		}
+	}
+
+}

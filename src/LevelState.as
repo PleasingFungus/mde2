@@ -1,8 +1,11 @@
 package  {
 	import org.flixel.*;
-	import Actions.Action;
+	import Actions.*;
 	import Modules.Module;
 	import Values.Value;
+	import Controls.*;
+	import Components.Wire
+	import Displays.DWire;
 	
 	/**
 	 * ...
@@ -11,14 +14,17 @@ package  {
 	public class LevelState extends FlxState {
 		
 		protected var tick:int;
+		protected var mode:int = MODE_CONNECT;
 		
 		public var lowerLayer:FlxGroup;
 		public var midLayer:FlxGroup;
 		public var upperLayer:FlxGroup;
 		public var zoom:Number;
+		protected var displayWires:Vector.<DWire>;
 		
 		public var actionStack:Vector.<Action>;
 		public var reactionStack:Vector.<Action>;
+		protected var currentWire:Wire;
 		
 		public var time:Time;
 		public var modules:Vector.<Module>;
@@ -34,6 +40,8 @@ package  {
 			FlxG.bgColor = 0xffe0e0e0;
 			FlxG.mouse.show();
 			
+			displayWires = new Vector.<DWire>;
+			
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
 			
@@ -47,26 +55,113 @@ package  {
 			FlxG.state.add(upperLayer = new FlxGroup());
 		}
 		
-		//override public function update():void {
-			//super.update();
-			//checkControls();
-			//checkExistence();
-			//forceScroll();
-			//
-			//tick++;
-			//
-			//checkModeList();
-		//}
-		//
-		//protected function forceScroll(group:FlxGroup = null):void {
-			//group = group ? group : upperLayer;
-			//for each (var basic:FlxBasic in group.members)
-				//if (basic is FlxObject) {
-					//var obj:FlxObject = basic as FlxObject;
-					//obj.scrollFactor.x = obj.scrollFactor.y = 0;
-				//} else if (basic is FlxGroup)
-					//forceScroll(basic as FlxGroup);
-		//}
+		override public function update():void {
+			super.update();
+			checkBuildControls();
+			checkMenuState();
+			forceScroll();
+			
+			tick++;
+		}
+		
+		protected function checkBuildControls():void {
+			if (time.moment)
+				return; //no fucking around when shit is running!
+			
+			switch (mode) {
+				case MODE_CONNECT:
+					checkConnectControls();
+					break;
+				case MODE_MODULE:
+					checkModuleControls();
+					break;
+				case MODE_REMOVE:
+					checkRemoveControls();
+					break;
+			}
+		}
+		
+		protected function checkConnectControls():void {
+			
+			/*if (FlxG.mouse.justPressed()) {
+				//if (buttonMoused) //TODO
+					//return;
+				
+				currentWire = new Wire(U.mouseLoc)
+				displayWires.push(U.midLayer.add(new DWire(currentWire)));
+			} else if (currentWire) {
+				if (FlxG.mouse.pressed())
+					currentWire.attemptPathTo(U.pointToGrid(U.mouseLoc))
+				else {
+					new CustomAction(Wire.place, Wire.remove, currentWire).execute();
+					currentWire = null;
+				}
+			}
+			
+			
+			if (currentWire) {
+				if (ControlSet.CANCEL_KEY.justPressed()) {
+					currentWire.exists = false;
+					currentWire = null;
+				}
+				
+			} else {
+				if (ControlSet.DELETE_KEY.justPressed())
+					destroyWires();
+			}*/
+		}
+		
+		private function destroyWires():void {
+			for each (var wire:DWire in displayWires)
+				if (wire.exists && wire.overlapsPoint(U.mouseFlxLoc)) {
+					new CustomAction(Wire.remove, Wire.place, wire.wire).execute();
+					//break;
+				}
+		}
+		
+		protected function checkModuleControls():void {
+			//TODO
+		}
+		
+		protected function checkRemoveControls():void {
+			//TODO
+		}
+		
+		protected function checkMenuState():void {
+			//TODO
+		}
+		
+		protected function forceScroll(group:FlxGroup = null):void {
+			group = group ? group : upperLayer;
+			for each (var basic:FlxBasic in group.members)
+				if (basic is FlxObject) {
+					var obj:FlxObject = basic as FlxObject;
+					obj.scrollFactor.x = obj.scrollFactor.y = 0;
+				} else if (basic is FlxGroup)
+					forceScroll(basic as FlxGroup);
+		}
+		
+		protected const MODE_MODULE:int = 0;
+		protected const MODE_CONNECT:int = 1;
+		protected const MODE_REMOVE:int = 2;
+
+		[Embed(source = "../lib/art/ui/lightbulb.png")] private const _module_sprite:Class;
+		[Embed(source = "../lib/art/ui/wire.png")] private const _connect_sprite:Class;
+		[Embed(source = "../lib/art/ui/remove.png")] private const _remove_sprite:Class;
+		private const MODE_SPRITES:Array = [_module_sprite, _connect_sprite, _remove_sprite];
+		[Embed(source = "../lib/art/ui/list.png")] private const _list_sprite:Class;
+		private const HOTKEYS:Array = [new Key("ONE"), new Key("TWO"), new Key("THREE")];
+		[Embed(source = "../lib/art/ui/undo.png")] private const _undo_sprite:Class;
+		[Embed(source = "../lib/art/ui/redo.png")] private const _redo_sprite:Class;
+		[Embed(source = "../lib/art/ui/up.png")] private const _back_sprite:Class;
+		[Embed(source = "../lib/art/ui/floppy.png")] private const _save_sprite:Class;
+		[Embed(source = "../lib/art/ui/yppolf.png")] private const _evas_sprite:Class;
+		[Embed(source = "../lib/art/ui/maglass.png")] private const _zoom_sprite:Class;
+		[Embed(source = "../lib/art/ui/x1.png")] private const _z1_sprite:Class;
+		[Embed(source = "../lib/art/ui/x2.png")] private const _z2_sprite:Class;
+		[Embed(source = "../lib/art/ui/x3.png")] private const _z3_sprite:Class;
+		private const ZOOMS:Array = [_z1_sprite, _z2_sprite, _z3_sprite];
+		[Embed(source = "../lib/art/ui/code.png")] private const _data_sprite:Class;
 	}
 
 }

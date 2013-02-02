@@ -1,4 +1,7 @@
 package  {
+	import Components.Carrier;
+	import flash.utils.Dictionary;
+	import flash.geom.Point;
 	import org.flixel.*;
 	import Actions.*;
 	import Modules.Module;
@@ -14,21 +17,25 @@ package  {
 	public class LevelState extends FlxState {
 		
 		protected var tick:int;
-		protected var mode:int = MODE_CONNECT;
 		
 		public var lowerLayer:FlxGroup;
 		public var midLayer:FlxGroup;
 		public var upperLayer:FlxGroup;
 		public var zoom:Number;
 		protected var displayWires:Vector.<DWire>;
+		protected var mode:int = MODE_CONNECT;
 		
 		public var actionStack:Vector.<Action>;
 		public var reactionStack:Vector.<Action>;
 		protected var currentWire:Wire;
 		
 		public var time:Time;
+		public var wires:Vector.<Wire>;
 		public var modules:Vector.<Module>;
 		public var memory:Vector.<Value>;
+		
+		public var horizontalLines:Dictionary;
+		public var verticalLines:Dictionary;
 		
 		public var level:Level;
 		public function LevelState(level:Level ) {
@@ -36,6 +43,8 @@ package  {
 		}
 		
 		override public function create():void {
+			U.state = this;
+			
 			initLayers();
 			FlxG.bgColor = 0xffe0e0e0;
 			FlxG.mouse.show();
@@ -44,6 +53,11 @@ package  {
 			
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
+			
+			wires = new Vector.<Wire>;
+			modules = new Vector.<Module>;
+			horizontalLines = new Dictionary;
+			verticalLines = new Dictionary;
 			
 			time = new Time;
 			zoom = 1;
@@ -83,12 +97,12 @@ package  {
 		
 		protected function checkConnectControls():void {
 			
-			/*if (FlxG.mouse.justPressed()) {
+			if (FlxG.mouse.justPressed()) {
 				//if (buttonMoused) //TODO
 					//return;
 				
-				currentWire = new Wire(U.mouseLoc)
-				displayWires.push(U.midLayer.add(new DWire(currentWire)));
+				currentWire = new Wire(U.pointToGrid(U.mouseLoc))
+				displayWires.push(midLayer.add(new DWire(currentWire)));
 			} else if (currentWire) {
 				if (FlxG.mouse.pressed())
 					currentWire.attemptPathTo(U.pointToGrid(U.mouseLoc))
@@ -108,15 +122,7 @@ package  {
 			} else {
 				if (ControlSet.DELETE_KEY.justPressed())
 					destroyWires();
-			}*/
-		}
-		
-		private function destroyWires():void {
-			for each (var wire:DWire in displayWires)
-				if (wire.exists && wire.overlapsPoint(U.mouseFlxLoc)) {
-					new CustomAction(Wire.remove, Wire.place, wire.wire).execute();
-					//break;
-				}
+			}
 		}
 		
 		protected function checkModuleControls():void {
@@ -131,6 +137,16 @@ package  {
 			//TODO
 		}
 		
+		
+		private function destroyWires():void {
+			for each (var wire:DWire in displayWires)
+				if (wire.exists && wire.overlapsPoint(U.mouseFlxLoc)) {
+					new CustomAction(Wire.remove, Wire.place, wire.wire).execute();
+					//break;
+				}
+		}
+		
+		
 		protected function forceScroll(group:FlxGroup = null):void {
 			group = group ? group : upperLayer;
 			for each (var basic:FlxBasic in group.members)
@@ -140,6 +156,24 @@ package  {
 				} else if (basic is FlxGroup)
 					forceScroll(basic as FlxGroup);
 		}
+		
+		
+		public function lineToSpec(a:Point, b:Point):String {
+			var horizontal:Boolean = a.x != b.x;
+			var root:Point = horizontal ? a.x < b.x ? a : b : a.y < b.y ? a : b;
+			return root.x + U.COORD_DELIM + root.y;
+		}
+		
+		public function lineContents(a:Point, b:Point):Carrier {
+			var horizontal:Boolean = a.x != b.x;
+			return (horizontal ? horizontalLines : verticalLines)[lineToSpec(a, b)]
+		}
+		
+		public function setLineContents(a:Point, b:Point, newContents:Carrier):Carrier {
+			var horizontal:Boolean = a.x != b.x;
+			return (horizontal ? horizontalLines : verticalLines)[lineToSpec(a, b)] = newContents;
+		}
+		
 		
 		protected const MODE_MODULE:int = 0;
 		protected const MODE_CONNECT:int = 1;

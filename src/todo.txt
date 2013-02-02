@@ -13,13 +13,5 @@
 		check connection points (must by offset by .5 again, so on the grid)
 		mark connection points
 	
-	choose level
 	place wires
-
-level
-	name
-	goal
-		descr
-		func: check success
-		func: set level state to success
-		func: set level state to failure
+	place modules

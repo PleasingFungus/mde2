@@ -36,6 +36,8 @@ package  {
 		public static const V_UNKNOWN:FixedValue = new FixedValue("?", NaN);
 		
 		public static const SAVE_DELIM:String = '~';
+		public static const COORD_DELIM:String = ',';
+		public static const POINT_DELIM:String = ',,';
 		
 		public static const ALL_MODULES:Array = [Adder, ASU, Clock, ConstIn, Latch,
 												 Outport, Regfile, Comparator,
@@ -98,7 +100,6 @@ package  {
 		
 		public static const MAX_INT:int = 127;
 		public static const MIN_INT:int = -128;
-		
 		
 	}
 

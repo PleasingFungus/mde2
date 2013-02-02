@@ -15,7 +15,7 @@ package  {
 		
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
-			levels.push(new Level("Sandbox", new LevelGoal("Have fun!", function _(state:LevelState):Boolean { return false; }, null, null)));
+			levels.push(new Level("Sandbox", new LevelGoal("Have fun!", function _(state:LevelState):Boolean { return false; })));
 			return levels;
 		}
 	}

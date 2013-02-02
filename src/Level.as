@@ -5,12 +5,18 @@ package  {
 	 */
 	public class Level {
 		
-		public function Level() {
-			
+		public var name:String;
+		public var goal:LevelGoal;
+		
+		public function Level(Name:String, Goal:LevelGoal) {
+			name = Name;
+			this.goal = Goal;
 		}
 		
-		public static function init():void {
-			//TODO
+		public static function list():Vector.<Level> {
+			var levels:Vector.<Level> = new Vector.<Level>;
+			levels.push(new Level("Sandbox", new LevelGoal("Have fun!", function _(state:LevelState):Boolean { return false; }, null, null)));
+			return levels;
 		}
 	}
 

@@ -239,7 +239,7 @@ package Testing {
 		}
 		
 		public function validate(_:Module):Boolean {
-			if (U.level.memory[memAddressToSet].toNumber() == memValueToSet)
+			if (U.state.memory[memAddressToSet].toNumber() == memValueToSet)
 				return true;
 			return false;
 		}

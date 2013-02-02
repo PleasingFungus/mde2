@@ -47,7 +47,7 @@ package Modules {
 		}
 		
 		override public function update():Boolean {
-			if (U.level.time.moment == lastMomentStored) return false; //can only store at most once per cycle
+			if (U.state.time.moment == lastMomentStored) return false; //can only store at most once per cycle
 			
 			var control:Value = controls[3].getValue();
 			if (control.unknown || control.unpowered || control.toNumber() == 0)
@@ -62,9 +62,9 @@ package Modules {
 				return false;
 			
 			var input:Value = inputs[0].getValue();
-			U.level.time.deltas.push(new Delta(U.level.time.moment, this, values[selectIndex]));
+			U.state.time.deltas.push(new Delta(U.state.time.moment, this, values[selectIndex]));
 			values[selectIndex] = input;
-			lastMomentStored = U.level.time.moment;
+			lastMomentStored = U.state.time.moment;
 			return true;
 		}
 		

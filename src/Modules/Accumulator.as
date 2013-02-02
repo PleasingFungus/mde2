@@ -34,13 +34,13 @@ package Modules {
 		}
 		
 		override public function drive(port:Port):Value {
-			if (U.level.time.updating && lastValue)
+			if (U.state.time.updating && lastValue)
 				return lastValue;
 			return value;
 		}
 		
 		override public function update():Boolean {
-			if (U.level.time.moment == lastMomentStored) return false; //can only store at most once per cycle
+			if (U.state.time.moment == lastMomentStored) return false; //can only store at most once per cycle
 			
 			lastValue = value;
 			
@@ -51,9 +51,9 @@ package Modules {
 			if (value.unknown || value.unpowered)
 				return false;
 			
-			U.level.time.deltas.push(new Delta(U.level.time.moment, this, value));
+			U.state.time.deltas.push(new Delta(U.state.time.moment, this, value));
 			value = new NumericValue(value.toNumber() + 1);
-			lastMomentStored = U.level.time.moment;
+			lastMomentStored = U.state.time.moment;
 			return true;
 		}
 		

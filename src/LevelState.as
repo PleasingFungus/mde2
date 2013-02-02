@@ -10,6 +10,8 @@ package  {
 	 */
 	public class LevelState extends FlxState {
 		
+		protected var tick:int;
+		
 		public var lowerLayer:FlxGroup;
 		public var midLayer:FlxGroup;
 		public var upperLayer:FlxGroup;
@@ -29,6 +31,8 @@ package  {
 		
 		override public function create():void {
 			initLayers();
+			FlxG.bgColor = 0xffe0e0e0;
+			FlxG.mouse.show();
 			
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
@@ -43,6 +47,26 @@ package  {
 			FlxG.state.add(upperLayer = new FlxGroup());
 		}
 		
+		//override public function update():void {
+			//super.update();
+			//checkControls();
+			//checkExistence();
+			//forceScroll();
+			//
+			//tick++;
+			//
+			//checkModeList();
+		//}
+		//
+		//protected function forceScroll(group:FlxGroup = null):void {
+			//group = group ? group : upperLayer;
+			//for each (var basic:FlxBasic in group.members)
+				//if (basic is FlxObject) {
+					//var obj:FlxObject = basic as FlxObject;
+					//obj.scrollFactor.x = obj.scrollFactor.y = 0;
+				//} else if (basic is FlxGroup)
+					//forceScroll(basic as FlxGroup);
+		//}
 	}
 
 }

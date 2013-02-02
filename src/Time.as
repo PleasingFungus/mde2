@@ -18,7 +18,7 @@ package  {
 		public function reset():void {
 			moment = 0;
 			deltas = new Vector.<Delta>;
-			for each (var module:Module in U.level.modules)
+			for each (var module:Module in U.state.modules)
 				module.initialize();
 		}
 		
@@ -30,11 +30,11 @@ package  {
 			var change:Boolean = true;
 			while (change) {
 				change = false;
-				for each (module in U.level.modules)
+				for each (module in U.state.modules)
 					change = change || module.update();
 			}
 			
-			for each (module in U.level.modules)
+			for each (module in U.state.modules)
 				module.finishUpdate();
 			updating = false;
 		}

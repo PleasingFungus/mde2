@@ -29,13 +29,13 @@ package Modules {
 		}
 		
 		override public function drive(port:Port):Value {
-			if (U.level.time.updating && lastValue)
+			if (U.state.time.updating && lastValue)
 				return lastValue;
 			
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown) return line;
 			
-			var memoryValue:Value = U.level.memory[line.toNumber()];
+			var memoryValue:Value = U.state.memory[line.toNumber()];
 			if (!memoryValue)
 				return U.V_UNKNOWN;
 			
@@ -46,7 +46,7 @@ package Modules {
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown) return null;
 			
-			var memoryValue:Value = U.level.memory[line.toNumber()];
+			var memoryValue:Value = U.state.memory[line.toNumber()];
 			if (!memoryValue)
 				return null;
 			
@@ -54,7 +54,7 @@ package Modules {
 		}
 		
 		override public function update():Boolean {
-			if (U.level.time.moment == lastMomentStored) return false; //can only store at most once per cycle
+			if (U.state.time.moment == lastMomentStored) return false; //can only store at most once per cycle
 			
 			lastValue = drive(null);
 			
@@ -66,9 +66,9 @@ package Modules {
 				return false;
 			
 			var input:Value = inputs[0].getValue();
-			U.level.time.deltas.push(new Delta(U.level.time.moment, this, input));
-			U.level.memory[line.toNumber()] = input;
-			lastMomentStored = U.level.time.moment;
+			U.state.time.deltas.push(new Delta(U.state.time.moment, this, input));
+			U.state.memory[line.toNumber()] = input;
+			lastMomentStored = U.state.time.moment;
 			return true;
 		}
 		
@@ -77,7 +77,7 @@ package Modules {
 		}
 		
 		override public function revertTo(oldValue:Value):void {
-			U.level.memory[controls[1].getValue().toNumber()] = oldValue;
+			U.state.memory[controls[1].getValue().toNumber()] = oldValue;
 			lastMomentStored = -1;
 		}
 	}

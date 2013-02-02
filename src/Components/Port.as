@@ -62,17 +62,17 @@ package Components {
 		
 		public function getValue():Value {
 			var curValue:Value = findValue();
-			//if (isOutput || !U.level.delayEnabled) //TODO: re-enable
+			//if (isOutput || !U.state.delayEnabled) //TODO: re-enable
 				return curValue;
 			
 			if (curValue != lastValue) {
-				U.level.time.deltas.push(new DelayDelta(U.level.time.moment, this, lastValue, lastChanged));
+				U.state.time.deltas.push(new DelayDelta(U.state.time.moment, this, lastValue, lastChanged));
 				
 				lastValue = curValue;
-				lastChanged = U.level.time.moment;
+				lastChanged = U.state.time.moment;
 			}
 			
-			if ((U.level.time.moment - lastChanged) < parent.delay && U.level.time.moment)
+			if ((U.state.time.moment - lastChanged) < parent.delay && U.state.time.moment)
 				return U.V_UNKNOWN;
 			return curValue;
 		}

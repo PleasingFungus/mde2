@@ -1,0 +1,25 @@
+3 data structures
+	2x lines (non-directional): horizontal (coord of left pt), vertical (coord of top pt)
+	1x connection (single point): list of connectors or null
+	on place wire:
+		check each pointpair in line grid; if taken, abort
+		mark each line occupied
+		check endpoints for non-self 
+		mark each point as potential connection (push to list or create list)
+	modules 1.5x1.5 gridsize min; centers offset by .5 gridsize
+	on place module:
+		check each occupied line in line grid; if taken, abort
+		mark each occupied line
+		check connection points (must by offset by .5 again, so on the grid)
+		mark connection points
+	
+	choose level
+	place wires
+
+level
+	name
+	goal
+		descr
+		func: check success
+		func: set level state to success
+		func: set level state to failure

@@ -30,7 +30,7 @@ package Modules {
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown) return line;
 			
-			var memoryValue:Value = U.level.memory[line.toNumber()];
+			var memoryValue:Value = U.state.memory[line.toNumber()];
 			if (!memoryValue)
 				return U.V_UNKNOWN;
 			
@@ -51,7 +51,7 @@ package Modules {
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown) return null;
 			
-			var memoryValue:Value = U.level.memory[line.toNumber()];
+			var memoryValue:Value = U.state.memory[line.toNumber()];
 			if (!memoryValue)
 				return null;
 			

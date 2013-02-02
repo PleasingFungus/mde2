@@ -28,7 +28,7 @@ package  {
 		public static var FONT_SIZE:int = 16;
 		
 		public static var levels:Vector.<Level>;
-		public static var level:LevelState;
+		public static var state:LevelState;
 		
 		public static const GRID_DIM:int = 8;
 		
@@ -55,8 +55,7 @@ package  {
 			
 			InstructionType.init();
 			
-			levels = new Vector.<Level>;
-			Level.init();
+			levels = Level.list();
 		}
 		
 		public static function load():void {
@@ -67,24 +66,15 @@ package  {
 			
 		}
 		
-		public static function forceScroll(group:FlxGroup = null):void {
-			group = group ? group : level.upperLayer;
-			for each (var basic:FlxBasic in group.members)
-				if (basic is FlxObject) {
-					var obj:FlxObject = basic as FlxObject;
-					obj.scrollFactor.x = obj.scrollFactor.y = 0;
-				} else if (basic is FlxGroup)
-					forceScroll(basic as FlxGroup);
-		}
 		
 		public static function get mouseLoc():Point {
-			return new Point(FlxG.mouse.x / level.zoom - FlxG.camera.scroll.x * (1 / level.zoom - 1),
-							 FlxG.mouse.y / level.zoom - FlxG.camera.scroll.y * (1 / level.zoom - 1));
+			return new Point(FlxG.mouse.x / state.zoom - FlxG.camera.scroll.x * (1 / state.zoom - 1),
+							 FlxG.mouse.y / state.zoom - FlxG.camera.scroll.y * (1 / state.zoom - 1));
 		}
 		
 		public static function get mouseFlxLoc():FlxPoint {
-			return new FlxPoint(FlxG.mouse.x / level.zoom - FlxG.camera.scroll.x * (1 / level.zoom - 1),
-							 FlxG.mouse.y / level.zoom - FlxG.camera.scroll.y * (1 / level.zoom - 1));
+			return new FlxPoint(FlxG.mouse.x / state.zoom - FlxG.camera.scroll.x * (1 / state.zoom - 1),
+							 FlxG.mouse.y / state.zoom - FlxG.camera.scroll.y * (1 / state.zoom - 1));
 		}
 		
 		public static function pointToGrid(p:Point):Point {
@@ -95,15 +85,15 @@ package  {
 		
 		
 		public static function undo():Action {
-			if (!level.actionStack.length)
+			if (!state.actionStack.length)
 				return null;
-			return level.actionStack.pop().revert();
+			return state.actionStack.pop().revert();
 		}
 		
 		public static function redo():Action {
-			if (!level.reactionStack.length)
+			if (!state.reactionStack.length)
 				return null;
-			return level.reactionStack.pop().execute();
+			return state.reactionStack.pop().execute();
 		}
 		
 		public static const MAX_INT:int = 127;

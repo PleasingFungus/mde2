@@ -19,20 +19,20 @@ package  {
 			title.setFormat(U.FONT, 32, 0xffffff, 'center');
 			add(title);
 			
-			//var levelSelectors:Vector.<MenuButton> = new Vector.<MenuButton>;
-			//for each (var level:Level in U.levels) {
-				//var button:TextButton = new TextButton( -1, -1, level.name, function switchTo(level:Level):void { 
-					//FlxG.switchState(new PlayState(level));
-				//});
-				//button.setFormat(U.FONT, 16, 0xffffff);
-				//button.fades = true;
-				//button.setParam(level);
-				//levelSelectors.push(button);
-			//}
-			//
-			//var levelList:ButtonList = new ButtonList(FlxG.width / 2 - 80, FlxG.height / 2 - 60, levelSelectors);
-			//levelList.closesOnClickOutside = false;
-			//add(levelList);
+			var levelSelectors:Vector.<MenuButton> = new Vector.<MenuButton>;
+			for each (var level:Level in U.levels) {
+				var button:TextButton = new TextButton( -1, -1, level.name, function switchTo(level:Level):void { 
+					FlxG.switchState(new LevelState(level));
+				});
+				button.setFormat(U.FONT, 16, 0xffffff);
+				button.fades = true;
+				button.setParam(level);
+				levelSelectors.push(button);
+			}
+			
+			var levelList:ButtonList = new ButtonList(FlxG.width / 2 - 80, FlxG.height / 2 - 60, levelSelectors);
+			levelList.closesOnClickOutside = false;
+			add(levelList);
 			
 			FlxG.bgColor = 0xff000000;
 			FlxG.mouse.show();

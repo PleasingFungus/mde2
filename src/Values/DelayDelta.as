@@ -9,7 +9,7 @@ package Values {
 		public var port:Port;
 		public var oldTime:int;
 		public function DelayDelta(Moment:int, Port_:Port, OldValue:Value, OldTime:int) {
-			super(U.level.time.moment, Port_.parent, OldValue);
+			super(U.state.time.moment, Port_.parent, OldValue);
 			port = Port_;
 			oldTime = OldTime;
 		}

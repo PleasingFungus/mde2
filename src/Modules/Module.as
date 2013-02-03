@@ -1,6 +1,8 @@
 package Modules {
 	//import Displays.DModule;
 	import flash.geom.Point;
+	import Layouts.DefaultLayout;
+	import Layouts.ModuleLayout;
 	//import Components.Wire;
 	import Components.Port;
 	import Values.Value;
@@ -12,6 +14,7 @@ package Modules {
 		
 		public var name:String;
 		public var configuration:Configuration;
+		public var layout:ModuleLayout;
 		
 		public var inputs:Vector.<Port>;
 		public var outputs:Vector.<Port>;
@@ -25,13 +28,15 @@ package Modules {
 		
 		//public var display:DModule;
 		
-		public function Module(X:int, Y:int, Name:String, numInputs:int, numOutputs:int, numControls:int) {
+		public function Module(X:int, Y:int, Name:String, numInputs:int, numOutputs:int, numControls:int, Layout:ModuleLayout = null ) {
 			super(X, Y);
 			
 			name = Name;
 			inputs = new Vector.<Port>; populatePorts(inputs, numInputs, false);
 			outputs = new Vector.<Port>; populatePorts(outputs, numOutputs, true);
 			controls = new Vector.<Port>; populatePorts(controls, numControls, false);
+			
+			layout = Layout ? Layout : new DefaultLayout(this);
 			
 			initialize();
 		}

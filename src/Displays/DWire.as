@@ -97,13 +97,12 @@ package Displays {
 		}
 		
 		private function drawJoin(current:Point):void {
-			//TODO
-			/*var carriersAt:Vector.<Carrier> = U.carriersAt(current);
-			if (carriersAt.length > 1) {
+			var carriersAt:Vector.<Carrier> = U.state.carriersAtPoint(current);
+			if (carriersAt && carriersAt.length > 1) {
 				join.x = current.x - join.width / 2;
 				join.y = current.y - join.height / 2;
 				join.draw();
-			}*/
+			}
 		}
 		
 		protected var willOverlap:Boolean;

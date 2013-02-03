@@ -57,26 +57,34 @@ package Components {
 		}
 		
 		protected function validPosition():Boolean {
-			//TODO
+			var sources:int = 0;
+			for each (var carriers:Vector.<Carrier> in [U.state.carriersAtPoint(path[0]), U.state.carriersAtPoint(path[path.length - 1])])
+				if (carriers)
+					for each (var carrier:Carrier in carriers)
+						if (carrier.getSource()) {
+							sources += 1;
+							if (sources > 1)
+								return false;
+						}
 			return true;
-			
-			/*var startConnector:Carrier = U.carrierAt(path[0]);
-			var endConnector:Carrier = U.carrierAt(path[path.length - 1]);
-			return !startConnector || !endConnector || !startConnector.getSource() || !endConnector.getSource();*/
 		}
 		
 		protected function checkForConnections():void {	
-			//TODO
+			addConnections(U.state.carriersAtPoint(path[0]));
+			addConnections(U.state.carriersAtPoint(path[path.length - 1]));
+		}
+		
+		public function addConnections(carriers:Vector.<Carrier>):void {
+			if (!carriers)
+				return;
 			
-			//addConnection(U.carrierAt(path[0]));
-			//addConnection(U.carrierAt(path[path.length - 1]));
+			for each (var connection:Carrier in carriers)
+				addConnection(connection);
 		}
 		
 		public static function place(wire:Wire):Boolean {
-			//TODO
-			
 			wire.endDrawing();
-			if (!wire.path.length) {
+			if (wire.path.length < 2) {
 				wire.exists = false;
 				return false;
 			}
@@ -84,19 +92,18 @@ package Components {
 			U.state.wires.push(wire);
 			for (var i:int = 0; i < wire.path.length - 1; i++)
 				U.state.setLineContents(wire.path[i], wire.path[i + 1], wire);
-			//U.connectionPoints.push(wire);
-			//for each (var otherWire:Wire in U.wires)
-				//otherWire.checkReadd(wire);
+			for each (var p:Point in wire.path)
+				U.state.addCarrierAtPoint(p, wire);
+			
 			return true;
 		}
 		
 		public static function remove(wire:Wire):Boolean {
-			//TODO
-			
 			if (wire.FIXED)
 				return false;
 			
-			//U.connectionPoints.splice(U.connectionPoints.indexOf(wire), 1);
+			for each (var p:Point in wire.path)
+				U.state.removeCarrierFromPoint(p, wire);
 			for (var i:int = 0; i < wire.path.length - 1; i++)
 				U.state.setLineContents(wire.path[i], wire.path[i + 1], null);
 			U.state.wires.splice(U.state.wires.indexOf(wire), 1);
@@ -144,7 +151,16 @@ package Components {
 		}
 		
 		public function addConnection(connection:Carrier):void {
+			if (!connection || connection == this || connections.indexOf(connection) != -1) return;
 			
+			connections.push(connection);
+			connection.addConnection(this);
+			if (connection.getSource()) {
+				if (!source)
+					setSource(connection.getSource());
+				else if (source != connection.getSource())
+					throw new Error("Multiple sources in one mesh!");
+			}
 		}
 		
 		public function saveString():String {

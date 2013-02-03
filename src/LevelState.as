@@ -1,5 +1,6 @@
 package  {
 	import Components.Carrier;
+	import Displays.DMemory;
 	import flash.utils.Dictionary;
 	import flash.geom.Point;
 	import org.flixel.*;
@@ -36,6 +37,7 @@ package  {
 		
 		public var horizontalLines:Dictionary;
 		public var verticalLines:Dictionary;
+		public var carriersAtPoints:Dictionary;
 		
 		public var level:Level;
 		public function LevelState(level:Level ) {
@@ -58,6 +60,7 @@ package  {
 			modules = new Vector.<Module>;
 			horizontalLines = new Dictionary;
 			verticalLines = new Dictionary;
+			carriersAtPoints = new Dictionary;
 			
 			time = new Time;
 			zoom = 1;
@@ -172,6 +175,22 @@ package  {
 		public function setLineContents(a:Point, b:Point, newContents:Carrier):Carrier {
 			var horizontal:Boolean = a.x != b.x;
 			return (horizontal ? horizontalLines : verticalLines)[lineToSpec(a, b)] = newContents;
+		}
+		
+		public function carriersAtPoint(p:Point):Vector.<Carrier> {
+			return carriersAtPoints[p.x + U.COORD_DELIM + p.y];
+		}
+		
+		public function addCarrierAtPoint(p:Point, carrier:Carrier):void {
+			var carriers:Vector.<Carrier> = carriersAtPoints[p.x + U.COORD_DELIM + p.y];
+			if (!carriers) carriers = carriersAtPoints[p.x + U.COORD_DELIM + p.y] = new Vector.<Carrier>;
+			carriers.push(carrier);
+		}
+		
+		public function removeCarrierFromPoint(p:Point, carrier:Carrier):void {
+			var carriers:Vector.<Carrier> = carriersAtPoints[p.x + U.COORD_DELIM + p.y];
+			carriers.splice(carriers.indexOf(carrier), 1);
+			if (!carriers.length) carriersAtPoints[p.x + U.COORD_DELIM + p.y] = null;
 		}
 		
 		

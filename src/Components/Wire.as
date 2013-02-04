@@ -32,9 +32,9 @@ package Components {
 			var nextPoint:Point;
 			for (var delta:Point = target.subtract(pathEnd); delta.x || delta.y; delta = target.subtract(pathEnd)) {
 				if (delta.x)
-					nextPoint = new Point(pathEnd.x + U.GRID_DIM * (delta.x > 0 ? 1 : -1), pathEnd.y);
+					nextPoint = new Point(pathEnd.x + (delta.x > 0 ? 1 : -1), pathEnd.y);
 				else
-					nextPoint = new Point(pathEnd.x, pathEnd.y + U.GRID_DIM * (delta.y > 0 ? 1 : -1));
+					nextPoint = new Point(pathEnd.x, pathEnd.y + (delta.y > 0 ? 1 : -1));
 				
 				if (U.state.lineContents(pathEnd, nextPoint))
 					break;

@@ -1,4 +1,6 @@
 package  {
+	import flash.geom.Point;
+	import flash.utils.Dictionary;
 	import org.flixel.*;
 	import Testing.Test;
 	import UI.ButtonList;

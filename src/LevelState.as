@@ -82,6 +82,7 @@ package  {
 			if (!m) return;
 			
 			m.FIXED = fixed;
+			m.register();
 			modules.push(m);
 			
 			var displayModule:DModule = m.generateDisplay();
@@ -184,13 +185,14 @@ package  {
 			return root.x + U.COORD_DELIM + root.y;
 		}
 		
-		public function lineContents(a:Point, b:Point):Carrier {
+		public function lineContents(a:Point, b:Point):* {
 			var horizontal:Boolean = a.x != b.x;
 			return (horizontal ? horizontalLines : verticalLines)[lineToSpec(a, b)]
 		}
 		
-		public function setLineContents(a:Point, b:Point, newContents:Carrier):Carrier {
+		public function setLineContents(a:Point, b:Point, newContents:*):* {
 			var horizontal:Boolean = a.x != b.x;
+			C.log(lineToSpec(a, b))
 			return (horizontal ? horizontalLines : verticalLines)[lineToSpec(a, b)] = newContents;
 		}
 		
@@ -208,6 +210,42 @@ package  {
 			var carriers:Vector.<Carrier> = carriersAtPoints[p.x + U.COORD_DELIM + p.y];
 			carriers.splice(carriers.indexOf(carrier), 1);
 			if (!carriers.length) carriersAtPoints[p.x + U.COORD_DELIM + p.y] = null;
+		}
+		
+		
+		override public function draw():void {
+			super.draw();
+			if (U.DEBUG && U.DEBUG_RENDER_COLLIDE)
+				debugRenderCollision();
+		}
+		
+		private var debugLineH:FlxSprite;
+		private var debugLineV:FlxSprite;
+		private function debugRenderCollision():void {
+			if (!debugLineH) {
+				debugLineH = new FlxSprite().makeGraphic(U.GRID_DIM, 3, 0xffff00ff);
+				debugLineH.offset.y = 1;
+				debugLineV = new FlxSprite().makeGraphic(3, U.GRID_DIM, 0xffff00ff);
+				debugLineV.offset.x = 1;
+			}
+			
+			var s:String, coords:Array;
+			
+			for (s in horizontalLines) {
+				if (!horizontalLines[s]) continue;
+				coords = s.split(U.COORD_DELIM);
+				debugLineH.x = int(coords[0]) * U.GRID_DIM;
+				debugLineH.y = int(coords[1]) * U.GRID_DIM;
+				debugLineH.draw();
+			}
+			
+			for (s in verticalLines) {
+				if (!verticalLines[s]) continue;
+				coords = s.split(U.COORD_DELIM);
+				debugLineV.x = int(coords[0]) * U.GRID_DIM;
+				debugLineV.y = int(coords[1]) * U.GRID_DIM;
+				debugLineV.draw();
+			}
 		}
 		
 		

@@ -15,8 +15,8 @@ package Layouts {
 			);
 			
 			var offset:Point = new Point(
-				Math.floor(dim.x / 2) + 0.5,
-				Math.floor(dim.y / 2) + 0.5
+				-(Math.floor(dim.x / 2) + 0.5),
+				-(Math.floor(dim.y / 2) + 0.5)
 			);
 			
 			var ports:Vector.<PortLayout> = new Vector.<PortLayout>;

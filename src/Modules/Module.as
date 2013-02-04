@@ -31,6 +31,7 @@ package Modules {
 		
 		public function Module(X:int, Y:int, Name:String, numInputs:int, numOutputs:int, numControls:int ) {
 			super(X, Y);
+			C.log(Name, X, Y);
 			
 			name = Name;
 			inputs = new Vector.<Port>; populatePorts(inputs, numInputs, false);
@@ -86,6 +87,37 @@ package Modules {
 		public function revertTo(oldValue:Value):void { }
 		public function update():Boolean { return false; }
 		public function finishUpdate():void { }
+		
+		public function register():void {
+			iterContainedLines(function h(X:int, Y:int):void {
+				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), this);
+			}, function v(X:int, Y:int):void {
+				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), this);
+			});
+		}
+		
+		public function deregister():void {
+			iterContainedLines(function h(X:int, Y:int):void {
+				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), null);
+			}, function v(X:int, Y:int):void {
+				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), null);
+			});
+		}
+		
+		private function iterContainedLines(fH:Function, fV:Function):void {
+			var topLeft:Point = this.topLeft;
+			for (var X:int = topLeft.x; X < topLeft.x + layout.dim.x; X++)
+				for (var Y:int = topLeft.y; Y < topLeft.y + layout.dim.y; Y++) {
+					if (X < topLeft.x + layout.dim.x - 1)
+						fH(X, Y);
+					if (Y < topLeft.y + layout.dim.y - 1)
+						fV(X, Y);
+				}
+		}
+		
+		public function get topLeft():Point {
+			return new Point(Math.ceil(x + layout.offset.x), Math.ceil(y + layout.offset.y));
+		}
 		
 		
 		public static function fromString(str:String):Module {

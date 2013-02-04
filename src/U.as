@@ -14,6 +14,8 @@ package  {
 		public static const VERSION:String = "0.01";
 		public static const DEBUG:Boolean = true;
 		
+		public static const DEBUG_RENDER_COLLIDE:Boolean = false;
+		
 		[Embed(source = "../lib/fonts/FuturaLT.ttf", fontFamily = "FUTUR")] private const _1:String;
 		public static const FONT_:String = "FUTUR";
 		[Embed(source = "../lib/fonts/FuturaLT-Bold.ttf", fontFamily = "FUTURB")] private const _2:String;
@@ -79,9 +81,14 @@ package  {
 								FlxG.mouse.y / state.zoom - FlxG.camera.scroll.y * (1 / state.zoom - 1));
 		}
 		
-		public static function pointToGrid(p:Point):Point {
+		public static function pointOnGrid(p:Point):Point {
 			return new Point(Math.round(p.x / U.GRID_DIM) * U.GRID_DIM,
 							 Math.round(p.y / U.GRID_DIM) * U.GRID_DIM);
+		}
+		
+		public static function pointToGrid(p:Point):Point {
+			return new Point(Math.round(p.x / U.GRID_DIM),
+							 Math.round(p.y / U.GRID_DIM));
 		}
 		
 		

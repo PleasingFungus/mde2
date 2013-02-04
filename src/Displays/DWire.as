@@ -49,18 +49,18 @@ package Displays {
 					continue;
 				
 				if (last.x != current.x) {
-					hSeg.y = current.y - hSeg.height / 2;
+					hSeg.y = U.GRID_DIM * current.y - hSeg.height / 2;
 					if (last.x < current.x)
-						hSeg.x = last.x;
+						hSeg.x = U.GRID_DIM * last.x;
 					else
-						hSeg.x = current.x;
+						hSeg.x = U.GRID_DIM * current.x;
 					perform(hSeg);
 				} else {
-					vSeg.x = current.x - vSeg.width / 2;
+					vSeg.x = U.GRID_DIM * current.x - vSeg.width / 2;
 					if (last.y < current.y)
-						vSeg.y = last.y;
+						vSeg.y = U.GRID_DIM * last.y;
 					else
-						vSeg.y = current.y;
+						vSeg.y = U.GRID_DIM * current.y;
 					perform(vSeg);
 				}
 			}

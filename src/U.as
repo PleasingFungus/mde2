@@ -76,12 +76,12 @@ package  {
 		
 		public static function get mouseFlxLoc():FlxPoint {
 			return new FlxPoint(FlxG.mouse.x / state.zoom - FlxG.camera.scroll.x * (1 / state.zoom - 1),
-							 FlxG.mouse.y / state.zoom - FlxG.camera.scroll.y * (1 / state.zoom - 1));
+								FlxG.mouse.y / state.zoom - FlxG.camera.scroll.y * (1 / state.zoom - 1));
 		}
 		
 		public static function pointToGrid(p:Point):Point {
 			return new Point(Math.round(p.x / U.GRID_DIM) * U.GRID_DIM,
-								Math.round(p.y / U.GRID_DIM) * U.GRID_DIM);
+							 Math.round(p.y / U.GRID_DIM) * U.GRID_DIM);
 		}
 		
 		
@@ -101,6 +101,7 @@ package  {
 		public static const MAX_INT:int = 127;
 		public static const MIN_INT:int = -128;
 		
+		public static const SCALE_FONTS_WITH_ZOOM:Boolean = false;
 	}
 
 }

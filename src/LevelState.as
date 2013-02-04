@@ -1,6 +1,7 @@
 package  {
 	import Components.Carrier;
 	import Displays.DMemory;
+	import Displays.DModule;
 	import flash.utils.Dictionary;
 	import flash.geom.Point;
 	import org.flixel.*;
@@ -24,6 +25,7 @@ package  {
 		public var upperLayer:FlxGroup;
 		public var zoom:Number;
 		protected var displayWires:Vector.<DWire>;
+		protected var displayModules:Vector.<DModule>;
 		protected var mode:int = MODE_CONNECT;
 		
 		public var actionStack:Vector.<Action>;
@@ -40,7 +42,7 @@ package  {
 		public var carriersAtPoints:Dictionary;
 		
 		public var level:Level;
-		public function LevelState(level:Level ) {
+		public function LevelState(level:Level) {
 			this.level = level;
 		}
 		
@@ -52,6 +54,7 @@ package  {
 			FlxG.mouse.show();
 			
 			displayWires = new Vector.<DWire>;
+			displayModules = new Vector.<DModule>;
 			
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
@@ -64,12 +67,26 @@ package  {
 			
 			time = new Time;
 			zoom = 1;
+			
+			for each (var module:Module in level.modules)
+				addModule(module);
 		}
 		
 		protected function initLayers():void {
 			FlxG.state.add(lowerLayer = new FlxGroup());
 			FlxG.state.add(midLayer = new FlxGroup());
 			FlxG.state.add(upperLayer = new FlxGroup());
+		}
+		
+		private function addModule(m:Module, fixed:Boolean = true):void {
+			if (!m) return;
+			
+			m.FIXED = fixed;
+			modules.push(m);
+			
+			var displayModule:DModule = m.generateDisplay();
+			midLayer.add(displayModule);
+			displayModules.push(displayModule);
 		}
 		
 		override public function update():void {

@@ -99,8 +99,8 @@ package Displays {
 		private function drawJoin(current:Point):void {
 			var carriersAt:Vector.<Carrier> = U.state.carriersAtPoint(current);
 			if (carriersAt && carriersAt.length > 1) {
-				join.x = current.x - join.width / 2;
-				join.y = current.y - join.height / 2;
+				join.x = current.x * U.GRID_DIM - join.width / 2;
+				join.y = current.y * U.GRID_DIM - join.height / 2;
 				join.draw();
 			}
 		}

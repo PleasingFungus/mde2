@@ -4,6 +4,7 @@ package Modules {
 	import flash.geom.Point;
 	import Layouts.DefaultLayout;
 	import Layouts.ModuleLayout;
+	import Layouts.PortLayout;
 	//import Components.Wire;
 	import Components.Port;
 	import Values.Value;
@@ -94,6 +95,11 @@ package Modules {
 			}, function v(X:int, Y:int):void {
 				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), this);
 			});
+			
+			for each (var portLayout:PortLayout in layout.ports) {
+				portLayout.register();
+				portLayout.attemptConnect();
+			}
 		}
 		
 		public function deregister():void {
@@ -102,6 +108,10 @@ package Modules {
 			}, function v(X:int, Y:int):void {
 				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), null);
 			});
+			
+			//TODO: disconnect ports
+			for each (var portLayout:PortLayout in layout.ports)
+				portLayout.deregister();
 		}
 		
 		private function iterContainedLines(fH:Function, fV:Function):void {

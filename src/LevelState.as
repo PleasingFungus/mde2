@@ -192,7 +192,6 @@ package  {
 		
 		public function setLineContents(a:Point, b:Point, newContents:*):* {
 			var horizontal:Boolean = a.x != b.x;
-			C.log(lineToSpec(a, b))
 			return (horizontal ? horizontalLines : verticalLines)[lineToSpec(a, b)] = newContents;
 		}
 		
@@ -201,15 +200,17 @@ package  {
 		}
 		
 		public function addCarrierAtPoint(p:Point, carrier:Carrier):void {
-			var carriers:Vector.<Carrier> = carriersAtPoints[p.x + U.COORD_DELIM + p.y];
-			if (!carriers) carriers = carriersAtPoints[p.x + U.COORD_DELIM + p.y] = new Vector.<Carrier>;
+			var coordStr:String = p.x + U.COORD_DELIM + p.y;
+			var carriers:Vector.<Carrier> = carriersAtPoints[coordStr];
+			if (!carriers) carriers = carriersAtPoints[coordStr] = new Vector.<Carrier>;
 			carriers.push(carrier);
 		}
 		
 		public function removeCarrierFromPoint(p:Point, carrier:Carrier):void {
-			var carriers:Vector.<Carrier> = carriersAtPoints[p.x + U.COORD_DELIM + p.y];
+			var coordStr:String = p.x + U.COORD_DELIM + p.y;
+			var carriers:Vector.<Carrier> = carriersAtPoints[coordStr];
 			carriers.splice(carriers.indexOf(carrier), 1);
-			if (!carriers.length) carriersAtPoints[p.x + U.COORD_DELIM + p.y] = null;
+			if (!carriers.length) carriersAtPoints[coordStr] = null;
 		}
 		
 		

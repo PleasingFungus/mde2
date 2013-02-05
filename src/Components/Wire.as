@@ -42,13 +42,14 @@ package Components {
 				path.push(pathEnd = nextPoint);
 			}
 			
+			while (path.length > 1 && !validPosition())
+				path.pop();
+			
 			lastPathEnd = path[path.length - 1];
 			return true;
 		}
 		
 		protected function endDrawing():void {
-			while (path.length > 1 && !validPosition())
-				path.pop();
 			if (path.length > 1) {
 				exists = true;
 				connections = new Vector.<Carrier>;
@@ -147,7 +148,10 @@ package Components {
 		}
 		
 		public function setSource(source:Port):void {
-			source = source;
+			this.source = source;
+			for each (var connection:Carrier in connections)
+				if (!connection.getSource())
+					connection.setSource(source);
 		}
 		
 		public function addConnection(connection:Carrier):void {

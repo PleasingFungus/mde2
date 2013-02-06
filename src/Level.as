@@ -25,7 +25,7 @@ package  {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			levels.push(new Level("Sandbox",
 								  new LevelGoal("Have fun!", function _(state:LevelState):Boolean { return false; } ),
-								  [new ConstIn(8, 48, 1), new Regfile(40, 16)]));
+								  [new ConstIn(8, 48, 1), new Regfile(40, 16), new Adder(24, 40), new Outport(40, 40)]));
 			return levels;
 		}
 	}

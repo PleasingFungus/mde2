@@ -36,7 +36,7 @@ package Displays {
 		
 		public function create():void {
 			var textWidth:int = 50;
-			timeText = new FlxText(x + width/2 -textWidth / 2, y, textWidth, U.time.toString());
+			timeText = new FlxText(x + width/2 -textWidth / 2, y, textWidth, U.state.time.toString());
 			timeText.setFormat(U.FONT, 16);
 			
 			var timeBorder:int = 2;
@@ -47,7 +47,7 @@ package Displays {
 			add(timeBox);
 			add(timeText);
 			
-			stepButton = new GraphicButton(timeBox.x, timeBox.y + timeBox.height / 2, _step_sprite, U.time.step, new Key("L"));
+			stepButton = new GraphicButton(timeBox.x, timeBox.y + timeBox.height / 2, _step_sprite, U.state.time.step, new Key("L"));
 			stepButton.X -= stepButton.fullWidth;
 			stepButton.Y -= stepButton.fullHeight / 2;
 			add(stepButton);
@@ -73,12 +73,12 @@ package Displays {
 			add(pauseButton);
 			
 			stopButton = new GraphicButton(timeBox.x + timeBox.width, stepButton.Y, _stop_sprite, function reset():void {
-				U.time.reset();
+				U.state.time.reset();
 				playing = 0;
 			}, new Key("BACKSPACE"));
 			add(stopButton);
 			
-			backstepButton = new GraphicButton(stopButton.X + stopButton.fullWidth, stopButton.Y, _backstep_sprite, U.time.backstep, new Key("K"));
+			backstepButton = new GraphicButton(stopButton.X + stopButton.fullWidth, stopButton.Y, _backstep_sprite, U.state.time.backstep, new Key("K"));
 			add(backstepButton);
 			
 			rewindButton = new GraphicButton(backstepButton.X + backstepButton.fullWidth, backstepButton.Y, _back_sprite, function back():void {
@@ -96,12 +96,12 @@ package Displays {
 			super.update();
 			if (playing)
 				run();
-			timeText.text = U.time.toString();
+			timeText.text = U.state.time.toString();
 			
-			stopButton.exists = backstepButton.exists = U.time.moment > 0;
+			stopButton.exists = backstepButton.exists = U.state.time.moment > 0;
 			playButton.exists = playing != 1;
 			pauseButton.exists = playing != 0;
-			rewindButton.exists = playing != -1 && U.time.moment > 0;
+			rewindButton.exists = playing != -1 && U.state.time.moment > 0;
 			
 			derock++;
 		}
@@ -112,9 +112,9 @@ package Displays {
 			var timePerTick:Number = 1 / ticksPerSec;
 			while (timeSinceToggle >= timePerTick) {
 				if (playing > 0)
-					U.time.step();
+					U.state.time.step();
 				else
-					if (!U.time.backstep())
+					if (!U.state.time.backstep())
 						playing = 0;
 				timeSinceToggle -= timePerTick;
 			}

@@ -1,16 +1,16 @@
 package  {
-	import Components.Carrier;
-	import Displays.DMemory;
-	import Displays.DModule;
 	import flash.utils.Dictionary;
 	import flash.geom.Point;
 	import org.flixel.*;
 	import Actions.*;
+	import Controls.*;
+	import Displays.*;
 	import Modules.Module;
 	import Values.Value;
-	import Controls.*;
+	import Components.Carrier;
 	import Components.Wire
-	import Displays.DWire;
+	import UI.GraphicButton;
+	import UI.MenuButton;
 	
 	/**
 	 * ...
@@ -26,6 +26,7 @@ package  {
 		public var zoom:Number;
 		protected var displayWires:Vector.<DWire>;
 		protected var displayModules:Vector.<DModule>;
+		protected var buttons:Vector.<MenuButton>
 		protected var mode:int = MODE_CONNECT;
 		
 		public var actionStack:Vector.<Action>;
@@ -55,6 +56,7 @@ package  {
 			
 			displayWires = new Vector.<DWire>;
 			displayModules = new Vector.<DModule>;
+			buttons = new Vector.<MenuButton>;
 			
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
@@ -70,6 +72,8 @@ package  {
 			
 			for each (var module:Module in level.modules)
 				addModule(module);
+			
+			makeUI();
 		}
 		
 		protected function initLayers():void {
@@ -88,6 +92,20 @@ package  {
 			var displayModule:DModule = m.generateDisplay();
 			midLayer.add(displayModule);
 			displayModules.push(displayModule);
+		}
+		
+		protected function makeUI():void {
+			makeUndoButtons();
+			upperLayer.add(new DTime(FlxG.width / 2 - 50, 10));
+			upperLayer.add(new Scroller);
+		}
+		
+		protected function makeUndoButtons():void {
+			var undoButton:GraphicButton = new GraphicButton(FlxG.width - 85, 10, _undo_sprite, undo, new Key("Z"));
+			buttons.push(upperLayer.add(undoButton));
+			
+			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _redo_sprite, redo, new Key("Y"));
+			buttons.push(upperLayer.add(redoButton));
 		}
 		
 		override public function update():void {
@@ -119,8 +137,8 @@ package  {
 		protected function checkConnectControls():void {
 			
 			if (FlxG.mouse.justPressed()) {
-				//if (buttonMoused) //TODO
-					//return;
+				if (buttonMoused) //TODO
+					return;
 				
 				currentWire = new Wire(U.pointToGrid(U.mouseLoc))
 				displayWires.push(midLayer.add(new DWire(currentWire)));
@@ -156,6 +174,13 @@ package  {
 		
 		protected function checkMenuState():void {
 			//TODO
+		}
+		
+		protected function get buttonMoused():MenuButton {
+			for each (var button:MenuButton in buttons)
+				if (button.exists && button.moused)
+					return button;
+			return null;
 		}
 		
 		
@@ -247,6 +272,19 @@ package  {
 				debugLineV.y = int(coords[1]) * U.GRID_DIM;
 				debugLineV.draw();
 			}
+		}
+		
+		
+		private function undo():Action {
+			if (!actionStack.length)
+				return null;
+			return actionStack.pop().revert();
+		}
+		
+		private function redo():Action {
+			if (!reactionStack.length)
+				return null;
+			return reactionStack.pop().execute();
 		}
 		
 		

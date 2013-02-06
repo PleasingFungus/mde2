@@ -93,17 +93,6 @@ package  {
 		
 		
 		
-		public static function undo():Action {
-			if (!state.actionStack.length)
-				return null;
-			return state.actionStack.pop().revert();
-		}
-		
-		public static function redo():Action {
-			if (!state.reactionStack.length)
-				return null;
-			return state.reactionStack.pop().execute();
-		}
 		
 		public static const MAX_INT:int = 127;
 		public static const MIN_INT:int = -128;

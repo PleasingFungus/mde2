@@ -90,6 +90,7 @@ package Components {
 				return false;
 			}
 			
+			wire.exists = true;
 			U.state.wires.push(wire);
 			for (var i:int = 0; i < wire.path.length - 1; i++)
 				U.state.setLineContents(wire.path[i], wire.path[i + 1], wire);
@@ -147,11 +148,11 @@ package Components {
 				carrier.resetSource();
 		}
 		
-		public function setSource(source:Port):void {
-			this.source = source;
+		public function setSource(Source:Port):void {
+			source = Source;
 			for each (var connection:Carrier in connections)
 				if (!connection.getSource())
-					connection.setSource(source);
+					connection.setSource(Source);
 		}
 		
 		public function addConnection(connection:Carrier):void {

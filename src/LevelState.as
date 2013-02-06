@@ -19,6 +19,7 @@ package  {
 	public class LevelState extends FlxState {
 		
 		protected var tick:int;
+		protected var savedString:String;
 		
 		public var lowerLayer:FlxGroup;
 		public var midLayer:FlxGroup;
@@ -72,6 +73,7 @@ package  {
 			
 			for each (var module:Module in level.modules)
 				addModule(module);
+			load();
 			
 			makeUI();
 		}
@@ -80,6 +82,15 @@ package  {
 			FlxG.state.add(lowerLayer = new FlxGroup());
 			FlxG.state.add(midLayer = new FlxGroup());
 			FlxG.state.add(upperLayer = new FlxGroup());
+		}
+		
+		private function addWire(w:Wire, fixed:Boolean = true):void {
+			w.FIXED = fixed;
+			Wire.place(w);
+			
+			var displayWire:DWire = new DWire(w);
+			midLayer.add(displayWire);
+			displayWires.push(displayWire);
 		}
 		
 		private function addModule(m:Module, fixed:Boolean = true):void {
@@ -95,9 +106,22 @@ package  {
 		}
 		
 		protected function makeUI():void {
+			makeBackButton();
+			makeSaveButton();
 			makeUndoButtons();
 			upperLayer.add(new DTime(FlxG.width / 2 - 50, 10));
 			upperLayer.add(new Scroller);
+		}
+		
+		protected function makeBackButton():void {
+			var backButton:GraphicButton = new GraphicButton(90, 10, _back_sprite, function back():void { FlxG.switchState(new MenuState); }, new Key("ESCAPE"));
+			backButton.fades = true;
+			upperLayer.add(backButton);
+		}
+		
+		protected function makeSaveButton():void {
+			var saveButton:GraphicButton = new GraphicButton(130, 10, _save_sprite, save, new Key("S"));
+			upperLayer.add(saveButton);
 		}
 		
 		protected function makeUndoButtons():void {
@@ -287,6 +311,63 @@ package  {
 			return reactionStack.pop().execute();
 		}
 		
+		protected function save():void {
+			savedString = genSaveString();
+			U.save.data[level.name] = savedString;
+			C.log(savedString);
+		}
+		
+		protected function genSaveString():String {
+			var saveString:String = "";
+			
+			//save modules
+			var modulesExist:Boolean;
+			for each (var module:Module in modules)
+				if (module.exists && !module.FIXED) {
+					saveString += module.saveString();
+					modulesExist = true;
+				}
+			saveString += U.SAVE_DELIM;
+			if (!modulesExist)
+				saveString += U.SAVE_DELIM;
+			
+			//save wires
+			var wiresExist:Boolean;
+			for each (var wire:Wire in wires)
+				if (wire.exists) {
+					saveString += wire.saveString();
+					wiresExist = true;
+				}
+			
+			saveString += U.SAVE_DELIM;
+			if (!wiresExist)
+				saveString += U.SAVE_DELIM;
+			
+			return saveString;
+		}
+		
+		
+		protected function load():void {
+			var saveString:String = U.save.data[level.name];
+			if (!saveString)
+				return;
+			
+			var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);
+			
+			//load modules
+			var moduleStrings:String = saveArray[0];
+			if (moduleStrings.length)
+				for each (var moduleString:String in moduleStrings.split(U.SAVE_DELIM))
+					addModule(Module.fromString(moduleString), false);
+			
+			//load wires
+			var wireStrings:String = saveArray[1];
+			if (wireStrings.length)
+				for each (var wireString:String in wireStrings.split(U.SAVE_DELIM))
+					addWire(Wire.fromString(wireString), false);
+			
+			savedString = saveString;
+		}
 		
 		protected const MODE_MODULE:int = 0;
 		protected const MODE_CONNECT:int = 1;

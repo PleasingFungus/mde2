@@ -109,7 +109,7 @@ package Modules {
 				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), null);
 			});
 			
-			//TODO: disconnect ports
+			severConnections();
 			for each (var portLayout:PortLayout in layout.ports)
 				portLayout.deregister();
 		}

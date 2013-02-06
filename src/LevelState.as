@@ -6,6 +6,7 @@ package  {
 	import Controls.*;
 	import Displays.*;
 	import Modules.Module;
+	import UI.ButtonList;
 	import Values.Value;
 	import Components.Carrier;
 	import Components.Wire
@@ -25,9 +26,12 @@ package  {
 		public var midLayer:FlxGroup;
 		public var upperLayer:FlxGroup;
 		public var zoom:Number;
+		
 		protected var displayWires:Vector.<DWire>;
 		protected var displayModules:Vector.<DModule>;
 		protected var buttons:Vector.<MenuButton>
+		protected var modeButton:GraphicButton;
+		protected var modeList:ButtonList;
 		protected var mode:int = MODE_CONNECT;
 		
 		public var actionStack:Vector.<Action>;
@@ -137,54 +141,53 @@ package  {
 		}
 		
 		protected function makeModeButtons():void {
-			/*if (modeButton)
-				modeButton.exists = false;
-			
-			U.upperLayer.add(modeButton = new GraphicButton(10, 10, MODE_SPRITES[mode], function deployMenu():void {
+			upperLayer.add(modeButton = new GraphicButton(10, 10, MODE_SPRITES[mode], function deployMenu():void {
 				if (!tick) return;
 				
 				exists = false;
-				if (moduleBox)
-					moduleBox.exists = false;
-				if (zoomList)
-					zoomList.exists = false;
+				//if (zoomList)
+					//zoomList.exists = false;
 				
 				var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-				for (var newMode:int = 0; newMode <= MODE_REMOVE; newMode++)
+				for (var newMode:int = 0; newMode <= MODE_REMOVE; newMode++) {
 					modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 						if (!tick) return;
 						mode = newMode;
-						modeList.exists = false;
+						modeButton.loadGraphic(MODE_SPRITES[newMode]);
 					}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
+					
+					for each (var button:MenuButton in modeSelectButtons)
+						buttons.push(button);
+				}
 				
 				modeList = new ButtonList(modeButton.X, modeButton.Y, modeSelectButtons);
 				modeList.setSpacing(4);
 				modeList.justDie = true;
-				U.upperLayer.add(modeList);
+				upperLayer.add(modeList);
 				
 				tick = 0;
 			}, new Key("TAB")));
 			
 			buttons.push(modeButton);
 			
-			if (listButton) {
-				listButton.exists = false;
-				listButton = null;
-			}
-			
-			if (mode == MODE_MODULE) {
-				U.upperLayer.add(listButton = new GraphicButton(50, 10, _list_sprite, function displayModules():void {
-					if (moduleBox)
-						moduleBox.exists = false;
-					
-					U.upperLayer.add(moduleBox = new ModuleBox(level.allowedParts, function selectModule(module:Module):void {
-						U.midLayer.add(currentModule = new DModule(module));
-						tick = 0;
-					}));
-				}, new Key("FOUR")));
-				
-				buttons.push(listButton);
-			}*/
+			//if (listButton) {
+				//listButton.exists = false;
+				//listButton = null;
+			//}
+			//
+			//if (mode == MODE_MODULE) {
+				//U.upperLayer.add(listButton = new GraphicButton(50, 10, _list_sprite, function displayModules():void {
+					//if (moduleBox)
+						//moduleBox.exists = false;
+					//
+					//U.upperLayer.add(moduleBox = new ModuleBox(level.allowedParts, function selectModule(module:Module):void {
+						//U.midLayer.add(currentModule = new DModule(module));
+						//tick = 0;
+					//}));
+				//}, new Key("FOUR")));
+				//
+				//buttons.push(listButton);
+			//}
 		}
 		
 		protected function makeZoomButtons():void {
@@ -302,7 +305,8 @@ package  {
 		}
 		
 		protected function checkMenuState():void {
-			//TODO
+			if (modeList && !modeList.exists) modeList = null;
+			modeButton.exists = !modeList;
 		}
 		
 		protected function get buttonMoused():MenuButton {

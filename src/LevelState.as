@@ -62,6 +62,7 @@ package  {
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
 			
+			memory = new Vector.<Value>;
 			wires = new Vector.<Wire>;
 			modules = new Vector.<Module>;
 			horizontalLines = new Dictionary;
@@ -106,9 +107,12 @@ package  {
 		}
 		
 		protected function makeUI():void {
+			makeModeButtons();
 			makeBackButton();
 			makeSaveButton();
 			makeUndoButtons();
+			makeZoomButtons();
+			makeDataButton();
 			upperLayer.add(new DTime(FlxG.width / 2 - 50, 10));
 			upperLayer.add(new Scroller);
 		}
@@ -130,6 +134,107 @@ package  {
 			
 			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _redo_sprite, redo, new Key("Y"));
 			buttons.push(upperLayer.add(redoButton));
+		}
+		
+		protected function makeModeButtons():void {
+			/*if (modeButton)
+				modeButton.exists = false;
+			
+			U.upperLayer.add(modeButton = new GraphicButton(10, 10, MODE_SPRITES[mode], function deployMenu():void {
+				if (!tick) return;
+				
+				exists = false;
+				if (moduleBox)
+					moduleBox.exists = false;
+				if (zoomList)
+					zoomList.exists = false;
+				
+				var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+				for (var newMode:int = 0; newMode <= MODE_REMOVE; newMode++)
+					modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
+						if (!tick) return;
+						mode = newMode;
+						modeList.exists = false;
+					}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
+				
+				modeList = new ButtonList(modeButton.X, modeButton.Y, modeSelectButtons);
+				modeList.setSpacing(4);
+				modeList.justDie = true;
+				U.upperLayer.add(modeList);
+				
+				tick = 0;
+			}, new Key("TAB")));
+			
+			buttons.push(modeButton);
+			
+			if (listButton) {
+				listButton.exists = false;
+				listButton = null;
+			}
+			
+			if (mode == MODE_MODULE) {
+				U.upperLayer.add(listButton = new GraphicButton(50, 10, _list_sprite, function displayModules():void {
+					if (moduleBox)
+						moduleBox.exists = false;
+					
+					U.upperLayer.add(moduleBox = new ModuleBox(level.allowedParts, function selectModule(module:Module):void {
+						U.midLayer.add(currentModule = new DModule(module));
+						tick = 0;
+					}));
+				}, new Key("FOUR")));
+				
+				buttons.push(listButton);
+			}*/
+		}
+		
+		protected function makeZoomButtons():void {
+			//TODO
+			/*if (zoomButton)
+				zoomButton.exists = false;
+			
+			upperLayer.add(zoomButton = new GraphicButton(FlxG.width - 45, 90, _zoom_sprite, function deployMenu():void {
+				if (!tick) return;
+				
+				exists = false;
+				//if (moduleBox)
+					//moduleBox.exists = false;
+				if (modeList)
+					modeList.exists = false;
+				
+				var zoomButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+				for (var zoomLevel:int = 0; zoomLevel <= 2; zoomLevel++)
+					zoomButtons.push(new GraphicButton( -1, -1, ZOOMS[zoomLevel], function selectZoom(zoomLevel:int):void {
+						if (!tick) return;
+						
+						FlxG.camera.scroll.x += (FlxG.width / 2) / U.zoom;
+						FlxG.camera.scroll.y += (FlxG.height / 2) / U.zoom;
+						
+						C.log(zoomLevel, U.FONT, U.FONT_SIZE);
+						U.zoom = Math.pow(2, -zoomLevel);
+						//U.FONT = zoomLevel == 2 ? U.GENEVA : null;
+						U.FONT_SIZE = zoomLevel == 2 ? 32 : 16;
+						C.log(zoomLevel, U.FONT, U.FONT_SIZE);
+						
+						FlxG.camera.scroll.x -= (FlxG.width / 2) / U.zoom;
+						FlxG.camera.scroll.y -= (FlxG.height / 2) / U.zoom;
+						
+						zoomList.exists = false;
+					}, HOTKEYS[zoomLevel]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == U.zoom));
+				
+				zoomList = new ButtonList(zoomButton.X, zoomButton.Y, zoomButtons);
+				zoomList.setSpacing(4);
+				zoomList.justDie = true;
+				U.upperLayer.add(zoomList);
+				
+				tick = 0;
+			}, new Key("PLUS")));*/
+		}
+		
+		protected function makeDataButton():void {
+			if (memory.length)
+				upperLayer.add(new GraphicButton(FlxG.width - 45, 50, _data_sprite, function _():void {
+					upperLayer.add(new DMemory(memory));
+				}, new Key("C")));
 		}
 		
 		override public function update():void {

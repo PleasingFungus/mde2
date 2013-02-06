@@ -10,7 +10,9 @@ package Displays {
 	public class DMemory extends FlxGroup {
 		
 		private var bg:FlxSprite;
-		public function DMemory() {
+		public var memory:Vector.<Value>;
+		public function DMemory(Memory:Vector.<Value>) {
+			memory = Memory;
 			super();
 			init();
 		}
@@ -45,8 +47,8 @@ package Displays {
 			var COLS:int = (bg.width - BORDER * 2) / (COL_WIDTH + BORDER);
 			
 			var row:int, col:int, skipped:Boolean;
-			for (var memLine:int = 0; memLine < U.level.memory.length; memLine++) {
-				var memValue:Value = U.level.memory[memLine];
+			for (var memLine:int = 0; memLine < memory.length; memLine++) {
+				var memValue:Value = memory[memLine];
 				if (memValue) {
 					add(new FlxText(bg.x + BORDER + col * (COL_WIDTH + BORDER), bg.y + BORDER + row * (ROW_HEIGHT + BORDER / 2), COL_WIDTH, memLine+" : "+memValue.toString()).setFormat(U.FONT, 16));
 					

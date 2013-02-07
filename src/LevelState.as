@@ -84,9 +84,9 @@ package  {
 		}
 		
 		protected function initLayers():void {
-			FlxG.state.add(lowerLayer = new FlxGroup());
-			FlxG.state.add(midLayer = new FlxGroup());
-			FlxG.state.add(upperLayer = new FlxGroup());
+			add(lowerLayer = new FlxGroup());
+			add(midLayer = new FlxGroup());
+			add(upperLayer = new FlxGroup());
 		}
 		
 		private function addWire(w:Wire, fixed:Boolean = true):void {
@@ -111,6 +111,9 @@ package  {
 		}
 		
 		protected function makeUI():void {
+			buttons = new Vector.<MenuButton>;
+			add(upperLayer = new FlxGroup);
+			
 			makeModeButtons();
 			makeBackButton();
 			makeSaveButton();
@@ -153,7 +156,9 @@ package  {
 					modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 						if (!tick) return;
 						mode = newMode;
-						modeButton.loadGraphic(MODE_SPRITES[newMode]);
+						//modeButton.loadGraphic(MODE_SPRITES[newMode]);
+						tick = 0;
+						makeUI();
 					}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
 					
 					for each (var button:MenuButton in modeSelectButtons)

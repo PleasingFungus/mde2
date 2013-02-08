@@ -14,16 +14,26 @@ package Displays {
 		private var displayPorts:Vector.<DPort>;
 		private var nameText:FlxText;
 		private var locked:Boolean;
+		private var wasValid:Boolean;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
 			refresh();
 		}
 		
-		public function refresh():void {			
+		public function refresh():void {
+			wasValid = module.validPosition;
+			var moduleColor:uint;
+			if (module.FIXED)
+				moduleColor = 0xff808080;
+			else if (wasValid)
+				moduleColor = 0xff7070a0;
+			else
+				moduleColor = 0xffa07070;
+			
 			makeGraphic(module.layout.dim.x * U.GRID_DIM,
 						module.layout.dim.y * U.GRID_DIM,
-						module.FIXED ? 0xff808080 : 0xff7070a0, true);
+						moduleColor, true);
 			
 			nameText = new FlxText( -1, -1, width - U.GRID_DIM / 2, getName());
 			nameText.setFormat(U.FONT, U.FONT_SIZE, 0x0, 'center');
@@ -50,7 +60,7 @@ package Displays {
 		override public function update():void {
 			super.update();
 			
-			if (module.dirty)
+			if (module.dirty || (wasValid != module.validPosition))
 				refresh();
 			
 			updatePosition();

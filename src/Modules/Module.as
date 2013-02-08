@@ -2,6 +2,7 @@ package Modules {
 	//import Displays.DModule;
 	import Displays.DModule;
 	import flash.geom.Point;
+	import flash.utils.Dictionary;
 	import Layouts.DefaultLayout;
 	import Layouts.ModuleLayout;
 	import Layouts.PortLayout;
@@ -32,7 +33,6 @@ package Modules {
 		
 		public function Module(X:int, Y:int, Name:String, numInputs:int, numOutputs:int, numControls:int ) {
 			super(X, Y);
-			C.log(Name, X, Y);
 			
 			name = Name;
 			inputs = new Vector.<Port>; populatePorts(inputs, numInputs, false);
@@ -81,7 +81,7 @@ package Modules {
 		}
 		
 		protected function getSaveValues():Array {
-			return [U.ALL_MODULES.indexOf(Object(this).constructor), x, y];
+			return [ALL_MODULES.indexOf(Object(this).constructor), x, y];
 		}
 		
 		public function initialize():void { }
@@ -89,20 +89,30 @@ package Modules {
 		public function update():Boolean { return false; }
 		public function finishUpdate():void { }
 		
-		public function register():void {
+		public function register():Module {
+			exists = true;
+			
+			var kludge:Module = this;
+			
 			iterContainedLines(function h(X:int, Y:int):void {
-				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), this);
+				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), kludge);
 			}, function v(X:int, Y:int):void {
-				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), this);
+				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), kludge);
 			});
 			
 			for each (var portLayout:PortLayout in layout.ports) {
 				portLayout.register();
 				portLayout.attemptConnect();
 			}
+			
+			return this;
 		}
 		
-		public function deregister():void {
+		public static function place(m:Module):Module {
+			return m.register();
+		}
+		
+		public function deregister():Module {
 			iterContainedLines(function h(X:int, Y:int):void {
 				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), null);
 			}, function v(X:int, Y:int):void {
@@ -112,6 +122,37 @@ package Modules {
 			severConnections();
 			for each (var portLayout:PortLayout in layout.ports)
 				portLayout.deregister();
+			
+			exists = false;
+			
+			return this;
+		}
+		
+		public static function remove(m:Module):Module {
+			return m.deregister();
+		}
+		
+		public function get validPosition():Boolean {
+			var OK:Object = { 'x' : true, 'y' : true };
+			var kludge:Module = this;
+			iterContainedLines(function h(X:int, Y:int):void {
+				if (!OK.x) return;
+				var inLine:* = U.state.lineContents(new Point(X, Y), new Point(X + 1, Y));
+				OK.x = !inLine || kludge == inLine;
+			}, function v(X:int, Y:int):void {
+				if (!OK.y) return;
+				var inLine:* = U.state.lineContents(new Point(X, Y), new Point(X, Y + 1));
+				OK.y = !inLine || kludge == inLine;
+			});
+			
+			if (!OK.x || !OK.y)
+				return false;
+			
+			for each (var portLayout:PortLayout in layout.ports)
+				if (!portLayout.validPosition)
+					return false;
+			
+			return true;
 		}
 		
 		private function iterContainedLines(fH:Function, fV:Function):void {
@@ -132,7 +173,7 @@ package Modules {
 		
 		public static function fromString(str:String):Module {
 			var args:Array = str.split(DELIM);
-			var type:Class = U.ALL_MODULES[int(args[0])];
+			var type:Class = ALL_MODULES[int(args[0])];
 			if (!type) return null;
 			var x:int = int(args[1]);
 			var y:int = int(args[2]);
@@ -143,7 +184,22 @@ package Modules {
 		
 		private static const DELIM:String = ',';
 		
+		public static function init():void {
+			for each (var moduleClass:Class in [Adder, ASU, Clock, ConstIn, Latch,
+												Outport, Regfile, Comparator,
+												InstructionMemory, DataMemory, Mux, Demux,
+												Accumulator, ProgramCounter]) {
+				ALL_MODULES.push(moduleClass);
+				ARCHETYPES.push(new moduleClass( -1, -1));
+			}
+		}
 		
+		public static function getArchetype(moduleClass:Class):Module {
+			return ARCHETYPES[ALL_MODULES.indexOf(moduleClass)];
+		}
+		
+		public static const ALL_MODULES:Vector.<Class> = new Vector.<Class>;
+		public static const ARCHETYPES:Vector.<Module> = new Vector.<Module>;
 		
 		
 	}

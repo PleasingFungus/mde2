@@ -41,11 +41,6 @@ package  {
 		public static const COORD_DELIM:String = ',';
 		public static const POINT_DELIM:String = ',,';
 		
-		public static const ALL_MODULES:Array = [Adder, ASU, Clock, ConstIn, Latch,
-												 Outport, Regfile, Comparator,
-												 InstructionMemory, DataMemory, Mux, Demux,
-												 Accumulator, ProgramCounter];
-		
 		public static var save:FlxSave;
 		
 		private static var initialized:Boolean = false;
@@ -58,6 +53,7 @@ package  {
 			save.bind("MultiduckExtravaganza");
 			
 			InstructionType.init();
+			Module.init();
 			
 			levels = Level.list();
 		}

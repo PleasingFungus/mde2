@@ -51,6 +51,18 @@ package Layouts {
 			var origin:Point = connectionPoint.add(new Point(vertical ? 0 : reversed ? -1 : 1, vertical ? reversed ? -1 : 1 : 0));
 			U.state.setLineContents(connectionPoint, origin, contents);
 		}
+		
+		public function get validPosition():Boolean {
+			if (!port.isOutput) return true;
+			
+			var carriers:Vector.<Carrier> = U.state.carriersAtPoint(parent.add(offset));
+			if (!carriers) return true;
+			
+			for each (var carrier:Carrier in carriers)
+				if (carrier.getSource() && carrier.getSource() != port)
+					return false;
+			return true;
+		}
 	}
 
 }

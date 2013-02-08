@@ -98,11 +98,16 @@ package Displays {
 		
 		private function drawJoin(current:Point):void {
 			var carriersAt:Vector.<Carrier> = U.state.carriersAtPoint(current);
-			if (carriersAt && carriersAt.length > 1) {
-				join.x = current.x * U.GRID_DIM - join.width / 2;
-				join.y = current.y * U.GRID_DIM - join.height / 2;
-				join.draw();
-			}
+			if (!carriersAt || carriersAt.length < 2)
+				return;
+			
+			for each (var carrier:Carrier in carriersAt)
+				if (wire.connections.indexOf(carrier) != -1) {
+					join.x = current.x * U.GRID_DIM - join.width / 2;
+					join.y = current.y * U.GRID_DIM - join.height / 2;
+					join.draw();
+					break;
+				}
 		}
 		
 		protected var willOverlap:Boolean;

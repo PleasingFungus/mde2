@@ -7,6 +7,7 @@ package  {
 	import Displays.*;
 	import Modules.Module;
 	import UI.ButtonList;
+	import UI.TextButton;
 	import Values.Value;
 	import Components.Carrier;
 	import Components.Wire
@@ -37,6 +38,7 @@ package  {
 		public var actionStack:Vector.<Action>;
 		public var reactionStack:Vector.<Action>;
 		protected var currentWire:Wire;
+		protected var currentModule:Module;
 		
 		public var time:Time;
 		public var wires:Vector.<Wire>;
@@ -112,7 +114,9 @@ package  {
 		
 		protected function makeUI():void {
 			buttons = new Vector.<MenuButton>;
+			remove(upperLayer, true);
 			add(upperLayer = new FlxGroup);
+			tick = 0;
 			
 			makeModeButtons();
 			makeBackButton();
@@ -120,6 +124,10 @@ package  {
 			makeUndoButtons();
 			makeZoomButtons();
 			makeDataButton();
+			
+			if (mode == MODE_MODULE)
+				makeModuleButton();
+			
 			upperLayer.add(new DTime(FlxG.width / 2 - 50, 10));
 			upperLayer.add(new Scroller);
 		}
@@ -132,7 +140,7 @@ package  {
 		
 		protected function makeSaveButton():void {
 			var saveButton:GraphicButton = new GraphicButton(130, 10, _save_sprite, save, new Key("S"));
-			upperLayer.add(saveButton);
+			buttons.push(upperLayer.add(saveButton));
 		}
 		
 		protected function makeUndoButtons():void {
@@ -147,6 +155,11 @@ package  {
 			upperLayer.add(modeButton = new GraphicButton(10, 10, MODE_SPRITES[mode], function deployMenu():void {
 				if (!tick) return;
 				
+				if (currentModule) {
+					currentModule.exists = false;
+					currentModule = null;
+				}
+				
 				exists = false;
 				//if (zoomList)
 					//zoomList.exists = false;
@@ -156,8 +169,6 @@ package  {
 					modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 						if (!tick) return;
 						mode = newMode;
-						//modeButton.loadGraphic(MODE_SPRITES[newMode]);
-						tick = 0;
 						makeUI();
 					}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
 					
@@ -174,25 +185,6 @@ package  {
 			}, new Key("TAB")));
 			
 			buttons.push(modeButton);
-			
-			//if (listButton) {
-				//listButton.exists = false;
-				//listButton = null;
-			//}
-			//
-			//if (mode == MODE_MODULE) {
-				//U.upperLayer.add(listButton = new GraphicButton(50, 10, _list_sprite, function displayModules():void {
-					//if (moduleBox)
-						//moduleBox.exists = false;
-					//
-					//U.upperLayer.add(moduleBox = new ModuleBox(level.allowedParts, function selectModule(module:Module):void {
-						//U.midLayer.add(currentModule = new DModule(module));
-						//tick = 0;
-					//}));
-				//}, new Key("FOUR")));
-				//
-				//buttons.push(listButton);
-			//}
 		}
 		
 		protected function makeZoomButtons():void {
@@ -238,11 +230,43 @@ package  {
 			}, new Key("PLUS")));*/
 		}
 		
+		protected function makeModuleButton():void {
+			var listButton:GraphicButton = new GraphicButton(50, 10, _list_sprite, function listModules():void {
+				if (!tick) return;
+				
+				if (currentModule) {
+					currentModule.exists = false;
+					currentModule = null;
+				}
+				
+				//build a list of buttons for allowed modules/names
+				var moduleButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+				for each (var moduleType:Class in level.allowedModules)
+					moduleButtons.push(new TextButton( -1, -1, Module.getArchetype(moduleType).name, function chooseModule(moduleType:Class):void {
+						if (!tick) return;
+						
+						modules.push(currentModule = new moduleType( -1, -1));
+						displayModules.push(midLayer.add(new DModule(currentModule)));
+						tick = 0;
+					}).setParam(moduleType));
+				
+				//put 'em in a list
+				var moduleList:ButtonList = new ButtonList(listButton.X, listButton.Y, moduleButtons);
+				moduleList.setSpacing(4);
+				moduleList.justDie = true;
+				upperLayer.add(moduleList);
+				
+				tick = 0;
+			}, new Key("FOUR"));
+			
+			buttons.push(upperLayer.add(listButton));
+		}
+		
 		protected function makeDataButton():void {
 			if (memory.length)
-				upperLayer.add(new GraphicButton(FlxG.width - 45, 50, _data_sprite, function _():void {
+				buttons.push(upperLayer.add(new GraphicButton(FlxG.width - 45, 50, _data_sprite, function _():void {
 					upperLayer.add(new DMemory(memory));
-				}, new Key("C")));
+				}, new Key("C"))));
 		}
 		
 		override public function update():void {
@@ -302,7 +326,45 @@ package  {
 		}
 		
 		protected function checkModuleControls():void {
-			//TODO
+			if (currentModule && ControlSet.CANCEL_KEY.justPressed()) {
+				currentModule.exists = false;
+				currentModule = null;
+			}
+			
+			if (!tick) return;
+			
+			if (currentModule) {
+				var mousePoint:Point = U.pointToGrid(U.mouseLoc);
+				currentModule.x = mousePoint.x;
+				currentModule.y = mousePoint.y;
+				
+				if (FlxG.mouse.justPressed()) {
+					if (buttonMoused) {
+						currentModule.exists = false;
+						currentModule = null;
+					} else if (currentModule.validPosition)
+						placeModule();
+				}
+			} else {
+				if (ControlSet.DELETE_KEY.justPressed())
+					destroyModules();
+			}
+		}
+		
+		protected function placeModule():void {
+			//TODO: check collision
+			//TODO: check source shit
+			
+			new CustomAction(Module.place, Module.remove, currentModule).execute();
+			currentModule = null;
+		}
+		
+		private function destroyModules():void {
+			for each (var dModule:DModule in displayModules)
+				if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc) && !dModule.module.FIXED) {
+					new CustomAction(Module.remove, Module.place, dModule.module).execute();
+					//break;
+				}
 		}
 		
 		protected function checkRemoveControls():void {
@@ -372,7 +434,7 @@ package  {
 		public function removeCarrierFromPoint(p:Point, carrier:Carrier):void {
 			var coordStr:String = p.x + U.COORD_DELIM + p.y;
 			var carriers:Vector.<Carrier> = carriersAtPoints[coordStr];
-			carriers.splice(carriers.indexOf(carrier), 1);
+		carriers.splice(carriers.indexOf(carrier), 1);
 			if (!carriers.length) carriersAtPoints[coordStr] = null;
 		}
 		

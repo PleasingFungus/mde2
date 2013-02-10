@@ -74,7 +74,7 @@ package UI {
 		}
 		
 		protected function makeBG():void {
-			bg = new FlxSprite(x, y).makeGraphic(_width, _height, 0xff666666);
+			bg = new FlxSprite(x, y).makeGraphic(_width, _height, 0xff666666, true, "ButtonList "+_width+"-"+_height);
 			var raisedBorderWidth:int = 2;
 			
 			var light:FlxSprite = new FlxSprite().makeGraphic(_width - raisedBorderWidth * 2, _height - raisedBorderWidth * 2, 0xff999999)

@@ -352,9 +352,8 @@ package  {
 			var moduleSlider:ModuleSlider;
 			if (moduleList && !moduleList.exists) {
 				moduleList = null;
-				for each (moduleSlider in moduleSliders)
-					moduleSlider.exists = false;
 				moduleSliders = null;
+				makeUI();
 			} else if (moduleList) {
 				moduleList.justDie = moduleList.closesOnClickOutside = true;
 				for each (moduleSlider in moduleSliders)

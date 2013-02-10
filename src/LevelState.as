@@ -7,6 +7,7 @@ package  {
 	import Displays.*;
 	import Modules.Module;
 	import UI.ButtonList;
+	import UI.ModuleSlider;
 	import UI.TextButton;
 	import Values.Value;
 	import Components.Carrier;
@@ -34,6 +35,8 @@ package  {
 		protected var modeButton:GraphicButton;
 		protected var modeList:ButtonList;
 		protected var mode:int = MODE_CONNECT;
+		protected var moduleList:ButtonList;
+		protected var moduleSlider:ModuleSlider;
 		
 		public var actionStack:Vector.<Action>;
 		public var reactionStack:Vector.<Action>;
@@ -251,7 +254,7 @@ package  {
 					}).setParam(moduleType));
 				
 				//put 'em in a list
-				var moduleList:ButtonList = new ButtonList(listButton.X, listButton.Y, moduleButtons);
+				moduleList = new ButtonList(listButton.X, listButton.Y, moduleButtons);
 				moduleList.setSpacing(4);
 				moduleList.justDie = true;
 				upperLayer.add(moduleList);
@@ -331,6 +334,27 @@ package  {
 				currentModule = null;
 			}
 			
+			if (moduleSlider && moduleSlider.overlapsPoint(FlxG.mouse))
+				moduleList.exists = true;
+			
+			var moduleButtonMoused:Boolean;
+			if (moduleList && !moduleList.exists)
+				moduleList = null;
+			else if (moduleList)
+				for each (var button:MenuButton in moduleList.buttons)
+					if (button.moused && Module.getArchetype(button.callWithParam as Class).configuration != null) {
+						moduleButtonMoused = true;
+						if (moduleSlider && moduleSlider.parent != button)
+							moduleSlider.exists = false;
+						upperLayer.add(moduleSlider = new ModuleSlider(button)); //TODO
+						break;
+					}
+			
+			if (moduleSlider && !moduleButtonMoused) {
+				moduleSlider.exists = false;
+				moduleSlider = null;
+			}
+			
 			if (!tick) return;
 			
 			if (currentModule) {
@@ -352,9 +376,6 @@ package  {
 		}
 		
 		protected function placeModule():void {
-			//TODO: check collision
-			//TODO: check source shit
-			
 			new CustomAction(Module.place, Module.remove, currentModule).execute();
 			currentModule = null;
 		}
@@ -368,7 +389,10 @@ package  {
 		}
 		
 		protected function checkRemoveControls():void {
-			//TODO
+			if (FlxG.mouse.pressed() || ControlSet.DELETE_KEY.pressed()) {
+				destroyModules();
+				destroyWires();
+			}
 		}
 		
 		protected function checkMenuState():void {

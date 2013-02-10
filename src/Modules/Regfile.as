@@ -12,12 +12,10 @@ package Modules {
 		public var width:int;
 		public var values:Vector.<Value>;
 		protected var lastMomentStored:int;
-		public function Regfile(X:int, Y:int) {
+		public function Regfile(X:int, Y:int, Width:int = 8) {
 			super(X, Y, "Regfile", 1, 2, 4);
-			configuration = new Configuration(new Range(4, 32, 8), function setValue(newValue:int):void {
-				width = newValue;
-			});
-			width = configuration.valueRange.initial;
+			configuration = new Configuration(new Range(4, 32, Width));
+			width = Width;
 			delay = 7;
 		}
 		

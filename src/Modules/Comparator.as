@@ -13,9 +13,7 @@ package Modules {
 			super(X, Y, "Comparator", 1, 1, 0);
 			compareValue = CompareValue;
 			
-			configuration = new Configuration(new Range( -64, 63), function setValue(newValue:int):void {
-				compareValue = newValue;
-			});
+			configuration = new Configuration(new Range( -64, 63, CompareValue));
 			delay = 1;
 		}
 		

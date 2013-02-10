@@ -16,10 +16,7 @@ package Modules {
 			
 			initialValue = InitialValue;
 			
-			configuration = new Configuration(new Range( -16, 15), function setValue(newValue:int):void {
-				initialValue = newValue;
-				initialize();
-			});
+			configuration = new Configuration(new Range( -16, 15, InitialValue));
 		}
 		
 		override public function renderName():String {

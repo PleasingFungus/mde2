@@ -13,9 +13,7 @@ package Modules {
 		public function Clock(X:int, Y:int, Period:int = 2) {
 			super(X, Y, "Clock", 0, 1, 0);
 			period = Period;
-			configuration = new Configuration(new Range(2, 100, Period), function setValue(newValue:int):void {
-				period = newValue;
-			});
+			configuration = new Configuration(new Range(2, 100, Period));
 		}
 		
 		override public function renderName():String {

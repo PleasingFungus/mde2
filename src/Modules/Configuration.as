@@ -6,12 +6,15 @@ package Modules {
 	public class Configuration {
 		
 		public var valueRange:Range;
-		public var setValue:Function
-		public function Configuration(ValueRange:Range, SetValue:Function) {
+		public var value:int;
+		public function Configuration(ValueRange:Range) {
 			valueRange = ValueRange;
-			setValue = SetValue;
+			value = valueRange.initial;
 		}
 		
+		public function setValue(v:int):void {
+			value = v;
+		}
 	}
 
 }

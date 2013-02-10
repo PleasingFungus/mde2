@@ -36,7 +36,7 @@ package  {
 		protected var modeList:ButtonList;
 		protected var mode:int = MODE_CONNECT;
 		protected var moduleList:ButtonList;
-		protected var moduleSlider:ModuleSlider;
+		protected var moduleSliders:Vector.<ModuleSlider>;
 		
 		public var actionStack:Vector.<Action>;
 		public var reactionStack:Vector.<Action>;
@@ -136,21 +136,21 @@ package  {
 		}
 		
 		protected function makeBackButton():void {
-			var backButton:GraphicButton = new GraphicButton(90, 10, _back_sprite, function back():void { FlxG.switchState(new MenuState); }, new Key("ESCAPE"));
+			var backButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _back_sprite, function back():void { FlxG.switchState(new MenuState); }, new Key("ESCAPE"));
 			backButton.fades = true;
 			upperLayer.add(backButton);
 		}
 		
 		protected function makeSaveButton():void {
-			var saveButton:GraphicButton = new GraphicButton(130, 10, _save_sprite, save, new Key("S"));
+			var saveButton:GraphicButton = new GraphicButton(FlxG.width - 45, 50, _save_sprite, save, new Key("S"));
 			buttons.push(upperLayer.add(saveButton));
 		}
 		
 		protected function makeUndoButtons():void {
-			var undoButton:GraphicButton = new GraphicButton(FlxG.width - 85, 10, _undo_sprite, undo, new Key("Z"));
+			var undoButton:GraphicButton = new GraphicButton(FlxG.width - 125, 10, _undo_sprite, undo, new Key("Z"));
 			buttons.push(upperLayer.add(undoButton));
 			
-			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _redo_sprite, redo, new Key("Y"));
+			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 85, 10, _redo_sprite, redo, new Key("Y"));
 			buttons.push(upperLayer.add(redoButton));
 		}
 		
@@ -244,20 +244,35 @@ package  {
 				
 				//build a list of buttons for allowed modules/names
 				var moduleButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-				for each (var moduleType:Class in level.allowedModules)
+				moduleSliders = new Vector.<ModuleSlider>;
+				for each (var moduleType:Class in level.allowedModules) {
 					moduleButtons.push(new TextButton( -1, -1, Module.getArchetype(moduleType).name, function chooseModule(moduleType:Class):void {
 						if (!tick) return;
 						
-						modules.push(currentModule = new moduleType( -1, -1));
+						var archetype:Module = Module.getArchetype(moduleType);
+						if (archetype.configuration)
+							currentModule = new moduleType( -1, -1, archetype.configuration.value);
+						else
+							currentModule = new moduleType( -1, -1);
+						
+						modules.push(currentModule);
 						displayModules.push(midLayer.add(new DModule(currentModule)));
 						tick = 0;
 					}).setParam(moduleType));
+				}
 				
 				//put 'em in a list
 				moduleList = new ButtonList(listButton.X, listButton.Y, moduleButtons);
 				moduleList.setSpacing(4);
 				moduleList.justDie = true;
 				upperLayer.add(moduleList);
+				
+				for (var i:int = 0; i < level.allowedModules.length; i++ ) {
+					moduleType = level.allowedModules[i];
+					var archetype:Module = Module.getArchetype(moduleType);
+					if (archetype.configuration)
+						moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i], archetype)));
+				}
 				
 				tick = 0;
 			}, new Key("FOUR"));
@@ -334,25 +349,19 @@ package  {
 				currentModule = null;
 			}
 			
-			if (moduleSlider && moduleSlider.overlapsPoint(FlxG.mouse))
-				moduleList.exists = true;
-			
-			var moduleButtonMoused:Boolean;
-			if (moduleList && !moduleList.exists)
+			var moduleSlider:ModuleSlider;
+			if (moduleList && !moduleList.exists) {
 				moduleList = null;
-			else if (moduleList)
-				for each (var button:MenuButton in moduleList.buttons)
-					if (button.moused && Module.getArchetype(button.callWithParam as Class).configuration != null) {
-						moduleButtonMoused = true;
-						if (moduleSlider && moduleSlider.parent != button)
-							moduleSlider.exists = false;
-						upperLayer.add(moduleSlider = new ModuleSlider(button)); //TODO
+				for each (moduleSlider in moduleSliders)
+					moduleSlider.exists = false;
+				moduleSliders = null;
+			} else if (moduleList) {
+				moduleList.justDie = moduleList.closesOnClickOutside = true;
+				for each (moduleSlider in moduleSliders)
+					if (moduleSlider.overlapsPoint(FlxG.mouse)) {
+						moduleList.justDie = moduleList.closesOnClickOutside = false;
 						break;
 					}
-			
-			if (moduleSlider && !moduleButtonMoused) {
-				moduleSlider.exists = false;
-				moduleSlider = null;
 			}
 			
 			if (!tick) return;

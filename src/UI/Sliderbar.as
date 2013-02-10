@@ -30,7 +30,7 @@ package UI {
 			x = X;
 			y = Y;
 			width = 80;
-			height = 56;
+			height = 48;
 			
 			valueRange = ValueRange ? ValueRange : new Range(-16, 15);
 			value = valueRange.initial;

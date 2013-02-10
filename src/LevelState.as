@@ -237,6 +237,7 @@ package  {
 			var listButton:GraphicButton = new GraphicButton(50, 10, _list_sprite, function listModules():void {
 				if (!tick) return;
 				
+				listButton.exists = false;
 				if (currentModule) {
 					currentModule.exists = false;
 					currentModule = null;
@@ -257,6 +258,7 @@ package  {
 						
 						modules.push(currentModule);
 						displayModules.push(midLayer.add(new DModule(currentModule)));
+						listButton.exists = true;
 						tick = 0;
 					}).setParam(moduleType));
 				}

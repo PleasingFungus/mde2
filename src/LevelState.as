@@ -108,6 +108,7 @@ package  {
 			
 			m.FIXED = fixed;
 			m.register();
+			m.initialize();
 			modules.push(m);
 			
 			var displayModule:DModule = m.generateDisplay();
@@ -255,6 +256,7 @@ package  {
 							currentModule = new moduleType( -1, -1, archetype.configuration.value);
 						else
 							currentModule = new moduleType( -1, -1);
+						currentModule.initialize();
 						
 						modules.push(currentModule);
 						displayModules.push(midLayer.add(new DModule(currentModule)));

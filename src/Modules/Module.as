@@ -65,17 +65,6 @@ package Modules {
 			return U.V_UNPOWERED;
 		}
 		
-		public function severConnections():void {
-			var port:Port;
-			for each (port in inputs) if (port.connection) port.connection.removeConnection(port);
-			for each (port in controls) if (port.connection) port.connection.removeConnection(port);
-			for each (port in outputs)
-				if (port.connection) {
-					port.connection.removeConnection(port);
-					port.connection.resetSource();
-				}
-		}
-		
 		public function saveString():String {
 			return getSaveValues().join(DELIM) + U.SAVE_DELIM;
 		}
@@ -92,12 +81,12 @@ package Modules {
 		public function register():Module {
 			exists = true;
 			
-			var kludge:Module = this;
+			var self:Module = this;
 			
 			iterContainedLines(function h(X:int, Y:int):void {
-				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), kludge);
+				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), self);
 			}, function v(X:int, Y:int):void {
-				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), kludge);
+				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), self);
 			});
 			
 			for each (var portLayout:PortLayout in layout.ports) {
@@ -119,9 +108,10 @@ package Modules {
 				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), null);
 			});
 			
-			severConnections();
-			for each (var portLayout:PortLayout in layout.ports)
+			for each (var portLayout:PortLayout in layout.ports) {
+				portLayout.disconnect();
 				portLayout.deregister();
+			}
 			
 			exists = false;
 			
@@ -134,15 +124,15 @@ package Modules {
 		
 		public function get validPosition():Boolean {
 			var OK:Object = { 'x' : true, 'y' : true };
-			var kludge:Module = this;
+			var self:Module = this;
 			iterContainedLines(function h(X:int, Y:int):void {
 				if (!OK.x) return;
 				var inLine:* = U.state.lineContents(new Point(X, Y), new Point(X + 1, Y));
-				OK.x = !inLine || kludge == inLine;
+				OK.x = !inLine || self == inLine;
 			}, function v(X:int, Y:int):void {
 				if (!OK.y) return;
 				var inLine:* = U.state.lineContents(new Point(X, Y), new Point(X, Y + 1));
-				OK.y = !inLine || kludge == inLine;
+				OK.y = !inLine || self == inLine;
 			});
 			
 			if (!OK.x || !OK.y)

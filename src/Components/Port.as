@@ -10,22 +10,19 @@ package Components {
 		
 		public var isOutput:Boolean;
 		public var parent:Module;
-		public var connection:Carrier;
+		public var connections:Vector.<Carrier>;
 		public var source:Port;
 		
 		private var lastValue:Value;
 		private var lastChanged:int;
 		
-		public function Port(IsOutput:Boolean, Parent:Module, Connection:Carrier = null) {
+		public function Port(IsOutput:Boolean, Parent:Module, Connections:Vector.<Carrier> = null) {
 			isOutput = IsOutput;
 			parent = Parent;
-			connection = Connection;
+			connections = Connections ? Connections : new Vector.<Carrier>;
 		}
 		
 		public function getConnections():Vector.<Carrier> {
-			var connections:Vector.<Carrier> = new Vector.<Carrier>;
-			if (connection)
-				connections.push(connection);
 			return connections;
 		}
 		
@@ -40,25 +37,41 @@ package Components {
 		}
 		
 		public function removeConnection(Connection:Carrier):void {
-			this.connection = null;
+			C.log(this + " removed its connection with " + Connection);
+			connections.splice(connections.indexOf(Connection), 1);
 		}
 		
 		public function resetSource():void {
+			if (!source || isSource()) return;
+			
 			source = null;
+			C.log("Unset source for " + this);
+			for each (var connection:Carrier in connections)
+				connection.resetSource();
 		}
 		
 		public function setSource(Source:Port):void {
+			C.log("Set " + Source + " as source for " + this);
 			source = Source;
+			propagateSource();
+		}
+		
+		public function propagateSource():void {
+			for each (var connection:Carrier in connections) {
+				if (!connection.getSource())
+					connection.setSource(getSource());
+				else if (connection.getSource() != getSource())
+					throw new Error("Mismatched sources in network!");
+			}
 		}
 		
 		public function addConnection(Connection:Carrier):void {
-			if (Connection == connection) return;
-
-			connection = Connection;
-			connection.addConnection(this);
-			if (!source && connection.getSource())
-				source = connection.getSource();
+			C.log(this +" added a connection with " + Connection);
+			connections.push(Connection);
 		}
+		
+		
+		
 		
 		public function getValue():Value {
 			var curValue:Value = findValue();
@@ -96,6 +109,11 @@ package Components {
 		public function revertTo(oldValue:Value, oldTime:int):void {
 			lastValue = oldValue;
 			lastChanged = oldTime;
+		}
+		
+		
+		public function toString():String {
+			return "PORT of " + parent.name;
 		}
 	}
 

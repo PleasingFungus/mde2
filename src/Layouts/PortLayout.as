@@ -22,29 +22,42 @@ package Layouts {
 			reversed = Reversed;
 		}
 		
-		public function attemptConnect():void {
-			var connectPoint:Point = parent.add(offset);
-			for each (var carrier:Carrier in U.state.carriersAtPoint(connectPoint)) {
-				if (carrier == port)
-					continue;
-				
-				if (port.isOutput && carrier.getSource() && carrier.getSource() != port)
-					throw new Error("Source connected to source at " + connectPoint);
-				
-				port.addConnection(carrier);
-				break;
-			}
-		}
-		
 		public function register():void {
 			setLineContents(port);
 			U.state.addCarrierAtPoint(parent.add(offset), port);
+		}
+		
+		public function attemptConnect():void {
+			var connectPoint:Point = parent.add(offset);
+			for each (var carrier:Carrier in U.state.carriersAtPoint(connectPoint))
+				if (carrier != port) {
+					port.addConnection(carrier);
+					carrier.addConnection(port);
+				}
+			if (port.getSource())
+				port.propagateSource();
+		}
+		
+		public function disconnect():void {
+			var connection:Carrier;
+			for each (connection in port.connections)
+				connection.removeConnection(port);
+			if (port.getSource()) {
+				for each (connection in port.connections)
+					connection.resetSource();
+				if (!port.isSource())
+					port.source.propagateSource(); //re-propagate
+			}
+			
+			port.connections = new Vector.<Carrier>;
+			port.source = null;
 		}
 		
 		public function deregister():void {
 			U.state.removeCarrierFromPoint(parent.add(offset), port);
 			setLineContents(null);
 		}
+		
 		
 		private function setLineContents(contents:*):void {
 			var connectionPoint:Point = parent.add(offset);

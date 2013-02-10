@@ -12,12 +12,14 @@ package Components {
 		public var source:Port;
 		public var connections:Vector.<Carrier>;
 		
-		protected var lastPathEnd:Point; //microoptimization in attemptPathTo
+		private var lastPathEnd:Point; //microoptimization in attemptPathTo
+		private var oldConnections:Vector.<Carrier>;
 		
 		public function Wire(Start:Point) {
 			path = new Vector.<Point>;
 			path.push(Start);
 			
+			connections = new Vector.<Carrier>;
 			exists = true;
 		}
 		
@@ -49,14 +51,6 @@ package Components {
 			return true;
 		}
 		
-		protected function endDrawing():void {
-			if (path.length > 1) {
-				exists = true;
-				connections = new Vector.<Carrier>;
-				checkForConnections();
-			}
-		}
-		
 		protected function validPosition():Boolean {
 			var sources:int = 0;
 			for each (var carriers:Vector.<Carrier> in [U.state.carriersAtPoint(path[0]), U.state.carriersAtPoint(path[path.length - 1])])
@@ -70,54 +64,111 @@ package Components {
 			return true;
 		}
 		
-		protected function checkForConnections():void {	
+		
+		
+		
+		public static function place(wire:Wire):Boolean {
+			return wire.register();
+		}
+		
+		protected function register():Boolean {
+			if (path.length < 2) {
+				exists = false;
+				return false;
+			}
+			
+			exists = true;
+			if (!oldConnections)
+				checkForConnections();
+			else
+				restoreOldConnections();
+			if (source)
+				propagateSource();
+			
+			U.state.wires.push(this);
+			for (var i:int = 0; i < path.length - 1; i++)
+				U.state.setLineContents(path[i], path[i + 1], this);
+			for each (var p:Point in path)
+				U.state.addCarrierAtPoint(p, this);
+			
+			return true;
+		}
+		
+		protected function checkForConnections():void {
+			C.log(this +" adding connections");
 			addConnections(U.state.carriersAtPoint(path[0]));
 			addConnections(U.state.carriersAtPoint(path[path.length - 1]));
+		}
+		
+		protected function restoreOldConnections():void {
+			connections = oldConnections;
+			for each (var connection:Carrier in connections)
+				joinConnection(connection);
+			oldConnections = null; //un-needed, but aesthetically pleasing
 		}
 		
 		public function addConnections(carriers:Vector.<Carrier>):void {
 			if (!carriers)
 				return;
 			
-			for each (var connection:Carrier in carriers)
+			for each (var connection:Carrier in carriers) {
+				if (connection == this || connections.indexOf(connection) != -1)
+					continue;
+				
 				addConnection(connection);
+				joinConnection(connection);
+			}
 		}
 		
-		public static function place(wire:Wire):Boolean {
-			wire.endDrawing();
-			if (wire.path.length < 2) {
-				wire.exists = false;
-				return false;
+		private function joinConnection(connection:Carrier):void {
+			connection.addConnection(this);
+			if (connection.getSource()) {
+				if (!this.source)
+					this.source = connection.getSource();
+				else if (this.source != connection.getSource())
+					throw new Error("Multiple sources in one mesh!");
 			}
-			
-			wire.exists = true;
-			U.state.wires.push(wire);
-			for (var i:int = 0; i < wire.path.length - 1; i++)
-				U.state.setLineContents(wire.path[i], wire.path[i + 1], wire);
-			for each (var p:Point in wire.path)
-				U.state.addCarrierAtPoint(p, wire);
-			
-			return true;
 		}
+		
+		protected function propagateSource():void {
+			for each (var connection:Carrier in connections) {
+				if (!connection.getSource())
+					connection.setSource(source);
+				else if (connection.getSource() != this.source)
+					throw new Error("Multiple sources in one mesh!");
+			}
+		}
+		
+		
+		
 		
 		public static function remove(wire:Wire):Boolean {
-			if (wire.FIXED)
+			return wire.deregister();
+		}
+		
+		protected function deregister():Boolean {
+			if (FIXED)
 				return false;
 			
-			for each (var p:Point in wire.path)
-				U.state.removeCarrierFromPoint(p, wire);
-			for (var i:int = 0; i < wire.path.length - 1; i++)
-				U.state.setLineContents(wire.path[i], wire.path[i + 1], null);
-			U.state.wires.splice(U.state.wires.indexOf(wire), 1);
-			wire.exists = false;
+			for each (var p:Point in path)
+				U.state.removeCarrierFromPoint(p, this);
+			for (var i:int = 0; i < path.length - 1; i++)
+				U.state.setLineContents(path[i], path[i + 1], null);
+			U.state.wires.splice(U.state.wires.indexOf(this), 1);
+			exists = false;
 			
-			for each (var other:Carrier in wire.connections)
-				other.removeConnection(wire);
+			var connection:Carrier;
+			for each (connection in connections)
+				connection.removeConnection(this);
+			if (source) {
+				for each (connection in connections)
+					connection.resetSource();
+				source.propagateSource(); //re-propagate
+			}
 			
-			var source:Port = wire.source;
-			wire.resetSource();
-			if (source && source.connection)
-				source.connection.setSource(source); //re-propagate
+			oldConnections = connections;
+			connections = new Vector.<Carrier>; //un-needed, but aesthetically pleasing
+			source = null;
 			
 			return true;
 		}
@@ -136,36 +187,33 @@ package Components {
 			return source;
 		}
 		
-		public function removeConnection(connection:Carrier):void {
-			connections.splice(connections.indexOf(connection), 1);
+		public function setSource(Source:Port):void {
+			C.log("Set " + Source + " as source for " + this);
+			source = Source;
+			propagateSource();
 		}
 		
 		public function resetSource():void {
 			if (!source) return;
 			
 			source = null;
+			C.log("Unset source for " + this);
 			for each (var carrier:Carrier in connections)
 				carrier.resetSource();
 		}
 		
-		public function setSource(Source:Port):void {
-			source = Source;
-			for each (var connection:Carrier in connections)
-				if (!connection.getSource())
-					connection.setSource(Source);
+		public function addConnection(connection:Carrier):void {
+			C.log(this +" added a connection with " + connection);
+			connections.push(connection);
 		}
 		
-		public function addConnection(connection:Carrier):void {
-			if (!connection || connection == this || connections.indexOf(connection) != -1) return;
-			
-			connections.push(connection);
-			connection.addConnection(this);
-			if (connection.getSource()) {
-				if (!source)
-					setSource(connection.getSource());
-				else if (source != connection.getSource())
-					throw new Error("Multiple sources in one mesh!");
-			}
+		public function removeConnection(connection:Carrier):void {
+			C.log(this + " removed its connection with " + connection);
+			connections.splice(connections.indexOf(connection), 1);
+		}
+		
+		public function toString():String {
+			return "WIRE: " + path[0].x + ", " + path[0].y + " -> " + path[path.length - 1].x + ", " + path[path.length -1].y;
 		}
 		
 		public function saveString():String {

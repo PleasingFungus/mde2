@@ -434,7 +434,7 @@ package  {
 		public function removeCarrierFromPoint(p:Point, carrier:Carrier):void {
 			var coordStr:String = p.x + U.COORD_DELIM + p.y;
 			var carriers:Vector.<Carrier> = carriersAtPoints[coordStr];
-		carriers.splice(carriers.indexOf(carrier), 1);
+			carriers.splice(carriers.indexOf(carrier), 1);
 			if (!carriers.length) carriersAtPoints[coordStr] = null;
 		}
 		

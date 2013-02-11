@@ -34,8 +34,10 @@ package UI {
 		}
 		
 		override public function draw():void {
-			hotkeyHint.x = graphic.x + graphic.width * 3 / 4;
-			hotkeyHint.y = graphic.y + graphic.height * 3 / 4;
+			if (hotkey) {
+				hotkeyHint.x = graphic.x + graphic.width * 3 / 4;
+				hotkeyHint.y = graphic.y + graphic.height * 3 / 4;
+			}
 			super.draw();
 		}
 		

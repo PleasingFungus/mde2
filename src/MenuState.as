@@ -16,6 +16,7 @@ package  {
 		override public function create():void {
 			C.setPrintReady();
 			U.init();
+			U.enforceButtonPriorities = false;
 			
 			var title:FlxText = new FlxText(0, 20, FlxG.width, "MULTIDUCK\nEXTRAVAGANZA");
 			title.setFormat(U.FONT, 32, 0xffffff, 'center');

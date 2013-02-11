@@ -22,11 +22,13 @@ package UI {
 		
 		public var closesOnClickOutside:Boolean;
 		public var justDie:Boolean;
-		public function ButtonList(X:int, Y:int, Buttons:Vector.<MenuButton>) {
+		public var onDeath:Function;
+		public function ButtonList(X:int, Y:int, Buttons:Vector.<MenuButton>, OnDeath:Function = null) {
 			super();
 			x = X;
 			y = Y;
 			buttons = Buttons;
+			onDeath = OnDeath;
 			
 			closesOnClickOutside = true;
 			
@@ -109,6 +111,8 @@ package UI {
 				exists = false;
 			else if (ControlSet.CANCEL_KEY.justPressed() && updatedOnce)
 				exists = false;
+			if (!exists && onDeath != null)
+				onDeath();
 			updatedOnce = true;
 		}
 		

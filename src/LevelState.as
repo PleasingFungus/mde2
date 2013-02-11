@@ -21,7 +21,6 @@ package  {
 	 */
 	public class LevelState extends FlxState {
 		
-		protected var tick:int;
 		protected var savedString:String;
 		
 		public var lowerLayer:FlxGroup;
@@ -31,10 +30,13 @@ package  {
 		
 		protected var displayWires:Vector.<DWire>;
 		protected var displayModules:Vector.<DModule>;
-		protected var buttons:Vector.<MenuButton>
-		protected var modeButton:GraphicButton;
-		protected var modeList:ButtonList;
+		//protected var buttons:Vector.<MenuButton>
 		protected var mode:int = MODE_CONNECT;
+		protected var modeListOpen:Boolean;
+		protected var moduleListOpen:Boolean;
+		protected var UIChanged:Boolean;
+		protected var preserve:Boolean;
+		
 		protected var moduleList:ButtonList;
 		protected var moduleSliders:Vector.<ModuleSlider>;
 		
@@ -66,7 +68,6 @@ package  {
 			
 			displayWires = new Vector.<DWire>;
 			displayModules = new Vector.<DModule>;
-			buttons = new Vector.<MenuButton>;
 			
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
@@ -86,12 +87,13 @@ package  {
 			load();
 			
 			makeUI();
+			U.enforceButtonPriorities = true;
 		}
 		
 		protected function initLayers():void {
 			add(lowerLayer = new FlxGroup());
 			add(midLayer = new FlxGroup());
-			add(upperLayer = new FlxGroup());
+			upperLayer = new FlxGroup();
 		}
 		
 		private function addWire(w:Wire, fixed:Boolean = true):void {
@@ -117,20 +119,17 @@ package  {
 		}
 		
 		protected function makeUI():void {
-			buttons = new Vector.<MenuButton>;
-			remove(upperLayer, true);
-			add(upperLayer = new FlxGroup);
-			tick = 0;
+			//buttons = new Vector.<MenuButton>;
+			upperLayer = new FlxGroup;
+			UIChanged = true;
 			
-			makeModeButtons();
+			modeListOpen ? makeModeMenu() : makeModeButton();
+			if (mode == MODE_MODULE)
+				moduleListOpen ? makeModuleList() : makeModuleButton();
 			makeBackButton();
 			makeSaveButton();
 			makeUndoButtons();
-			makeZoomButtons();
 			makeDataButton();
-			
-			if (mode == MODE_MODULE)
-				makeModuleButton();
 			
 			upperLayer.add(new DTime(FlxG.width / 2 - 50, 10));
 			upperLayer.add(new Scroller);
@@ -144,160 +143,136 @@ package  {
 		
 		protected function makeSaveButton():void {
 			var saveButton:GraphicButton = new GraphicButton(FlxG.width - 45, 50, _save_sprite, save, new Key("S"));
-			buttons.push(upperLayer.add(saveButton));
+			upperLayer.add(saveButton);
+			//buttons.push(saveButton);
 		}
 		
 		protected function makeUndoButtons():void {
 			var undoButton:GraphicButton = new GraphicButton(FlxG.width - 125, 10, _undo_sprite, undo, new Key("Z"));
-			buttons.push(upperLayer.add(undoButton));
+			upperLayer.add(undoButton);
 			
 			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 85, 10, _redo_sprite, redo, new Key("Y"));
-			buttons.push(upperLayer.add(redoButton));
+			upperLayer.add(redoButton);
+			//buttons.push(undoButton, redoButton);
 		}
 		
-		protected function makeModeButtons():void {
-			upperLayer.add(modeButton = new GraphicButton(10, 10, MODE_SPRITES[mode], function deployMenu():void {
-				if (!tick) return;
-				
-				if (currentModule) {
-					currentModule.exists = false;
-					currentModule = null;
-				}
-				
-				exists = false;
-				//if (zoomList)
-					//zoomList.exists = false;
-				
-				var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-				for (var newMode:int = 0; newMode <= MODE_REMOVE; newMode++) {
-					modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
-						if (!tick) return;
-						mode = newMode;
-						makeUI();
-					}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
-					
-					for each (var button:MenuButton in modeSelectButtons)
-						buttons.push(button);
-				}
-				
-				modeList = new ButtonList(modeButton.X, modeButton.Y, modeSelectButtons);
-				modeList.setSpacing(4);
-				modeList.justDie = true;
-				upperLayer.add(modeList);
-				
-				tick = 0;
-			}, new Key("TAB")));
-			
-			buttons.push(modeButton);
+		protected function makeModeButton():void {
+			var modeButton:MenuButton = new GraphicButton(10, 10, MODE_SPRITES[mode], function openList():void {
+				modeListOpen = true;
+				makeUI();
+			}, new Key("TAB"));
+			upperLayer.add(modeButton);
+			//buttons.push(modeButton);
 		}
 		
-		protected function makeZoomButtons():void {
-			//TODO
-			/*if (zoomButton)
-				zoomButton.exists = false;
+		protected function makeModeMenu():void {
+			if (currentModule) {
+				currentModule.exists = false;
+				currentModule = null;
+			}
 			
-			upperLayer.add(zoomButton = new GraphicButton(FlxG.width - 45, 90, _zoom_sprite, function deployMenu():void {
-				if (!tick) return;
+			var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+			for (var newMode:int = 0; newMode <= MODE_REMOVE; newMode++) {
+				modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
+					mode = newMode;
+				}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
 				
-				exists = false;
-				//if (moduleBox)
-					//moduleBox.exists = false;
-				if (modeList)
-					modeList.exists = false;
-				
-				var zoomButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-				for (var zoomLevel:int = 0; zoomLevel <= 2; zoomLevel++)
-					zoomButtons.push(new GraphicButton( -1, -1, ZOOMS[zoomLevel], function selectZoom(zoomLevel:int):void {
-						if (!tick) return;
-						
-						FlxG.camera.scroll.x += (FlxG.width / 2) / U.zoom;
-						FlxG.camera.scroll.y += (FlxG.height / 2) / U.zoom;
-						
-						C.log(zoomLevel, U.FONT, U.FONT_SIZE);
-						U.zoom = Math.pow(2, -zoomLevel);
-						//U.FONT = zoomLevel == 2 ? U.GENEVA : null;
-						U.FONT_SIZE = zoomLevel == 2 ? 32 : 16;
-						C.log(zoomLevel, U.FONT, U.FONT_SIZE);
-						
-						FlxG.camera.scroll.x -= (FlxG.width / 2) / U.zoom;
-						FlxG.camera.scroll.y -= (FlxG.height / 2) / U.zoom;
-						
-						zoomList.exists = false;
-					}, HOTKEYS[zoomLevel]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == U.zoom));
-				
-				zoomList = new ButtonList(zoomButton.X, zoomButton.Y, zoomButtons);
-				zoomList.setSpacing(4);
-				zoomList.justDie = true;
-				U.upperLayer.add(zoomList);
-				
-				tick = 0;
-			}, new Key("PLUS")));*/
+				//for each (var button:MenuButton in modeSelectButtons)
+					//buttons.push(button);
+			}
+			
+			var modeList:ButtonList = new ButtonList(10, 10, modeSelectButtons, function onListClose():void {				
+				modeListOpen = false;
+				makeUI();
+			});
+			modeList.setSpacing(4);
+			modeList.justDie = true;
+			upperLayer.add(modeList);
 		}
 		
 		protected function makeModuleButton():void {
-			var listButton:GraphicButton = new GraphicButton(50, 10, _list_sprite, function listModules():void {
-				if (!tick) return;
-				
-				listButton.exists = false;
-				if (currentModule) {
-					currentModule.exists = false;
-					currentModule = null;
-				}
-				
-				//build a list of buttons for allowed modules/names
-				var moduleButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-				moduleSliders = new Vector.<ModuleSlider>;
-				for each (var moduleType:Class in level.allowedModules) {
-					moduleButtons.push(new TextButton( -1, -1, Module.getArchetype(moduleType).name, function chooseModule(moduleType:Class):void {
-						if (!tick) return;
-						
-						var archetype:Module = Module.getArchetype(moduleType);
-						if (archetype.configuration)
-							currentModule = new moduleType( -1, -1, archetype.configuration.value);
-						else
-							currentModule = new moduleType( -1, -1);
-						currentModule.initialize();
-						
-						modules.push(currentModule);
-						displayModules.push(midLayer.add(new DModule(currentModule)));
-						listButton.exists = true;
-						tick = 0;
-					}).setParam(moduleType));
-				}
-				
-				//put 'em in a list
-				moduleList = new ButtonList(listButton.X, listButton.Y, moduleButtons);
-				moduleList.setSpacing(4);
-				moduleList.justDie = true;
-				upperLayer.add(moduleList);
-				
-				for (var i:int = 0; i < level.allowedModules.length; i++ ) {
-					moduleType = level.allowedModules[i];
-					var archetype:Module = Module.getArchetype(moduleType);
-					if (archetype.configuration)
-						moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i], archetype)));
-				}
-				
-				tick = 0;
+			var listButton:GraphicButton = new GraphicButton(50, 10, _list_sprite, function openList():void {
+				moduleListOpen = true;
+				makeUI();
 			}, new Key("FOUR"));
 			
-			buttons.push(upperLayer.add(listButton));
+			upperLayer.add(listButton);
+			//buttons.push(listButton);
+		}
+		
+		protected function makeModuleList():void {
+			if (currentModule) {
+				currentModule.exists = false;
+				currentModule = null;
+			}
+			
+			//build a list of buttons for allowed modules/names
+			var moduleButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+			for each (var moduleType:Class in level.allowedModules) {
+				moduleButtons.push(new TextButton( -1, -1, Module.getArchetype(moduleType).name, function chooseModule(moduleType:Class):void {
+					var archetype:Module = Module.getArchetype(moduleType);
+					if (archetype.configuration)
+						currentModule = new moduleType( -1, -1, archetype.configuration.value);
+					else
+						currentModule = new moduleType( -1, -1);
+					currentModule.initialize();
+					
+					modules.push(currentModule);
+					displayModules.push(midLayer.add(new DModule(currentModule)));
+					
+					preserve = true;
+				}).setParam(moduleType));
+			}
+			
+			//put 'em in a list
+			moduleList = new ButtonList(50, 10, moduleButtons, function onListClose():void {				
+				moduleListOpen = false;
+				makeUI();
+			});
+			moduleList.setSpacing(4);
+			moduleList.justDie = true;
+			upperLayer.add(moduleList);
+			
+			//make some sliders
+			moduleSliders = new Vector.<ModuleSlider>;
+			for (var i:int = 0; i < level.allowedModules.length; i++ ) {
+				moduleType = level.allowedModules[i];
+				var archetype:Module = Module.getArchetype(moduleType);
+				if (archetype.configuration)
+					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i], archetype)));
+			}
 		}
 		
 		protected function makeDataButton():void {
-			if (memory.length)
-				buttons.push(upperLayer.add(new GraphicButton(FlxG.width - 45, 50, _data_sprite, function _():void {
-					upperLayer.add(new DMemory(memory));
-				}, new Key("C"))));
+			if (!memory.length) return;
+			
+			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 45, 50, _data_sprite, function _():void {
+				upperLayer.add(new DMemory(memory));
+			}, new Key("C"));
+			upperLayer.add(memoryButton);
+			//buttons.push(memoryButton);
 		}
 		
 		override public function update():void {
+			updateUI();
 			super.update();
 			checkBuildControls();
 			checkMenuState();
 			forceScroll();
+		}
+		
+		protected function updateUI():void {
+			MenuButton.buttonClicked = false;
+			UIChanged = false;
+			preserve = false;
 			
-			tick++;
+			var members:Array = upperLayer.members.slice(); //copy, to prevent updating new members
+			for (var i:int = members.length - 1; i >= 0; i--) {
+				var b:FlxBasic = members[i];
+				if (b && b.exists && b.active) {
+					b.update();
+				}
+			}
 		}
 		
 		protected function checkBuildControls():void {
@@ -320,7 +295,7 @@ package  {
 		protected function checkConnectControls():void {
 			
 			if (FlxG.mouse.justPressed()) {
-				if (buttonMoused) //TODO
+				if (MenuButton.buttonClicked)
 					return;
 				
 				currentWire = new Wire(U.pointToGrid(U.mouseLoc))
@@ -348,34 +323,13 @@ package  {
 		}
 		
 		protected function checkModuleControls():void {
-			if (currentModule && ControlSet.CANCEL_KEY.justPressed()) {
-				currentModule.exists = false;
-				currentModule = null;
-			}
-			
-			var moduleSlider:ModuleSlider;
-			if (moduleList && !moduleList.exists) {
-				moduleList = null;
-				moduleSliders = null;
-				makeUI();
-			} else if (moduleList) {
-				moduleList.justDie = moduleList.closesOnClickOutside = true;
-				for each (moduleSlider in moduleSliders)
-					if (moduleSlider.overlapsPoint(FlxG.mouse)) {
-						moduleList.justDie = moduleList.closesOnClickOutside = false;
-						break;
-					}
-			}
-			
-			if (!tick) return;
-			
 			if (currentModule) {
 				var mousePoint:Point = U.pointToGrid(U.mouseLoc);
 				currentModule.x = mousePoint.x;
 				currentModule.y = mousePoint.y;
 				
-				if (FlxG.mouse.justPressed()) {
-					if (buttonMoused) {
+				if (FlxG.mouse.justPressed() && !preserve) {
+					if (MenuButton.buttonClicked) {
 						currentModule.exists = false;
 						currentModule = null;
 					} else if (currentModule.validPosition)
@@ -408,16 +362,38 @@ package  {
 		}
 		
 		protected function checkMenuState():void {
-			if (modeList && !modeList.exists) modeList = null;
-			modeButton.exists = !modeList;
+
+			if (mode == MODE_MODULE)
+				checkModuleState();
 		}
 		
-		protected function get buttonMoused():MenuButton {
-			for each (var button:MenuButton in buttons)
-				if (button.exists && button.moused)
-					return button;
-			return null;
+		protected function checkModuleState():void {
+			if (currentModule && ControlSet.CANCEL_KEY.justPressed()) {
+				currentModule.exists = false;
+				currentModule = null;
+			}
+			
+			var moduleSlider:ModuleSlider;
+			if (moduleList && !moduleList.exists) {
+				moduleList = null;
+				moduleSliders = null;
+				makeUI();
+			} else if (moduleSliders) {
+				moduleList.justDie = moduleList.closesOnClickOutside = true;
+				for each (moduleSlider in moduleSliders)
+					if (moduleSlider.overlapsPoint(FlxG.mouse)) {
+						moduleList.justDie = moduleList.closesOnClickOutside = false;
+						break;
+					}
+			}
 		}
+		
+		//protected function get buttonMoused():MenuButton {
+			//for each (var button:MenuButton in buttons)
+				//if (button.exists && button.moused)
+					//return button;
+			//return null;
+		//}
 		
 		
 		private function destroyWires():void {
@@ -477,6 +453,7 @@ package  {
 		
 		override public function draw():void {
 			super.draw();
+			upperLayer.draw();
 			if (U.DEBUG && U.DEBUG_RENDER_COLLIDE)
 				debugRenderCollision();
 		}

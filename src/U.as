@@ -45,6 +45,8 @@ package  {
 		
 		private static var initialized:Boolean = false;
 		
+		public static var enforceButtonPriorities:Boolean = true;
+		
 		public static function init():void {			
 			if (initialized)
 				return;

@@ -11,7 +11,7 @@ package Displays {
 	public class DModule extends FlxSprite {
 		
 		public var module:Module;
-		private var displayPorts:Vector.<DPort>;
+		public var displayPorts:Vector.<DPort>;
 		private var nameText:FlxText;
 		private var locked:Boolean;
 		private var wasValid:Boolean;

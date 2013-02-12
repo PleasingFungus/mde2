@@ -134,6 +134,7 @@ package  {
 			
 			upperLayer.add(new DTime(FlxG.width / 2 - 50, 10));
 			upperLayer.add(new Scroller);
+			upperLayer.add(new DCurrent(displayWires, displayModules));
 		}
 		
 		protected function makeBackButton():void {

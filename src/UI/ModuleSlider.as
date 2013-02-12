@@ -3,9 +3,7 @@ package UI {
 	import flash.geom.Rectangle;
 	import Modules.Configuration;
 	import Modules.Module;
-	import org.flixel.FlxGroup;
-	import org.flixel.FlxPoint;
-	import org.flixel.FlxSprite;
+	import org.flixel.*;
 	
 	/**
 	 * ...
@@ -48,7 +46,7 @@ package UI {
 		}
 		
 		public function overlapsPoint(p:FlxPoint):Boolean {
-			return bg.overlapsPoint(p);
+			return bg.overlapsPoint(p, true, FlxG.camera);
 		}
 		
 		private const BORDER_WIDTH:int = 4;

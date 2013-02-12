@@ -136,7 +136,7 @@ package  {
 		}
 		
 		protected function makeBackButton():void {
-			var backButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _back_sprite, function back():void { FlxG.switchState(new MenuState); }, new Key("ESCAPE"));
+			var backButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _back_sprite, function back():void { FlxG.switchState(new MenuState); });
 			backButton.fades = true;
 			upperLayer.add(backButton);
 		}

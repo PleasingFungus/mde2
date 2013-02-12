@@ -130,6 +130,7 @@ package  {
 			makeSaveButton();
 			makeUndoButtons();
 			makeDataButton();
+			makeRandomButton();
 			
 			upperLayer.add(new DTime(FlxG.width / 2 - 50, 10));
 			upperLayer.add(new Scroller);
@@ -147,11 +148,29 @@ package  {
 		}
 		
 		protected function makeUndoButtons():void {
-			var undoButton:GraphicButton = new GraphicButton(FlxG.width - 125, 10, _undo_sprite, undo, new Key("Z"));
+			var undoButton:GraphicButton = new GraphicButton(FlxG.width - 125, 50, _undo_sprite, undo, new Key("Z"));
 			upperLayer.add(undoButton);
 			
-			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 85, 10, _redo_sprite, redo, new Key("Y"));
+			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 85, 50, _redo_sprite, redo, new Key("Y"));
 			upperLayer.add(redoButton);
+		}
+		
+		protected function makeDataButton():void {
+			if (!memory.length) return;
+			
+			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 125, 10, _data_sprite, function _():void {
+				upperLayer.add(new DMemory(memory));
+			}, new Key("C"));
+			upperLayer.add(memoryButton);
+		}
+		
+		protected function makeRandomButton():void {
+			if (level.goal.genMem == null) return;
+			
+			var randomButton:MenuButton = new GraphicButton(FlxG.width - 85, 10, _random_sprite, function _():void {
+				memory = level.goal.genMem();
+			}, new Key("R"));
+			upperLayer.add(randomButton);
 		}
 		
 		protected function makeModeButton():void {
@@ -234,15 +253,6 @@ package  {
 				if (archetype.configuration)
 					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i], archetype)));
 			}
-		}
-		
-		protected function makeDataButton():void {
-			if (!memory.length) return;
-			
-			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 205, 10, _data_sprite, function _():void {
-				upperLayer.add(new DMemory(memory));
-			}, new Key("C"));
-			upperLayer.add(memoryButton);
 		}
 		
 		override public function update():void {
@@ -570,6 +580,7 @@ package  {
 		[Embed(source = "../lib/art/ui/x3.png")] private const _z3_sprite:Class;
 		private const ZOOMS:Array = [_z1_sprite, _z2_sprite, _z3_sprite];
 		[Embed(source = "../lib/art/ui/code.png")] private const _data_sprite:Class;
+		[Embed(source = "../lib/art/ui/random.png")] private const _random_sprite:Class;
 	}
 
 }

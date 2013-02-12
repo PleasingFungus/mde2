@@ -11,6 +11,7 @@ package Modules {
 		public function Mux(X:int, Y:int, Width:int = 4) {
 			super(X, Y, "Mux", 1, Width, 1);
 			width = Width;
+			configuration = new Configuration(new Range(2, 8, Width));
 			//configuration = new Configuration(new Range(2, 8, Width/2), function setValue(newValue:int):void {
 				//width = newValue;
 				//resetPorts();

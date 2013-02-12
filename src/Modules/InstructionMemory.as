@@ -10,7 +10,7 @@ package Modules {
 	public class InstructionMemory extends Module {
 		
 		public function InstructionMemory(X:int, Y:int) {
-			super(X, Y, "Instruction Memory", 0, 4, 1);
+			super(X, Y, "I-Mem", 0, 4, 1);
 			delay = 25;
 		}
 		
@@ -30,7 +30,11 @@ package Modules {
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown) return line;
 			
-			var memoryValue:Value = U.state.memory[line.toNumber()];
+			var index:int = line.toNumber();
+			if (index >= U.state.memory.length)
+				return U.V_UNKNOWN;
+			
+			var memoryValue:Value = U.state.memory[index];
 			if (!memoryValue)
 				return U.V_UNKNOWN;
 			
@@ -51,7 +55,11 @@ package Modules {
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown) return null;
 			
-			var memoryValue:Value = U.state.memory[line.toNumber()];
+			var index:int = line.toNumber();
+			if (index >= U.state.memory.length)
+				return null;
+			
+			var memoryValue:Value = U.state.memory[index];
 			if (!memoryValue)
 				return null;
 			

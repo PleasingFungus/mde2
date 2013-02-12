@@ -144,7 +144,6 @@ package  {
 		protected function makeSaveButton():void {
 			var saveButton:GraphicButton = new GraphicButton(FlxG.width - 45, 50, _save_sprite, save, new Key("S"));
 			upperLayer.add(saveButton);
-			//buttons.push(saveButton);
 		}
 		
 		protected function makeUndoButtons():void {
@@ -153,7 +152,6 @@ package  {
 			
 			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 85, 10, _redo_sprite, redo, new Key("Y"));
 			upperLayer.add(redoButton);
-			//buttons.push(undoButton, redoButton);
 		}
 		
 		protected function makeModeButton():void {
@@ -162,7 +160,6 @@ package  {
 				makeUI();
 			}, new Key("TAB"));
 			upperLayer.add(modeButton);
-			//buttons.push(modeButton);
 		}
 		
 		protected function makeModeMenu():void {
@@ -176,9 +173,6 @@ package  {
 				modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 					mode = newMode;
 				}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
-				
-				//for each (var button:MenuButton in modeSelectButtons)
-					//buttons.push(button);
 			}
 			
 			var modeList:ButtonList = new ButtonList(10, 10, modeSelectButtons, function onListClose():void {				
@@ -197,7 +191,6 @@ package  {
 			}, new Key("FOUR"));
 			
 			upperLayer.add(listButton);
-			//buttons.push(listButton);
 		}
 		
 		protected function makeModuleList():void {
@@ -250,7 +243,6 @@ package  {
 				upperLayer.add(new DMemory(memory));
 			}, new Key("C"));
 			upperLayer.add(memoryButton);
-			//buttons.push(memoryButton);
 		}
 		
 		override public function update():void {

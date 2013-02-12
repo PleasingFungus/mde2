@@ -11,6 +11,7 @@ package Modules {
 		public function Demux(X:int, Y:int, Width:int = 4) {
 			super(X, Y, "Demux", Width, 1, 1);
 			width = Width;
+			configuration = new Configuration(new Range(2, 8, Width));
 			//configuration = new Configuration(new Range(2, 8, Width), function setValue(newValue:int):void {
 				//width = newValue;
 				//resetPorts();

@@ -30,6 +30,12 @@ package Modules {
 			return "Demux\n\n" + controls[0].getValue()+": "+ drive(null);
 		}
 		
+		override protected function getSaveValues():Array {
+			var values:Array = super.getSaveValues();
+			values.push(width);
+			return values;
+		}
+		
 		override public function drive(port:Port):Value {
 			var control:Value = controls[0].getValue();
 			if (control.unknown || control.unpowered)

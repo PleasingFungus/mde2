@@ -1,5 +1,6 @@
 package  {
 	import Modules.*;
+	import Testing.*;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -32,7 +33,10 @@ package  {
 			levels.push(new Level("Sandbox",
 								  new LevelGoal("Have fun!", function _(state:LevelState):Boolean { return false; } ),
 								  [ConstIn, Adder, Clock, ASU, Latch, Mux, Demux],
-								  [new ConstIn(8, 48, 1), new Regfile(40, 16), new Adder(24, 40), new Outport(40, 40)]));
+								  [new ConstIn(8, 48, 1), new Regfile(40, 16), new Adder(24, 40), new Outport(40, 40)]),
+						new Level("Add-CPU",
+								  new GeneratedGoal("Set-Add-Save!", Test),
+								  [ConstIn, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, Mux, Demux]));
 			return levels;
 		}
 	}

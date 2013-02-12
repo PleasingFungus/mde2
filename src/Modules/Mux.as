@@ -30,6 +30,12 @@ package Modules {
 			return "Mux\n\n" + inputs[0].getValue()+"->"+ controls[0].getValue();
 		}
 		
+		override protected function getSaveValues():Array {
+			var values:Array = super.getSaveValues();
+			values.push(width);
+			return values;
+		}
+		
 		override public function drive(port:Port):Value {
 			var index:int = outputs.indexOf(port);
 			var control:Value = controls[0].getValue();

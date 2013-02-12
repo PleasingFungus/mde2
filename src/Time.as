@@ -11,13 +11,18 @@ package  {
 		public var deltas:Vector.<Delta>;
 		public var updating:Boolean;
 		public function Time() {
+			init();
+		}
+		
+		private function init():void {
 			moment = 0;
 			deltas = new Vector.<Delta>;
+			if (U.state.level.goal.genMem != null)
+				U.state.memory = U.state.level.goal.genMem(); //TODO: initial seed?
 		}
 		
 		public function reset():void {
-			moment = 0;
-			deltas = new Vector.<Delta>;
+			init();
 			for each (var module:Module in U.state.modules)
 				module.initialize();
 		}

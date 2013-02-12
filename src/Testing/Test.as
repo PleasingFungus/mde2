@@ -20,7 +20,7 @@ package Testing {
 		public var instructions:Vector.<Instruction>;
 		
 		public function Test(seed:Number) {
-			FlxG.globalSeed = seed = Math.random();
+			FlxG.globalSeed = seed = Math.random(); //FIXME
 			
 			memAddressToSet = C.randomRange(0, U.MAX_INT - U.MIN_INT);
 			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT);

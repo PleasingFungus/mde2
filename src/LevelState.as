@@ -239,7 +239,7 @@ package  {
 		protected function makeDataButton():void {
 			if (!memory.length) return;
 			
-			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 45, 50, _data_sprite, function _():void {
+			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 205, 10, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory));
 			}, new Key("C"));
 			upperLayer.add(memoryButton);

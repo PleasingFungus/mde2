@@ -8,6 +8,7 @@ package Components {
 	 */
 	public class Port implements Carrier {
 		
+		public var name:String;
 		public var isOutput:Boolean;
 		public var parent:Module;
 		public var connections:Vector.<Carrier>;

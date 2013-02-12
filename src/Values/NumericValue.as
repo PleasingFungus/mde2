@@ -10,7 +10,11 @@ package Values {
 			this.value = value;
 		}
 		
-		override public function toString():String { return value.toString(); }
+		override public function toString():String {
+			if (value == C.INT_NULL)
+				return "NULL";
+			return value.toString();
+		}
 		
 		override public function toNumber():Number { return value; }
 		

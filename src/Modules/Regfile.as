@@ -14,6 +14,15 @@ package Modules {
 		protected var lastMomentStored:int;
 		public function Regfile(X:int, Y:int, Width:int = 8) {
 			super(X, Y, "Regfile", 1, 2, 4);
+			
+			inputs[0].name = "Write v";
+			controls[0].name = "Out Reg i 1";
+			controls[1].name = "Out Reg i 2";
+			controls[2].name = "Write Reg i";
+			controls[3].name = "Write";
+			outputs[0].name = "Out Reg 1";
+			outputs[1].name = "Out Reg 2";
+			
 			configuration = new Configuration(new Range(4, 32, Width));
 			width = Width;
 			delay = 7;

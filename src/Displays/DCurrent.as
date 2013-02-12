@@ -57,15 +57,20 @@ package Displays {
 			
 			var displayText:String = "";
 			
-			if (carrier is Port)
-				displayText += "Port : "; //TODO: add port name/desc
-			else
+			if (carrier is Port) {
+				displayText += "Port";
+				if ((carrier as Port).name)
+					displayText += " "+(carrier as Port).name
+				displayText += ": ";
+			} else
 				displayText += "Wire: ";
 			
 			var source:Port = carrier.getSource();
-			if (source)
+			if (source) {
 				displayText += source.getValue();
-			else
+				if (source.name)
+					displayText += " from " + source.name;
+			} else
 				displayText += "No source";
 			
 			text.text = displayText;

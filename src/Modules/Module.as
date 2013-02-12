@@ -177,7 +177,8 @@ package Modules {
 		public static function init():void {
 			for each (var moduleClass:Class in [Adder, ASU, Clock, ConstIn, Latch,
 												Outport, Regfile, Comparator,
-												InstructionMemory, DataMemory, Mux, Demux,
+												InstructionMemory, DataMemory,
+												Mux, Demux, InstructionMux, InstructionDemux,
 												Accumulator, ProgramCounter]) {
 				ALL_MODULES.push(moduleClass);
 				ARCHETYPES.push(new moduleClass( -1, -1));

@@ -17,7 +17,12 @@ package Values {
 		}
 		
 		override public function toString():String {
-			return operation.getName() + "(" + sourceArg.toNumber() + "," + targetArg.toNumber() + "," + destArg.toNumber() + ")";
+			var out:String = operation.getName() + "(" + sourceArg.toNumber();
+			if (targetArg.toNumber() != C.INT_NULL)
+				out += "," + targetArg.toNumber();
+			if (destArg.toNumber() != C.INT_NULL)
+				out += "," + destArg.toNumber();
+			return out + ")";
 		}
 		
 		override public function toNumber():Number {

@@ -36,7 +36,6 @@ package UI {
 			members = [];
 			
 			sliderbar = new Sliderbar(x + INNER_PAD + BORDER_WIDTH, parent.Y, config.valueRange, config.setValue);
-			C.log(parent.fullHeight, sliderbar.height);
 			sliderbar.y += (parent.fullHeight + 15) / 2 - sliderbar.height / 2;
 			sliderbar.create();
 			

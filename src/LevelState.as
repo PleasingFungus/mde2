@@ -495,7 +495,6 @@ package  {
 		protected function save():void {
 			savedString = genSaveString();
 			U.save.data[level.name] = savedString;
-			C.log(savedString);
 		}
 		
 		protected function genSaveString():String {

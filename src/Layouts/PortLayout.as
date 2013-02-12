@@ -33,6 +33,8 @@ package Layouts {
 				if (carrier != port) {
 					port.addConnection(carrier);
 					carrier.addConnection(port);
+					if (carrier.getSource())
+						port.source = carrier.getSource();
 				}
 			if (port.getSource())
 				port.propagateSource();

@@ -1,6 +1,7 @@
 package Displays {
 	import org.flixel.*;
 	import Controls.ControlSet;
+	import Values.FixedValue;
 	import Values.Value;
 	
 	/**
@@ -40,7 +41,7 @@ package Displays {
 		
 		protected function makePages():void {
 			var BORDER:int = 10;
-			var COL_WIDTH:int = 180;
+			var COL_WIDTH:int = 175;
 			var COL_HEIGHT:int = bg.height - BORDER * 2;
 			var ROW_HEIGHT:int = 20;
 			var ROWS:int = COL_HEIGHT / (ROW_HEIGHT + BORDER / 2);
@@ -49,7 +50,7 @@ package Displays {
 			var row:int, col:int, skipped:Boolean;
 			for (var memLine:int = 0; memLine < memory.length; memLine++) {
 				var memValue:Value = memory[memLine];
-				if (memValue) {
+				if (memValue && memValue != FixedValue.NULL) {
 					add(new FlxText(bg.x + BORDER + col * (COL_WIDTH + BORDER), bg.y + BORDER + row * (ROW_HEIGHT + BORDER / 2), COL_WIDTH, memLine+" : "+memValue.toString()).setFormat(U.FONT, 16));
 					
 					row += 1;

@@ -1,5 +1,6 @@
 package Testing {
 	import Testing.Instructions.Instruction;
+	import Values.FixedValue;
 	import Values.Value;
 	/**
 	 * ...
@@ -22,6 +23,8 @@ package Testing {
 			var memory:Vector.<Value> = new Vector.<Value>;
 			for each (var instr:Instruction in instructions)
 				memory.push(instr.toMemValue());
+			for (var i:int = memory.length; i < U.MAX_INT - U.MIN_INT; i++)
+				memory.push(FixedValue.NULL);
 			return memory;
 		}
 		

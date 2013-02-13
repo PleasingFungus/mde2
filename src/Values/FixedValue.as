@@ -15,6 +15,8 @@ package Values {
 		override public function toString():String { return name; }
 		
 		override public function toNumber():Number { return value; }
+		
+		public static var NULL:FixedValue = new FixedValue("NULL", C.INT_NULL);
 	}
 
 }

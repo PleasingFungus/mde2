@@ -17,7 +17,7 @@ package  {
 		private function init():void {
 			moment = 0;
 			deltas = new Vector.<Delta>;
-			if (U.state.level.goal.genMem != null)
+			if (U.state.level.goal.dynamicallyTested)
 				U.state.memory = U.state.level.goal.genMem(0.5);
 		}
 		

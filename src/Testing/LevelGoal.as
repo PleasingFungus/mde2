@@ -1,4 +1,5 @@
 package Testing {
+	import Values.Value;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -6,19 +7,19 @@ package Testing {
 	public class LevelGoal {
 		
 		public var description:String;
-		public var checkWin:Function;
-		public var genMem:Function;
-		public var onWin:Function;
-		public var onLose:Function;
-		public function LevelGoal(Description:String, CheckWin:Function, GenMem:Function = null,
-								  OnWin:Function = null, OnLose:Function = null) {
+		public var dynamicallyTested:Boolean;
+		public function LevelGoal(Description:String, DynamicallyTested:Boolean = true) {
 			description = Description;
-			checkWin = CheckWin;
-			genMem = GenMem;
-			onWin = OnWin;
-			onLose = OnLose;
+			dynamicallyTested = DynamicallyTested;
 		}
 		
+		public function genMem(Seed:Number = NaN):Vector.<Value> {
+			return null;
+		}
+		
+		public function runTest(levelState:LevelState):void {
+			
+		}
 	}
 
 }

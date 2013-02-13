@@ -129,7 +129,7 @@ package  {
 				moduleListOpen ? makeModuleList() : makeModuleButton();
 			makeSaveButton();
 			makeUndoButtons();
-			makeRandomButton();
+			makeTestButtons();
 		}
 		
 		protected function makeBackButton():void {
@@ -160,19 +160,25 @@ package  {
 		protected function makeDataButton():void {
 			if (!memory.length) return;
 			
-			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 125, 10, _data_sprite, function _():void {
+			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 85, 10, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory));
 			}, new Key("C"));
 			upperLayer.add(memoryButton);
 		}
 		
-		protected function makeRandomButton():void {
-			if (level.goal.genMem == null) return;
+		protected function makeTestButtons():void {
+			if (!memory.length) return;
 			
-			var randomButton:MenuButton = new GraphicButton(FlxG.width - 85, 10, _random_sprite, function _():void {
+			var randomButton:MenuButton = new GraphicButton(FlxG.width - 125, 10, _random_sprite, function _():void {
 				memory = level.goal.genMem();
 			}, new Key("R"));
 			upperLayer.add(randomButton);
+			
+			var kludge:LevelState = this;
+			var testButton:MenuButton = new GraphicButton(FlxG.width - 165, 10, _test_sprite, function _():void {
+				level.goal.runTest(kludge);
+			}, new Key("T"));
+			upperLayer.add(testButton);
 		}
 		
 		protected function makeModeButton():void {
@@ -618,6 +624,7 @@ package  {
 		[Embed(source = "../lib/art/ui/code.png")] private const _data_sprite:Class;
 		[Embed(source = "../lib/art/ui/random.png")] private const _random_sprite:Class;
 		[Embed(source = "../lib/art/ui/reset.png")] private const _reset_sprite:Class;
+		[Embed(source = "../lib/art/ui/test.png")] private const _test_sprite:Class;
 	}
 
 }

@@ -38,7 +38,7 @@ package  {
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			levels.push(new Level("Sandbox",
-								  new LevelGoal("Have fun!", function _(state:LevelState):Boolean { return false; } ),
+								  new LevelGoal("Have fun!", false),
 								  [ConstIn, Adder, Clock, ASU, Latch, Mux, Demux], [],
 								  [new ConstIn(8, 48, 1), new Regfile(40, 16), new Adder(24, 40), new Outport(40, 40)]),
 						new Level("Add-CPU",

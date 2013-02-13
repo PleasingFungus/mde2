@@ -15,12 +15,15 @@ package Testing {
 	 */
 	public class Test {
 		
+		public var seed:Number;
 		public var memAddressToSet:int;
 		public var memValueToSet:int
 		public var instructions:Vector.<Instruction>;
 		
-		public function Test(seed:Number) {
-			FlxG.globalSeed = seed = Math.random(); //FIXME
+		public function Test(seed:Number = NaN) {
+			if (isNaN(seed))
+				seed = FlxG.random();
+			FlxG.globalSeed = this.seed = seed;
 			
 			memAddressToSet = C.randomRange(0, U.MAX_INT - U.MIN_INT);
 			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT);
@@ -230,7 +233,7 @@ package Testing {
 		
 		protected function log(...args):void {
 			if (U.DEBUG && U.DEBUG_PRINT_TESTS)
-				log(args);
+				C.log(args);
 		}
 		
 		

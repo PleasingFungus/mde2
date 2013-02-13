@@ -35,6 +35,8 @@ package  {
 		protected var modeListOpen:Boolean;
 		protected var moduleListOpen:Boolean;
 		protected var UIChanged:Boolean;
+		protected var editEnabled:Boolean = true;
+		protected var displayTime:DTime;
 		protected var preserve:Boolean;
 		
 		protected var moduleList:ButtonList;
@@ -104,22 +106,30 @@ package  {
 		}
 		
 		protected function makeUI():void {
-			//buttons = new Vector.<MenuButton>;
 			upperLayer = new FlxGroup;
 			UIChanged = true;
+			
+			upperLayer.add(editEnabled ? displayTime = new DTime(FlxG.width / 2 - 50, 10) : displayTime);
+			upperLayer.add(new Scroller);
+			upperLayer.add(new DCurrent(displayWires, displayModules));
+			makeDataButton();
+			makeBackButton();
+			
+			if (!editEnabled) {
+				modeListOpen = moduleListOpen = false;
+				if (currentModule) {
+					currentModule.exists = false;
+					currentModule = null;
+				}
+				return;
+			}
 			
 			modeListOpen ? makeModeMenu() : makeModeButton();
 			if (mode == MODE_MODULE)
 				moduleListOpen ? makeModuleList() : makeModuleButton();
-			makeBackButton();
 			makeSaveButton();
 			makeUndoButtons();
-			makeDataButton();
 			makeRandomButton();
-			
-			upperLayer.add(new DTime(FlxG.width / 2 - 50, 10));
-			upperLayer.add(new Scroller);
-			upperLayer.add(new DCurrent(displayWires, displayModules));
 		}
 		
 		protected function makeBackButton():void {
@@ -252,6 +262,7 @@ package  {
 			super.update();
 			checkBuildControls();
 			checkMenuState();
+			checkTime();
 			forceScroll();
 		}
 		
@@ -379,6 +390,13 @@ package  {
 						moduleList.justDie = moduleList.closesOnClickOutside = false;
 						break;
 					}
+			}
+		}
+		
+		protected function checkTime():void {
+			if (editEnabled != time.moment == 0) {
+				editEnabled = time.moment == 0;
+				makeUI();
 			}
 		}
 		

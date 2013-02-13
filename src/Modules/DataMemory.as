@@ -36,7 +36,7 @@ package Modules {
 			if (line.unpowered || line.unknown) return line;
 			
 			var index:int = line.toNumber();
-			if (index >= U.state.memory.length)
+			if (index < 0 || index >= U.state.memory.length)
 				return U.V_UNKNOWN;
 			
 			var memoryValue:Value = U.state.memory[index];
@@ -51,7 +51,7 @@ package Modules {
 			if (line.unpowered || line.unknown) return null;
 			
 			var index:int = line.toNumber();
-			if (index >= U.state.memory.length)
+			if (index < 0 || index >= U.state.memory.length)
 				return null;
 			
 			var memoryValue:Value = U.state.memory[index];

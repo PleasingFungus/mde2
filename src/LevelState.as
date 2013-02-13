@@ -62,28 +62,13 @@ package  {
 		override public function create():void {
 			U.state = this;
 			
-			initLayers();
 			FlxG.bgColor = 0xffe0e0e0;
 			FlxG.mouse.show();
 			
-			displayWires = new Vector.<DWire>;
-			displayModules = new Vector.<DModule>;
-			
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
-			
-			memory = new Vector.<Value>;
-			wires = new Vector.<Wire>;
-			modules = new Vector.<Module>;
-			horizontalLines = new Dictionary;
-			verticalLines = new Dictionary;
-			carriersAtPoints = new Dictionary;
-			
-			time = new Time;
 			zoom = 1;
 			
-			for each (var module:Module in level.modules)
-				addModule(module);
 			load();
 			
 			makeUI();
@@ -91,9 +76,9 @@ package  {
 		}
 		
 		protected function initLayers():void {
+			members = [];
 			add(lowerLayer = new FlxGroup());
 			add(midLayer = new FlxGroup());
-			upperLayer = new FlxGroup();
 		}
 		
 		private function addWire(w:Wire, fixed:Boolean = true):void {
@@ -157,6 +142,9 @@ package  {
 			
 			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 85, 50, _redo_sprite, redo, new Key("Y"));
 			upperLayer.add(redoButton);
+			
+			var resetButton:GraphicButton = new GraphicButton(FlxG.width - 45, 90, _reset_sprite, reset);
+			upperLayer.add(resetButton);
 		}
 		
 		protected function makeDataButton():void {
@@ -511,6 +499,13 @@ package  {
 			U.save.data[level.name] = savedString;
 		}
 		
+		protected function reset():void {
+			savedString = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
+			U.save.data[level.name] = savedString;
+			load();
+			//TODO: transform into a custom action!
+		}
+		
 		protected function genSaveString():String {
 			var saveString:String = "";
 			
@@ -545,6 +540,25 @@ package  {
 			var saveString:String = U.save.data[level.name];
 			if (!saveString)
 				return;
+			
+			
+			initLayers();
+			displayWires = new Vector.<DWire>;
+			displayModules = new Vector.<DModule>;
+			
+			memory = new Vector.<Value>;
+			wires = new Vector.<Wire>;
+			modules = new Vector.<Module>;
+			horizontalLines = new Dictionary;
+			verticalLines = new Dictionary;
+			carriersAtPoints = new Dictionary;
+			
+			time = new Time;
+			
+			for each (var module:Module in level.modules)
+				addModule(module);
+			
+			
 			
 			var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);
 			
@@ -585,6 +599,7 @@ package  {
 		private const ZOOMS:Array = [_z1_sprite, _z2_sprite, _z3_sprite];
 		[Embed(source = "../lib/art/ui/code.png")] private const _data_sprite:Class;
 		[Embed(source = "../lib/art/ui/random.png")] private const _random_sprite:Class;
+		[Embed(source = "../lib/art/ui/reset.png")] private const _reset_sprite:Class;
 	}
 
 }

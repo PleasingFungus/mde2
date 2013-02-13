@@ -17,6 +17,14 @@ package Values {
 		
 		public function get true_():Boolean { return boolValue; }
 		
+		public static function fromValue(v:Value):BooleanValue {
+			if (v is BooleanValue)
+				return v as BooleanValue;
+			else if (v is InstructionValue)
+				return (v as InstructionValue).operation != OpcodeValue.OP_NOOP ? TRUE : FALSE;
+			return v.toNumber() ? TRUE : FALSE;
+		}
+		
 		public static const TRUE:BooleanValue = new BooleanValue(true);
 		public static const FALSE:BooleanValue = new BooleanValue(false);
 	}

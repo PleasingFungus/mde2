@@ -12,6 +12,9 @@ package Modules {
 		public function InstructionDemux(X:int, Y:int) {
 			width = U.state ? U.state.level.expectedOps.length : 1;
 			super(X, Y, "I-Demux", width, 1, 1);
+			if (U.state)
+				for (var i:int = 0; i < width; i++)
+					inputs[i].name = U.state.level.expectedOps[i].toString();
 			delay = 2;
 		}
 		
@@ -23,12 +26,6 @@ package Modules {
 		
 		override public function renderName():String {
 			return "I-Demux\n\n" + controls[0].getValue()+": "+ drive(null);
-		}
-		
-		override protected function getSaveValues():Array {
-			var values:Array = super.getSaveValues();
-			values.push(width);
-			return values;
 		}
 		
 		override public function drive(port:Port):Value {

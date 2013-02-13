@@ -13,6 +13,9 @@ package Modules {
 		public function InstructionMux(X:int, Y:int) {
 			width = U.state ? U.state.level.expectedOps.length : 1;
 			super(X, Y, "I-Mux", 1, width, 1);
+			if (U.state)
+				for (var i:int = 0; i < width; i++)
+					outputs[i].name = U.state.level.expectedOps[i].toString();
 			delay = 2;
 		}
 		

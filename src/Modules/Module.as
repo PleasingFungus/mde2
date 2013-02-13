@@ -179,7 +179,7 @@ package Modules {
 												Outport, Regfile, Comparator,
 												InstructionMemory, DataMemory,
 												Mux, Demux, InstructionMux, InstructionDemux,
-												Accumulator, ProgramCounter]) {
+												Accumulator, ProgramCounter, And]) {
 				ALL_MODULES.push(moduleClass);
 				ARCHETYPES.push(new moduleClass( -1, -1));
 			}

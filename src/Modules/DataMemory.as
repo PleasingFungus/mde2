@@ -67,7 +67,7 @@ package Modules {
 			lastValue = drive(null);
 			
 			var line:Value = controls[0].getValue();
-			if (line.unpowered || line.unknown || line.toNumber() < 0) return false;
+			if (line.unpowered || line.unknown || line.toNumber() < 0 || line.toNumber() > U.state.memory.length) return false;
 			
 			var control:Value = controls[1].getValue();
 			if (control == U.V_UNKNOWN || control == U.V_UNPOWERED || control.toNumber() == 0)

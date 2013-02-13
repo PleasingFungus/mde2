@@ -43,8 +43,8 @@ package  {
 								  [new ConstIn(8, 48, 1), new Regfile(40, 16), new Adder(24, 40), new Outport(40, 40)]),
 						new Level("Add-CPU",
 								  new GeneratedGoal("Set-Add-Save!", Test),
-								  [ConstIn, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
-								  [OpcodeValue.OP_ADD, OpcodeValue.OP_SET, OpcodeValue.OP_SAV]));
+								  [ConstIn, And, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
+								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]));
 			return levels;
 		}
 	}

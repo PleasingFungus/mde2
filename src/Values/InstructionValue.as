@@ -17,6 +17,15 @@ package Values {
 		}
 		
 		override public function toString():String {
+			switch (operation) {
+				case OpcodeValue.OP_SET:
+					return operation.getName()+" R" + destArg + "=" + sourceArg;
+				case OpcodeValue.OP_ADD:
+					return operation.getName()+" R" + destArg + "=R" + sourceArg + "+R" + targetArg;
+				case OpcodeValue.OP_SAV:
+					return operation.getName()+" M[R" + targetArg + "]=R" + sourceArg;
+			}
+			
 			var out:String = operation.getName() + "(" + sourceArg.toNumber();
 			if (targetArg.toNumber() != C.INT_NULL)
 				out += "," + targetArg.toNumber();

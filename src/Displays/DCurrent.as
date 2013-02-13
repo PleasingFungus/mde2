@@ -68,7 +68,7 @@ package Displays {
 			var source:Port = carrier.getSource();
 			if (source) {
 				displayText += source.getValue();
-				if (source.name)
+				if (source != carrier && source.name)
 					displayText += " from " + source.name;
 			} else
 				displayText += "No source";

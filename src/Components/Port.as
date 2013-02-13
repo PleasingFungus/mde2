@@ -38,7 +38,7 @@ package Components {
 		}
 		
 		public function removeConnection(Connection:Carrier):void {
-			C.log(this + " removed its connection with " + Connection);
+			log(this + " removed its connection with " + Connection);
 			connections.splice(connections.indexOf(Connection), 1);
 		}
 		
@@ -46,13 +46,13 @@ package Components {
 			if (!source || isSource()) return;
 			
 			source = null;
-			C.log("Unset source for " + this);
+			log("Unset source for " + this);
 			for each (var connection:Carrier in connections)
 				connection.resetSource();
 		}
 		
 		public function setSource(Source:Port):void {
-			C.log("Set " + Source + " as source for " + this);
+			log("Set " + Source + " as source for " + this);
 			source = Source;
 			propagateSource();
 		}
@@ -67,12 +67,17 @@ package Components {
 		}
 		
 		public function addConnection(Connection:Carrier):void {
-			C.log(this +" added a connection with " + Connection);
+			log(this +" added a connection with " + Connection);
 			connections.push(Connection);
 		}
 		
 		
 		
+		
+		protected function log(...args):void {
+			if (U.DEBUG && U.DEBUG_PRINT_CONNECTIONS)
+				C.log(args);
+		}
 		
 		public function getValue():Value {
 			var curValue:Value = findValue();

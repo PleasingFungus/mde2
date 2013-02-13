@@ -15,6 +15,8 @@ package  {
 		public static const DEBUG:Boolean = true;
 		
 		public static const DEBUG_RENDER_COLLIDE:Boolean = false;
+		public static const DEBUG_PRINT_TESTS:Boolean = false;
+		public static const DEBUG_PRINT_CONNECTIONS:Boolean = false;
 		
 		[Embed(source = "../lib/fonts/FuturaLT.ttf", fontFamily = "FUTUR")] private const _1:String;
 		public static const FONT_:String = "FUTUR";

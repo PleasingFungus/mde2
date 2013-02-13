@@ -95,7 +95,7 @@ package Components {
 		}
 		
 		protected function checkForConnections():void {
-			C.log(this +" adding connections");
+			log(this +" adding connections");
 			addConnections(U.state.carriersAtPoint(path[0]));
 			addConnections(U.state.carriersAtPoint(path[path.length - 1]));
 		}
@@ -188,7 +188,7 @@ package Components {
 		}
 		
 		public function setSource(Source:Port):void {
-			C.log("Set " + Source + " as source for " + this);
+			log("Set " + Source + " as source for " + this);
 			source = Source;
 			propagateSource();
 		}
@@ -197,23 +197,28 @@ package Components {
 			if (!source) return;
 			
 			source = null;
-			C.log("Unset source for " + this);
+			log("Unset source for " + this);
 			for each (var carrier:Carrier in connections)
 				carrier.resetSource();
 		}
 		
 		public function addConnection(connection:Carrier):void {
-			C.log(this +" added a connection with " + connection);
+			log(this +" added a connection with " + connection);
 			connections.push(connection);
 		}
 		
 		public function removeConnection(connection:Carrier):void {
-			C.log(this + " removed its connection with " + connection);
+			log(this + " removed its connection with " + connection);
 			connections.splice(connections.indexOf(connection), 1);
 		}
 		
 		public function toString():String {
 			return "WIRE: " + path[0].x + ", " + path[0].y + " -> " + path[path.length - 1].x + ", " + path[path.length -1].y;
+		}
+		
+		protected function log(...args):void {
+			if (U.DEBUG && U.DEBUG_PRINT_CONNECTIONS)
+				C.log(args);
 		}
 		
 		public function saveString():String {

@@ -40,28 +40,28 @@ package Testing {
 			while (abstractions.length)
 				orderedAbstractions.push(abstractions.pop());
 			
-			C.log("\n\nSEED: " + seed);
-			C.log("PROGRAM START");
+			log("\n\nSEED: " + seed);
+			log("PROGRAM START");
 			for (var i:int = 0; i < orderedAbstractions.length; i++)
-				C.log(i + ": " + orderedAbstractions[i]);
-			C.log("PROGRAM END\n\n");
+				log(i + ": " + orderedAbstractions[i]);
+			log("PROGRAM END\n\n");
 			
 			var virtualRegisters:Vector.<int> = new Vector.<int>;
 			instructions = new Vector.<Instruction>;
 			for (var line:int = 0; line < orderedAbstractions.length; line++) {
 				var abstraction:InstructionAbstraction = orderedAbstractions[line];
-				C.log(line, abstraction);
+				log(line, abstraction);
 				instructions.push(genInstruction(line, abstraction, virtualRegisters, orderedAbstractions));
-				C.log("Virtual registers: " + virtualRegisters);
+				log("Virtual registers: " + virtualRegisters);
 			}
 			
 			//TODO: scramble registers
 			
-			C.log("\n\nSEED: " + seed);
-			C.log("PROGRAM START");
+			log("\n\nSEED: " + seed);
+			log("PROGRAM START");
 			for (i = 0; i < instructions.length; i++)
-				C.log(i + ": " + instructions[i]);
-			C.log("PROGRAM END\n\n");
+				log(i + ": " + instructions[i]);
+			log("PROGRAM END\n\n");
 			
 			var regCount:int = 8;
 			var memory:Dictionary = new Dictionary;
@@ -71,11 +71,11 @@ package Testing {
 			var mem:String = "Memory: ";
 			for (var memAddrStr:String in memory)
 				mem += memAddrStr + ":" + memory[memAddrStr] + ", ";
-			C.log(mem);
+			log(mem);
 			if (memory[memAddressToSet+""] != memValueToSet)
 				throw new Error("Memory at " + memAddressToSet + " is " + memory[memAddressToSet+""] + " at end of run, not " + memValueToSet + " as expected!");
 			else
-				C.log("Mem test success");
+				log("Mem test success");
 		}
 		
 		protected function executeInEnvironment(memory:Dictionary, registers:Dictionary, instructions:Vector.<Instruction>):void {
@@ -84,8 +84,8 @@ package Testing {
 		}
 		
 		protected function genAbstractions(abstractions:Vector.<InstructionAbstraction>, values:Vector.<int>, depth:int):void {
-			C.log("Instructions: " + abstractions);
-			C.log("Values: " + values);
+			log("Instructions: " + abstractions);
+			log("Values: " + values);
 			
 			while (values.length)
 				abstractions.push(genAbstraction(values.pop(), depth, getArgs(abstractions, depth)));
@@ -102,44 +102,44 @@ package Testing {
 			var abstraction:InstructionAbstraction;
 			var arg:int;
 			
-			C.log("Attempting to produce " +value);
-			C.log("Args: " + args);
+			log("Attempting to produce " +value);
+			log("Args: " + args);
 			var fullReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
 			for each (type in InstructionType.TYPES)
 				if (type.can_produce_with(value, args))
 					fullReuseInstrs.push(type);
 			if (fullReuseInstrs.length) {
-				C.log("Full re-use instrs: " + fullReuseInstrs);
+				log("Full re-use instrs: " + fullReuseInstrs);
 				abstraction = randomTypeChoice(fullReuseInstrs).produce_with(value, depth, args);
-				C.log("Added " + abstraction + " with full re-use");
+				log("Added " + abstraction + " with full re-use");
 				return abstraction;
 			}
-			C.log("No full re-use instrs")
+			log("No full re-use instrs")
 			
 			var partialReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
 			for each (type in InstructionType.TYPES)
 				if (type.can_produce_with_one_of(value, args))
 					partialReuseInstrs.push(type);
 			if (partialReuseInstrs.length) {
-				C.log("Partial re-use instrs: " + partialReuseInstrs);
+				log("Partial re-use instrs: " + partialReuseInstrs);
 				
 				type = randomTypeChoice(partialReuseInstrs);
 				var validArgs:Vector.<int> = new Vector.<int>;
 				for each (arg in args)
 					if (type.can_produce_with_one(value, arg))
 						validArgs.push(arg);
-				C.log("Valid args for " + type.name + ": " + validArgs);
+				log("Valid args for " + type.name + ": " + validArgs);
 				
 				arg = C.randomIntChoice(validArgs);
 				abstraction = type.produce_with_one(value, depth, arg);
-				C.log("Added " + abstraction + ", re-using " + arg);
+				log("Added " + abstraction + ", re-using " + arg);
 				return abstraction;
 			}
-			C.log("No partial re-use instrs")
+			log("No partial re-use instrs")
 			
 			type = C.randomChoice(InstructionType.TYPES);
 			abstraction = type.produce_unrestrained(value, depth);
-			C.log("Added " + abstraction);
+			log("Added " + abstraction);
 			return abstraction;
 		}
 		
@@ -172,7 +172,7 @@ package Testing {
 										   virtualRegisters:Vector.<int>,
 										   abstractions:Vector.<InstructionAbstraction>):int {
 			if (virtualRegisters.indexOf(value) != -1) {
-				C.log("Storing " + value + " is a no-op");
+				log("Storing " + value + " is a no-op");
 				return virtualRegisters.indexOf(value);
 			}
 			
@@ -202,13 +202,13 @@ package Testing {
 			
 			//var allArgs:Vector.<int> = getArgs(predependents, C.INT_NULL);
 			//free_reg_values.sort(key=lambda rv: -all_args.index(rv)) #TODO
-			C.log("Free register values: " + freeRegValues);
+			log("Free register values: " + freeRegValues);
 			
 			if (freeRegValues.length) {
-				C.log("Storing " + value + " in existing slot " + virtualRegisters.indexOf(freeRegValues[0])+" currently holding "+freeRegValues[0]);
+				log("Storing " + value + " in existing slot " + virtualRegisters.indexOf(freeRegValues[0])+" currently holding "+freeRegValues[0]);
 				return virtualRegisters.indexOf(freeRegValues[0]);
 			}
-			C.log("Storing " + value + " in previously unallocated register " + virtualRegisters.length);
+			log("Storing " + value + " in previously unallocated register " + virtualRegisters.length);
 			return virtualRegisters.length;
 		}
 		
@@ -226,6 +226,11 @@ package Testing {
 		
 		protected function randomTypeChoice(options:Vector.<InstructionType>):InstructionType {
 			return options[int(FlxG.random() * options.length)];
+		}
+		
+		protected function log(...args):void {
+			if (U.DEBUG && U.DEBUG_PRINT_TESTS)
+				log(args);
 		}
 		
 		

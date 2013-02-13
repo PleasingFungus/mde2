@@ -65,7 +65,6 @@ package
 		public static function randomRange(min:int, max:int):int {
 			var rand:Number = FlxG.random();
 			var result:int = rand * (max - min) + min;
-			log(min, max, rand, result);
 			return result;
 		}
 		

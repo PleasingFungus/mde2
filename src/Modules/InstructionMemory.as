@@ -11,6 +11,11 @@ package Modules {
 		
 		public function InstructionMemory(X:int, Y:int) {
 			super(X, Y, "I-Mem", 0, 4, 1);
+			controls[0].name = "Line";
+			outputs[0].name = "Op";
+			outputs[1].name = "Src";
+			outputs[2].name = "Targ";
+			outputs[3].name = "Dest";
 			delay = 25;
 		}
 		

@@ -35,7 +35,7 @@ package Displays {
 			
 			for each (var dModule:DModule in dModules)
 				for each (var dPort:DPort in dModule.displayPorts)
-					if (dPort.overlapsPoint(FlxG.mouse)) {
+					if (dPort.nearPoint(FlxG.mouse, 3)) {
 						buildDisplay(moused = dPort, carrier = dPort.port);
 						break;
 					}

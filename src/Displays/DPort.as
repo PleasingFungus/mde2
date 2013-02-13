@@ -3,6 +3,7 @@ package Displays {
 	import Components.Carrier;
 	import flash.geom.Point;
 	import Layouts.PortLayout;
+	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
 	
 	/**
@@ -35,6 +36,10 @@ package Displays {
 				else
 					x -= width;
 			}
+		}
+		
+		public function nearPoint(p:FlxPoint, radius:int = 0):Boolean {
+			return p.x + radius >= x && p.y + radius >= y && p.x - radius <= x + width && p.y - radius <= y + height;
 		}
 	}
 

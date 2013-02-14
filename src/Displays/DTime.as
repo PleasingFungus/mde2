@@ -124,6 +124,8 @@ package Displays {
 			timeSinceToggle = 0;
 		}
 		
+		public function get isPlaying():Boolean { return playing != 0; }
+		
 		private const width:int = 100;
 		
 		[Embed(source = "../../lib/art/ui/skip.png")] private const _step_sprite:Class;

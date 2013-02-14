@@ -38,6 +38,7 @@ package  {
 		protected var editEnabled:Boolean = true;
 		protected var displayTime:DTime;
 		protected var preserve:Boolean;
+		protected var runningTest:Boolean;
 		
 		protected var moduleList:ButtonList;
 		protected var moduleSliders:Vector.<ModuleSlider>;
@@ -409,6 +410,15 @@ package  {
 				editEnabled = time.moment == 0;
 				makeUI();
 			}
+			
+			if (runningTest) {
+				if (!time.moment && !displayTime.isPlaying)
+					runningTest = false; //?
+				else if (level.goal.stateValid(this))
+					FlxG.switchState(new SuccessState);
+				else if (time.moment >= level.goal.timeLimit)
+					FlxG.switchState(new FailureState(level));
+			}
 		}
 		
 		//protected function get buttonMoused():MenuButton {
@@ -608,6 +618,7 @@ package  {
 		
 		public function runTest():void {
 			displayTime.startPlaying();
+			runningTest = true;
 		}
 		
 		protected const MODE_MODULE:int = 0;

@@ -8,6 +8,7 @@ package Testing {
 		
 		public var description:String;
 		public var dynamicallyTested:Boolean;
+		public var timeLimit:int = int.MAX_VALUE;
 		public function LevelGoal(Description:String, DynamicallyTested:Boolean = true) {
 			description = Description;
 			dynamicallyTested = DynamicallyTested;
@@ -19,6 +20,10 @@ package Testing {
 		
 		public function runTest(levelState:LevelState):void {
 			
+		}
+		
+		public function stateValid(levelState:LevelState, print:Boolean=false):Boolean {
+			return false;
 		}
 	}
 

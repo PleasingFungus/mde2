@@ -10,21 +10,22 @@ package Testing {
 	public class GeneratedGoal extends LevelGoal {
 		
 		protected var testClass:Class;
+		protected var currentTest:Test;
 		public var testRuns:int;
-		public var timeout:int;
 		public function GeneratedGoal(Description:String, TestClass:Class, TestRuns:int = 12, Timeout:int=100) {
+			super(Description);
+			
 			testClass = TestClass;
 			testRuns = TestRuns;
-			timeout = Timeout;
-			
-			super(Description);
+			timeLimit = Timeout;
 		}
 		
 		override public function genMem(Seed:Number = NaN):Vector.<Value> {
 			return memFromTest(new testClass(Seed));
 		}
 		
-		protected function memFromTest(test:Test):Vector.<Value> {
+		protected function memFromTest(test:Test = null):Vector.<Value> {
+			if (!test) test = currentTest;
 			var instructions:Vector.<Instruction> = test.instructions;
 			var memory:Vector.<Value> = new Vector.<Value>;
 			for each (var instr:Instruction in instructions)
@@ -38,20 +39,20 @@ package Testing {
 			for (var run:int = 0; run < testRuns; run++) {
 				C.log("Run " + run + " start");
 				
-				var test:Test = new testClass;
-				var mem:Vector.<Value> = memFromTest(test);
+				currentTest = new testClass;
+				var mem:Vector.<Value> = memFromTest(currentTest);
 				C.log("Memory generated");
 				
 				levelState.initialMemory = mem;
 				levelState.time.reset();
-				while (levelState.time.moment < timeout && !stateValid(levelState, test))
+				while (levelState.time.moment < timeLimit && !stateValid(levelState))
 					levelState.time.step();
 				
-				if (!stateValid(levelState, test))
+				if (!stateValid(levelState))
 					break;
 			}
 			
-			if (stateValid(levelState, test, true))
+			if (stateValid(levelState, true))
 				C.log("Success!");
 			else
 				C.log("Failure!");
@@ -60,19 +61,19 @@ package Testing {
 			levelState.runTest();
 		}
 		
-		protected function stateValid(levelState:LevelState, test:Test, print:Boolean=false):Boolean {
+		override public function stateValid(levelState:LevelState, print:Boolean=false):Boolean {
 			for (var line:int = 0; line < levelState.memory.length; line++) {
 				var lineValue:Value = levelState.memory[line];
-				if (line == test.memAddressToSet) {
-					if (lineValue.toNumber() != test.memValueToSet) {
+				if (line == currentTest.memAddressToSet) {
+					if (lineValue.toNumber() != currentTest.memValueToSet) {
 						if (print)
-							C.log("Expected value not set correctly: " + line+" " + lineValue.toNumber() + " instead of " + test.memValueToSet);
+							C.log("Expected value not set correctly: " + line+" " + lineValue.toNumber() + " instead of " + currentTest.memValueToSet);
 						return false;
 					}
-				} else if (line < test.instructions.length) {
-					if (!lineValue.eq(test.instructions[line].toMemValue())) {
+				} else if (line < currentTest.instructions.length) {
+					if (!lineValue.eq(currentTest.instructions[line].toMemValue())) {
 						if (print)
-							C.log("Instruction @" + line+" mangled to " + lineValue+" instead of "+test.instructions[line].toMemValue());
+							C.log("Instruction @" + line+" mangled to " + lineValue+" instead of "+currentTest.instructions[line].toMemValue());
 						return false;
 					}
 				} else if (lineValue != FixedValue.NULL) {

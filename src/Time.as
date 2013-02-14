@@ -1,4 +1,5 @@
 package  {
+	import Components.Port;
 	import Modules.Module;
 	import Values.Delta;
 	/**
@@ -9,7 +10,6 @@ package  {
 		
 		public var moment:int;
 		public var deltas:Vector.<Delta>;
-		public var updating:Boolean;
 		public function Time() {
 			init();
 		}
@@ -29,8 +29,11 @@ package  {
 		
 		public function step():void {
 			moment += 1;
-			updating = true;
-			var module:Module;
+			var module:Module, port:Port;
+			
+			for each (module in U.state.modules)
+				for each (port in module.outputs)
+					port.cacheValue();
 			
 			var change:Boolean = true;
 			while (change) {
@@ -40,8 +43,8 @@ package  {
 			}
 			
 			for each (module in U.state.modules)
-				module.finishUpdate();
-			updating = false;
+				for each (port in module.outputs)
+					port.clearCachedValue();
 		}
 		
 		public function backstep():Boolean {

@@ -11,7 +11,7 @@ package Modules {
 		
 		public var width:int;
 		public var values:Vector.<Value>;
-		protected var lastMomentStored:int;
+		protected var lastMomentStored:int = -1;
 		public function Regfile(X:int, Y:int, Width:int = 8) {
 			super(X, Y, "Regfile", 1, 2, 4);
 			
@@ -32,6 +32,7 @@ package Modules {
 			values = new Vector.<Value>;
 			for (var i:int = 0; i < width; i++)
 				values.push(new NumericValue(0));
+			lastMomentStored = -1;
 		}
 		
 		override public function renderName():String {

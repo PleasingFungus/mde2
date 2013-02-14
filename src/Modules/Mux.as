@@ -12,12 +12,7 @@ package Modules {
 			super(X, Y, "Mux", 1, Width, 1);
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
-			//configuration = new Configuration(new Range(2, 8, Width/2), function setValue(newValue:int):void {
-				//width = newValue;
-				//resetPorts();
-				//dirty = true;
-			//});
-			delay = 2;
+			delay = Math.ceil(Math.log(width) / Math.LOG2E);
 		}
 		
 		protected function resetPorts():void {

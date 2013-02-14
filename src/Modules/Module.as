@@ -76,7 +76,6 @@ package Modules {
 		public function initialize():void { }
 		public function revertTo(oldValue:Value):void { }
 		public function update():Boolean { return false; }
-		public function finishUpdate():void { }
 		
 		public function register():Module {
 			exists = true;

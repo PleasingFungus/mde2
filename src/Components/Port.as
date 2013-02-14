@@ -14,6 +14,7 @@ package Components {
 		public var connections:Vector.<Carrier>;
 		public var source:Port;
 		
+		private var cachedValue:Value;
 		private var lastValue:Value;
 		private var lastChanged:int;
 		
@@ -80,6 +81,9 @@ package Components {
 		}
 		
 		public function getValue():Value {
+			if (cachedValue)
+				return cachedValue;
+			
 			var curValue:Value = findValue();
 			//if (isOutput || !U.state.delayEnabled) //TODO: re-enable
 				return curValue;
@@ -115,6 +119,14 @@ package Components {
 		public function revertTo(oldValue:Value, oldTime:int):void {
 			lastValue = oldValue;
 			lastChanged = oldTime;
+		}
+		
+		public function cacheValue():void {
+			cachedValue = findValue();
+		}
+		
+		public function clearCachedValue():void {
+			cachedValue = null;
 		}
 		
 		

@@ -9,11 +9,14 @@ package Modules {
 	 */
 	public class DataMemory extends Module {
 		
-		protected var lastMomentStored:int;
-		protected var lastValue:Value;	
+		protected var lastMomentStored:int = -1;
 		public function DataMemory(X:int, Y:int) {
 			super(X, Y, "D-Mem", 1, 1, 2);
-			delay = 30;
+			delay = 25;
+		}
+		
+		override public function initialize():void {
+			lastMomentStored = -1;
 		}
 		
 		override public function renderName():String {
@@ -29,9 +32,6 @@ package Modules {
 		}
 		
 		override public function drive(port:Port):Value {
-			if (U.state.time.updating && lastValue)
-				return lastValue;
-			
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown) return line;
 			
@@ -62,9 +62,8 @@ package Modules {
 		}
 		
 		override public function update():Boolean {
-			if (U.state.time.moment == lastMomentStored) return false; //can only store at most once per cycle
-			
-			lastValue = drive(null);
+			if (U.state.time.moment == lastMomentStored)
+				return false; //can only store at most once per cycle
 			
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown || line.toNumber() < 0 || line.toNumber() > U.state.memory.length) return false;
@@ -78,10 +77,6 @@ package Modules {
 			U.state.memory[line.toNumber()] = input;
 			lastMomentStored = U.state.time.moment;
 			return true;
-		}
-		
-		override public function finishUpdate():void {
-			lastValue = null;
 		}
 		
 		override public function revertTo(oldValue:Value):void {

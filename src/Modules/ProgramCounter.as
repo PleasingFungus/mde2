@@ -12,8 +12,7 @@ package Modules {
 		
 		public var initialValue:int;
 		public var value:Value;
-		protected var lastMomentStored:int;
-		protected var lastValue:Value;
+		protected var lastMomentStored:int = -1;
 		public function ProgramCounter(X:int, Y:int, Initial:int = 0) {
 			
 			super(X, Y, "Program Counter", 1, 1, 2);
@@ -27,6 +26,7 @@ package Modules {
 		
 		override public function initialize():void {
 			value = new NumericValue(initialValue);
+			lastMomentStored = -1;
 		}
 		
 		override public function renderName():String {
@@ -34,15 +34,11 @@ package Modules {
 		}
 		
 		override public function drive(port:Port):Value {
-			if (U.state.time.updating && lastValue)
-				return lastValue;
 			return value;
 		}
 		
 		override public function update():Boolean {
 			if (U.state.time.moment == lastMomentStored) return false; //can only store at most once per cycle
-			
-			lastValue = value;
 			
 			var control:Value = controls[1].getValue();
 			if (control == U.V_UNKNOWN || control == U.V_UNPOWERED || control.toNumber() == 0)
@@ -63,10 +59,6 @@ package Modules {
 			
 			lastMomentStored = U.state.time.moment;
 			return true;
-		}
-		
-		override public function finishUpdate():void {
-			lastValue = null;
 		}
 		
 		override public function revertTo(oldValue:Value):void {

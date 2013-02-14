@@ -16,7 +16,7 @@ package Modules {
 			outputs[1].name = "Src";
 			outputs[2].name = "Targ";
 			outputs[3].name = "Dest";
-			delay = 25;
+			delay = 15;
 		}
 		
 		override public function renderName():String {

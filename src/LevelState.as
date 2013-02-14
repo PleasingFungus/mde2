@@ -605,6 +605,11 @@ package  {
 			savedString = saveString;
 		}
 		
+		
+		public function runTest():void {
+			displayTime.startPlaying();
+		}
+		
 		protected const MODE_MODULE:int = 0;
 		protected const MODE_CONNECT:int = 1;
 		protected const MODE_REMOVE:int = 2;

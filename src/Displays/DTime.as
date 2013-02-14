@@ -55,8 +55,7 @@ package Displays {
 			playButton = new GraphicButton(stepButton.X, stepButton.Y, _play_sprite, function play():void {
 				if (!derock) return;
 				
-				playing = 1;
-				timeSinceToggle = 0;
+				startPlaying();
 				derock = 0;
 			}, new Key("SPACE"));
 			playButton.X -= playButton.fullWidth;
@@ -118,6 +117,11 @@ package Displays {
 						playing = 0;
 				timeSinceToggle -= timePerTick;
 			}
+		}
+		
+		public function startPlaying(speed:int = 1):void {
+			playing = speed;
+			timeSinceToggle = 0;
 		}
 		
 		private const width:int = 100;

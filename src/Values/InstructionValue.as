@@ -44,6 +44,13 @@ package Values {
 			//alas, it is not to be
 			return new InstructionValue(OpcodeValue.OP_NOOP, 0, 0, 0);
 		}
+		
+		override public function eq(v:Value):Boolean {
+			if (!(v is InstructionValue))
+				return false;
+			var iv:InstructionValue = v as InstructionValue;
+			return iv.operation == operation && iv.sourceArg.eq(sourceArg) && iv.targetArg.eq(targetArg) && iv.destArg.eq(destArg);
+		}
 	}
 
 }

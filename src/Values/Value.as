@@ -13,6 +13,10 @@ package Values {
 		
 		public function get unknown():Boolean { return this == U.V_UNKNOWN; }
 		public function get unpowered():Boolean { return this == U.V_UNPOWERED; }
+		
+		public function eq(v:Value):Boolean {
+			return v.toNumber() == toNumber();
+		}
 	}
 
 }

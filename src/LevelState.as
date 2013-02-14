@@ -51,6 +51,7 @@ package  {
 		public var wires:Vector.<Wire>;
 		public var modules:Vector.<Module>;
 		public var memory:Vector.<Value>;
+		public var initialMemory:Vector.<Value>;
 		
 		public var horizontalLines:Dictionary;
 		public var verticalLines:Dictionary;
@@ -70,6 +71,9 @@ package  {
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
 			zoom = 1;
+			
+			if (level.goal.dynamicallyTested)
+				initialMemory = level.goal.genMem(0.5);
 			
 			load();
 			
@@ -170,7 +174,8 @@ package  {
 			if (!memory.length) return;
 			
 			var randomButton:MenuButton = new GraphicButton(FlxG.width - 125, 10, _random_sprite, function _():void {
-				memory = level.goal.genMem();
+				initialMemory = level.goal.genMem();
+				memory = initialMemory.slice();
 			}, new Key("R"));
 			upperLayer.add(randomButton);
 			
@@ -570,7 +575,6 @@ package  {
 			displayWires = new Vector.<DWire>;
 			displayModules = new Vector.<DModule>;
 			
-			memory = new Vector.<Value>;
 			wires = new Vector.<Wire>;
 			modules = new Vector.<Module>;
 			horizontalLines = new Dictionary;

@@ -17,8 +17,8 @@ package  {
 		private function init():void {
 			moment = 0;
 			deltas = new Vector.<Delta>;
-			if (U.state.level.goal.dynamicallyTested)
-				U.state.memory = U.state.level.goal.genMem(0.5);
+			if (U.state.initialMemory)
+				U.state.memory = U.state.initialMemory.slice(); //clone
 		}
 		
 		public function reset():void {

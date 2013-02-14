@@ -11,6 +11,7 @@ package Displays {
 	public class DMemory extends FlxGroup {
 		
 		private var bg:FlxSprite;
+		private var moment:int;
 		public var memory:Vector.<Value>;
 		public function DMemory(Memory:Vector.<Value>) {
 			memory = Memory;
@@ -19,6 +20,7 @@ package Displays {
 		}
 		
 		public function init():void {
+			moment = U.state.time.moment;
 			makeBG();
 			makePages();
 		}
@@ -75,9 +77,15 @@ package Displays {
 		
 		override public function update():void {
 			super.update();
+			checkTime();
 			checkClick();
 			checkControls();
 			tick++;
+		}
+		
+		protected function checkTime():void {
+			if (moment != U.state.time.moment)
+				init();
 		}
 		
 		protected function checkClick():void {

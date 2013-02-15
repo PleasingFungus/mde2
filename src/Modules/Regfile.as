@@ -1,4 +1,5 @@
 package Modules {
+	import Values.IndexedValue;
 	import Values.Value;
 	import Components.Port;
 	import Values.NumericValue;
@@ -70,14 +71,16 @@ package Modules {
 				return false;
 			
 			var input:Value = inputs[0].getValue();
-			U.state.time.deltas.push(new Delta(U.state.time.moment, this, values[selectIndex]));
+			U.state.time.deltas.push(new Delta(U.state.time.moment, this,
+											   new IndexedValue(values[selectIndex], selectIndex)));
 			values[selectIndex] = input;
 			lastMomentStored = U.state.time.moment;
 			return true;
 		}
 		
 		override public function revertTo(oldValue:Value):void {
-			values[controls[2].getValue().toNumber()] = oldValue;
+			var indexedOldValue:IndexedValue = oldValue as IndexedValue;
+			values[indexedOldValue.index] = indexedOldValue.subValue;
 			lastMomentStored = -1;
 		}
 		

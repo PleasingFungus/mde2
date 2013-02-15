@@ -46,7 +46,7 @@ package Displays {
 		
 		private function getName():String {
 			var displayName:String = module.renderName();
-			if (U.state.level.delayEnabled && module.delay)
+			if (U.state.level.delay && module.delay)
 				displayName += "\n\nD" + module.delay;
 			return displayName;
 		}

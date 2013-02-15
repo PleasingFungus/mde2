@@ -576,11 +576,6 @@ package  {
 		
 		
 		protected function load():void {
-			var saveString:String = U.save.data[level.name];
-			if (!saveString)
-				return;
-			
-			
 			initLayers();
 			displayWires = new Vector.<DWire>;
 			displayModules = new Vector.<DModule>;
@@ -596,6 +591,11 @@ package  {
 			for each (var module:Module in level.modules)
 				addModule(module);
 			
+			
+			
+			var saveString:String = U.save.data[level.name];
+			if (!saveString)
+				return;
 			
 			
 			var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);

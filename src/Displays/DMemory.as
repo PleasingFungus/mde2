@@ -85,7 +85,7 @@ package Displays {
 		
 		protected function checkTime():void {
 			if (moment != U.state.time.moment)
-				init();
+				init(); //NOTE: interacts poorly with anything that resets memory
 		}
 		
 		protected function checkClick():void {

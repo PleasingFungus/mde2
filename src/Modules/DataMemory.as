@@ -17,6 +17,7 @@ package Modules {
 		}
 		
 		override public function initialize():void {
+			super.initialize();
 			lastMomentStored = -1;
 		}
 		

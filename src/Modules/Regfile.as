@@ -30,6 +30,7 @@ package Modules {
 		}
 		
 		override public function initialize():void {
+			super.initialize();
 			values = new Vector.<Value>;
 			for (var i:int = 0; i < width; i++)
 				values.push(new NumericValue(0));

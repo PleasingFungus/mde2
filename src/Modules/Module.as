@@ -73,7 +73,12 @@ package Modules {
 			return [ALL_MODULES.indexOf(Object(this).constructor), x, y];
 		}
 		
-		public function initialize():void { }
+		public function initialize():void {
+			if (U.state && U.state.level.delay)
+				for each (var port:Port in outputs)
+					port.clearDelay();
+		}
+		
 		public function revertTo(oldValue:Value):void { }
 		public function update():Boolean { return false; }
 		

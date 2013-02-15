@@ -16,7 +16,7 @@ package Components {
 		
 		private var cachedValue:Value;
 		private var lastValue:Value;
-		private var lastChanged:int;
+		private var lastChanged:int = -1;
 		
 		public function Port(IsOutput:Boolean, Parent:Module, Connections:Vector.<Carrier> = null) {
 			isOutput = IsOutput;
@@ -88,13 +88,6 @@ package Components {
 			//if (isOutput || !U.state.delayEnabled) //TODO: re-enable
 				return curValue;
 			
-			if (curValue != lastValue) {
-				U.state.time.deltas.push(new DelayDelta(U.state.time.moment, this, lastValue, lastChanged));
-				
-				lastValue = curValue;
-				lastChanged = U.state.time.moment;
-			}
-			
 			if ((U.state.time.moment - lastChanged) < parent.delay && U.state.time.moment)
 				return U.V_UNKNOWN;
 			return curValue;
@@ -111,8 +104,12 @@ package Components {
 				return value;
 			}
 			checked = false;
-			if (source)
+			if (source) {
+				if (U.state.level.delay && U.state.time.moment - source.lastChanged <= parent.delay && source.lastChanged > -1)
+					return U.V_UNKNOWN; //delay!
+				
 				return source.getValue();
+			}
 			return U.V_UNPOWERED;
 		}
 		
@@ -123,10 +120,22 @@ package Components {
 		
 		public function cacheValue():void {
 			cachedValue = findValue();
+			
+			if (U.state.level.delay && !cachedValue.eq(lastValue)) {
+				U.state.time.deltas.push(new DelayDelta(U.state.time.moment, this, lastValue, lastChanged));
+				
+				lastValue = cachedValue;
+				lastChanged = U.state.time.moment - 1;
+			}
 		}
 		
 		public function clearCachedValue():void {
 			cachedValue = null;
+		}
+		
+		public function clearDelay():void {
+			lastValue = null;
+			lastChanged = -1;
 		}
 		
 		

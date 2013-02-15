@@ -46,7 +46,7 @@ package Values {
 		}
 		
 		override public function eq(v:Value):Boolean {
-			if (!(v is InstructionValue))
+			if (!v || !(v is InstructionValue))
 				return false;
 			var iv:InstructionValue = v as InstructionValue;
 			return iv.operation == operation && iv.sourceArg.eq(sourceArg) && iv.targetArg.eq(targetArg) && iv.destArg.eq(destArg);

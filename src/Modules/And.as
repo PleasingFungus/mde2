@@ -13,7 +13,7 @@ package Modules {
 			super(X, Y, "And", Width, 1, 0);
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
-			delay = Math.ceil(Math.log(Width) / Math.LOG2E);
+			delay = Math.ceil(Math.log(Width) / Math.log(2));
 		}
 		
 		protected function resetPorts():void {

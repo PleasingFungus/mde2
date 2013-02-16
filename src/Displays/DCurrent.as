@@ -55,13 +55,31 @@ package Displays {
 			if (moused == lastMouse)
 				return;
 			
+			text.text = getDisplayText(carrier);
+			
+			//TODO: set up bg
+		}
+		
+		protected function getDisplayText(carrier:Carrier):String {
 			var displayText:String = "";
 			
 			if (carrier is Port) {
 				displayText += "Port";
-				if ((carrier as Port).name)
-					displayText += " "+(carrier as Port).name
-				displayText += ": ";
+				var port:Port = carrier as Port;
+				
+				if (port.name)
+					displayText += " "+port.name
+				displayText += ": " + port.getValue();
+				
+				if (port.isSource()) {
+					if (port.getLastChanged() > -1)
+						displayText += " since " + port.getLastChanged();
+					return displayText;
+				}
+				
+				if (port.source && !port.source.getValue().unknown && !port.stable)
+					displayText += " D" + (port.remainingDelay() - 1);
+				displayText += " <- ";
 			} else
 				displayText += "Wire: ";
 			
@@ -73,9 +91,7 @@ package Displays {
 			} else
 				displayText += "No source";
 			
-			text.text = displayText;
-			
-			//TODO: set up bg
+			return displayText;
 		}
 		
 		override public function draw():void {

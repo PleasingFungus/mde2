@@ -52,7 +52,7 @@ package  {
 						new Level("Add-CPU Delay",
 								  new GeneratedGoal("Set-Add-Save!", Test),
 								  true,
-								  [ConstIn, And, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
+								  [ConstIn, And, Adder, LongClock, Latch, InstructionMemory, Regfile, DataMemory, Delay, InstructionDemux],
 								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]));
 			return levels;
 		}

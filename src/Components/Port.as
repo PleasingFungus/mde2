@@ -85,11 +85,6 @@ package Components {
 				return cachedValue;
 			
 			var curValue:Value = findValue();
-			//if (isOutput || !U.state.delayEnabled) //TODO: re-enable
-				return curValue;
-			
-			if ((U.state.time.moment - lastChanged) < parent.delay && U.state.time.moment)
-				return U.V_UNKNOWN;
 			return curValue;
 		}
 		
@@ -97,6 +92,7 @@ package Components {
 		private function findValue():Value {
 			if (checked)
 				return U.V_UNKNOWN; //deloop
+			
 			checked = true;
 			if (isSource()) {
 				var value:Value = parent.drive(this);
@@ -104,13 +100,28 @@ package Components {
 				return value;
 			}
 			checked = false;
-			if (source) {
-				if (U.state.level.delay && U.state.time.moment - source.lastChanged <= parent.delay && source.lastChanged > -1)
-					return U.V_UNKNOWN; //delay!
-				
+			
+			if (!source)
+				return U.V_UNPOWERED;
+			
+			if (stable)
 				return source.getValue();
-			}
-			return U.V_UNPOWERED;
+			
+			return U.V_UNKNOWN;
+		}
+		
+		public function get stable():Boolean {
+			var _stable:Boolean = (!U.state.level.delay || !parent.delay || isOutput ||
+								   !source || source.lastChanged == -1 ||
+								   remainingDelay() <= 0);
+			return _stable
+		}
+		
+		public function remainingDelay():int {
+			var moment:int = U.state.time.moment;
+			var timeSince:int = moment - source.lastChanged;
+			var timeRemaining:int = parent.delay - timeSince;
+			return timeRemaining;
 		}
 		
 		public function revertTo(oldValue:Value, oldTime:int):void {
@@ -118,19 +129,31 @@ package Components {
 			lastChanged = oldTime;
 		}
 		
+		public function lastMinuteInit():void {
+			lastValue = findValue();
+			lastChanged = -1;
+		}
+		
 		public function cacheValue():void {
 			cachedValue = findValue();
-			
-			if (U.state.level.delay && !cachedValue.eq(lastValue)) {
-				U.state.time.deltas.push(new DelayDelta(U.state.time.moment, this, lastValue, lastChanged));
-				
-				lastValue = cachedValue;
-				lastChanged = U.state.time.moment - 1;
-			}
 		}
 		
 		public function clearCachedValue():void {
 			cachedValue = null;
+		}
+		
+		public function updateDelay():void {
+			if (!cachedValue.eq(lastValue)) {
+				U.state.time.deltas.push(new DelayDelta(U.state.time.moment, this,
+													    lastValue, lastChanged));
+				
+				lastValue = cachedValue;
+				lastChanged = U.state.time.moment;
+			}
+		}
+		
+		public function getLastChanged():int {
+			return lastChanged;
 		}
 		
 		public function clearDelay():void {

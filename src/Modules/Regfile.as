@@ -56,7 +56,7 @@ package Modules {
 			return values[regIndex];
 		}
 		
-		override public function update():Boolean {
+		override public function updateState():Boolean {
 			if (U.state.time.moment == lastMomentStored) return false; //can only store at most once per cycle
 			
 			var control:Value = controls[3].getValue();

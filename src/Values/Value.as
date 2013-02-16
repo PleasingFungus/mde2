@@ -15,7 +15,7 @@ package Values {
 		public function get unpowered():Boolean { return this == U.V_UNPOWERED; }
 		
 		public function eq(v:Value):Boolean {
-			return v && v.toNumber() == toNumber();
+			return v && (v.toNumber() == toNumber() || this == v);
 		}
 	}
 

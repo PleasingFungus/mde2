@@ -28,18 +28,23 @@ package  {
 		}
 		
 		public function step():void {
-			moment += 1;
 			var module:Module, port:Port;
+			
+			if (U.state.level.delay && moment == 0)
+				for each (module in U.state.modules)
+					for each (port in module.outputs)
+						port.lastMinuteInit();
+			
+			moment += 1;
 			
 			for each (module in U.state.modules)
 				for each (port in module.outputs)
 					port.cacheValue();
 			
-			var change:Boolean = true;
-			while (change) {
-				change = false;
-				for each (module in U.state.modules)
-					change = change || module.update();
+			for each (module in U.state.modules) {
+				module.updateState();
+				if (U.state.level.delay)
+					module.updateDelays();
 			}
 			
 			for each (module in U.state.modules)

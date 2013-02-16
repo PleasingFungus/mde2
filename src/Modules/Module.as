@@ -80,7 +80,12 @@ package Modules {
 		}
 		
 		public function revertTo(oldValue:Value):void { }
-		public function update():Boolean { return false; }
+		public function updateState():Boolean { return false; }
+		
+		public function updateDelays():void {
+			for each (var port:Port in outputs)
+				port.updateDelay();
+		}
 		
 		public function register():Module {
 			exists = true;

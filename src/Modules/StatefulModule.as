@@ -21,7 +21,7 @@ package Modules {
 			lastMomentStored = -1;
 		}
 		
-		override public function update():Boolean {
+		override public function updateState():Boolean {
 			if (U.state.time.moment == lastMomentStored) return false; //can only store at most once per cycle
 			
 			var stored:Boolean = statefulUpdate();

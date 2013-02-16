@@ -163,7 +163,7 @@ package  {
 		}
 		
 		protected function makeDataButton():void {
-			if (!memory.length) return;
+			if (!memory || !memory.length) return;
 			
 			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 85, 10, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory));
@@ -172,7 +172,7 @@ package  {
 		}
 		
 		protected function makeTestButtons():void {
-			if (!memory.length) return;
+			if (!memory || !memory.length) return;
 			
 			var randomButton:MenuButton = new GraphicButton(FlxG.width - 125, 10, _random_sprite, function _():void {
 				initialMemory = level.goal.genMem();

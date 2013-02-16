@@ -13,7 +13,7 @@ package Modules {
 		public function Latch(X:int, Y:int, InitialValue:int = 0) {
 			super(X, Y, "Latch", 1, 1, 1, InitialValue);
 			
-			delay = 5;
+			delay = 2;
 		}
 		
 		override public function renderName():String {

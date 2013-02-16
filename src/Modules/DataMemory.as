@@ -13,7 +13,7 @@ package Modules {
 		protected var lastMomentStored:int = -1;
 		public function DataMemory(X:int, Y:int) {
 			super(X, Y, "D-Mem", 1, 1, 2);
-			delay = 25;
+			delay = 10;
 		}
 		
 		override public function initialize():void {

@@ -26,7 +26,7 @@ package Modules {
 			
 			configuration = new Configuration(new Range(4, 32, Width));
 			width = Width;
-			delay = 7;
+			delay = Math.ceil(Math.log(width) / Math.log(2)) * 2;
 		}
 		
 		override public function initialize():void {

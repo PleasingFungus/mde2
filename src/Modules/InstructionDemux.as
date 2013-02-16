@@ -15,7 +15,7 @@ package Modules {
 			if (U.state)
 				for (var i:int = 0; i < width; i++)
 					inputs[i].name = U.state.level.expectedOps[i].toString();
-			delay = Math.ceil(Math.log(width) / Math.LOG2E);
+			delay = Math.ceil(Math.log(width) / Math.log(2));
 		}
 		
 		protected function resetPorts():void {

@@ -12,7 +12,7 @@ package Modules {
 			super(X, Y, "Demux", Width, 1, 1);
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
-			delay = Math.ceil(Math.log(Width) / Math.LOG2E);;
+			delay = Math.ceil(Math.log(Width) / Math.log(2));;
 		}
 		
 		protected function resetPorts():void {

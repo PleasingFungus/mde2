@@ -14,7 +14,7 @@ package Modules {
 			
 			super(X, Y, "Program Counter", 1, 1, 2, Initial);
 			
-			delay = 8;
+			delay = 5;
 		}
 		
 		override public function renderName():String {

@@ -10,7 +10,7 @@ package Modules {
 		
 		public function Adder(X:int, Y:int) {
 			super(X, Y, "+", 2, 1, 0);
-			delay = 3;
+			delay = 2;
 		}
 		
 		override public function drive(port:Port):Value {

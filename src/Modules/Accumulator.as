@@ -13,7 +13,7 @@ package Modules {
 		public function Accumulator(X:int, Y:int, Initial:int = 0) {
 			super(X, Y, "Accumulator", 0, 1, 1, Initial);
 			configuration = new Configuration(new Range(-16, 15, 0));
-			delay = 8;
+			delay = 4;
 		}
 		
 		override public function renderName():String {

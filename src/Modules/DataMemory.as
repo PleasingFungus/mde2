@@ -39,7 +39,7 @@ package Modules {
 			
 			var index:int = line.toNumber();
 			if (index < 0 || index >= U.state.memory.length)
-				return U.V_UNKNOWN;
+				return U.V_UNPOWERED;
 			
 			var memoryValue:Value = U.state.memory[index];
 			if (!memoryValue)

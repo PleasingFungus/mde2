@@ -51,7 +51,7 @@ package Modules {
 			
 			var regIndex:int = selectValue.toNumber();
 			if (regIndex < 0 || regIndex >= width)
-				return U.V_UNKNOWN;
+				return U.V_UNPOWERED;
 			
 			return values[regIndex];
 		}

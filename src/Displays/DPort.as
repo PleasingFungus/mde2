@@ -5,6 +5,7 @@ package Displays {
 	import Layouts.PortLayout;
 	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
+	import Values.Value;
 	
 	/**
 	 * ...
@@ -19,10 +20,10 @@ package Displays {
 			port = Layout.port;
 			super();
 			if (layout.vertical) {
-				makeGraphic(3, U.GRID_DIM / 2, 0xff000000);
+				makeGraphic(3, U.GRID_DIM / 2, 0xffffffff);
 				offset.x = width / 2;
 			} else {
-				makeGraphic(U.GRID_DIM / 2, 3, 0xff000000);
+				makeGraphic(U.GRID_DIM / 2, 3, 0xffffffff);
 				offset.y = height / 2;
 			}
 		}
@@ -36,6 +37,24 @@ package Displays {
 				else
 					x -= width;
 			}
+		}
+		
+		override public function draw():void {
+			color = getColor();
+			super.draw();
+		}
+		
+		protected function getColor():uint {
+			if (!port.getSource())
+				return 0xff0000;
+			
+			var value:Value = port.getValue();
+			if (value.unknown)
+				return 0xc219d9;
+			else if (value.unpowered)
+				return 0x1d19d9;
+			else
+				return 0x0;
 		}
 		
 		public function nearPoint(p:FlxPoint, radius:int = 0):Boolean {

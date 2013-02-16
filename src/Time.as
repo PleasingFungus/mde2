@@ -35,21 +35,22 @@ package  {
 					for each (port in module.outputs)
 						port.lastMinuteInit();
 			
-			moment += 1;
-			
 			for each (module in U.state.modules)
 				for each (port in module.outputs)
 					port.cacheValue();
 			
-			for each (module in U.state.modules) {
+			moment += 1;
+			
+			for each (module in U.state.modules)
 				module.updateState();
-				if (U.state.level.delay)
-					module.updateDelays();
-			}
 			
 			for each (module in U.state.modules)
 				for each (port in module.outputs)
 					port.clearCachedValue();
+			
+			if (U.state.level.delay)
+				for each (module in U.state.modules)
+					module.updateDelays();
 		}
 		
 		public function backstep():Boolean {

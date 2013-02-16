@@ -143,11 +143,12 @@ package Components {
 		}
 		
 		public function updateDelay():void {
-			if (!cachedValue.eq(lastValue)) {
+			var value:Value = getValue();
+			if (!value.eq(lastValue)) {
 				U.state.time.deltas.push(new DelayDelta(U.state.time.moment, this,
 													    lastValue, lastChanged));
 				
-				lastValue = cachedValue;
+				lastValue = value;
 				lastChanged = U.state.time.moment;
 			}
 		}

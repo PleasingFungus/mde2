@@ -15,7 +15,7 @@ package  {
 		public var allowedModules:Vector.<Class>
 		public var delay:Boolean;
 		
-		public function Level(Name:String, Goal:LevelGoal, Delay:Boolean = false, AllowedModules:Array = null, ExpectedOps:Array = null, Modules:Array = null) {
+		public function Level(Name:String, Goal:LevelGoal, delay:Boolean = false, AllowedModules:Array = null, ExpectedOps:Array = null, Modules:Array = null) {
 			name = Name;
 			this.goal = Goal;
 			
@@ -33,8 +33,10 @@ package  {
 			if (AllowedModules)
 				for each (var allowedModule:Class in AllowedModules)
 					allowedModules.push(allowedModule);
+			else
+				allowedModules = Module.ALL_MODULES;
 			
-			delay = Delay;
+			this.delay = delay;
 		}
 		
 		public static function list():Vector.<Level> {
@@ -52,7 +54,7 @@ package  {
 						new Level("Add-CPU Delay",
 								  new GeneratedGoal("Set-Add-Save!", Test),
 								  true,
-								  [ConstIn, And, Adder, LongClock, Latch, InstructionMemory, Regfile, DataMemory, Delay, InstructionDemux],
+								  null,
 								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]));
 			return levels;
 		}

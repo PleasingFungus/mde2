@@ -13,7 +13,7 @@ package Modules {
 			super(X, Y, "Comparator", Module.CAT_LOGIC, 1, 1, 0);
 			compareValue = CompareValue;
 			
-			configuration = new Configuration(new Range( -64, 63, CompareValue));
+			configuration = new Configuration(new Range( -32, 31, CompareValue));
 			delay = 1;
 		}
 		

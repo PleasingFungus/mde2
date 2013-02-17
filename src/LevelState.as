@@ -40,6 +40,7 @@ package  {
 		protected var preserveModule:Boolean;
 		protected var runningTest:Boolean;
 		
+		protected var moduleCategory:String;
 		protected var moduleList:ButtonList;
 		protected var moduleSliders:Vector.<ModuleSlider>;
 		
@@ -131,7 +132,11 @@ package  {
 			
 			listOpen == LIST_MODES ? makeModeMenu() : makeModeButton();
 			if (mode == MODE_MODULE)
-				listOpen == LIST_MODULES ? makeModuleList() : makeModuleButton();
+				switch (listOpen) {
+					case LIST_MODULES: makeModuleList(); break;
+					case LIST_CATEGORIES: makeModuleCatList(); break;
+					case LIST_NONE: default: makeModuleCatButton(); break;
+				}
 			makeSaveButton();
 			makeUndoButtons();
 			makeTestButtons();
@@ -208,8 +213,9 @@ package  {
 				}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
 			}
 			
-			var modeList:ButtonList = new ButtonList(10, 10, modeSelectButtons, function onListClose():void {				
-				listOpen = LIST_NONE;
+			var modeList:ButtonList = new ButtonList(10, 10, modeSelectButtons, function onListClose():void {
+				if (listOpen == LIST_MODES)
+					listOpen = LIST_NONE;
 				makeUI();
 			});
 			modeList.setSpacing(4);
@@ -217,26 +223,67 @@ package  {
 			upperLayer.add(modeList);
 		}
 		
-		protected function makeModuleButton():void {
+		protected function makeModuleCatButton():void {
 			var listButton:GraphicButton = new GraphicButton(50, 10, _list_sprite, function openList():void {
-				listOpen = LIST_MODULES;
+				if (currentModule) {
+					currentModule.exists = false;
+					currentModule = null;
+				}
+				
+				listOpen = LIST_CATEGORIES;
 				makeUI();
 			}, new Key("FOUR"));
 			
 			upperLayer.add(listButton);
 		}
 		
-		protected function makeModuleList():void {
-			if (currentModule) {
-				currentModule.exists = false;
-				currentModule = null;
+		protected function makeModuleCatList():void {
+			//build a list of buttons for allowed modules/names
+			var moduleButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+			for each (var category:String in Module.ALL_CATEGORIES) {
+				var allowed:Boolean = false;
+				for each (var moduleType:Class in level.allowedModules)
+					if (Module.getArchetype(moduleType).category == category) {
+						allowed = true;
+						break;
+					}
+				
+				moduleButtons.push(new TextButton( -1, -1, category, function chooseCategory(category:String):void {
+					listOpen = LIST_MODULES;
+					moduleCategory = category;
+					makeUI();
+				}).setParam(category).setDisabled(!allowed));
 			}
+			
+			//put 'em in a list
+			moduleList = new ButtonList(50, 10, moduleButtons, function onListClose():void {
+				if (listOpen == LIST_CATEGORIES)
+					listOpen = LIST_NONE;
+				makeUI();
+			});
+			moduleList.setSpacing(4);
+			moduleList.justDie = true;
+			upperLayer.add(moduleList);
+		}
+		
+		protected function makeModuleList():void {
+			var moduleType:Class, archetype:Module;
+			
+			var moduleTypes:Vector.<Class>  = new Vector.<Class>;
+			for each (moduleType in level.allowedModules)
+				if (Module.getArchetype(moduleType).category == moduleCategory)
+					moduleTypes.push(moduleType);
 			
 			//build a list of buttons for allowed modules/names
 			var moduleButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-			for each (var moduleType:Class in level.allowedModules) {
+			moduleButtons.push(new TextButton( -1, -1, "<Back>", function goBack():void {
+				listOpen = LIST_CATEGORIES;
+				makeUI();
+			}));
+			
+			for each (moduleType in moduleTypes) {
 				moduleButtons.push(new TextButton( -1, -1, Module.getArchetype(moduleType).name, function chooseModule(moduleType:Class):void {
-					var archetype:Module = Module.getArchetype(moduleType);
+					archetype = Module.getArchetype(moduleType);
 					if (archetype.configuration)
 						currentModule = new moduleType( -1, -1, archetype.configuration.value);
 					else
@@ -251,8 +298,9 @@ package  {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(50, 10, moduleButtons, function onListClose():void {				
-				listOpen = LIST_NONE;
+			moduleList = new ButtonList(50, 10, moduleButtons, function onListClose():void {
+				if (listOpen == LIST_MODULES)
+					listOpen = LIST_NONE;
 				makeUI();
 			});
 			moduleList.setSpacing(4);
@@ -261,9 +309,9 @@ package  {
 			
 			//make some sliders
 			moduleSliders = new Vector.<ModuleSlider>;
-			for (var i:int = 0; i < level.allowedModules.length; i++ ) {
-				moduleType = level.allowedModules[i];
-				var archetype:Module = Module.getArchetype(moduleType);
+			for (var i:int = 0; i < moduleTypes.length; i++ ) {
+				moduleType = moduleTypes[i];
+				archetype = Module.getArchetype(moduleType);
 				if (archetype.configuration)
 					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i], archetype)));
 			}

@@ -52,6 +52,7 @@ package  {
 		public static function init():void {			
 			if (initialized)
 				return;
+			initialized = true;
 			
 			save = new FlxSave();
 			save.bind("MultiduckExtravaganza");
@@ -64,10 +65,6 @@ package  {
 		
 		public static function load():void {
 			ControlSet.load();
-		}
-		
-		public static function initLevel():void {
-			
 		}
 		
 		

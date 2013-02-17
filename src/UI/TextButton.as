@@ -38,7 +38,6 @@ package UI {
 			if (hotkey)
 				text.text += " (" + hotkey + ")";
 			text.setFormat(font, size, graphicColor, align);
-			graphicColor = text.color;
 			add(text);
 			
 			super.init();
@@ -76,6 +75,11 @@ package UI {
 			text.setFormat(Font, Size, Color, Alignment);
 			init();
 			return this;
+		}
+		
+		override public function setDisabled(disabled:Boolean):MenuButton {
+			text.color = disabled ? 0x404040 : 0x0;
+			return super.setDisabled(disabled);
 		}
 	}
 

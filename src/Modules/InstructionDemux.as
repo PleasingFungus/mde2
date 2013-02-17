@@ -11,7 +11,7 @@ package Modules {
 		public var width:int;
 		public function InstructionDemux(X:int, Y:int) {
 			width = U.state ? U.state.level.expectedOps.length : 1;
-			super(X, Y, "I-Demux", width, 1, 1);
+			super(X, Y, "I-Demux", Module.CAT_CONTROL, width, 1, 1);
 			if (U.state)
 				for (var i:int = 0; i < width; i++)
 					inputs[i].name = U.state.level.expectedOps[i].toString();

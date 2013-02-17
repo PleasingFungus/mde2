@@ -9,7 +9,7 @@ package Modules {
 	public class Adder extends Module {
 		
 		public function Adder(X:int, Y:int) {
-			super(X, Y, "+", 2, 1, 0);
+			super(X, Y, "+", Module.CAT_ARITH, 2, 1, 0);
 			delay = 2;
 		}
 		

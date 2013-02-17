@@ -11,7 +11,7 @@ package Modules {
 		
 		public var period:int;
 		public function Clock(X:int, Y:int, Period:int = 2) {
-			super(X, Y, "Clock", 0, 1, 0);
+			super(X, Y, "Clock", Module.CAT_TIME, 0, 1, 0);
 			period = Period;
 			configuration = new Configuration(new Range(2, 100, Period));
 		}

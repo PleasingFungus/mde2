@@ -11,7 +11,7 @@ package Modules {
 	public class Accumulator extends StatefulModule {
 		
 		public function Accumulator(X:int, Y:int, Initial:int = 0) {
-			super(X, Y, "Accumulator", 0, 1, 1, Initial);
+			super(X, Y, "Accumulator", Module.CAT_STORAGE, 0, 1, 1, Initial);
 			configuration = new Configuration(new Range(-16, 15, 0));
 			delay = 4;
 		}

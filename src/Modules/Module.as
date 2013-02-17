@@ -16,6 +16,7 @@ package Modules {
 	public class Module extends Point {
 		
 		public var name:String;
+		public var category:String;
 		public var configuration:Configuration;
 		public var layout:ModuleLayout;
 		
@@ -31,10 +32,11 @@ package Modules {
 		
 		//public var display:DModule;
 		
-		public function Module(X:int, Y:int, Name:String, numInputs:int, numOutputs:int, numControls:int ) {
+		public function Module(X:int, Y:int, Name:String, Category:String, numInputs:int, numOutputs:int, numControls:int ) {
 			super(X, Y);
 			
 			name = Name;
+			category = Category;
 			inputs = new Vector.<Port>; populatePorts(inputs, numInputs, false);
 			outputs = new Vector.<Port>; populatePorts(outputs, numOutputs, true);
 			controls = new Vector.<Port>; populatePorts(controls, numControls, false);
@@ -185,13 +187,17 @@ package Modules {
 		
 		public static function init():void {
 			for each (var moduleClass:Class in [Adder, ASU, Clock, ConstIn, Latch,
-												Outport, Regfile, Comparator,
+												Edge, Regfile, Comparator,
 												InstructionMemory, DataMemory,
 												Mux, Demux, InstructionMux, InstructionDemux,
 												Accumulator, ProgramCounter, And, Not, Delay, LongClock]) {
 				ALL_MODULES.push(moduleClass);
 				ARCHETYPES.push(new moduleClass( -1, -1));
 			}
+			
+			for each (var category:String in [CAT_ARITH, CAT_TIME, CAT_LOGIC, CAT_CONTROL,
+											  CAT_DATA, CAT_STORAGE, CAT_MISC])
+				ALL_CATEGORIES.push(category);
 		}
 		
 		public static function getArchetype(moduleClass:Class):Module {
@@ -201,7 +207,14 @@ package Modules {
 		public static const ALL_MODULES:Vector.<Class> = new Vector.<Class>;
 		public static const ARCHETYPES:Vector.<Module> = new Vector.<Module>;
 		
-		
+		public static const CAT_ARITH:String = "Arithmetic";
+		public static const CAT_TIME:String = "Time";
+		public static const CAT_LOGIC:String = "Logic";
+		public static const CAT_CONTROL:String = "Control";
+		public static const CAT_DATA:String = "Data";
+		public static const CAT_STORAGE:String = "Storage";
+		public static const CAT_MISC:String = "Misc.";
+		public static const ALL_CATEGORIES:Vector.<String> = new Vector.<String>;
 	}
 
 }

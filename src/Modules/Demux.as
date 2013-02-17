@@ -9,7 +9,7 @@ package Modules {
 		
 		public var width:int;
 		public function Demux(X:int, Y:int, Width:int = 4) {
-			super(X, Y, "Demux", Width, 1, 1);
+			super(X, Y, "Demux", Module.CAT_CONTROL, Width, 1, 1);
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
 			delay = Math.ceil(Math.log(Width) / Math.log(2));;

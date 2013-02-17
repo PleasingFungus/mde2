@@ -10,7 +10,7 @@ package Modules {
 	public class ASU extends Module {
 		
 		public function ASU(X:int, Y:int) {
-			super(X, Y, "+-", 2, 1, 1);
+			super(X, Y, "+-", Module.CAT_ARITH, 2, 1, 1);
 			delay = 4;
 		}
 		

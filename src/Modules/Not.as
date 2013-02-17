@@ -9,7 +9,7 @@ package Modules {
 	public class Not extends Module {
 		
 		public function Not(X:int, Y:int) {
-			super(X, Y, "!", 1, 1, 0);
+			super(X, Y, "!", Module.CAT_LOGIC, 1, 1, 0);
 			delay = 1;
 		}
 		

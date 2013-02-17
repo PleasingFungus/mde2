@@ -10,7 +10,7 @@ package Modules {
 		
 		public var compareValue:int;
 		public function Comparator(X:int, Y:int, CompareValue:int = 0) {
-			super(X, Y, "Comparator", 1, 1, 0);
+			super(X, Y, "Comparator", Module.CAT_LOGIC, 1, 1, 0);
 			compareValue = CompareValue;
 			
 			configuration = new Configuration(new Range( -64, 63, CompareValue));

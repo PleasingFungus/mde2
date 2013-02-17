@@ -14,7 +14,7 @@ package Modules {
 		public var values:Vector.<Value>;
 		protected var lastMomentStored:int = -1;
 		public function Regfile(X:int, Y:int, Width:int = 8) {
-			super(X, Y, "Regfile", 1, 2, 4);
+			super(X, Y, "Regfile", Module.CAT_STORAGE, 1, 2, 4);
 			
 			inputs[0].name = "Write v";
 			controls[0].name = "Out Reg i 1";

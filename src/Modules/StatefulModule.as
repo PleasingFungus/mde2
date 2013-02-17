@@ -10,9 +10,9 @@ package Modules {
 		protected var initialValue:int;
 		protected var value:Value;
 		protected var lastMomentStored:int;
-		public function StatefulModule(X:int, Y:int, Name:String, numInputs:int, numOutputs:int, numControls:int, InitialValue:int) {
+		public function StatefulModule(X:int, Y:int, Name:String, Category:String, numInputs:int, numOutputs:int, numControls:int, InitialValue:int) {
 			initialValue = InitialValue;
-			super(X, Y, Name, numInputs, numOutputs, numControls);
+			super(X, Y, Name, Category, numInputs, numOutputs, numControls);
 		}
 		
 		override public function initialize():void {

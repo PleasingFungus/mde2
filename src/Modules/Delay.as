@@ -8,7 +8,7 @@ package Modules {
 	public class Delay extends Module {
 		
 		public function Delay(X:int, Y:int, delay:int = 1) {
-			super(X, Y, "D", 1, 1, 0);
+			super(X, Y, "D", Module.CAT_TIME, 1, 1, 0);
 			configuration = new Configuration(new Range(1, 32, delay));
 			this.delay = delay;
 		}

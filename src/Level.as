@@ -43,7 +43,7 @@ package  {
 								  new LevelGoal("Have fun!", false),
 								  false,
 								  [ConstIn, Adder, Clock, ASU, Latch, Mux, Demux], [],
-								  [new ConstIn(8, 48, 1), new Regfile(40, 16), new Adder(24, 40), new Outport(40, 40)]),
+								  [new ConstIn(8, 48, 1), new Regfile(40, 16), new Adder(24, 40)]),
 						new Level("Add-CPU",
 								  new GeneratedGoal("Set-Add-Save!", Test),
 								  false,

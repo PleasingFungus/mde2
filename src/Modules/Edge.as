@@ -1,4 +1,5 @@
 package Modules {
+	import Values.BooleanValue;
 	import Values.IndexedValue;
 	import Values.Value;
 	import Values.Delta;
@@ -35,7 +36,7 @@ package Modules {
 			if (U.state.time.moment == lastMomentStored) return false; //can only store at most once per cycle
 			
 			var input:Value = inputs[0].getValue();
-			if (input.unknown || input.unpowered)
+			if (input.unknown || input.unpowered || !(BooleanValue.fromValue(input).true_))
 				return false;
 			
 			U.state.time.deltas.push(new Delta(U.state.time.moment, this, new IndexedValue(lastValue, lastValueSeen)));
@@ -45,7 +46,7 @@ package Modules {
 		}
 		
 		override public function drive(port:Port):Value {
-			if (lastValue && U.state.time.moment - lastValueSeen <= edgeLength)
+			if (lastValue && U.state.time.moment - lastValueSeen < edgeLength)
 				return lastValue;
 			return port.getValue();
 		}

@@ -313,7 +313,7 @@ package  {
 				moduleType = moduleTypes[i];
 				archetype = Module.getArchetype(moduleType);
 				if (archetype.configuration)
-					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i], archetype)));
+					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+1], archetype)));
 			}
 		}
 		
@@ -636,31 +636,30 @@ package  {
 			
 			time = new Time;
 			
-			for each (var module:Module in level.modules)
-				addModule(module);
-			
 			
 			
 			var saveString:String = U.save.data[level.name];
-			if (!saveString)
-				return;
+			if (saveString) {
+				var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);
+				
+				//load wires
+				var wireStrings:String = saveArray[1];
+				if (wireStrings.length)
+					for each (var wireString:String in wireStrings.split(U.SAVE_DELIM))
+						addWire(Wire.fromString(wireString), false);
+				
+				//load modules
+				var moduleStrings:String = saveArray[0];
+				if (moduleStrings.length)
+					for each (var moduleString:String in moduleStrings.split(U.SAVE_DELIM))
+						addModule(Module.fromString(moduleString), false);
+				
+				
+				savedString = saveString;
+			}
 			
-			
-			var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);
-			
-			//load modules
-			var moduleStrings:String = saveArray[0];
-			if (moduleStrings.length)
-				for each (var moduleString:String in moduleStrings.split(U.SAVE_DELIM))
-					addModule(Module.fromString(moduleString), false);
-			
-			//load wires
-			var wireStrings:String = saveArray[1];
-			if (wireStrings.length)
-				for each (var wireString:String in wireStrings.split(U.SAVE_DELIM))
-					addWire(Wire.fromString(wireString), false);
-			
-			savedString = saveString;
+			for each (var module:Module in level.modules)
+				addModule(module);
 		}
 		
 		

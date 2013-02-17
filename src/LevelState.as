@@ -32,12 +32,12 @@ package  {
 		protected var displayModules:Vector.<DModule>;
 		//protected var buttons:Vector.<MenuButton>
 		protected var mode:int = MODE_CONNECT;
-		protected var modeListOpen:Boolean;
-		protected var moduleListOpen:Boolean;
+		protected var listOpen:int;
 		protected var UIChanged:Boolean;
 		protected var editEnabled:Boolean = true;
+		
 		protected var displayTime:DTime;
-		protected var preserve:Boolean;
+		protected var preserveModule:Boolean;
 		protected var runningTest:Boolean;
 		
 		protected var moduleList:ButtonList;
@@ -121,7 +121,7 @@ package  {
 			makeBackButton();
 			
 			if (!editEnabled) {
-				modeListOpen = moduleListOpen = false;
+				listOpen = LIST_NONE;
 				if (currentModule) {
 					currentModule.exists = false;
 					currentModule = null;
@@ -129,9 +129,9 @@ package  {
 				return;
 			}
 			
-			modeListOpen ? makeModeMenu() : makeModeButton();
+			listOpen == LIST_MODES ? makeModeMenu() : makeModeButton();
 			if (mode == MODE_MODULE)
-				moduleListOpen ? makeModuleList() : makeModuleButton();
+				listOpen == LIST_MODULES ? makeModuleList() : makeModuleButton();
 			makeSaveButton();
 			makeUndoButtons();
 			makeTestButtons();
@@ -189,7 +189,7 @@ package  {
 		
 		protected function makeModeButton():void {
 			var modeButton:MenuButton = new GraphicButton(10, 10, MODE_SPRITES[mode], function openList():void {
-				modeListOpen = true;
+				listOpen = LIST_MODES;
 				makeUI();
 			}, new Key("TAB"));
 			upperLayer.add(modeButton);
@@ -209,7 +209,7 @@ package  {
 			}
 			
 			var modeList:ButtonList = new ButtonList(10, 10, modeSelectButtons, function onListClose():void {				
-				modeListOpen = false;
+				listOpen = LIST_NONE;
 				makeUI();
 			});
 			modeList.setSpacing(4);
@@ -219,7 +219,7 @@ package  {
 		
 		protected function makeModuleButton():void {
 			var listButton:GraphicButton = new GraphicButton(50, 10, _list_sprite, function openList():void {
-				moduleListOpen = true;
+				listOpen = LIST_MODULES;
 				makeUI();
 			}, new Key("FOUR"));
 			
@@ -246,13 +246,13 @@ package  {
 					modules.push(currentModule);
 					displayModules.push(midLayer.add(new DModule(currentModule)));
 					
-					preserve = true;
+					preserveModule = true;
 				}).setParam(moduleType));
 			}
 			
 			//put 'em in a list
 			moduleList = new ButtonList(50, 10, moduleButtons, function onListClose():void {				
-				moduleListOpen = false;
+				listOpen = LIST_NONE;
 				makeUI();
 			});
 			moduleList.setSpacing(4);
@@ -281,7 +281,7 @@ package  {
 		protected function updateUI():void {
 			MenuButton.buttonClicked = false;
 			UIChanged = false;
-			preserve = false;
+			preserveModule = false;
 			
 			var members:Array = upperLayer.members.slice(); //copy, to prevent updating new members
 			for (var i:int = members.length - 1; i >= 0; i--) {
@@ -345,7 +345,7 @@ package  {
 				currentModule.x = mousePoint.x;
 				currentModule.y = mousePoint.y;
 				
-				if (FlxG.mouse.justPressed() && !preserve) {
+				if (FlxG.mouse.justPressed() && !preserveModule) {
 					if (MenuButton.buttonClicked) {
 						currentModule.exists = false;
 						currentModule = null;
@@ -624,6 +624,11 @@ package  {
 		protected const MODE_MODULE:int = 0;
 		protected const MODE_CONNECT:int = 1;
 		protected const MODE_REMOVE:int = 2;
+		
+		protected const LIST_NONE:int = 0;
+		protected const LIST_MODES:int = 1;
+		protected const LIST_CATEGORIES:int = 2;
+		protected const LIST_MODULES:int = 3;
 
 		[Embed(source = "../lib/art/ui/lightbulb.png")] private const _module_sprite:Class;
 		[Embed(source = "../lib/art/ui/wire.png")] private const _connect_sprite:Class;

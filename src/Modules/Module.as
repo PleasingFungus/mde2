@@ -27,6 +27,7 @@ package Modules {
 		public var delay:int;
 		
 		public var exists:Boolean = true;
+		public var deployed:Boolean = false;
 		public var FIXED:Boolean = false;
 		public var dirty:Boolean;
 		
@@ -91,6 +92,7 @@ package Modules {
 		
 		public function register():Module {
 			exists = true;
+			deployed = true;
 			
 			var self:Module = this;
 			
@@ -124,6 +126,7 @@ package Modules {
 				portLayout.deregister();
 			}
 			
+			deployed = false;
 			exists = false;
 			
 			return this;
@@ -134,6 +137,8 @@ package Modules {
 		}
 		
 		public function get validPosition():Boolean {
+			if (deployed) return true;
+			
 			var OK:Object = { 'x' : true, 'y' : true };
 			var self:Module = this;
 			iterContainedLines(function h(X:int, Y:int):void {

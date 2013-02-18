@@ -21,7 +21,7 @@ package Modules {
 		}
 		
 		override public function drive(port:Port):Value {
-			if ((U.state.time.moment + 1) % period == 0)
+			if ((U.state.time.moment - 1) % period == 0)
 				return EDGE;
 			return NO_EDGE;
 		}

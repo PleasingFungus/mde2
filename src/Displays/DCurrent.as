@@ -15,6 +15,7 @@ package Displays {
 		private var bg:FlxSprite;
 		private var lastMouse:FlxBasic;
 		private var lastCarrier:Carrier;
+		private var lastMoment:int;
 		public function DCurrent(DWires:Vector.<DWire>, DModules:Vector.<DModule>) {
 			super()
 			
@@ -52,8 +53,10 @@ package Displays {
 		}
 		
 		private function buildDisplay(moused:FlxBasic, carrier:Carrier):void {
-			if (moused == lastMouse)
+			if (moused == lastMouse && lastMoment == U.state.time.moment)
 				return;
+			
+			lastMoment = U.state.time.moment;
 			
 			text.text = getDisplayText(carrier);
 			

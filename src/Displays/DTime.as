@@ -18,6 +18,7 @@ package Displays {
 		private var stepButton:GraphicButton;
 		private var backstepButton:GraphicButton;
 		private var playButton:GraphicButton;
+		private var fastButton:GraphicButton;
 		private var rewindButton:GraphicButton;
 		private var pauseButton:GraphicButton;
 		private var stopButton:GraphicButton;
@@ -55,11 +56,20 @@ package Displays {
 			playButton = new GraphicButton(stepButton.X, stepButton.Y, _play_sprite, function play():void {
 				if (!derock) return;
 				
+				ticksPerSec = 2;
 				startPlaying();
 				derock = 0;
 			}, new Key("SPACE"));
 			playButton.X -= playButton.fullWidth;
 			add(playButton);
+			
+			fastButton = new GraphicButton(playButton.X, playButton.Y, _fast_sprite, function play():void {
+				if (!derock) return;
+				
+				ticksPerSec = 20;
+				derock = 0;
+			}, new Key("N"));
+			add(fastButton);
 			
 			pauseButton = new GraphicButton(playButton.X, playButton.Y, _pause_sprite, function pause():void {
 				if (!derock) return;
@@ -98,7 +108,8 @@ package Displays {
 			timeText.text = U.state.time.toString();
 			
 			stopButton.exists = backstepButton.exists = U.state.time.moment > 0;
-			playButton.exists = playing != 1;
+			playButton.exists = playing != 1 || ticksPerSec != 2;
+			fastButton.exists = playing && ticksPerSec != 20;
 			pauseButton.exists = playing != 0;
 			rewindButton.exists = playing != -1 && U.state.time.moment > 0;
 			
@@ -131,6 +142,7 @@ package Displays {
 		[Embed(source = "../../lib/art/ui/skip.png")] private const _step_sprite:Class;
 		[Embed(source = "../../lib/art/ui/skip_back.png")] private const _backstep_sprite:Class;
 		[Embed(source = "../../lib/art/ui/play.png")] private const _play_sprite:Class;
+		[Embed(source = "../../lib/art/ui/fast.png")] private const _fast_sprite:Class;
 		[Embed(source = "../../lib/art/ui/back.png")] private const _back_sprite:Class;
 		[Embed(source = "../../lib/art/ui/stop.png")] private const _stop_sprite:Class;
 		[Embed(source = "../../lib/art/ui/pause.png")] private const _pause_sprite:Class;

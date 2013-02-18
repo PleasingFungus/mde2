@@ -19,7 +19,7 @@ package Modules {
 			
 			edgeLength = EdgeLength;
 			
-			configuration = new Configuration(new Range(2, 32, edgeLength));
+			configuration = new Configuration(new Range(1, 32, edgeLength));
 		}
 		
 		override public function renderName():String {

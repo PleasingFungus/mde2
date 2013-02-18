@@ -35,7 +35,7 @@ package Displays {
 						module.layout.dim.y * U.GRID_DIM,
 						moduleColor, true);
 			
-			nameText = new FlxText( -1, -1, width - U.GRID_DIM / 2, getName());
+			nameText = new FlxText( -1, -1, width + U.GRID_DIM / 2, getName());
 			nameText.setFormat(U.FONT, U.FONT_SIZE, 0x0, 'center');
 			nameText.scrollFactor = scrollFactor; //object
 			
@@ -85,7 +85,7 @@ package Displays {
 			for each (var displayPort:DPort in displayPorts)
 				displayPort.updatePosition(baseX, baseY);
 			
-			nameText.x = x + U.GRID_DIM / 2;
+			nameText.x = x;
 			nameText.y = y + (height - nameText.height) / 2;
 		}
 		

@@ -52,7 +52,7 @@ package  {
 								  [ConstIn, And, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
 								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]),
 						new Level("Add-CPU Delay",
-								  new GeneratedGoal("Set-Add-Save!", Test),
+								  new GeneratedGoal("Set-Add-Save!", Test, 12, 10000),
 								  true,
 								  null,
 								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]));

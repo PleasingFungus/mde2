@@ -29,11 +29,11 @@ package UI {
 		
 		private function init():void {
 			config = module.configuration;
-			configValue = config.valueRange.initial;
+			configValue = module.configuration.value;
 			
 			members = [];
 			
-			sliderbar = new Sliderbar(x + INNER_PAD + BORDER_WIDTH, parent.Y, config.valueRange, config.setValue);
+			sliderbar = new Sliderbar(x + INNER_PAD + BORDER_WIDTH, parent.Y, config.valueRange, config.setValue, configValue);
 			sliderbar.y += (parent.fullHeight + 15) / 2 - sliderbar.height / 2;
 			sliderbar.create();
 			

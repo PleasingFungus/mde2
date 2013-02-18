@@ -24,7 +24,7 @@ package UI {
 		
 		protected var barClicked:Boolean;
 		
-		public function Sliderbar(X:int, Y:int, ValueRange:Range = null, OnChange:Function = null) {
+		public function Sliderbar(X:int, Y:int, ValueRange:Range = null, OnChange:Function = null, InitialValue:int = C.INT_NULL) {
 			super();
 			
 			x = X;
@@ -33,7 +33,7 @@ package UI {
 			height = 48;
 			
 			valueRange = ValueRange ? ValueRange : new Range(-16, 15);
-			value = valueRange.initial;
+			value = InitialValue != C.INT_NULL ? InitialValue : valueRange.initial;
 			onChange = OnChange;
 			create();
 		}
@@ -53,7 +53,7 @@ package UI {
 			add(rail);
 			add(slider);
 			
-			var posFraction:Number = (valueRange.initial - valueRange.min) / (valueRange.max - valueRange.min);
+			var posFraction:Number = (value - valueRange.min) / (valueRange.max - valueRange.min);
 			slider.x = rail.x + width * posFraction - slider.width / 2;
 			
 			//value display

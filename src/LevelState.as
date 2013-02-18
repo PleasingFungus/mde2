@@ -245,7 +245,8 @@ package  {
 			}
 			
 			var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-			for (var newMode:int = 0; newMode <= MODE_REMOVE; newMode++) {
+			var lastMode:int = level.delay ? MODE_DELAY : MODE_REMOVE;
+			for (var newMode:int = 0; newMode <= lastMode; newMode++) {
 				modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 					mode = newMode;
 				}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
@@ -270,7 +271,7 @@ package  {
 				
 				listOpen = LIST_CATEGORIES;
 				makeUI();
-			}, new Key("FOUR"));
+			}, new Key("FIVE"));
 			
 			upperLayer.add(listButton);
 		}
@@ -392,6 +393,9 @@ package  {
 				case MODE_REMOVE:
 					checkRemoveControls();
 					break;
+				case MODE_DELAY:
+					checkDelayControls();
+					break;
 			}
 		}
 		
@@ -495,6 +499,10 @@ package  {
 				destroyModules();
 				destroyWires();
 			}
+		}
+		
+		protected function checkDelayControls():void {
+			//TODO
 		}
 		
 		protected function checkMenuState():void {
@@ -773,6 +781,7 @@ package  {
 		protected const MODE_MODULE:int = 0;
 		protected const MODE_CONNECT:int = 1;
 		protected const MODE_REMOVE:int = 2;
+		protected const MODE_DELAY:int = 3;
 		
 		protected const LIST_NONE:int = 0;
 		protected const LIST_MODES:int = 1;
@@ -783,9 +792,10 @@ package  {
 		[Embed(source = "../lib/art/ui/lightbulb.png")] private const _module_sprite:Class;
 		[Embed(source = "../lib/art/ui/wire.png")] private const _connect_sprite:Class;
 		[Embed(source = "../lib/art/ui/remove.png")] private const _remove_sprite:Class;
-		private const MODE_SPRITES:Array = [_module_sprite, _connect_sprite, _remove_sprite];
+		[Embed(source = "../lib/art/ui/delay.png")] private const _delay_sprite:Class;
+		private const MODE_SPRITES:Array = [_module_sprite, _connect_sprite, _remove_sprite, _delay_sprite];
 		[Embed(source = "../lib/art/ui/list.png")] private const _list_sprite:Class;
-		private const HOTKEYS:Array = [new Key("ONE"), new Key("TWO"), new Key("THREE")];
+		private const HOTKEYS:Array = [new Key("ONE"), new Key("TWO"), new Key("THREE"), new Key("FOUR")];
 		[Embed(source = "../lib/art/ui/undo.png")] private const _undo_sprite:Class;
 		[Embed(source = "../lib/art/ui/redo.png")] private const _redo_sprite:Class;
 		[Embed(source = "../lib/art/ui/up.png")] private const _back_sprite:Class;

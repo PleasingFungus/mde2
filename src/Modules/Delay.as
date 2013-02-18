@@ -21,6 +21,12 @@ package Modules {
 			return name + "\n\n" + drive(outputs[0]);
 		}
 		
+		override protected function getSaveValues():Array {
+			var values:Array = super.getSaveValues();
+			values.push(delay);
+			return values;
+		}
+		
 	}
 
 }

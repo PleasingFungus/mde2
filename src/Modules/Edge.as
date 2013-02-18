@@ -48,7 +48,7 @@ package Modules {
 		override public function drive(port:Port):Value {
 			if (lastValue && U.state.time.moment - lastValueSeen < edgeLength)
 				return lastValue;
-			return port.getValue();
+			return inputs[0].getValue();
 		}
 		
 		

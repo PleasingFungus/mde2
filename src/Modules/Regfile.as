@@ -26,6 +26,7 @@ package Modules {
 			
 			configuration = new Configuration(new Range(4, 32, Width));
 			width = Width;
+			configurableInPlace = false;
 			delay = Math.ceil(Math.log(width) / Math.log(2)) * 2;
 		}
 		

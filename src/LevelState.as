@@ -8,12 +8,16 @@ package  {
 	import Modules.Module;
 	import UI.ButtonList;
 	import UI.ModuleSlider;
+	import UI.Sliderbar;
 	import UI.TextButton;
 	import Values.Value;
 	import Components.Carrier;
 	import Components.Wire
 	import UI.GraphicButton;
 	import UI.MenuButton;
+	import flash.display.BitmapData
+	import flash.geom.Rectangle;
+	import flash.geom.Matrix;
 	
 	/**
 	 * ...
@@ -131,6 +135,7 @@ package  {
 			}
 			
 			listOpen == LIST_MODES ? makeModeMenu() : makeModeButton();
+			listOpen == LIST_ZOOM ? makeZoomList() : makeZoomButton();
 			if (mode == MODE_MODULE)
 				switch (listOpen) {
 					case LIST_MODULES: makeModuleList(); break;
@@ -174,6 +179,39 @@ package  {
 				upperLayer.add(new DMemory(memory));
 			}, new Key("C"));
 			upperLayer.add(memoryButton);
+		}
+		
+		protected function makeZoomButton():void {
+			var zoomButton:MenuButton = new GraphicButton(90, 10, _zoom_sprite, function openList():void {
+				listOpen = LIST_ZOOM;
+				makeUI();
+			}, new Key("PLUS"));
+			upperLayer.add(zoomButton);
+		}
+		
+		protected function makeZoomList():void {
+			var zoomButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+			for (var zoomLevel:int = 0; zoomLevel <= 2; zoomLevel++)
+				zoomButtons.push(new GraphicButton( -1, -1, ZOOMS[zoomLevel], function selectZoom(zoomLevel:int):void {
+					FlxG.camera.scroll.x += (FlxG.width / 2) / zoom;
+					FlxG.camera.scroll.y += (FlxG.height / 2) / zoom;
+					
+					zoom = Math.pow(2, -zoomLevel);
+					//U.FONT = zoomLevel == 2 ? U.GENEVA : null;
+					U.FONT_SIZE = zoomLevel == 2 ? 32 : 16;
+					
+					FlxG.camera.scroll.x -= (FlxG.width / 2) / zoom;
+					FlxG.camera.scroll.y -= (FlxG.height / 2) / zoom;
+				}, HOTKEYS[zoomLevel]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == zoom));
+			
+			var zoomList:ButtonList = new ButtonList(90, 10, zoomButtons, function onListClose():void {
+				if (listOpen == LIST_ZOOM)
+					listOpen = LIST_NONE;
+				makeUI();
+			});
+			zoomList.setSpacing(4);
+			zoomList.justDie = true;
+			upperLayer.add(zoomList);
 		}
 		
 		protected function makeTestButtons():void {
@@ -401,6 +439,39 @@ package  {
 						placeModule();
 				}
 			} else {
+				if (FlxG.mouse.justPressed() && !MenuButton.buttonClicked)
+					for each (var dModule:DModule in displayModules)
+						if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc)) {
+							if (!dModule.module.configuration || !dModule.module.configurableInPlace || dModule.module.FIXED)
+								break;
+							
+							var module:Module = dModule.module;
+							var oldValue:int = module.configuration.value;
+							var setValue:Function = function setValue(v:int):void {
+								module.configuration.value = v;
+								module.setByConfig();
+								module.initialize();
+							};
+							var sliderbar:Sliderbar = new Sliderbar(dModule.x + dModule.width / 2, dModule.y + dModule.height / 2,
+																	module.configuration.valueRange, setValue, module.configuration.value);
+							sliderbar.setDieOnClickOutside(true, function onDie():void {
+								var newValue:int = module.configuration.value;
+								if (newValue != oldValue)
+									new CustomAction(function setByConfig(newValue:int, oldValue:int):Boolean {
+										module.configuration.value = newValue;
+										module.setByConfig();
+										module.initialize();
+										return true;
+									}, function setOldConfig(newValue:int, oldValue:int):Boolean {
+										module.configuration.value = oldValue;
+										module.setByConfig();
+										module.initialize();
+										return true;
+									}, newValue, oldValue).execute();
+							});
+							upperLayer.add(sliderbar);
+						}
+				
 				if (ControlSet.DELETE_KEY.justPressed())
 					destroyModules();
 			}
@@ -532,11 +603,42 @@ package  {
 		}
 		
 		
+		
+		private var buf:BitmapData;
+		private var matrix:Matrix;
+		private var boundRect:Rectangle;
 		override public function draw():void {
+			if (buf && buf.width != FlxG.width / zoom) {
+				buf.dispose();
+				buf = null;
+				matrix = null;
+				boundRect = null;
+			}
+			
+			if (!buf)
+				buf = new BitmapData(FlxG.width / zoom, FlxG.height / zoom, true, FlxG.bgColor);
+			if (!boundRect)
+				boundRect = new Rectangle(0, 0, buf.width, buf.height);
+			buf.fillRect(boundRect, FlxG.bgColor);
+			
+			var realBuf:BitmapData = FlxG.camera.buffer;
+			FlxG.camera.buffer = buf;
+			
+			FlxG.camera.width = buf.width;
+			FlxG.camera.height = buf.height;
+			
 			super.draw();
-			upperLayer.draw();
 			if (U.DEBUG && U.DEBUG_RENDER_COLLIDE)
 				debugRenderCollision();
+			
+			if (!matrix) {
+				matrix = new Matrix;
+				matrix.scale(zoom, zoom);
+			}
+			realBuf.draw(buf, matrix);
+			FlxG.camera.buffer = realBuf;
+			
+			upperLayer.draw();
 		}
 		
 		private var debugLineH:FlxSprite;
@@ -676,6 +778,7 @@ package  {
 		protected const LIST_MODES:int = 1;
 		protected const LIST_CATEGORIES:int = 2;
 		protected const LIST_MODULES:int = 3;
+		protected const LIST_ZOOM:int = 4;
 
 		[Embed(source = "../lib/art/ui/lightbulb.png")] private const _module_sprite:Class;
 		[Embed(source = "../lib/art/ui/wire.png")] private const _connect_sprite:Class;

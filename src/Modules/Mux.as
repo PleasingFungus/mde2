@@ -12,6 +12,7 @@ package Modules {
 			super(X, Y, "Mux", Module.CAT_CONTROL, 1, Width, 1);
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
+			configurableInPlace = false;
 			delay = Math.ceil(Math.log(width) / Math.log(2));
 		}
 		

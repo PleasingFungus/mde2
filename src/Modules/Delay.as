@@ -10,7 +10,11 @@ package Modules {
 		public function Delay(X:int, Y:int, delay:int = 1) {
 			super(X, Y, "D", Module.CAT_TIME, 1, 1, 0);
 			configuration = new Configuration(new Range(1, 32, delay));
-			this.delay = delay;
+			setByConfig();
+		}
+		
+		override public function setByConfig():void {
+			delay = configuration.value;
 		}
 		
 		override public function drive(port:Port):Value {

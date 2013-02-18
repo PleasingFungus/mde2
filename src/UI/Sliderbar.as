@@ -23,6 +23,9 @@ package UI {
 		protected var valueBox:FlxSprite;
 		
 		protected var barClicked:Boolean;
+		protected var dieOnClickOutside:Boolean;
+		protected var onDeath:Function;
+		protected var tick:int;
 		
 		public function Sliderbar(X:int, Y:int, ValueRange:Range = null, OnChange:Function = null, InitialValue:int = C.INT_NULL) {
 			super();
@@ -77,9 +80,16 @@ package UI {
 			add(valueText);
 		}
 		
+		public function setDieOnClickOutside(die:Boolean, onDie:Function = null):Sliderbar {
+			dieOnClickOutside = die;
+			onDeath = onDie;
+			return this;
+		}
+		
 		override public function update():void {
 			super.update();
 			checkClick();
+			tick++;
 		}
 		
 		protected function checkClick():void {
@@ -90,6 +100,11 @@ package UI {
 				barClicked = adjMouse.x >= rail.x && adjMouse.x <= rail.x + rail.width && adjMouse.y >= slider.y && adjMouse.y <= slider.y + slider.height;
 				if (barClicked)
 					MenuButton.buttonClicked = true;
+				else if (tick && dieOnClickOutside) {
+					exists = false;
+					if (onDeath != null)
+						onDeath();
+				}
 			}
 			
 			if (barClicked) {

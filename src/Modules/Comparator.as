@@ -11,10 +11,13 @@ package Modules {
 		public var compareValue:int;
 		public function Comparator(X:int, Y:int, CompareValue:int = 0) {
 			super(X, Y, "Comparator", Module.CAT_LOGIC, 1, 1, 0);
-			compareValue = CompareValue;
-			
 			configuration = new Configuration(new Range( -32, 31, CompareValue));
+			setByConfig();
 			delay = 1;
+		}
+		
+		override public function setByConfig():void {
+			compareValue = configuration.value;
 		}
 		
 		override public function renderName():String {

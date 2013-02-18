@@ -6,11 +6,11 @@ package Modules {
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class And extends Module {
+	public class Or extends Module {
 		
 		private var width:int;
-		public function And(X:int, Y:int, Width:int = 2) {
-			super(X, Y, "And", Module.CAT_LOGIC, Width, 1, 0);
+		public function Or(X:int, Y:int, Width:int = 2) {
+			super(X, Y, "Or", Module.CAT_LOGIC, Width, 1, 0);
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
 			configurableInPlace = false;
@@ -23,7 +23,7 @@ package Modules {
 		}
 		
 		override public function renderName():String {
-			var out:String = "And\n\n";
+			var out:String = "Or\n\n";
 			for each (var input:Port in inputs)
 				out += input.getValue() + ',';
 			return out.slice(0, out.length - 1);
@@ -40,10 +40,10 @@ package Modules {
 				var inputValue:Value = inputPort.getValue();
 				if (inputValue.unknown || inputValue.unpowered)
 					return inputValue;
-				if (!BooleanValue.fromValue(inputValue).boolValue)
-					return BooleanValue.FALSE;
+				if (BooleanValue.fromValue(inputValue).boolValue)
+					return BooleanValue.TRUE;
 			}
-			return BooleanValue.TRUE;
+			return BooleanValue.FALSE;
 		}
 		
 	}

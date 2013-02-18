@@ -12,7 +12,7 @@ package Modules {
 		
 		public function Latch(X:int, Y:int, InitialValue:int = 0) {
 			super(X, Y, "Latch", Module.CAT_STORAGE, 1, 1, 1, InitialValue);
-			
+			//configuration = new Configuration(new Range( -32, 31, InitialValue));
 			delay = 2;
 		}
 		

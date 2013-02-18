@@ -18,6 +18,7 @@ package Modules {
 		public var name:String;
 		public var category:String;
 		public var configuration:Configuration;
+		public var configurableInPlace:Boolean;
 		public var layout:ModuleLayout;
 		
 		public var inputs:Vector.<Port>;
@@ -31,8 +32,6 @@ package Modules {
 		public var FIXED:Boolean = false;
 		public var dirty:Boolean;
 		
-		//public var display:DModule;
-		
 		public function Module(X:int, Y:int, Name:String, Category:String, numInputs:int, numOutputs:int, numControls:int ) {
 			super(X, Y);
 			
@@ -44,6 +43,7 @@ package Modules {
 			
 			layout = generateLayout();
 			
+			configurableInPlace = true;
 			initialize();
 		}
 		
@@ -84,6 +84,7 @@ package Modules {
 		
 		public function revertTo(oldValue:Value):void { }
 		public function updateState():Boolean { return false; }
+		public function setByConfig():void { }
 		
 		public function updateDelays():void {
 			for each (var port:Port in outputs)
@@ -195,7 +196,7 @@ package Modules {
 												Edge, Regfile, Comparator,
 												InstructionMemory, DataMemory,
 												Mux, Demux, InstructionMux, InstructionDemux,
-												Accumulator, ProgramCounter, And, Not, Delay, LongClock]) {
+												Or, ProgramCounter, And, Not, Delay]) {
 				ALL_MODULES.push(moduleClass);
 				ARCHETYPES.push(new moduleClass( -1, -1));
 			}

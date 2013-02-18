@@ -49,6 +49,12 @@ package UI {
 			return bg.overlapsPoint(p, true, FlxG.camera);
 		}
 		
+		override public function update():void {
+			super.update();
+			if (!MenuButton.buttonClicked && FlxG.mouse.justPressed() && overlapsPoint(FlxG.mouse)) 
+				MenuButton.buttonClicked = true;
+		}
+		
 		private const BORDER_WIDTH:int = 4;
 		private const INNER_PAD:int = 4;
 	}

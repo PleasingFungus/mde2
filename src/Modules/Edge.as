@@ -16,10 +16,12 @@ package Modules {
 		private var lastMomentStored:int;
 		public function Edge(X:int, Y:int, EdgeLength:int = 2) {
 			super(X, Y, "Edge", Module.CAT_MISC, 1, 1, 0);
-			
-			edgeLength = EdgeLength;
-			
-			configuration = new Configuration(new Range(1, 32, edgeLength));
+			configuration = new Configuration(new Range(1, 32, EdgeLength));
+			setByConfig();
+		}
+		
+		override public function setByConfig():void {
+			edgeLength = configuration.value;
 		}
 		
 		override public function renderName():String {

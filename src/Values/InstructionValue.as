@@ -24,6 +24,8 @@ package Values {
 					return operation.getName()+" R" + destArg + "=R" + sourceArg + "+R" + targetArg;
 				case OpcodeValue.OP_SAV:
 					return operation.getName()+" M[R" + targetArg + "]=R" + sourceArg;
+				case OpcodeValue.OP_JMP:
+					return operation.getName()+" OVER "+ sourceArg;
 			}
 			
 			var out:String = operation.getName() + "(" + sourceArg.toNumber();

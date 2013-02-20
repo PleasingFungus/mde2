@@ -697,6 +697,10 @@ package  {
 		}
 		
 		protected function reset():void {
+			for each (var module:Module in level.modules)
+				if (module.FIXED)
+					module.deregister();
+			
 			savedString = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
 			U.save.data[level.name] = savedString;
 			load();

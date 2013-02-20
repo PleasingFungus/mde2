@@ -85,6 +85,7 @@ package  {
 			load();
 			
 			makeUI();
+			upperLayer.add(new DGoal(level));
 			U.enforceButtonPriorities = true;
 		}
 		

@@ -52,15 +52,18 @@ package Components {
 		}
 		
 		protected function validPosition():Boolean {
-			var sources:int = 0;
+			var source:Port = null;
 			for each (var carriers:Vector.<Carrier> in [U.state.carriersAtPoint(path[0]), U.state.carriersAtPoint(path[path.length - 1])])
 				if (carriers)
-					for each (var carrier:Carrier in carriers)
-						if (carrier.getSource()) {
-							sources += 1;
-							if (sources > 1)
+					for each (var carrier:Carrier in carriers) {
+						var carrierSource:Port = carrier.getSource();
+						if (carrierSource) {
+							if (!source)
+								source = carrierSource;
+							else if (source != carrierSource)
 								return false;
 						}
+					}
 			return true;
 		}
 		

@@ -1,5 +1,6 @@
 package Testing {
 	import Values.Value;
+	import Values.FixedValue;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -16,6 +17,13 @@ package Testing {
 		
 		public function genMem(Seed:Number = NaN):Vector.<Value> {
 			return null;
+		}
+		
+		protected function generateBlankMemory():Vector.<Value> {
+			var memory:Vector.<Value> = new Vector.<Value>;
+			for (var i:int = memory.length; i < U.MAX_INT - U.MIN_INT; i++)
+				memory.push(FixedValue.NULL);
+			return memory;
 		}
 		
 		public function runTest(levelState:LevelState):void {

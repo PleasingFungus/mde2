@@ -41,11 +41,11 @@ package  {
 		
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
-			levels.push(new Level("Sandbox",
-								  new LevelGoal("Have fun!", false),
+			levels.push(new Level("Tutorial 1: Wires",
+								  new WireTutorialGoal,
 								  false,
-								  [ConstIn, Adder, Clock, ASU, Latch, Mux, Demux], [],
-								  [new ConstIn(8, 48, 1), new Regfile(40, 16), new Adder(24, 40)]),
+								  [], [],
+								  [new ConstIn(24, 32, 1), new ASU(40, 32), new DataMemory(56, 32)]),
 						new Level("Add-CPU",
 								  new GeneratedGoal("Set-Add-Save!", Test),
 								  false,

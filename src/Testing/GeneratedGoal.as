@@ -27,11 +27,9 @@ package Testing {
 		protected function memFromTest(test:Test = null):Vector.<Value> {
 			if (!test) test = currentTest;
 			var instructions:Vector.<Instruction> = test.instructions;
-			var memory:Vector.<Value> = new Vector.<Value>;
-			for each (var instr:Instruction in instructions)
-				memory.push(instr.toMemValue());
-			for (var i:int = memory.length; i < U.MAX_INT - U.MIN_INT; i++)
-				memory.push(FixedValue.NULL);
+			var memory:Vector.<Value> = generateBlankMemory();
+			for (var i:int = 0; i < instructions.length; i++)
+				memory[i] = instructions[i].toMemValue();
 			return memory;
 		}
 		

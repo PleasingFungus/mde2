@@ -43,7 +43,7 @@ package Displays {
 		
 		protected function makePages():void {
 			var BORDER:int = 10;
-			var COL_WIDTH:int = 175;
+			var COL_WIDTH:int = 225;
 			var COL_HEIGHT:int = bg.height - BORDER * 2;
 			var ROW_HEIGHT:int = 20;
 			var ROWS:int = COL_HEIGHT / (ROW_HEIGHT + BORDER / 2);

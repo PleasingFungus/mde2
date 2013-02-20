@@ -21,8 +21,9 @@ package Testing.Instructions {
 			return args;
 		}
 		
-		override public function execute(memory:Dictionary, registers:Dictionary):void {
+		override public function execute(memory:Dictionary, registers:Dictionary):int {
 			registers[args[0].value] = args[1].value;
+			return C.INT_NULL;
 		}
 		
 		override public function toMemValue():InstructionValue {

@@ -22,7 +22,8 @@ package Testing.Abstractions {
 			out += type.name + " ";
 			for each (var arg:int in args)
 				out += arg +" ";
-			out += "= " + value;
+			if (value != C.INT_NULL)
+				out += "= " + value;
 			return out;
 		}
 	}

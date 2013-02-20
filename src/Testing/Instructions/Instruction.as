@@ -36,8 +36,8 @@ package Testing.Instructions {
 			return null;
 		}
 		
-		public function execute(memory:Dictionary, registers:Dictionary):void {
-			
+		public function execute(memory:Dictionary, registers:Dictionary):int {
+			return C.INT_NULL;
 		}
 		
 		public function toMemValue():InstructionValue {

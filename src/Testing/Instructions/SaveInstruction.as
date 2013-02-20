@@ -13,8 +13,9 @@ package Testing.Instructions {
 			super(registers, abstract, noop);
 		}
 		
-		override public function execute(memory:Dictionary, registers:Dictionary):void {
+		override public function execute(memory:Dictionary, registers:Dictionary):int {
 			memory[registers[args[1].value]] = registers[args[0].value];
+			return C.INT_NULL;
 		}
 		
 		override public function toMemValue():InstructionValue {

@@ -58,6 +58,8 @@ package Testing {
 				log("Virtual registers: " + virtualRegisters);
 			}
 			
+			instructions = postProcess(instructions);
+			
 			//TODO: scramble registers
 			
 			log("\n\nSEED: " + seed);
@@ -81,9 +83,17 @@ package Testing {
 				log("Mem test success");
 		}
 		
+		protected function postProcess(instructions:Vector.<Instruction>):Vector.<Instruction> {
+			return instructions;
+		}
+		
 		protected function executeInEnvironment(memory:Dictionary, registers:Dictionary, instructions:Vector.<Instruction>):void {
-			for each (var instruction:Instruction in instructions)
-				instruction.execute(memory, registers);
+			for (var line:int = 0; line < instructions.length; line ++) {
+				var instruction:Instruction = instructions[line];
+				var jump:int = instruction.execute(memory, registers);
+				if (jump != C.INT_NULL)
+					line = jump;
+			}
 		}
 		
 		protected function genAbstractions(abstractions:Vector.<InstructionAbstraction>, values:Vector.<int>, depth:int):void {

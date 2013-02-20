@@ -13,8 +13,9 @@ package Testing.Instructions {
 			super(registers, abstract, noop);
 		}
 		
-		override public function execute(memory:Dictionary, registers:Dictionary):void {
+		override public function execute(memory:Dictionary, registers:Dictionary):int {
 			registers[args[0].value] = registers[args[1].value] + registers[args[2].value];
+			return C.INT_NULL;
 		}
 		
 		override protected function getOpcode():OpcodeValue {

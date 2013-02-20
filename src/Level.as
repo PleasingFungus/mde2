@@ -55,7 +55,12 @@ package  {
 								  new GeneratedGoal("Set-Add-Save!", Test, 12, 10000),
 								  true,
 								  null,
-								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]));
+								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]),
+						new Level("Jump! Jump!",
+								  new GeneratedGoal("Jump!", JumpTest),
+								  false,
+								  [ConstIn, And, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
+								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV, OpcodeValue.OP_JMP]));
 			return levels;
 		}
 	}

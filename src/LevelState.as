@@ -125,6 +125,7 @@ package  {
 			upperLayer.add(new Scroller);
 			upperLayer.add(new DCurrent(displayWires, displayModules));
 			makeDataButton();
+			makeInfoButton();
 			makeBackButton();
 			
 			if (mode == MODE_DELAY) {
@@ -165,15 +166,15 @@ package  {
 		}
 		
 		protected function makeSaveButton():void {
-			var saveButton:GraphicButton = new GraphicButton(FlxG.width - 45, 50, _save_sprite, save, new Key("S"));
+			var saveButton:GraphicButton = new GraphicButton(FlxG.width - 85, 50, _save_sprite, save, new Key("S"));
 			upperLayer.add(saveButton);
 		}
 		
 		protected function makeUndoButtons():void {
-			var undoButton:GraphicButton = new GraphicButton(FlxG.width - 125, 50, _undo_sprite, undo, new Key("Z"));
+			var undoButton:GraphicButton = new GraphicButton(FlxG.width - 165, 50, _undo_sprite, undo, new Key("Z"));
 			upperLayer.add(undoButton);
 			
-			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 85, 50, _redo_sprite, redo, new Key("Y"));
+			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 125, 50, _redo_sprite, redo, new Key("Y"));
 			upperLayer.add(redoButton);
 			
 			var resetButton:GraphicButton = new GraphicButton(FlxG.width - 45, 90, _reset_sprite, reset);
@@ -187,6 +188,13 @@ package  {
 				upperLayer.add(new DMemory(memory));
 			}, new Key("C"));
 			upperLayer.add(memoryButton);
+		}
+		
+		protected function makeInfoButton():void {
+			var infoButton:MenuButton = new GraphicButton(FlxG.width - 45, 50, _info_sprite, function _():void {
+				upperLayer.add(new DGoal(level));
+			}, new Key("I"));
+			upperLayer.add(infoButton);
 		}
 		
 		protected function makeZoomButton():void {
@@ -812,6 +820,7 @@ package  {
 		[Embed(source = "../lib/art/ui/x3.png")] private const _z3_sprite:Class;
 		private const ZOOMS:Array = [_z1_sprite, _z2_sprite, _z3_sprite];
 		[Embed(source = "../lib/art/ui/code.png")] private const _data_sprite:Class;
+		[Embed(source = "../lib/art/ui/info.png")] private const _info_sprite:Class;
 		[Embed(source = "../lib/art/ui/random.png")] private const _random_sprite:Class;
 		[Embed(source = "../lib/art/ui/reset.png")] private const _reset_sprite:Class;
 		[Embed(source = "../lib/art/ui/test.png")] private const _test_sprite:Class;

@@ -47,6 +47,7 @@ package  {
 		protected var moduleCategory:String;
 		protected var moduleList:ButtonList;
 		protected var moduleSliders:Vector.<ModuleSlider>;
+		protected var displayDelay:DDelay;
 		
 		public var actionStack:Vector.<Action>;
 		public var reactionStack:Vector.<Action>;
@@ -125,6 +126,12 @@ package  {
 			makeDataButton();
 			makeBackButton();
 			
+			if (mode == MODE_DELAY) {
+				if (!displayDelay || !displayDelay.exists)
+					midLayer.add(displayDelay = new DDelay(modules, displayModules));
+			} else if (displayDelay)
+				displayDelay.exists = false;
+			
 			if (!editEnabled) {
 				listOpen = LIST_NONE;
 				if (currentModule) {
@@ -198,7 +205,7 @@ package  {
 					
 					zoom = Math.pow(2, -zoomLevel);
 					//U.FONT = zoomLevel == 2 ? U.GENEVA : null;
-					U.FONT_SIZE = zoomLevel == 2 ? 32 : 16;
+					//U.FONT_SIZE = zoomLevel == 2 ? 32 : 16;
 					
 					FlxG.camera.scroll.x -= (FlxG.width / 2) / zoom;
 					FlxG.camera.scroll.y -= (FlxG.height / 2) / zoom;
@@ -393,9 +400,6 @@ package  {
 				case MODE_REMOVE:
 					checkRemoveControls();
 					break;
-				case MODE_DELAY:
-					checkDelayControls();
-					break;
 			}
 		}
 		
@@ -499,10 +503,6 @@ package  {
 				destroyModules();
 				destroyWires();
 			}
-		}
-		
-		protected function checkDelayControls():void {
-			//TODO
 		}
 		
 		protected function checkMenuState():void {

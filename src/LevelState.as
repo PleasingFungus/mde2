@@ -801,6 +801,7 @@ package  {
 		
 		
 		public function runTest():void {
+			save();
 			displayTime.startPlaying();
 			runningTest = true;
 		}

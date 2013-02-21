@@ -273,9 +273,14 @@ package  {
 				currentModule = null;
 			}
 			
+			var modes:Array = [MODE_CONNECT, MODE_REMOVE];
+			if (level.allowedModules.length)
+				modes.push(MODE_MODULE);
+			if (level.delay)
+				modes.push(MODE_DELAY);
+			
 			var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-			var lastMode:int = level.delay ? MODE_DELAY : MODE_REMOVE;
-			for (var newMode:int = 0; newMode <= lastMode; newMode++) {
+			for each (var newMode:int in modes) {
 				modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 					mode = newMode;
 				}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
@@ -823,7 +828,7 @@ package  {
 		[Embed(source = "../lib/art/ui/delay.png")] private const _delay_sprite:Class;
 		private const MODE_SPRITES:Array = [_module_sprite, _connect_sprite, _remove_sprite, _delay_sprite];
 		[Embed(source = "../lib/art/ui/list.png")] private const _list_sprite:Class;
-		private const HOTKEYS:Array = [new Key("ONE"), new Key("TWO"), new Key("THREE"), new Key("FOUR")];
+		private const HOTKEYS:Array = [new Key("THREE"), new Key("ONE"), new Key("TWO"), new Key("FOUR")];
 		[Embed(source = "../lib/art/ui/undo.png")] private const _undo_sprite:Class;
 		[Embed(source = "../lib/art/ui/redo.png")] private const _redo_sprite:Class;
 		[Embed(source = "../lib/art/ui/up.png")] private const _back_sprite:Class;

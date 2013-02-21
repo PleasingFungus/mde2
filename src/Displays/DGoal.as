@@ -55,6 +55,9 @@ package Displays {
 				testing.text += " per test";
 			testing.setFormat(U.FONT, U.FONT_SIZE);
 			add(testing);
+			
+			for each (var spr:FlxSprite in members)
+				spr.alpha = 0.85;
 		}
 		
 		
@@ -68,17 +71,8 @@ package Displays {
 		}
 		
 		protected function checkClick():void {
-			if (!tick || !FlxG.mouse.justPressed())
-				return;
-			
-			var adjMouse:FlxPoint = new FlxPoint(FlxG.mouse.x + FlxG.camera.scroll.x * (bg.scrollFactor.x - 1), 
-												 FlxG.mouse.y + FlxG.camera.scroll.y * (bg.scrollFactor.y - 1));
-			
-			if (bg.overlapsPoint(adjMouse))
-				MenuButton.buttonClicked = true;
-			else
+			if (tick && FlxG.mouse.justPressed())
 				exists = false;
-			
 		}
 		
 		protected function checkControls():void {

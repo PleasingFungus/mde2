@@ -33,7 +33,7 @@ package  {
 				levelSelectors.push(button);
 			}
 			
-			var levelList:ButtonList = new ButtonList(FlxG.width / 2 - 80, FlxG.height / 2 - 60, levelSelectors);
+			var levelList:ButtonList = new ButtonList(FlxG.width / 2 - 100, FlxG.height / 4 + 20, levelSelectors);
 			levelList.closesOnClickOutside = false;
 			add(levelList);
 			

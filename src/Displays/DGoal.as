@@ -38,13 +38,29 @@ package Displays {
 			//bg.alpha = 0.67;
 			add(bg);
 			
-			var title:FlxText = new FlxText(bg.x + 8, bg.y + 8, bg.width - 16, level.name);
+			var X:int = bg.x + 8;
+			var Width:int = bg.width - 16;
+			var title:FlxText = new FlxText(X, bg.y + 8, Width, level.name);
 			title.setFormat(U.FONT, U.FONT_SIZE * 2, 0xffffff, 'center');
 			add(title);
+			var Y:int = title.y + title.height + 8;
 			
-			var description:FlxText = new FlxText(bg.x + 8, title.y + title.height + 8, bg.width - 16, level.goal.description);
+			var description:FlxText = new FlxText(X, Y, Width, level.goal.description);
 			description.setFormat(U.FONT, U.FONT_SIZE);
 			add(description);
+			Y = description.y + description.height + 16;
+			
+			if (level.expectedOps.length) {
+				var expectedOps:FlxText = new FlxText(X, Y, Width, "Ops to support: " + level.expectedOps.join(', ')).setFormat(U.FONT, U.FONT_SIZE);
+				add(expectedOps);
+				Y = expectedOps.y + expectedOps.height + 16;
+			}
+			
+			if (level.delay) {
+				var delayEnabled:FlxText = new FlxText(X, Y, Width, "Propagation delay enabled.").setFormat(U.FONT, U.FONT_SIZE);
+				add(delayEnabled);
+				Y = delayEnabled.y + delayEnabled.height + 16;
+			}
 			
 			//var goal:FlxText = new FlxText(description.x, description.y + description.height + 8, description.width,
 										   //"Goal: M["+
@@ -54,11 +70,9 @@ package Displays {
 			else
 				testType = "Simple run";
 			
-			var testing:FlxText = new FlxText(description.x, description.y + description.height + 16, description.width,
-											  "Testing: "+testType + ", time limit of " + level.goal.timeLimit + " cycles");
+			var testing:FlxText = new FlxText(X, Y, Width, "Testing: "+testType + ", time limit of " + level.goal.timeLimit + " cycles").setFormat(U.FONT, U.FONT_SIZE);
 			if (level.goal is GeneratedGoal)
 				testing.text += " per test";
-			testing.setFormat(U.FONT, U.FONT_SIZE);
 			add(testing);
 		}
 		

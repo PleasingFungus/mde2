@@ -18,6 +18,8 @@ package Testing {
 			testClass = TestClass;
 			testRuns = TestRuns;
 			timeLimit = Timeout;
+			dynamicallyTested = true;
+			randomizedMemory = true;
 		}
 		
 		override public function genMem(Seed:Number = NaN):Vector.<Value> {

@@ -73,6 +73,9 @@ package Modules {
 				return false;
 			
 			var input:Value = inputs[0].getValue();
+			if (input.unpowered)
+				return false;
+			
 			U.state.time.deltas.push(new Delta(U.state.time.moment, this,
 											   new IndexedValue(values[selectIndex], selectIndex)));
 			values[selectIndex] = input;

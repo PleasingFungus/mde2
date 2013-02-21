@@ -9,14 +9,14 @@ package Testing {
 		
 		public var description:String;
 		public var dynamicallyTested:Boolean;
+		public var randomizedMemory:Boolean;
 		public var timeLimit:int = int.MAX_VALUE;
-		public function LevelGoal(Description:String, DynamicallyTested:Boolean = true) {
+		public function LevelGoal(Description:String) {
 			description = Description;
-			dynamicallyTested = DynamicallyTested;
 		}
 		
 		public function genMem(Seed:Number = NaN):Vector.<Value> {
-			return null;
+			return generateBlankMemory();
 		}
 		
 		protected function generateBlankMemory():Vector.<Value> {

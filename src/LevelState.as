@@ -10,6 +10,7 @@ package  {
 	import UI.ModuleSlider;
 	import UI.Sliderbar;
 	import UI.TextButton;
+	import Values.FixedValue;
 	import Values.Value;
 	import Components.Carrier;
 	import Components.Wire
@@ -39,6 +40,9 @@ package  {
 		protected var listOpen:int;
 		protected var UIChanged:Boolean;
 		protected var editEnabled:Boolean = true;
+		
+		protected var undoButton:MenuButton;
+		protected var redoButton:MenuButton;
 		
 		protected var displayTime:DTime;
 		protected var preserveModule:Boolean;
@@ -79,8 +83,7 @@ package  {
 			reactionStack = new Vector.<Action>;
 			zoom = 1;
 			
-			if (level.goal.dynamicallyTested)
-				initialMemory = level.goal.genMem(0.5);
+			initialMemory = level.goal.genMem(0.5);
 			
 			load();
 			
@@ -171,10 +174,10 @@ package  {
 		}
 		
 		protected function makeUndoButtons():void {
-			var undoButton:GraphicButton = new GraphicButton(FlxG.width - 165, 50, _undo_sprite, undo, new Key("Z"));
+			undoButton = new GraphicButton(FlxG.width - 165, 50, _undo_sprite, undo, new Key("Z"));
 			upperLayer.add(undoButton);
 			
-			var redoButton:GraphicButton = new GraphicButton(FlxG.width - 125, 50, _redo_sprite, redo, new Key("Y"));
+			redoButton = new GraphicButton(FlxG.width - 125, 50, _redo_sprite, redo, new Key("Y"));
 			upperLayer.add(redoButton);
 			
 			var resetButton:GraphicButton = new GraphicButton(FlxG.width - 45, 90, _reset_sprite, reset);
@@ -183,8 +186,16 @@ package  {
 		
 		protected function makeDataButton():void {
 			if (!memory || !memory.length) return;
+			var nonNull:Boolean = false;
+			for each (var value:Value in memory)
+				if (value != FixedValue.NULL) {
+					nonNull = true;
+					break;
+				}
+			if (!nonNull)
+				return;
 			
-			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 85, 10, _data_sprite, function _():void {
+			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 125, 10, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory));
 			}, new Key("C"));
 			upperLayer.add(memoryButton);
@@ -231,19 +242,21 @@ package  {
 		}
 		
 		protected function makeTestButtons():void {
-			if (!memory || !memory.length) return;
+			if (level.goal.randomizedMemory) {
+				var randomButton:MenuButton = new GraphicButton(FlxG.width - 165, 10, _random_sprite, function _():void {
+					initialMemory = level.goal.genMem();
+					memory = initialMemory.slice();
+				}, new Key("R"));
+				upperLayer.add(randomButton);
+			}
 			
-			var randomButton:MenuButton = new GraphicButton(FlxG.width - 125, 10, _random_sprite, function _():void {
-				initialMemory = level.goal.genMem();
-				memory = initialMemory.slice();
-			}, new Key("R"));
-			upperLayer.add(randomButton);
-			
-			var kludge:LevelState = this;
-			var testButton:MenuButton = new GraphicButton(FlxG.width - 165, 10, _test_sprite, function _():void {
-				level.goal.runTest(kludge);
-			}, new Key("T"));
-			upperLayer.add(testButton);
+			if (level.goal.dynamicallyTested) {
+				var kludge:LevelState = this;
+				var testButton:MenuButton = new GraphicButton(FlxG.width - 85, 10, _test_sprite, function _():void {
+					level.goal.runTest(kludge);
+				}, new Key("T"));
+				upperLayer.add(testButton);
+			}
 		}
 		
 		protected function makeModeButton():void {
@@ -515,7 +528,8 @@ package  {
 		}
 		
 		protected function checkMenuState():void {
-
+			undoButton.exists = actionStack.length > 0;
+			redoButton.exists = reactionStack.length > 0;
 			if (mode == MODE_MODULE)
 				checkModuleState();
 		}

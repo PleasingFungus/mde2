@@ -7,12 +7,9 @@ package Testing {
 	public class WireTutorialGoal extends LevelGoal {
 		
 		public function WireTutorialGoal() {
-			super("Set memory line 1 to 2!", true);
+			super("Set memory line 1 to 2!");
+			dynamicallyTested = true;
 			timeLimit = 5;
-		}
-		
-		override public function genMem(Seed:Number = NaN):Vector.<Value> {
-			return generateBlankMemory();
 		}
 		
 		override public function runTest(levelState:LevelState):void {

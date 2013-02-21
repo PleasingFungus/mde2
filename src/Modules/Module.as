@@ -196,7 +196,7 @@ package Modules {
 												Edge, Regfile, Comparator,
 												InstructionMemory, DataMemory,
 												Mux, Demux, InstructionMux, InstructionDemux,
-												Or, ProgramCounter, And, Not, Delay]) {
+												Or, ProgramCounter, And, Not, Delay, DataWriter]) {
 				ALL_MODULES.push(moduleClass);
 				ARCHETYPES.push(new moduleClass( -1, -1));
 			}

@@ -85,6 +85,7 @@ package Displays {
 			for each (var displayPort:DPort in displayPorts)
 				displayPort.updatePosition(baseX, baseY);
 			
+			nameText.size = U.state.zoom >= 0.5 ? U.FONT_SIZE : U.FONT_SIZE * 2;
 			nameText.x = x;
 			nameText.y = y + (height - nameText.height) / 2;
 		}
@@ -94,7 +95,7 @@ package Displays {
 			for each (var displayPort:DPort in displayPorts)
 				displayPort.draw();
 			
-			if (U.state.zoom >= 0.5) {
+			if (U.state.zoom >= 0.25) {
 				nameText.text = getName();
 				nameText.draw();
 			}

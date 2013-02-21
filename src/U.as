@@ -34,7 +34,7 @@ package  {
 		public static var levels:Vector.<Level>;
 		public static var state:LevelState;
 		
-		public static const GRID_DIM:int = 8;
+		public static const GRID_DIM:int = 16;
 		
 		public static const V_UNPOWERED:FixedValue = new FixedValue("-", NaN);
 		public static const V_UNKNOWN:FixedValue = new FixedValue("?", NaN);

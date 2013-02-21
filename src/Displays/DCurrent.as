@@ -36,7 +36,7 @@ package Displays {
 			
 			for each (var dModule:DModule in dModules)
 				for each (var dPort:DPort in dModule.displayPorts)
-					if (dPort.nearPoint(U.mouseFlxLoc, 3 / U.state.zoom)) {
+					if (dPort.nearPoint(U.mouseFlxLoc, U.GRID_DIM / 2 / U.state.zoom)) {
 						buildDisplay(moused = dPort, carrier = dPort.port);
 						break;
 					}

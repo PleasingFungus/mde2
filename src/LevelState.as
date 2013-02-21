@@ -218,14 +218,12 @@ package  {
 		
 		protected function makeZoomList():void {
 			var zoomButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-			for (var zoomLevel:int = 0; zoomLevel <= 2; zoomLevel++)
+			for (var zoomLevel:int = 0; zoomLevel < ZOOMS.length; zoomLevel++)
 				zoomButtons.push(new GraphicButton( -1, -1, ZOOMS[zoomLevel], function selectZoom(zoomLevel:int):void {
 					FlxG.camera.scroll.x += (FlxG.width / 2) / zoom;
 					FlxG.camera.scroll.y += (FlxG.height / 2) / zoom;
 					
 					zoom = Math.pow(2, -zoomLevel);
-					//U.FONT = zoomLevel == 2 ? U.GENEVA : null;
-					//U.FONT_SIZE = zoomLevel == 2 ? 32 : 16;
 					
 					FlxG.camera.scroll.x -= (FlxG.width / 2) / zoom;
 					FlxG.camera.scroll.y -= (FlxG.height / 2) / zoom;
@@ -651,8 +649,11 @@ package  {
 				boundRect = null;
 			}
 			
-			if (!buf)
+			if (!buf) {
+				var w:int = FlxG.width / zoom;
+				var h:int = FlxG.height / zoom;
 				buf = new BitmapData(FlxG.width / zoom, FlxG.height / zoom, true, FlxG.bgColor);
+			}
 			if (!boundRect)
 				boundRect = new Rectangle(0, 0, buf.width, buf.height);
 			buf.fillRect(boundRect, FlxG.bgColor);
@@ -838,6 +839,7 @@ package  {
 		[Embed(source = "../lib/art/ui/x1b.png")] private const _z1_sprite:Class;
 		[Embed(source = "../lib/art/ui/x1_2b.png")] private const _z2_sprite:Class;
 		[Embed(source = "../lib/art/ui/x1_4b.png")] private const _z3_sprite:Class;
+		[Embed(source = "../lib/art/ui/x1_8b.png")] private const _z4_sprite:Class;
 		private const ZOOMS:Array = [_z1_sprite, _z2_sprite, _z3_sprite];
 		[Embed(source = "../lib/art/ui/code.png")] private const _data_sprite:Class;
 		[Embed(source = "../lib/art/ui/info.png")] private const _info_sprite:Class;

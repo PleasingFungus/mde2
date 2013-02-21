@@ -20,10 +20,10 @@ package Displays {
 			port = Layout.port;
 			super();
 			if (layout.vertical) {
-				makeGraphic(3, U.GRID_DIM / 2, 0xffffffff);
+				makeGraphic(3 / U.state.zoom, U.GRID_DIM / 2, 0xffffffff);
 				offset.x = width / 2;
 			} else {
-				makeGraphic(U.GRID_DIM / 2, 3, 0xffffffff);
+				makeGraphic(U.GRID_DIM / 2, 3 / U.state.zoom, 0xffffffff);
 				offset.y = height / 2;
 			}
 		}

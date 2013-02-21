@@ -19,6 +19,11 @@ package Displays {
 		}
 		
 		protected function init():void {
+			var shade:FlxSprite = new FlxSprite;
+			shade.makeGraphic(FlxG.width, FlxG.height, 0xff000000);
+			shade.alpha = 0.4;
+			add(shade);
+			
 			var width:int = FlxG.width * WIDTH_FRACTION;
 			var height:int = FlxG.height * HEIGHT_FRACTION;
 			bg = new FlxSprite((FlxG.width - width) / 2, (FlxG.height - height) / 2).makeGraphic(width, height, 0xff202020);
@@ -55,9 +60,6 @@ package Displays {
 				testing.text += " per test";
 			testing.setFormat(U.FONT, U.FONT_SIZE);
 			add(testing);
-			
-			for each (var spr:FlxSprite in members)
-				spr.alpha = 0.85;
 		}
 		
 		

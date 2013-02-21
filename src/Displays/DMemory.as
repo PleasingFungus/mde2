@@ -27,6 +27,11 @@ package Displays {
 		}
 		
 		protected function makeBG():void {
+			var shade:FlxSprite = new FlxSprite;
+			shade.makeGraphic(FlxG.width, FlxG.height, 0xff000000);
+			shade.alpha = 0.4;
+			add(shade);
+			
 			var width:int = FlxG.width * WIDTH_FRACTION;
 			var height:int = FlxG.height * HEIGHT_FRACTION;
 			bg = new FlxSprite((FlxG.width - width) / 2, (FlxG.height - height) / 2).makeGraphic(width, height, 0xff202020);
@@ -38,7 +43,6 @@ package Displays {
 			var innerDark:FlxSprite = new FlxSprite().makeGraphic(width - raisedBorderWidth * 4, height - raisedBorderWidth * 4, 0xff202020)
 			bg.stamp(innerDark, raisedBorderWidth * 2, raisedBorderWidth * 2);
 			
-			bg.alpha = 0.9;
 			add(bg);
 		}
 		
@@ -58,7 +62,6 @@ package Displays {
 													  bg.y + BORDER + row * (ROW_HEIGHT + BORDER / 2),
 													  COL_WIDTH, memLine + " : " + memValue.toString())
 					memText.setFormat(U.FONT, 16);
-					memText.alpha = bg.alpha;
 					add(memText);
 					
 					row += 1;

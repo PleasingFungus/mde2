@@ -835,9 +835,9 @@ package  {
 		[Embed(source = "../lib/art/ui/floppy.png")] private const _save_sprite:Class;
 		[Embed(source = "../lib/art/ui/yppolf.png")] private const _evas_sprite:Class;
 		[Embed(source = "../lib/art/ui/maglass.png")] private const _zoom_sprite:Class;
-		[Embed(source = "../lib/art/ui/x1.png")] private const _z1_sprite:Class;
-		[Embed(source = "../lib/art/ui/x2.png")] private const _z2_sprite:Class;
-		[Embed(source = "../lib/art/ui/x3.png")] private const _z3_sprite:Class;
+		[Embed(source = "../lib/art/ui/x1b.png")] private const _z1_sprite:Class;
+		[Embed(source = "../lib/art/ui/x1_2b.png")] private const _z2_sprite:Class;
+		[Embed(source = "../lib/art/ui/x1_4b.png")] private const _z3_sprite:Class;
 		private const ZOOMS:Array = [_z1_sprite, _z2_sprite, _z3_sprite];
 		[Embed(source = "../lib/art/ui/code.png")] private const _data_sprite:Class;
 		[Embed(source = "../lib/art/ui/info.png")] private const _info_sprite:Class;

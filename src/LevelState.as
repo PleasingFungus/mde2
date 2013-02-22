@@ -43,6 +43,7 @@ package  {
 		
 		protected var undoButton:MenuButton;
 		protected var redoButton:MenuButton;
+		protected var saveButton:GraphicButton;
 		
 		protected var displayTime:DTime;
 		protected var preserveModule:Boolean;
@@ -169,7 +170,7 @@ package  {
 		}
 		
 		protected function makeSaveButton():void {
-			var saveButton:GraphicButton = new GraphicButton(FlxG.width - 85, 50, _save_sprite, save, new Key("S"));
+			saveButton = new GraphicButton(FlxG.width - 85, 50, _save_sprite, save, new Key("S"));
 			upperLayer.add(saveButton);
 		}
 		
@@ -535,6 +536,8 @@ package  {
 		protected function checkMenuState():void {
 			undoButton.exists = actionStack.length > 0;
 			redoButton.exists = reactionStack.length > 0;
+			saveButton.loadGraphic(genSaveString() == savedString ? _evas_sprite : _save_sprite);
+			
 			if (mode == MODE_MODULE)
 				checkModuleState();
 		}

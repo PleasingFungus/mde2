@@ -42,6 +42,7 @@ package UI {
 		}
 		
 		public function loadGraphic(RawGraphic:Class):void {
+			if (rawGraphic == RawGraphic) return;
 			rawGraphic = RawGraphic;
 			graphic.loadGraphic(rawGraphic);
 		}

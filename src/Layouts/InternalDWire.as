@@ -11,12 +11,14 @@ package Layouts {
 	 */
 	public class InternalDWire extends DWire {
 		
+		protected var lastDashed:Boolean;
 		public function InternalDWire(wire:InternalWire) {
 			super(wire);
 		}
 		
 		override protected function buildSegs():void {
 			var iWire:InternalWire = wire as InternalWire;
+			lastDashed = iWire.control;
 			
 			if (!iWire.control) {
 				super.buildSegs();
@@ -41,7 +43,15 @@ package Layouts {
 			hSeg.offset.y = vSeg.offset.x = -2;
 			
 			join = new FlxSprite;
+			animationBlit = new FlxSprite().makeGraphic(w, w);
 			
+			lastZoom = U.state.zoom;
+		}
+		
+		override public function update():void {
+			super.update();
+			if (lastDashed != (wire as InternalWire).control)
+				buildSegs();
 		}
 		
 		override protected function getColor():uint {
@@ -56,6 +66,14 @@ package Layouts {
 			if (value.unpowered)
 				return 0x1d19d9;
 			return 0x0;
+		}
+		
+		override protected function getBlitActive(c:uint):Boolean {
+			return !lastDashed && c == 0x0 && (wire as InternalWire).getValue().toNumber() != 0; 
+		}
+		
+		override protected function checkSource():void {
+			sourcePoint = 0;
 		}
 	}
 

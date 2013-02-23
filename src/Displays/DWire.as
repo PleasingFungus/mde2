@@ -1,4 +1,5 @@
 package Displays {
+	import Components.Port;
 	import flash.geom.Point;
 	import org.flixel.*;
 	import Components.Wire;
@@ -13,9 +14,13 @@ package Displays {
 		
 		public var wire:Wire;
 		
+		protected var sourcePoint:int = -1;
+		protected var lastZoom:Number;
+		
 		protected var hSeg:FlxSprite;
 		protected var vSeg:FlxSprite;
 		protected var join:FlxSprite;
+		protected var animationBlit:FlxSprite;
 		
 		public function DWire(wire:Wire) {
 			this.wire = wire;
@@ -29,12 +34,39 @@ package Displays {
 			hSeg.height = vSeg.width = w + 4;
 			hSeg.offset.y = vSeg.offset.x = -2;
 			join = new FlxSprite().makeGraphic(w + 4, w + 4);
+			animationBlit = new FlxSprite().makeGraphic(w, w);
+			
+			lastZoom = U.state.zoom;
 		}
 		
 		override public function update():void {
 			visible = wire.exists;
-			
+			checkSource();
 			super.update();
+		}
+		
+		protected function checkSource():void {
+			var s:Port = wire.getSource();
+			if (!s) {
+				sourcePoint = -1;
+				return;
+			}
+			
+			if (sourcePoint != -1)
+				return;
+			
+			for (var i:int = 0; i < wire.path.length; i++) {
+				var point:Point = wire.path[i];
+				var carriers:Vector.<Carrier> = U.state.carriersAtPoint(point);
+				if (carriers)
+					for each (var carrier:Carrier in carriers)
+						if (carrier.getSource() == s) {
+							sourcePoint = i;
+							return;
+						}
+			}
+			
+			throw new Error("No source-point found!");
 		}
 		
 		protected function iterWire(perform:Function):void {
@@ -78,6 +110,23 @@ package Displays {
 			iterWire(function drawWire(seg:FlxSprite):void {
 				seg.draw();
 			});
+			
+			var blitActive:Boolean = getBlitActive(segColor);
+			if (blitActive) {
+				var blitFraction:Number = (Math.floor(U.state.elapsed * BLIT_PERIOD * U.GRID_DIM) % U.GRID_DIM) / U.GRID_DIM;
+				for (var i:int = 0; i < wire.path.length - 1; i++) {
+					var p1:Point = wire.path[i];
+					var p2:Point = wire.path[i + 1];
+					if (i < sourcePoint) {
+						p1 = wire.path[i + 1];
+						p2 = wire.path[i];
+					}
+					
+					animationBlit.x = (p1.x + (p2.x - p1.x) * blitFraction) * U.GRID_DIM -1;
+					animationBlit.y = (p1.y + (p2.y - p1.y) * blitFraction) * U.GRID_DIM -1;
+					animationBlit.draw();
+				}
+			}
 		}
 		
 		protected function getColor():uint {
@@ -92,8 +141,12 @@ package Displays {
 			return 0x0;
 		}
 		
+		protected function getBlitActive(c:uint):Boolean {
+			return c == 0x0 && wire.getSource().getValue().toNumber() != 0; 
+		}
+		
 		private function checkZoom():void {
-			if (hSeg.width != 1 / U.state.zoom)
+			if (U.state.zoom != lastZoom)
 				buildSegs();
 		}
 		
@@ -121,6 +174,8 @@ package Displays {
 			});
 			return willOverlap;
 		}
+		
+		protected const BLIT_PERIOD:Number = 1;
 	}
 
 }

@@ -58,14 +58,21 @@ package Layouts {
 		protected function buildConnections():Vector.<InternalWire> {
 			var wires:Vector.<InternalWire> = new Vector.<InternalWire>;
 			for each (var connection:Node in connections)
-				if (connection is PortLayout)
-					wires.push(new InternalWire(connection.Loc, Loc, false,
-												(connection as PortLayout).port.getSource,
-												(connection as PortLayout).port.getValue));
-				else
-					wires.push(new InternalWire(connection.Loc, Loc, false, _true, getValue));
+				if (connection is PortLayout) {
+					var pLayout:PortLayout = connection as PortLayout;
+					
+					var start:Point = pLayout.Loc;
+					var end:Point = Loc;
+					if (pLayout.port.isOutput) {
+						start = Loc;
+						end = pLayout.Loc;
+					}
+					
+					wires.push(new InternalWire(start, end, pLayout.port.isOutput, false, pLayout.port.getSource,	pLayout.port.getValue));
+				} else
+					wires.push(new InternalWire(Loc, connection.Loc, false, false, _true, getValue));
 			for each (var control:InternalNode in controls)
-				wires.push(new InternalWire(control.Loc, Loc, true, _true, control.getValue != null ? control.getValue : getValue));
+				wires.push(new InternalWire(control.Loc, Loc, false, true, _true, control.getValue != null ? control.getValue : getValue));
 			return wires;
 		}
 		

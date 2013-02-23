@@ -38,7 +38,7 @@ package Modules {
 			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]], [],
 															controls[0].getValue, "L");
 			var writeNode:InternalNode = new InternalNode(this, new Point(controlNode.offset.x, layout.ports[0].offset.y), [layout.ports[0]], [controlNode],
-															null, "SV");
+															null, "[M]");
 			return new InternalLayout([controlNode, writeNode]);
 		}
 		

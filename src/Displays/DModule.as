@@ -103,7 +103,9 @@ package Displays {
 			for each (var displayNode:DNode in displayNodes)
 				displayNode.node.updatePosition();
 			
-			nameText.size = U.state.zoom >= 0.5 ? U.FONT_SIZE : U.FONT_SIZE * 2;
+			var textSize:int = U.state.zoom >= 0.5 ? U.FONT_SIZE : U.FONT_SIZE * 2;
+			if (textSize != nameText.size)
+				nameText.size = textSize;
 			nameText.x = x;
 			nameText.y = y + (height - nameText.height) / 2;
 		}

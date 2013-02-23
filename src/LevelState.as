@@ -32,6 +32,7 @@ package  {
 		public var midLayer:FlxGroup;
 		public var upperLayer:FlxGroup;
 		public var zoom:Number;
+		public var elapsed:Number;
 		
 		protected var displayWires:Vector.<DWire>;
 		protected var displayModules:Vector.<DModule>;
@@ -83,6 +84,7 @@ package  {
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
 			zoom = 1;
+			elapsed = 0;
 			
 			initialMemory = level.goal.genMem(0.5);
 			
@@ -396,6 +398,7 @@ package  {
 			checkMenuState();
 			checkTime();
 			forceScroll();
+			elapsed += FlxG.elapsed;
 		}
 		
 		protected function updateUI():void {

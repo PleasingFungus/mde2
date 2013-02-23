@@ -17,7 +17,7 @@ package Displays {
 			this.node = node;
 			super();
 			makeSprite();
-			label = new FlxText( -1, -1, width - 2);
+			label = new FlxText( -1, -1, width);
 			label.setFormat(U.FONT, U.FONT_SIZE, 0x0, 'center');
 		}
 		
@@ -35,7 +35,7 @@ package Displays {
 			y = l.y * U.GRID_DIM;
 			super.draw();
 			
-			label.x = x + 1 - offset.x;
+			label.x = x - 1 - offset.x;
 			label.y = y + 1 - offset.y;
 			label.text = node.getLabel();
 			label.draw();

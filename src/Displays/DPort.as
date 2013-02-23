@@ -19,11 +19,12 @@ package Displays {
 			layout = Layout;
 			port = Layout.port;
 			super();
+			
+			loadGraphic(_sprite);
 			if (layout.vertical) {
-				makeGraphic(3, U.GRID_DIM / 2, 0xffffffff);
+				angle = 90;
 				offset.x = width / 2;
 			} else {
-				makeGraphic(U.GRID_DIM / 2, 3, 0xffffffff);
 				offset.y = height / 2;
 			}
 		}
@@ -60,6 +61,7 @@ package Displays {
 		public function nearPoint(p:FlxPoint, radius:int = 0):Boolean {
 			return p.x + radius >= x && p.y + radius >= y && p.x - radius <= x + width && p.y - radius <= y + height;
 		}
+		[Embed(source = "../../lib/art/wiring/port_8.png")] private const _sprite:Class;
 	}
 
 }

@@ -16,8 +16,8 @@ package Layouts {
 		override protected function getColor():uint {
 			var iWire:InternalWire = wire as InternalWire;
 			
-			//if (wire.getSource() == null || wire.connections.length < 2)
-				//return 0xff0000;
+			if (!iWire.getConnected())
+				return 0xff0000;
 			
 			var value:Value = iWire.getValue();
 			if (value.unknown)

@@ -55,11 +55,18 @@ package Layouts {
 		public function buildConnections():Vector.<Wire> {
 			var wires:Vector.<Wire> = new Vector.<Wire>;
 			for each (var connection:Node in connections)
-				wires.push(new InternalWire(connection.Loc, Loc, false, connection is Port ? (connection as Port).getValue : getValue));
+				if (connection is PortLayout)
+					wires.push(new InternalWire(connection.Loc, Loc, false,
+												(connection as PortLayout).port.getSource,
+												(connection as PortLayout).port.getValue));
+				else
+					wires.push(new InternalWire(connection.Loc, Loc, false, _true, getValue));
 			for each (var control:InternalNode in controls)
-				wires.push(new InternalWire(control.Loc, Loc, false, control.getValue != null ? control.getValue : getValue));
+				wires.push(new InternalWire(control.Loc, Loc, false, _true, control.getValue != null ? control.getValue : getValue));
 			return wires;
 		}
+		
+		private function _true():Boolean { return true; }
 		
 	}
 

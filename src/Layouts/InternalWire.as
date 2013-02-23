@@ -10,11 +10,13 @@ package Layouts {
 		
 		public var control:Boolean;
 		public var getValue:Function;
-		public function InternalWire(Start:Point, End:Point, Control:Boolean, GetValue:Function = null) {
+		public var getConnected:Function
+		public function InternalWire(Start:Point, End:Point, Control:Boolean, GetConnected:Function, GetValue:Function) {
 			super(Start);
 			constrained = false;
 			attemptPathTo(End);
 			control = Control;
+			getConnected = GetConnected;
 			getValue = GetValue;
 		}
 	}

@@ -1,4 +1,8 @@
 package Modules {
+	import flash.geom.Point;
+	import Layouts.InternalLayout
+	import Layouts.InternalNode;
+	import Layouts.PortLayout;
 	import Values.NumericValue;
 	import Values.Value;
 	import Components.Port;
@@ -15,6 +19,12 @@ package Modules {
 			super(X, Y, "In", Module.CAT_MISC, 0, 1, 0);
 			configuration = new Configuration(new Range( -16, 15, InitialValue));
 			setByConfig();
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			var lport:PortLayout = layout.ports[0];
+			return new InternalLayout([new InternalNode(this, new Point(lport.offset.x - layout.dim.x / 2 - 1/2, lport.offset.y), [lport],
+													    function getValue():Value { return value; } )]);
 		}
 		
 		override public function setByConfig():void {

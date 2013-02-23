@@ -1,5 +1,6 @@
 package Displays {
 	import Components.Port;
+	import Layouts.InternalNode;
 	import Layouts.PortLayout;
 	import Modules.Module;
 	import org.flixel.*;
@@ -12,6 +13,7 @@ package Displays {
 		
 		public var module:Module;
 		public var displayPorts:Vector.<DPort>;
+		public var displayNodes:Vector.<DNode>;
 		private var nameText:FlxText;
 		private var locked:Boolean;
 		private var wasValid:Boolean;
@@ -42,6 +44,11 @@ package Displays {
 			displayPorts = new Vector.<DPort>;
 			for each (var layout:PortLayout in module.layout.ports)
 				displayPorts.push(makePort(layout));
+			
+			displayNodes = new Vector.<DNode>;
+			if (module.internalLayout)
+				for each (var node:InternalNode in module.internalLayout.nodes)
+					displayNodes.push(new DNode(node));
 		}
 		
 		private function getName():String {
@@ -95,7 +102,10 @@ package Displays {
 			for each (var displayPort:DPort in displayPorts)
 				displayPort.draw();
 			
-			if (U.state.zoom >= 0.25) {
+			if (module.internalLayout && U.state.zoom >= 0.5)				
+				for each (var displayNode:DNode in displayNodes)
+					displayNode.draw();
+			else if (U.state.zoom >= 0.25) {
 				nameText.text = getName();
 				nameText.draw();
 			}

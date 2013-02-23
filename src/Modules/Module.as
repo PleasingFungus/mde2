@@ -3,9 +3,7 @@ package Modules {
 	import Displays.DModule;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
-	import Layouts.DefaultLayout;
-	import Layouts.ModuleLayout;
-	import Layouts.PortLayout;
+	import Layouts.*;
 	//import Components.Wire;
 	import Components.Port;
 	import Values.Value;
@@ -20,6 +18,7 @@ package Modules {
 		public var configuration:Configuration;
 		public var configurableInPlace:Boolean;
 		public var layout:ModuleLayout;
+		public var internalLayout:InternalLayout;
 		
 		public var inputs:Vector.<Port>;
 		public var outputs:Vector.<Port>;
@@ -42,6 +41,7 @@ package Modules {
 			controls = new Vector.<Port>; populatePorts(controls, numControls, false);
 			
 			layout = generateLayout();
+			internalLayout = generateInternalLayout();
 			
 			configurableInPlace = true;
 			initialize();
@@ -49,6 +49,10 @@ package Modules {
 		
 		protected function generateLayout():ModuleLayout {
 			return new DefaultLayout(this);
+		}
+		
+		protected function generateInternalLayout():InternalLayout {
+			return null;
 		}
 		
 		public function generateDisplay():DModule {

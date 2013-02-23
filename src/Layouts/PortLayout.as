@@ -7,7 +7,7 @@ package Layouts {
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class PortLayout {
+	public class PortLayout implements Node {
 		
 		public var port:Port;
 		public var parent:Module;
@@ -24,11 +24,11 @@ package Layouts {
 		
 		public function register():void {
 			setLineContents(port);
-			U.state.addCarrierAtPoint(parent.add(offset), port);
+			U.state.addCarrierAtPoint(Loc, port);
 		}
 		
 		public function attemptConnect():void {
-			var connectPoint:Point = parent.add(offset);
+			var connectPoint:Point = Loc;
 			for each (var carrier:Carrier in U.state.carriersAtPoint(connectPoint))
 				if (carrier != port) {
 					port.addConnection(carrier);
@@ -56,13 +56,13 @@ package Layouts {
 		}
 		
 		public function deregister():void {
-			U.state.removeCarrierFromPoint(parent.add(offset), port);
+			U.state.removeCarrierFromPoint(Loc, port);
 			setLineContents(null);
 		}
 		
 		
 		private function setLineContents(contents:*):void {
-			var connectionPoint:Point = parent.add(offset);
+			var connectionPoint:Point = Loc;
 			var origin:Point = connectionPoint.add(new Point(vertical ? 0 : reversed ? -1 : 1, vertical ? reversed ? -1 : 1 : 0));
 			U.state.setLineContents(connectionPoint, origin, contents);
 		}
@@ -70,13 +70,17 @@ package Layouts {
 		public function get validPosition():Boolean {
 			if (!port.isOutput) return true;
 			
-			var carriers:Vector.<Carrier> = U.state.carriersAtPoint(parent.add(offset));
+			var carriers:Vector.<Carrier> = U.state.carriersAtPoint(Loc);
 			if (!carriers) return true;
 			
 			for each (var carrier:Carrier in carriers)
 				if (carrier.getSource() && carrier.getSource() != port)
 					return false;
 			return true;
+		}
+		
+		public function get Loc():Point {
+			return parent.add(offset);
 		}
 	}
 

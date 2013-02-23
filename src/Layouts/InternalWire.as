@@ -19,6 +19,14 @@ package Layouts {
 			getConnected = GetConnected;
 			getValue = GetValue;
 		}
+		
+		public function shiftTo(newEnd:Point):void {
+			var delta:Point = newEnd.subtract(path[path.length - 1]);
+			for each (var p:Point in path) {
+				p.x += delta.x;
+				p.y += delta.y;
+			}
+		}
 	}
 
 }

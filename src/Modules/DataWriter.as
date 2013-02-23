@@ -1,9 +1,16 @@
 package Modules {
+	import Layouts.ModuleLayout;
+	import Values.BooleanValue;
 	import Values.IndexedValue;
 	import Values.NumericValue;
 	import Values.Value;
 	import Values.Delta;
 	import Components.Port;
+	
+	import Layouts.PortLayout;
+	import Layouts.InternalLayout;
+	import Layouts.InternalNode;
+	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -19,6 +26,20 @@ package Modules {
 		override public function initialize():void {
 			super.initialize();
 			lastMomentStored = -1;
+		}
+		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = super.generateLayout();
+			layout.ports[0].offset.y += 2;
+			return layout;
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]], [],
+															controls[0].getValue, "L");
+			var writeNode:InternalNode = new InternalNode(this, new Point(controlNode.offset.x, layout.ports[0].offset.y), [layout.ports[0]], [controlNode],
+															null, "SV");
+			return new InternalLayout([controlNode, writeNode]);
 		}
 		
 		override public function renderName():String {

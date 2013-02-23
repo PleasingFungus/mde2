@@ -1,7 +1,9 @@
 package Layouts {
 	import Components.Wire;
 	import Displays.DWire;
+	import flash.geom.Rectangle;
 	import Values.Value;
+	import org.flixel.*;
 	
 	/**
 	 * ...
@@ -11,6 +13,35 @@ package Layouts {
 		
 		public function InternalDWire(wire:InternalWire) {
 			super(wire);
+		}
+		
+		override protected function buildSegs():void {
+			var iWire:InternalWire = wire as InternalWire;
+			
+			if (!iWire.control) {
+				super.buildSegs();
+				return;
+			}
+			
+			var w:int = 1 / U.state.zoom
+			var cached:Boolean = FlxG.checkBitmapCache("hcontrolwire");
+			hSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w, 0xffffffff, true, "hcontrolwire");
+			vSeg = new FlxSprite().makeGraphic(w, U.GRID_DIM, 0xffffffff, true, "vcontrolwire");
+			
+			if (!cached) {
+				var dashLength:Number = U.GRID_DIM / 5;
+				hSeg.pixels.fillRect(new Rectangle(dashLength, 0, dashLength, w), 0x0);
+				hSeg.pixels.fillRect(new Rectangle(Math.ceil(dashLength * 3), 0, dashLength, w), 0x0);
+				vSeg.pixels.fillRect(new Rectangle(0, dashLength, w, dashLength), 0x0);
+				vSeg.pixels.fillRect(new Rectangle(0, Math.ceil(dashLength * 3), w, dashLength), 0x0);
+				hSeg.frame = vSeg.frame = 0;
+			}
+			
+			hSeg.height = vSeg.width = w + 4;
+			hSeg.offset.y = vSeg.offset.x = -2;
+			
+			join = new FlxSprite;
+			
 		}
 		
 		override protected function getColor():uint {

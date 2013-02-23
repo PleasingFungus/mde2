@@ -54,7 +54,7 @@ package Displays {
 			if (module.internalLayout)
 				for each (var node:InternalNode in module.internalLayout.nodes) {
 					displayNodes.push(new DNode(node));
-					for each (var connection:InternalWire in node.buildConnections())
+					for each (var connection:InternalWire in node.internalWires)
 						displayConnections.push(new InternalDWire(connection));
 				}
 		}
@@ -99,6 +99,9 @@ package Displays {
 			
 			for each (var displayPort:DPort in displayPorts)
 				displayPort.updatePosition(baseX, baseY);
+			
+			for each (var displayNode:DNode in displayNodes)
+				displayNode.node.updatePosition();
 			
 			nameText.size = U.state.zoom >= 0.5 ? U.FONT_SIZE : U.FONT_SIZE * 2;
 			nameText.x = x;

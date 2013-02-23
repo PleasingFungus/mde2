@@ -13,9 +13,9 @@ package Displays {
 		
 		public var wire:Wire;
 		
-		private var hSeg:FlxSprite;
-		private var vSeg:FlxSprite;
-		private var join:FlxSprite;
+		protected var hSeg:FlxSprite;
+		protected var vSeg:FlxSprite;
+		protected var join:FlxSprite;
 		
 		public function DWire(wire:Wire) {
 			this.wire = wire;

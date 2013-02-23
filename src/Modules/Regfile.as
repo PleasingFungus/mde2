@@ -24,7 +24,7 @@ package Modules {
 			outputs[0].name = "Out Reg 1";
 			outputs[1].name = "Out Reg 2";
 			
-			configuration = new Configuration(new Range(4, 32, Width));
+			//configuration = new Configuration(new Range(4, 32, Width));
 			width = Width;
 			configurableInPlace = false;
 			delay = Math.ceil(Math.log(width) / Math.log(2)) * 2;

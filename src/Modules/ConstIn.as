@@ -23,7 +23,8 @@ package Modules {
 		
 		override protected function generateInternalLayout():InternalLayout {
 			var lport:PortLayout = layout.ports[0];
-			return new InternalLayout([new InternalNode(this, new Point(lport.offset.x - layout.dim.x / 2 - 1/2, lport.offset.y), [lport],
+			return new InternalLayout([new InternalNode(this, new Point(lport.offset.x - layout.dim.x / 2 - 1 / 2, lport.offset.y),
+														[lport], [],
 													    function getValue():Value { return value; } )]);
 		}
 		

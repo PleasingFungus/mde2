@@ -1,6 +1,9 @@
 package Displays {
 	import Components.Port;
+	import Components.Wire;
+	import Layouts.InternalDWire;
 	import Layouts.InternalNode;
+	import Layouts.InternalWire;
 	import Layouts.PortLayout;
 	import Modules.Module;
 	import org.flixel.*;
@@ -14,6 +17,7 @@ package Displays {
 		public var module:Module;
 		public var displayPorts:Vector.<DPort>;
 		public var displayNodes:Vector.<DNode>;
+		public var displayConnections:Vector.<DWire>;
 		private var nameText:FlxText;
 		private var locked:Boolean;
 		private var wasValid:Boolean;
@@ -46,9 +50,13 @@ package Displays {
 				displayPorts.push(makePort(layout));
 			
 			displayNodes = new Vector.<DNode>;
+			displayConnections = new Vector.<DWire>;
 			if (module.internalLayout)
-				for each (var node:InternalNode in module.internalLayout.nodes)
+				for each (var node:InternalNode in module.internalLayout.nodes) {
 					displayNodes.push(new DNode(node));
+					for each (var connection:InternalWire in node.buildConnections())
+						displayConnections.push(new InternalDWire(connection));
+				}
 		}
 		
 		private function getName():String {
@@ -102,9 +110,12 @@ package Displays {
 			for each (var displayPort:DPort in displayPorts)
 				displayPort.draw();
 			
-			if (module.internalLayout && U.state.zoom >= 0.5)				
+			if (module.internalLayout && U.state.zoom >= 0.5) {	
+				for each (var displayConnection:DWire in displayConnections)
+					displayConnection.draw();	
 				for each (var displayNode:DNode in displayNodes)
 					displayNode.draw();
+			}
 			else if (U.state.zoom >= 0.25) {
 				nameText.text = getName();
 				nameText.draw();

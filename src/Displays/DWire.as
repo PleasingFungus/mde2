@@ -69,18 +69,7 @@ package Displays {
 		override public function draw():void {
 			checkZoom();
 			
-			var segColor:uint;
-			if (wire.getSource() == null || wire.connections.length < 2)
-				segColor = 0xff0000;
-			else {
-				var value:Value = wire.getSource().getValue();
-				if (value.unknown)
-					segColor = 0xc219d9;
-				else if (value.unpowered)
-					segColor = 0x1d19d9;
-				else
-					segColor = 0x0;
-			}
+			var segColor:uint = getColor();
 			hSeg.color = vSeg.color = join.color = segColor;
 			hSeg.alpha = vSeg.alpha = join.alpha = wire.FIXED ? 0.5 : 1;
 			
@@ -89,6 +78,18 @@ package Displays {
 			iterWire(function drawWire(seg:FlxSprite):void {
 				seg.draw();
 			});
+		}
+		
+		protected function getColor():uint {
+			if (wire.getSource() == null || wire.connections.length < 2)
+				return 0xff0000;
+			
+			var value:Value = wire.getSource().getValue();
+			if (value.unknown)
+				return 0xc219d9;
+			if (value.unpowered)
+				return 0x1d19d9;
+			return 0x0;
 		}
 		
 		private function checkZoom():void {

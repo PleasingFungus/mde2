@@ -14,6 +14,7 @@ package Components {
 		
 		private var lastPathEnd:Point; //microoptimization in attemptPathTo
 		private var oldConnections:Vector.<Carrier>;
+		protected var constrained:Boolean = true;
 		
 		public function Wire(Start:Point) {
 			path = new Vector.<Point>;
@@ -38,13 +39,13 @@ package Components {
 				else
 					nextPoint = new Point(pathEnd.x, pathEnd.y + (delta.y > 0 ? 1 : -1));
 				
-				if (U.state.lineContents(pathEnd, nextPoint))
+				if (constrained && U.state.lineContents(pathEnd, nextPoint))
 					break;
 				
 				path.push(pathEnd = nextPoint);
 			}
 			
-			while (path.length > 1 && !validPosition())
+			while (constrained && path.length > 1 && !validPosition())
 				path.pop();
 			
 			lastPathEnd = path[path.length - 1];

@@ -1,9 +1,9 @@
 package Modules {
-	import Values.IndexedValue;
-	import Values.Value;
 	import Components.Port;
-	import Values.NumericValue;
-	import Values.Delta;
+	import Values.*;
+	
+	import Layouts.*;
+	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -14,18 +14,19 @@ package Modules {
 		public var values:Vector.<Value>;
 		protected var lastMomentStored:int = -1;
 		public function Regfile(X:int, Y:int, Width:int = 8) {
+			width = Width;
+			
 			super(X, Y, "Regfile", Module.CAT_STORAGE, 1, 2, 4);
 			
 			inputs[0].name = "Write v";
-			controls[0].name = "Out Reg i 1";
-			controls[1].name = "Out Reg i 2";
-			controls[2].name = "Write Reg i";
-			controls[3].name = "Write";
+			controls[0].name = "Write";
+			controls[1].name = "Write Reg i";
+			controls[2].name = "Out Reg i 1";
+			controls[3].name = "Out Reg i 2";
 			outputs[0].name = "Out Reg 1";
 			outputs[1].name = "Out Reg 2";
 			
 			//configuration = new Configuration(new Range(4, 32, Width));
-			width = Width;
 			configurableInPlace = false;
 			delay = Math.ceil(Math.log(width) / Math.log(2)) * 2;
 		}
@@ -38,13 +39,89 @@ package Modules {
 			lastMomentStored = -1;
 		}
 		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = super.generateLayout();
+			
+			layout.dim.y = Math.max(width * 2 + 3, layout.dim.y);
+			
+			layout.ports[0].offset.y += 1;
+			layout.ports[inputs.length].offset.x -= 1;
+			layout.ports[inputs.length + 1].offset.x -= 1;
+			layout.ports[inputs.length + 2].offset.x += 1;
+			layout.ports[inputs.length + 3].offset.x += 2;
+			layout.ports[layout.ports.length - 1].offset.y += 2;
+			
+			return layout;
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			var nodes:Array = [];
+			var controlLines:Array;
+			
+			for (var i:int = 0; i < width; i++) {
+				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2 + (i % 2 ? -1 : 1), layout.offset.y + 3.5 + i * 2);
+				nodes.push(new InternalNode(this, loc, [layout.ports[layout.ports.length - 2], layout.ports[layout.ports.length - 1]], [],
+											function getValue(i:int):Value {
+												return values[i];
+											}, i + "", true, i));
+			}
+			
+			var writeConnections:Array = nodes.slice();
+			writeConnections.push(layout.ports[0]);
+			var writeNode:InternalNode = new InternalNode(this, new Point(layout.ports[0].offset.x + 4, layout.ports[0].offset.y),
+														  writeConnections, [], inputs[0].getValue);
+			
+			var writeOK:Function = function writeOK():Boolean {
+				var control:Value = write.getValue();
+				return !control.unknown && !control.unpowered && control.toNumber() != 0;
+			}
+			var writeControlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
+																[new NodeTuple(layout.ports[0], writeNode, writeOK)], function isEnabled():BooleanValue {
+																	return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE;
+																});
+			
+			controlLines = [];
+			for (i = 0; i < nodes.length; i++)
+				controlLines.push(new NodeTuple(writeNode, nodes[i], function writeChosen(index:int):Boolean {
+					return destination.getValue().toNumber() == index;
+				}, i));
+			var writeTargetNode:InternalNode = new InternalNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), [layout.ports[2]], controlLines,
+																function getValue():Value { return destination.getValue(); } );
+			
+			controlLines = [];
+			for (i = 0; i < nodes.length; i++)
+				controlLines.push(new NodeTuple(nodes[i], layout.ports[layout.ports.length - 2], function writeChosen(index:int):Boolean {
+					return source.getValue().toNumber() == index;
+				}, i));
+			var sourceTargetNode:InternalNode = new InternalNode(this, new Point(layout.ports[3].offset.x, layout.ports[3].offset.y + 2), [layout.ports[3]], controlLines,
+																 function getValue():Value { return source.getValue(); } );
+			
+			controlLines = [];
+			for (i = 0; i < nodes.length; i++) {
+				var tup:NodeTuple = new NodeTuple(nodes[i], layout.ports[layout.ports.length - 1], function writeChosen(index:int):Boolean {
+					return target.getValue().toNumber() == index;
+				}, i);
+				tup.suggestedIntersect = 4;
+				controlLines.push(tup);
+			}
+			var targetTargetNode:InternalNode = new InternalNode(this, new Point(layout.ports[4].offset.x, layout.ports[4].offset.y + 2), [layout.ports[4]], controlLines,
+																 function getValue():Value { return target.getValue(); } );
+			
+			nodes.push(writeNode);
+			nodes.push(writeControlNode);
+			nodes.push(writeTargetNode);
+			nodes.push(sourceTargetNode);
+			nodes.push(targetTargetNode);
+			return new InternalLayout(nodes);
+		}
+		
 		override public function renderName():String {
 			return "Registers" +"\n\n" + values;
 		}
 		
 		override public function drive(port:Port):Value {
 			var portIndex:int = outputs.indexOf(port);
-			var selectValue:Value = controls[portIndex].getValue();
+			var selectValue:Value = (portIndex == 0 ? source : target).getValue();
 			if (selectValue.unknown)
 				return U.V_UNKNOWN;
 			if (selectValue.unpowered)
@@ -60,11 +137,11 @@ package Modules {
 		override public function updateState():Boolean {
 			if (U.state.time.moment == lastMomentStored) return false; //can only store at most once per cycle
 			
-			var control:Value = controls[3].getValue();
+			var control:Value = write.getValue();
 			if (control.unknown || control.unpowered || control.toNumber() == 0)
 				return false;
 			
-			var selectControl:Value = controls[2].getValue();
+			var selectControl:Value = destination.getValue();
 			if (selectControl.unknown || selectControl.unpowered)
 				return false;
 			
@@ -93,6 +170,23 @@ package Modules {
 			var values:Array = super.getSaveValues();
 			values.push(width);
 			return values;
+		}
+		
+		
+		protected function get write():Port {
+			return controls[0];
+		}
+		
+		protected function get destination():Port {
+			return controls[1];
+		}
+		
+		protected function get source():Port {
+			return controls[2];
+		}
+		
+		protected function get target():Port {
+			return controls[3];
 		}
 	}
 

@@ -1,9 +1,6 @@
 package Modules {
 	import Components.Port;
-	import Values.NumericValue;
-	import Values.Value;
-	import Values.OpcodeValue;
-	import Values.BooleanValue;
+	import Values.*;
 	
 	import Layouts.*;
 	import flash.geom.Point;
@@ -22,6 +19,7 @@ package Modules {
 					inputs[i].name = U.state.level.expectedOps[i].toString();
 			delay = Math.ceil(Math.log(width) / Math.log(2));
 		}
+		
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = super.generateLayout();
 			for (var i:int = 0; i < inputs.length; i++) {
@@ -39,7 +37,7 @@ package Modules {
 			var controlLines:Array = [];
 			for (var i:int = 0; i < inputs.length; i++) {
 				nodes.push(new InternalNode(this, new Point(layout.ports[i].offset.x + 3, layout.ports[i].offset.y), [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
-											inputs[i].getValue, U.state.level.expectedOps[i].toString()));
+											inputs[i].getValue, U.state.level.expectedOps[i].toString(), true));
 				controlLines.push(new NodeTuple(layout.ports[layout.ports.length - 1], nodes[i], function (i:int):Boolean { 
 					return getIndex() == i;
 				}, i));

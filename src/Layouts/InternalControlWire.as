@@ -17,11 +17,14 @@ package Layouts {
 			
 			dependent = findDependent(wires);
 			
-			intersectPoint = Math.min(Math.floor(dependent.path.length / 2), 3);
+			intersectPoint = Math.min(Math.floor(dependent.path.length / 2), Tuple.suggestedIntersect);
+			//C.log(dependent.path.length, intersectPoint);
 			var midpoint:Point = dependent.path[intersectPoint];
-			super(Root.Loc, midpoint, Root.parent.layout.getBounds(), true,
+			super(Root.Loc, midpoint, Root.parent.layout.getBounds(),
 				  function enabled():Boolean { return exists; },
 				  Root.getValue);
+			
+			fullControl = true;
 		}
 		
 		override public function update():void {

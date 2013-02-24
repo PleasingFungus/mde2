@@ -9,6 +9,7 @@ package Layouts {
 		public var b:Node;
 		public var IsEnabled:Function
 		public var param:*;
+		public var suggestedIntersect:int = 3;
 		public function NodeTuple(A:Node, B:Node, IsEnabled:Function, Param:* = null ) {
 			a = A;
 			b = B;

@@ -53,23 +53,25 @@ package Layouts {
 				seg.draw();
 			}, 0, iWire.controlPoint);
 			
-			var oHSeg:FlxSprite = hSeg;
-			var oVSeg:FlxSprite = vSeg;
-			hSeg = altHSeg;
-			vSeg = altVSeg;
-			
 			if (iWire.controlPoint > 0 && iWire.controlPoint < iWire.path.length) {
 				join.x = iWire.path[iWire.controlPoint].x * U.GRID_DIM - join.width / 2;
 				join.y = iWire.path[iWire.controlPoint].y * U.GRID_DIM - join.height / 2;
 				join.draw();
 			}
 			
-			iterWire(function drawWire(seg:FlxSprite):void {
-				seg.draw();
-			}, iWire.controlPoint);
+			if (iWire.fullControl) {
+				var oHSeg:FlxSprite = hSeg;
+				var oVSeg:FlxSprite = vSeg;
+				hSeg = altHSeg;
+				vSeg = altVSeg;
+				
+				iterWire(function drawWire(seg:FlxSprite):void {
+					seg.draw();
+				}, iWire.controlPoint);
 			
-			hSeg = oHSeg;
-			vSeg = oVSeg;
+				hSeg = oHSeg;
+				vSeg = oVSeg;
+			}
 			
 			if (U.BLIT_ENABLED && getBlitActive(segColor))
 				drawBlit();

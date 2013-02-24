@@ -4,6 +4,7 @@ package Layouts {
 	import flash.geom.Rectangle;
 	import Modules.Module;
 	import flash.geom.Point;
+	import Values.Value;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -15,12 +16,17 @@ package Layouts {
 		public var connections:Vector.<Node>
 		public var controlTuples:Vector.<NodeTuple>;
 		public var internalWires:Vector.<InternalWire>;
-		public var getValue:Function;
+		public var GetValue:Function;
 		public var offset:Point;
+		public var param:*;
+		public var isSource:Boolean;
 		public function InternalNode(Parent:Module, Offset:Point, Connections:Array,
-									 ControlTuples:Array = null, GetValue:Function = null, Name:String = null) {
+									 ControlTuples:Array = null, GetValue:Function = null, Name:String = null,
+									 IsSource:Boolean = false, Param:* = null) {
 			name = Name;
-			getValue = GetValue;
+			this.GetValue = GetValue;
+			isSource = IsSource;
+			param = Param;
 			parent = Parent;
 			offset = Offset;
 			
@@ -43,7 +49,7 @@ package Layouts {
 			if (name != null)
 				out += name;
 			
-			if (getValue != null) {
+			if (GetValue != null) {
 				if (out)
 					out += ":"
 				
@@ -65,16 +71,14 @@ package Layouts {
 				if (connection is PortLayout) {
 					var pLayout:PortLayout = connection as PortLayout;
 					
-					var start:Point = pLayout.Loc;
-					var end:Point = Loc;
-					if (pLayout.port.isOutput) {
-						start = Loc;
-						end = pLayout.Loc;
-					}
-					
-					wires.push(new InternalWire(start, end, bounds, pLayout.port.isOutput, pLayout.port.getSource, pLayout.port.getValue));
-				} else
-					wires.push(new InternalWire(Loc, connection.Loc, bounds, false, _true, getValue));
+					wires.push(new InternalWire(Loc, pLayout.Loc, bounds,
+												isSource ? _true : pLayout.port.getSource,
+												isSource ? getValue : pLayout.port.getValue));
+				} else {
+					var wire:InternalWire = new InternalWire(connection.Loc, Loc, bounds, _true, getValue);
+					wire.reversed = true;
+					wires.push(wire);
+				}
 			
 			return wires;
 		}
@@ -87,6 +91,12 @@ package Layouts {
 		public function update():void {
 			for each (var wire:InternalWire in internalWires)
 				wire.update();
+		}
+		
+		public function getValue():Value {
+			if (param != null)
+				return GetValue(param);
+			return GetValue();
 		}
 		
 		private function _true():Boolean { return true; }

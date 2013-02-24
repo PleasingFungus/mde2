@@ -14,7 +14,9 @@ package Layouts {
 			
 			dependent = findDependent(wires);
 			
-			var midpoint:Point = dependent.path[Math.floor(dependent.path.length / 2)];
+			var midIndex:int = Math.min(Math.floor(dependent.path.length / 2), 3);
+			C.log(dependent.path.length, midIndex);
+			var midpoint:Point = dependent.path[midIndex];
 			super(Root.Loc, midpoint, true, true,
 				  function enabled():Boolean { return exists; },
 				  Root.getValue);

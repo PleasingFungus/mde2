@@ -24,6 +24,10 @@ package Modules {
 		}
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = super.generateLayout();
+			for (var i:int = 0; i < inputs.length; i++) {
+				layout.ports[i].offset.x -= 1;
+				layout.ports[i].offset.y += 1;
+			}
 			layout.ports[layout.ports.length - 2].offset.x += 3;
 			return layout;
 		}
@@ -34,15 +38,15 @@ package Modules {
 			var nodes:Array = [];
 			var controlLines:Array = [];
 			for (var i:int = 0; i < inputs.length; i++) {
-				nodes.push(new InternalNode(this, new Point(layout.ports[i].offset.x + 4, layout.ports[i].offset.y), [layout.ports[i]], [],
+				nodes.push(new InternalNode(this, new Point(layout.ports[i].offset.x + 4, layout.ports[i].offset.y), [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
 											inputs[i].getValue, U.state.level.expectedOps[i].toString()));
-				controlLines.push(new NodeTuple(layout.ports[i], nodes[i], function (i:int):Boolean { 
+				controlLines.push(new NodeTuple(layout.ports[layout.ports.length - 1], nodes[i], function (i:int):Boolean { 
 					return getIndex() == i;
 				}, i));
 			}
 			var kludge:InstructionDemux = this;
 			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
-															[layout.ports[layout.ports.length - 1]], controlLines,
+															[layout.ports[layout.ports.length - 2]], controlLines,
 															function getValue():BooleanValue { return getIndex() != C.INT_NULL ? BooleanValue.TRUE : BooleanValue.FALSE; });
 			nodes.push(controlNode);
 			return new InternalLayout(nodes);

@@ -21,9 +21,9 @@ package Actions {
 		override public function execute():Action {
 			var success:Boolean;
 			
-			if (!param)
+			if (param == null)
 				success = exec();
-			else if (!param2)
+			else if (param2 == null)
 				success = exec(param);
 			else
 				success = exec(param, param2);
@@ -34,9 +34,9 @@ package Actions {
 		}
 		
 		override public function revert():Action {
-			if (!param)
+			if (param == null)
 				revt();
-			else if (!param2)
+			else if (param2 == null)
 				revt(param);
 			else
 				revt(param, param2);

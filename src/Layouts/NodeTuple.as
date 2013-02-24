@@ -7,13 +7,20 @@ package Layouts {
 
 		public var a:Node;
 		public var b:Node;
-		public var isEnabled:Function
-		public function NodeTuple(A:Node, B:Node, IsEnabled:Function ) {
+		public var IsEnabled:Function
+		public var param:*;
+		public function NodeTuple(A:Node, B:Node, IsEnabled:Function, Param:* = null ) {
 			a = A;
 			b = B;
-			isEnabled = IsEnabled;
+			this.IsEnabled = IsEnabled;
+			param = Param;
 		}
 		
+		public function isEnabled():Boolean {
+			if (param == null)
+				return IsEnabled();
+			return IsEnabled(param);
+		}
 	}
 
 }

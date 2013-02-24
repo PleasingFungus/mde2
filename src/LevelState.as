@@ -133,6 +133,7 @@ package  {
 			makeDataButton();
 			makeInfoButton();
 			makeBackButton();
+			listOpen == LIST_ZOOM ? makeZoomList() : makeZoomButton();
 			
 			if (mode == MODE_DELAY) {
 				if (!displayDelay || !displayDelay.exists)
@@ -150,7 +151,6 @@ package  {
 			}
 			
 			listOpen == LIST_MODES ? makeModeMenu() : makeModeButton();
-			listOpen == LIST_ZOOM ? makeZoomList() : makeZoomButton();
 			if (mode == MODE_MODULE)
 				switch (listOpen) {
 					case LIST_MODULES: makeModuleList(); break;

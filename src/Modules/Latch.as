@@ -1,10 +1,7 @@
 package Modules {
 	import Components.Port;
 	import Layouts.NodeTuple;
-	import Values.Delta;
-	import Values.FixedValue;
-	import Values.BooleanValue;
-	import Values.Value;
+	import Values.*
 	
 	import Layouts.ModuleLayout;
 	import Layouts.PortLayout;

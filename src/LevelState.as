@@ -539,8 +539,37 @@ package  {
 			redoButton.exists = reactionStack.length > 0;
 			saveButton.loadGraphic(genSaveString() == savedString ? _evas_sprite : _save_sprite);
 			
+			checkCursorState();
+			
 			if (mode == MODE_MODULE)
 				checkModuleState();
+		}
+		
+		protected var cursorGraphic:Class
+		protected function checkCursorState():void {
+			var newGraphic:Class = null;
+			var offsetX:int = 0;
+			var offsetY:int = 0;
+			
+			//TODO: check to see if a button is moused
+			
+			switch (mode) {
+				case MODE_CONNECT:
+					if (listOpen == LIST_NONE)
+						newGraphic = _pen_cursor;
+					break;
+				case MODE_REMOVE:
+					if (listOpen == LIST_NONE) {
+						newGraphic = _remove_cursor;
+						offsetX = offsetY = -14;
+					}
+					break;
+			}
+			
+			if (cursorGraphic != newGraphic) {
+				FlxG.mouse.load(newGraphic, 1, offsetX, offsetY);
+				cursorGraphic = newGraphic;
+			}
 		}
 		
 		protected function checkModuleState():void {
@@ -852,6 +881,9 @@ package  {
 		[Embed(source = "../lib/art/ui/random.png")] private const _random_sprite:Class;
 		[Embed(source = "../lib/art/ui/reset.png")] private const _reset_sprite:Class;
 		[Embed(source = "../lib/art/ui/test.png")] private const _test_sprite:Class;
+		
+		[Embed(source = "../lib/art/ui/pen.png")] private const _pen_cursor:Class;
+		[Embed(source = "../lib/art/ui/remove_cursor.png")] private const _remove_cursor:Class;
 	}
 
 }

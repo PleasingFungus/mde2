@@ -32,7 +32,7 @@ package Modules {
 		override protected function generateInternalLayout():InternalLayout {
 			var writeNode:InternalNode = new InternalNode(this, new Point(layout.ports[2].offset.x, layout.ports[0].offset.y), [layout.ports[0], layout.ports[3]], [],
 														  getData, "[M]");
-			var lineNode:InternalNode = new InternalNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), [layout.ports[2], writeNode], [],
+			var lineNode:InternalNode = new InternalNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 3), [layout.ports[2], writeNode], [],
 														 controls[1].getValue, "L");
 			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 															[new NodeTuple(layout.ports[0], writeNode, writeOK)],

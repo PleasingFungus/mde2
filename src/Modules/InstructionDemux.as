@@ -28,7 +28,7 @@ package Modules {
 				layout.ports[i].offset.x -= 1;
 				layout.ports[i].offset.y += 1;
 			}
-			layout.ports[layout.ports.length - 2].offset.x += 3;
+			layout.ports[layout.ports.length - 2].offset.x += 2;
 			return layout;
 		}
 		
@@ -38,7 +38,7 @@ package Modules {
 			var nodes:Array = [];
 			var controlLines:Array = [];
 			for (var i:int = 0; i < inputs.length; i++) {
-				nodes.push(new InternalNode(this, new Point(layout.ports[i].offset.x + 4, layout.ports[i].offset.y), [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
+				nodes.push(new InternalNode(this, new Point(layout.ports[i].offset.x + 3, layout.ports[i].offset.y), [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
 											inputs[i].getValue, U.state.level.expectedOps[i].toString()));
 				controlLines.push(new NodeTuple(layout.ports[layout.ports.length - 1], nodes[i], function (i:int):Boolean { 
 					return getIndex() == i;

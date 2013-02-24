@@ -34,9 +34,8 @@ package Components {
 			var pathEnd:Point = path[path.length - 1];
 			var nextPoint:Point;
 			for (var delta:Point = target.subtract(pathEnd); delta.x || delta.y; delta = target.subtract(pathEnd)) {
-				if (delta.x)
-					nextPoint = new Point(pathEnd.x + (delta.x > 0 ? 1 : -1), pathEnd.y);
-				else
+				nextPoint = new Point(pathEnd.x + (delta.x > 0 ? 1 : -1), pathEnd.y);
+				if ((!delta.x || !mayMoveThrough(nextPoint)) && delta.y)
 					nextPoint = new Point(pathEnd.x, pathEnd.y + (delta.y > 0 ? 1 : -1));
 				
 				if (constrained && U.state.lineContents(pathEnd, nextPoint))
@@ -49,6 +48,10 @@ package Components {
 				path.pop();
 			
 			lastPathEnd = path[path.length - 1];
+			return true;
+		}
+		
+		protected function mayMoveThrough(p:Point):Boolean {
 			return true;
 		}
 		

@@ -1,6 +1,7 @@
 package Layouts {
 	import Components.Wire;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import org.flixel.FlxSprite;
 	/**
 	 * ...
@@ -18,7 +19,7 @@ package Layouts {
 			
 			intersectPoint = Math.min(Math.floor(dependent.path.length / 2), 3);
 			var midpoint:Point = dependent.path[intersectPoint];
-			super(Root.Loc, midpoint, true,
+			super(Root.Loc, midpoint, Root.parent.layout.getBounds(), true,
 				  function enabled():Boolean { return exists; },
 				  Root.getValue);
 		}

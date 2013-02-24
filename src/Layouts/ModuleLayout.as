@@ -1,5 +1,6 @@
 package Layouts {
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import Modules.Module;
 	/**
 	 * ...
@@ -18,6 +19,10 @@ package Layouts {
 			ports = Ports;
 		}
 		
+		public function getBounds():Rectangle {
+			var tl:Point = module.add(offset);
+			return new Rectangle(tl.x, tl.y, dim.x, dim.y);
+		}
 	}
 
 }

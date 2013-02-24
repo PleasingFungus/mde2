@@ -1,4 +1,5 @@
 package Layouts {
+	import flash.geom.Rectangle;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

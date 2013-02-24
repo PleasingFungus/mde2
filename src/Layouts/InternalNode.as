@@ -1,6 +1,7 @@
 package Layouts {
 	import Components.Port;
 	import Components.Wire;
+	import flash.geom.Rectangle;
 	import Modules.Module;
 	import flash.geom.Point;
 	/**
@@ -58,6 +59,7 @@ package Layouts {
 		
 		protected function buildConnections():Vector.<InternalWire> {
 			var wires:Vector.<InternalWire> = new Vector.<InternalWire>;
+			var bounds:Rectangle = parent.layout.getBounds();
 			
 			for each (var connection:Node in connections)
 				if (connection is PortLayout) {
@@ -70,9 +72,9 @@ package Layouts {
 						end = pLayout.Loc;
 					}
 					
-					wires.push(new InternalWire(start, end, pLayout.port.isOutput, pLayout.port.getSource, pLayout.port.getValue));
+					wires.push(new InternalWire(start, end, bounds, pLayout.port.isOutput, pLayout.port.getSource, pLayout.port.getValue));
 				} else
-					wires.push(new InternalWire(Loc, connection.Loc, false, _true, getValue));
+					wires.push(new InternalWire(Loc, connection.Loc, bounds, false, _true, getValue));
 			
 			return wires;
 		}

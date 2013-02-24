@@ -10,6 +10,7 @@ package Layouts {
 		public var IsEnabled:Function
 		public var param:*;
 		public var suggestedIntersect:int = 3;
+		public var reverseTruncate:Boolean;
 		public function NodeTuple(A:Node, B:Node, IsEnabled:Function, Param:* = null ) {
 			a = A;
 			b = B;

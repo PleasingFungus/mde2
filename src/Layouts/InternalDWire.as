@@ -14,6 +14,7 @@ package Layouts {
 		protected var lastDashed:Boolean;
 		protected var altHSeg:FlxSprite;
 		protected var altVSeg:FlxSprite;
+		protected var blockage:FlxSprite;
 		public function InternalDWire(wire:InternalWire) {
 			super(wire);
 		}
@@ -27,6 +28,7 @@ package Layouts {
 			var cached:Boolean = FlxG.checkBitmapCache("hcontrolwire-"+w);
 			altHSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w, 0xffffffff, true, "hcontrolwire-"+w);
 			altVSeg = new FlxSprite().makeGraphic(w, U.GRID_DIM, 0xffffffff, true, "vcontrolwire-"+w);
+			blockage = new FlxSprite().makeGraphic(join.width, join.height, 0xffff0000, true, "blockage-"+w);
 			
 			if (!cached) {
 				var dashLength:Number = U.GRID_DIM / 5;
@@ -34,7 +36,8 @@ package Layouts {
 				altHSeg.pixels.fillRect(new Rectangle(Math.ceil(dashLength * 3), 0, dashLength, w), 0x0);
 				altVSeg.pixels.fillRect(new Rectangle(0, dashLength, w, dashLength), 0x0);
 				altVSeg.pixels.fillRect(new Rectangle(0, Math.ceil(dashLength * 3), w, dashLength), 0x0);
-				altHSeg.frame = altVSeg.frame = 0;
+				//blockage.pixels.fillRect(new Rectangle(w, w, blockage.width - w * 2, blockage.height - w * 2), 0xff000000);
+				altHSeg.frame = altVSeg.frame = blockage.frame = 0;
 			}
 			
 			altHSeg.height = altVSeg.width = w + 4;
@@ -49,15 +52,22 @@ package Layouts {
 			var segColor:uint = getColor();
 			hSeg.color = vSeg.color = altHSeg.color = altVSeg.color = join.color = segColor;
 			
+			var start:int = 0;
+			var end:int = iWire.controlPoint;
+			if (iWire.reverseControlTruncation) {
+				start = iWire.controlPoint;
+				end = iWire.path.length - 1;
+			}
+			
 			iterWire(function drawWire(seg:FlxSprite):void {
 				seg.draw();
-			}, 0, iWire.controlPoint);
+			}, start, end);
 			
-			if (iWire.controlPoint > 0 && iWire.controlPoint < iWire.path.length) {
-				join.x = iWire.path[iWire.controlPoint].x * U.GRID_DIM - join.width / 2;
-				join.y = iWire.path[iWire.controlPoint].y * U.GRID_DIM - join.height / 2;
-				join.draw();
-			}
+			//if (iWire.controlPoint >= 0 && iWire.controlPoint < iWire.path.length) {
+				//blockage.x = iWire.path[iWire.controlPoint].x * U.GRID_DIM - join.width / 2;
+				//blockage.y = iWire.path[iWire.controlPoint].y * U.GRID_DIM - join.height / 2;
+				//blockage.draw();
+			//}
 			
 			if (iWire.fullControl) {
 				var oHSeg:FlxSprite = hSeg;

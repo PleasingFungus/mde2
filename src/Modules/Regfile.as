@@ -47,7 +47,7 @@ package Modules {
 			layout.ports[0].offset.y += 1;
 			layout.ports[inputs.length].offset.x -= 1;
 			layout.ports[inputs.length + 1].offset.x -= 1;
-			layout.ports[inputs.length + 2].offset.x += 1;
+			layout.ports[inputs.length + 2].offset.x += 2;
 			layout.ports[inputs.length + 3].offset.x += 2;
 			layout.ports[layout.ports.length - 1].offset.y += 2;
 			
@@ -57,6 +57,7 @@ package Modules {
 		override protected function generateInternalLayout():InternalLayout {
 			var nodes:Array = [];
 			var controlLines:Array;
+			var tup:NodeTuple;
 			
 			for (var i:int = 0; i < width; i++) {
 				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2 + (i % 2 ? -1 : 1), layout.offset.y + 3.5 + i * 2);
@@ -81,10 +82,13 @@ package Modules {
 																});
 			
 			controlLines = [];
-			for (i = 0; i < nodes.length; i++)
-				controlLines.push(new NodeTuple(writeNode, nodes[i], function writeChosen(index:int):Boolean {
+			for (i = 0; i < nodes.length; i++) {
+				tup = new NodeTuple(writeNode, nodes[i], function writeChosen(index:int):Boolean {
 					return destination.getValue().toNumber() == index;
-				}, i));
+				}, i);
+				tup.reverseTruncate = true;
+				controlLines.push(tup);
+			}
 			var writeTargetNode:InternalNode = new InternalNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), [layout.ports[2]], controlLines,
 																function getValue():Value { return destination.getValue(); } );
 			
@@ -98,7 +102,7 @@ package Modules {
 			
 			controlLines = [];
 			for (i = 0; i < nodes.length; i++) {
-				var tup:NodeTuple = new NodeTuple(nodes[i], layout.ports[layout.ports.length - 1], function writeChosen(index:int):Boolean {
+				tup = new NodeTuple(nodes[i], layout.ports[layout.ports.length - 1], function writeChosen(index:int):Boolean {
 					return target.getValue().toNumber() == index;
 				}, i);
 				tup.suggestedIntersect = 4;

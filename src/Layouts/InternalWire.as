@@ -16,6 +16,7 @@ package Layouts {
 		protected var bounds:Rectangle;
 		public var reversed:Boolean;
 		public var fullControl:Boolean;
+		public var reverseControlTruncation:Boolean;
 		public function InternalWire(Start:Point, End:Point, Bounds:Rectangle,
 								     GetConnected:Function, GetValue:Function) {
 			super(Start);

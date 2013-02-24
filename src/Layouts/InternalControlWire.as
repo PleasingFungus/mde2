@@ -16,6 +16,7 @@ package Layouts {
 			tuple = Tuple;
 			
 			dependent = findDependent(wires);
+			dependent.reverseControlTruncation = tuple.reverseTruncate;
 			
 			intersectPoint = Math.min(Math.floor(dependent.path.length / 2), Tuple.suggestedIntersect);
 			//C.log(dependent.path.length, intersectPoint);

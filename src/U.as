@@ -18,6 +18,8 @@ package  {
 		public static const DEBUG_PRINT_TESTS:Boolean = false;
 		public static const DEBUG_PRINT_CONNECTIONS:Boolean = false;
 		
+		public static const BLIT_ENABLED:Boolean = false;
+		
 		[Embed(source = "../lib/fonts/FuturaLT.ttf", fontFamily = "FUTUR")] private const _1:String;
 		public static const FONT_:String = "FUTUR";
 		[Embed(source = "../lib/fonts/FuturaLT-Bold.ttf", fontFamily = "FUTURB")] private const _2:String;

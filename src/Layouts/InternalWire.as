@@ -8,16 +8,15 @@ package Layouts {
 	 */
 	public class InternalWire extends Wire {
 		
-		public var control:Boolean;
+		public var controlPoint:int = C.INT_NULL;
 		public var out:Boolean;
 		public var getValue:Function;
 		public var getConnected:Function
-		public function InternalWire(Start:Point, End:Point, Out:Boolean, Control:Boolean, GetConnected:Function, GetValue:Function) {
+		public function InternalWire(Start:Point, End:Point, Out:Boolean, GetConnected:Function, GetValue:Function) {
 			super(Start);
 			out = Out;
 			constrained = false;
 			attemptPathTo(End);
-			control = Control;
 			getConnected = GetConnected;
 			getValue = GetValue;
 		}

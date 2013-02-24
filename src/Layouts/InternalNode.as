@@ -70,9 +70,9 @@ package Layouts {
 						end = pLayout.Loc;
 					}
 					
-					wires.push(new InternalWire(start, end, pLayout.port.isOutput, false, pLayout.port.getSource, pLayout.port.getValue));
+					wires.push(new InternalWire(start, end, pLayout.port.isOutput, pLayout.port.getSource, pLayout.port.getValue));
 				} else
-					wires.push(new InternalWire(Loc, connection.Loc, false, false, _true, getValue));
+					wires.push(new InternalWire(Loc, connection.Loc, false, _true, getValue));
 			
 			return wires;
 		}

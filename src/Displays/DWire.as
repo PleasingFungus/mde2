@@ -34,43 +34,26 @@ package Displays {
 			hSeg.height = vSeg.width = w + 4;
 			hSeg.offset.y = vSeg.offset.x = -2;
 			join = new FlxSprite().makeGraphic(w + 4, w + 4);
-			animationBlit = new FlxSprite().makeGraphic(w, w);
+			if (U.BLIT_ENABLED)
+				animationBlit = new FlxSprite().makeGraphic(w, w);
 			
 			lastZoom = U.state.zoom;
 		}
 		
 		override public function update():void {
 			visible = wire.exists;
-			checkSource();
 			super.update();
 		}
 		
-		protected function checkSource():void {
-			var s:Port = wire.getSource();
-			if (!s) {
-				sourcePoint = -1;
-				return;
-			}
+		protected function iterWire(perform:Function, start:int = 0, end:int = C.INT_NULL):void {
+			if (start == C.INT_NULL)
+				start = 0;
+			else start += 1;
+			if (end == C.INT_NULL)
+				end = wire.path.length;
+			else end += 1;
 			
-			if (sourcePoint != -1)
-				return;
-			
-			for (var i:int = 0; i < wire.path.length; i++) {
-				var point:Point = wire.path[i];
-				var carriers:Vector.<Carrier> = U.state.carriersAtPoint(point);
-				if (carriers)
-					for each (var carrier:Carrier in carriers)
-						if (carrier.getSource() == s) {
-							sourcePoint = i;
-							return;
-						}
-			}
-			
-			throw new Error("No source-point found!");
-		}
-		
-		protected function iterWire(perform:Function):void {
-			for (var i:int = 0; i < wire.path.length; i++) {
+			for (var i:int = start; i < end; i++) {
 				var next:Point, current:Point, last:Point;
 				
 				if (i) last = wire.path[i - 1]; else last = null;
@@ -112,21 +95,23 @@ package Displays {
 				seg.draw();
 			});
 			
-			var blitActive:Boolean = getBlitActive(segColor);
-			if (blitActive) {
-				var blitFraction:Number = (Math.floor(U.state.elapsed * BLIT_PERIOD * U.GRID_DIM) % U.GRID_DIM) / U.GRID_DIM;
-				for (var i:int = 0; i < wire.path.length - 1; i++) {
-					var p1:Point = wire.path[i];
-					var p2:Point = wire.path[i + 1];
-					if (i < sourcePoint) {
-						p1 = wire.path[i + 1];
-						p2 = wire.path[i];
-					}
-					
-					animationBlit.x = (p1.x + (p2.x - p1.x) * blitFraction) * U.GRID_DIM -1;
-					animationBlit.y = (p1.y + (p2.y - p1.y) * blitFraction) * U.GRID_DIM -1;
-					animationBlit.draw();
+			if (U.BLIT_ENABLED && getBlitActive(segColor))
+				drawBlit();
+		}
+		
+		protected function drawBlit():void {
+			var blitFraction:Number = (Math.floor(U.state.elapsed * BLIT_PERIOD * U.GRID_DIM) % U.GRID_DIM) / U.GRID_DIM;
+			for (var i:int = 0; i < wire.path.length - 1; i++) {
+				var p1:Point = wire.path[i];
+				var p2:Point = wire.path[i + 1];
+				if (i < sourcePoint) {
+					p1 = wire.path[i + 1];
+					p2 = wire.path[i];
 				}
+				
+				animationBlit.x = (p1.x + (p2.x - p1.x) * blitFraction) * U.GRID_DIM -1;
+				animationBlit.y = (p1.y + (p2.y - p1.y) * blitFraction) * U.GRID_DIM -1;
+				animationBlit.draw();
 			}
 		}
 		
@@ -146,12 +131,12 @@ package Displays {
 			return c == 0x0 && wire.getSource().getValue().toNumber() != 0; 
 		}
 		
-		private function checkZoom():void {
+		protected function checkZoom():void {
 			if (U.state.zoom != lastZoom)
 				buildSegs();
 		}
 		
-		private function drawJoin(current:Point):void {
+		protected function drawJoin(current:Point):void {
 			var carriersAt:Vector.<Carrier> = U.state.carriersAtPoint(current);
 			if (!carriersAt || carriersAt.length < 2)
 				return;

@@ -12,46 +12,67 @@ package Layouts {
 	public class InternalDWire extends DWire {
 		
 		protected var lastDashed:Boolean;
+		protected var altHSeg:FlxSprite;
+		protected var altVSeg:FlxSprite;
 		public function InternalDWire(wire:InternalWire) {
 			super(wire);
 		}
 		
 		override protected function buildSegs():void {
 			var iWire:InternalWire = wire as InternalWire;
-			lastDashed = iWire.control;
 			
-			if (!iWire.control) {
-				super.buildSegs();
-				return;
-			}
+			super.buildSegs();
 			
 			var w:int = 1 / U.state.zoom;
 			var cached:Boolean = FlxG.checkBitmapCache("hcontrolwire-"+w);
-			hSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w, 0xffffffff, true, "hcontrolwire-"+w);
-			vSeg = new FlxSprite().makeGraphic(w, U.GRID_DIM, 0xffffffff, true, "vcontrolwire-"+w);
+			altHSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w, 0xffffffff, true, "hcontrolwire-"+w);
+			altVSeg = new FlxSprite().makeGraphic(w, U.GRID_DIM, 0xffffffff, true, "vcontrolwire-"+w);
 			
 			if (!cached) {
 				var dashLength:Number = U.GRID_DIM / 5;
-				hSeg.pixels.fillRect(new Rectangle(dashLength, 0, dashLength, w), 0x0);
-				hSeg.pixels.fillRect(new Rectangle(Math.ceil(dashLength * 3), 0, dashLength, w), 0x0);
-				vSeg.pixels.fillRect(new Rectangle(0, dashLength, w, dashLength), 0x0);
-				vSeg.pixels.fillRect(new Rectangle(0, Math.ceil(dashLength * 3), w, dashLength), 0x0);
-				hSeg.frame = vSeg.frame = 0;
+				altHSeg.pixels.fillRect(new Rectangle(dashLength, 0, dashLength, w), 0x0);
+				altHSeg.pixels.fillRect(new Rectangle(Math.ceil(dashLength * 3), 0, dashLength, w), 0x0);
+				altVSeg.pixels.fillRect(new Rectangle(0, dashLength, w, dashLength), 0x0);
+				altVSeg.pixels.fillRect(new Rectangle(0, Math.ceil(dashLength * 3), w, dashLength), 0x0);
+				altHSeg.frame = altVSeg.frame = 0;
 			}
 			
-			hSeg.height = vSeg.width = w + 4;
-			hSeg.offset.y = vSeg.offset.x = -2;
-			
-			join = new FlxSprite;
-			animationBlit = new FlxSprite().makeGraphic(w, w);
-			
-			lastZoom = U.state.zoom;
+			altHSeg.height = altVSeg.width = w + 4;
+			altHSeg.offset.y = altVSeg.offset.x = -2;
 		}
 		
-		override public function update():void {
-			super.update();
-			if (lastDashed != (wire as InternalWire).control)
-				buildSegs();
+		override public function draw():void {
+			var iWire:InternalWire = wire as InternalWire;
+			
+			checkZoom();
+			
+			var segColor:uint = getColor();
+			hSeg.color = vSeg.color = altHSeg.color = altVSeg.color = join.color = segColor;
+			
+			iterWire(function drawWire(seg:FlxSprite):void {
+				seg.draw();
+			}, 0, iWire.controlPoint);
+			
+			var oHSeg:FlxSprite = hSeg;
+			var oVSeg:FlxSprite = vSeg;
+			hSeg = altHSeg;
+			vSeg = altVSeg;
+			
+			if (iWire.controlPoint > 0 && iWire.controlPoint < iWire.path.length) {
+				join.x = iWire.path[iWire.controlPoint].x * U.GRID_DIM - join.width / 2;
+				join.y = iWire.path[iWire.controlPoint].y * U.GRID_DIM - join.height / 2;
+				join.draw();
+			}
+			
+			iterWire(function drawWire(seg:FlxSprite):void {
+				seg.draw();
+			}, iWire.controlPoint);
+			
+			hSeg = oHSeg;
+			vSeg = oVSeg;
+			
+			if (U.BLIT_ENABLED && getBlitActive(segColor))
+				drawBlit();
 		}
 		
 		override protected function getColor():uint {
@@ -70,10 +91,6 @@ package Layouts {
 		
 		override protected function getBlitActive(c:uint):Boolean {
 			return !lastDashed && c == 0x0 && (wire as InternalWire).getValue().toNumber() != 0; 
-		}
-		
-		override protected function checkSource():void {
-			sourcePoint = 0;
 		}
 	}
 

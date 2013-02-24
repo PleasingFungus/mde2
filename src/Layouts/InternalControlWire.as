@@ -1,6 +1,7 @@
 package Layouts {
 	import Components.Wire;
 	import flash.geom.Point;
+	import org.flixel.FlxSprite;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -9,21 +10,27 @@ package Layouts {
 		
 		public var tuple:NodeTuple;
 		public var dependent:InternalWire;
+		protected var intersectPoint:int;
 		public function InternalControlWire(Root:InternalNode, Tuple:NodeTuple, wires:Vector.<InternalWire>) {
 			tuple = Tuple;
 			
 			dependent = findDependent(wires);
 			
-			var midIndex:int = Math.min(Math.floor(dependent.path.length / 2), 3);
-			C.log(dependent.path.length, midIndex);
-			var midpoint:Point = dependent.path[midIndex];
-			super(Root.Loc, midpoint, true, true,
+			intersectPoint = Math.min(Math.floor(dependent.path.length / 2), 3);
+			var midpoint:Point = dependent.path[intersectPoint];
+			super(Root.Loc, midpoint, true,
 				  function enabled():Boolean { return exists; },
 				  Root.getValue);
 		}
 		
 		override public function update():void {
-			dependent.control = !tuple.isEnabled();
+			if (tuple.isEnabled()) {
+				controlPoint = C.INT_NULL;
+				dependent.controlPoint = C.INT_NULL;
+			} else {
+				controlPoint = 0;
+				dependent.controlPoint = intersectPoint;
+			}
 		}
 		
 		protected function findDependent(wires:Vector.<InternalWire>):InternalWire {

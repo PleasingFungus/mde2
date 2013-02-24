@@ -12,11 +12,12 @@ package Layouts {
 		public var name:String;
 		public var parent:Module;
 		public var connections:Vector.<Node>
-		public var controls:Vector.<InternalNode>;
+		public var controlTuples:Vector.<NodeTuple>;
 		public var internalWires:Vector.<InternalWire>;
 		public var getValue:Function;
 		public var offset:Point;
-		public function InternalNode(Parent:Module, Offset:Point, Connections:Array, Controls:Array = null, GetValue:Function = null, Name:String = null) {
+		public function InternalNode(Parent:Module, Offset:Point, Connections:Array,
+									 ControlTuples:Array = null, GetValue:Function = null, Name:String = null) {
 			name = Name;
 			getValue = GetValue;
 			parent = Parent;
@@ -27,10 +28,10 @@ package Layouts {
 				for each (var node:Node in Connections)
 					connections.push(node);
 			
-			controls = new Vector.<InternalNode>;
-			if (Controls)
-				for each (var iNode:InternalNode in Controls)
-					controls.push(iNode);
+			controlTuples = new Vector.<NodeTuple>;
+			if (ControlTuples)
+				for each (var controlTuple:NodeTuple in ControlTuples)
+					controlTuples.push(controlTuple);
 			
 			internalWires = buildConnections();
 		}
@@ -57,6 +58,7 @@ package Layouts {
 		
 		protected function buildConnections():Vector.<InternalWire> {
 			var wires:Vector.<InternalWire> = new Vector.<InternalWire>;
+			
 			for each (var connection:Node in connections)
 				if (connection is PortLayout) {
 					var pLayout:PortLayout = connection as PortLayout;
@@ -68,17 +70,21 @@ package Layouts {
 						end = pLayout.Loc;
 					}
 					
-					wires.push(new InternalWire(start, end, pLayout.port.isOutput, false, pLayout.port.getSource,	pLayout.port.getValue));
+					wires.push(new InternalWire(start, end, pLayout.port.isOutput, false, pLayout.port.getSource, pLayout.port.getValue));
 				} else
 					wires.push(new InternalWire(Loc, connection.Loc, false, false, _true, getValue));
-			for each (var control:InternalNode in controls)
-				wires.push(new InternalWire(control.Loc, Loc, false, true, _true, control.getValue != null ? control.getValue : getValue));
+			
 			return wires;
 		}
 		
 		public function updatePosition():void {
 			for each (var wire:InternalWire in internalWires)
 				wire.shiftTo(Loc);
+		}
+		
+		public function update():void {
+			for each (var wire:InternalWire in internalWires)
+				wire.update();
 		}
 		
 		private function _true():Boolean { return true; }

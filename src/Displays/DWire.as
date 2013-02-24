@@ -99,6 +99,7 @@ package Displays {
 		}
 		
 		override public function draw():void {
+
 			checkZoom();
 			
 			var segColor:uint = getColor();

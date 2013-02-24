@@ -1,5 +1,6 @@
 package Modules {
 	import Components.Port;
+	import Layouts.NodeTuple;
 	import Values.Delta;
 	import Values.FixedValue;
 	import Values.BooleanValue;
@@ -30,11 +31,11 @@ package Modules {
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			var kludge:Latch = this;
-			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]], [],
-															function getValue():BooleanValue { return BooleanValue.fromValue(kludge.controls[0].getValue()); } , "W");
-			var dataNode:InternalNode = new InternalNode(this, new Point(controlNode.offset.x, layout.ports[0].offset.y), [layout.ports[0], layout.ports[2]], [controlNode],
+			var dataNode:InternalNode = new InternalNode(this, new Point(layout.ports[2].offset.x - 2, layout.ports[2].offset.y), [layout.ports[0], layout.ports[2]], [],
 														 function getValue():Value { return value; });
+			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
+															[new NodeTuple(layout.ports[0], dataNode, writeOK)],
+															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; } , "W");
 			return new InternalLayout([controlNode, dataNode]);
 		}
 		
@@ -47,14 +48,18 @@ package Modules {
 		}
 		
 		override protected function statefulUpdate():Boolean {
-			var control:Value = controls[0].getValue();
-			if (control == U.V_UNKNOWN || control == U.V_UNPOWERED || control.toNumber() == 0)
+			if (!writeOK())
 				return false;
 			
 			var input:Value = inputs[0].getValue();
 			U.state.time.deltas.push(new Delta(U.state.time.moment, this, value));
 			value = input;
 			return true;
+		}
+		
+		protected function writeOK():Boolean {
+			var control:Value = controls[0].getValue();
+			return control != U.V_UNKNOWN && control != U.V_UNPOWERED && control.toNumber() != 0;
 		}
 		
 	}

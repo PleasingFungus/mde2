@@ -25,10 +25,10 @@ package Layouts {
 				return;
 			}
 			
-			var w:int = 1 / U.state.zoom
-			var cached:Boolean = FlxG.checkBitmapCache("hcontrolwire");
-			hSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w, 0xffffffff, true, "hcontrolwire");
-			vSeg = new FlxSprite().makeGraphic(w, U.GRID_DIM, 0xffffffff, true, "vcontrolwire");
+			var w:int = 1 / U.state.zoom;
+			var cached:Boolean = FlxG.checkBitmapCache("hcontrolwire-"+w);
+			hSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w, 0xffffffff, true, "hcontrolwire-"+w);
+			vSeg = new FlxSprite().makeGraphic(w, U.GRID_DIM, 0xffffffff, true, "vcontrolwire-"+w);
 			
 			if (!cached) {
 				var dashLength:Number = U.GRID_DIM / 5;

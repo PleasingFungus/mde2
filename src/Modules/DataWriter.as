@@ -30,15 +30,16 @@ package Modules {
 		
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = super.generateLayout();
-			layout.ports[0].offset.y += 2;
+			layout.ports[0].offset.y += 1;
+			layout.ports[1].offset.x += 1;
 			return layout;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]], [],
-															controls[0].getValue, "L");
-			var writeNode:InternalNode = new InternalNode(this, new Point(controlNode.offset.x, layout.ports[0].offset.y), [layout.ports[0]], [controlNode],
+			var writeNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [layout.ports[0]], [],
 															null, "[M]");
+			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1], writeNode], [],
+															controls[0].getValue, "L");
 			return new InternalLayout([controlNode, writeNode]);
 		}
 		

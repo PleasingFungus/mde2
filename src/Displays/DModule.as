@@ -17,7 +17,7 @@ package Displays {
 		public var module:Module;
 		public var displayPorts:Vector.<DPort>;
 		public var displayNodes:Vector.<DNode>;
-		public var displayConnections:Vector.<DWire>;
+		public var displayConnections:Vector.<InternalDWire>;
 		private var nameText:FlxText;
 		private var locked:Boolean;
 		private var wasValid:Boolean;
@@ -50,7 +50,7 @@ package Displays {
 				displayPorts.push(makePort(layout));
 			
 			displayNodes = new Vector.<DNode>;
-			displayConnections = new Vector.<DWire>;
+			displayConnections = new Vector.<InternalDWire>;
 			if (module.internalLayout)
 				for each (var node:InternalNode in module.internalLayout.nodes) {
 					displayNodes.push(new DNode(node));
@@ -79,6 +79,12 @@ package Displays {
 				refresh();
 			
 			updatePosition();
+			
+			for each (var displayNode:DNode in displayNodes)
+				displayNode.node.update();
+			
+			for each (var dWire:DWire in displayConnections)
+				dWire.update();
 			
 			if (U.SCALE_FONTS_WITH_ZOOM) {
 				if (nameText.font != U.FONT || nameText.size != U.FONT_SIZE) {
@@ -117,7 +123,8 @@ package Displays {
 			
 			if (module.internalLayout && U.state.zoom >= 0.5) {	
 				for each (var displayConnection:DWire in displayConnections)
-					displayConnection.draw();	
+					if (displayConnection.visible)
+						displayConnection.draw();
 				for each (var displayNode:DNode in displayNodes)
 					displayNode.draw();
 			}

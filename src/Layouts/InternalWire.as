@@ -22,6 +22,8 @@ package Layouts {
 			getValue = GetValue;
 		}
 		
+		public function update():void { }
+		
 		public function shiftTo(newEnd:Point):void {
 			var delta:Point = newEnd.subtract(path[out ? 0 : path.length - 1]);
 			for each (var p:Point in path) {

@@ -3,9 +3,7 @@ package Modules {
 	import Values.NumericValue;
 	import Values.Value;
 	
-	import Layouts.PortLayout;
-	import Layouts.InternalLayout;
-	import Layouts.InternalNode;
+	import Layouts.*;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -16,6 +14,12 @@ package Modules {
 		public function Adder(X:int, Y:int) {
 			super(X, Y, "+", Module.CAT_ARITH, 2, 1, 0);
 			delay = 2;
+		}
+		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = super.generateLayout();
+			layout.ports[layout.ports.length - 1].offset.y += 2;
+			return layout;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {

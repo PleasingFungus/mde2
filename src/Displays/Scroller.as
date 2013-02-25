@@ -51,7 +51,9 @@ package Displays {
 			FlxG.camera.scroll.y += scrollSpeed.y;
 		}
 		
-		private const MAX_SPEED:int = 65;
+		private function get MAX_SPEED():int {
+			return 65 / U.state.zoom;
+		}
 		private const ACCEL:Number = MAX_SPEED / 2;
 	}
 

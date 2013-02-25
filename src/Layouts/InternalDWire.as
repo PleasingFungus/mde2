@@ -24,7 +24,7 @@ package Layouts {
 			
 			super.buildSegs();
 			
-			var w:int = 1 / U.state.zoom;
+			var w:int = getWidth();
 			var cached:Boolean = FlxG.checkBitmapCache("hcontrolwire-"+w);
 			altHSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w, 0xffffffff, true, "hcontrolwire-"+w);
 			altVSeg = new FlxSprite().makeGraphic(w, U.GRID_DIM, 0xffffffff, true, "vcontrolwire-"+w);

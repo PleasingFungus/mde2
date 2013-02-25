@@ -15,18 +15,29 @@ package Displays {
 		
 		public var port:Port;
 		public var layout:PortLayout;
+		protected var lastZoom:Number;
 		public function DPort(Layout:PortLayout) {
 			layout = Layout;
 			port = Layout.port;
 			super();
 			
-			loadGraphic(_sprite);
+			init();
+		}
+		
+		protected function init():void {
+			if (U.state.zoom >= 0.5)
+				loadGraphic(_sprite);
+			else
+				makeGraphic(U.GRID_DIM, U.GRID_DIM);
+			
 			if (layout.vertical) {
 				angle = 90;
 				offset.x = width / 2;
 			} else {
 				offset.y = height / 2;
 			}
+			
+			lastZoom = U.state.zoom;
 		}
 		
 		public function updatePosition(baseX:int, baseY:int):void {
@@ -41,6 +52,8 @@ package Displays {
 		}
 		
 		override public function draw():void {
+			if (U.state.zoom != lastZoom)
+				init();
 			color = getColor();
 			super.draw();
 		}

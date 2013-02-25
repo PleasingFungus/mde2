@@ -28,7 +28,7 @@ package Displays {
 		}
 		
 		protected function buildSegs():void {
-			var w:int = 1 / U.state.zoom
+			var w:int = getWidth();
 			hSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w);
 			vSeg = new FlxSprite().makeGraphic(w, U.GRID_DIM);
 			hSeg.height = vSeg.width = w + 4;
@@ -38,6 +38,10 @@ package Displays {
 				animationBlit = new FlxSprite().makeGraphic(w, w);
 			
 			lastZoom = U.state.zoom;
+		}
+		
+		protected function getWidth():int {
+			return 2 / U.state.zoom;
 		}
 		
 		override public function update():void {
@@ -89,8 +93,6 @@ package Displays {
 			hSeg.color = vSeg.color = join.color = segColor;
 			hSeg.alpha = vSeg.alpha = join.alpha = wire.FIXED ? 0.5 : 1;
 			
-			drawJoin(wire.path[0]);
-			drawJoin(wire.path[wire.path.length - 1]);
 			iterWire(function drawWire(seg:FlxSprite):void {
 				seg.draw();
 			});
@@ -116,6 +118,9 @@ package Displays {
 		}
 		
 		protected function getColor():uint {
+			if (overlapsPoint(U.mouseFlxLoc))
+				return 0xfff03c;
+			
 			if (wire.getSource() == null || wire.connections.length < 2)
 				return 0xff0000;
 			

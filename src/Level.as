@@ -45,7 +45,7 @@ package  {
 								  new WireTutorialGoal,
 								  false,
 								  [], [],
-								  [new ConstIn(24, 32, 1), new Adder(40, 32), new DataWriter(56, 32)]),
+								  [new ConstIn(12, 16, 1), new Adder(20, 16), new DataWriter(28, 16)]),
 						new Level("Tutorial 2: Acc.",
 								  new AccumulatorTutorialGoal,
 								  false,

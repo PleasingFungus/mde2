@@ -23,7 +23,6 @@ package Modules {
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = super.generateLayout();
 			for (var i:int = 0; i < inputs.length; i++) {
-				layout.ports[i].offset.x -= 1;
 				layout.ports[i].offset.y += 1;
 			}
 			layout.ports[layout.ports.length - 2].offset.x += 2;

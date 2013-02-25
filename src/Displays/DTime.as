@@ -38,7 +38,7 @@ package Displays {
 		public function create():void {
 			var textWidth:int = 50;
 			timeText = new FlxText(x + width/2 -textWidth / 2, y, textWidth, U.state.time.toString());
-			timeText.setFormat(U.FONT, 16);
+			timeText.setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size);
 			
 			var timeBorder:int = 2;
 			timeBox = new FlxSprite(timeText.x - timeBorder, timeText.y - timeBorder);

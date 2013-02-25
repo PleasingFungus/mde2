@@ -13,7 +13,7 @@ package  {
 		}
 		
 		override public function create():void {
-			add(new FlxText(20, 20, FlxG.width - 40, "Timeout...").setFormat(U.FONT, U.FONT_SIZE * 4, 0x0));
+			add(U.TITLE_FONT.configureFlxText(new FlxText(20, 20, FlxG.width - 40, "Timeout..."), 0x0));
 		}
 		
 		override public function update():void {

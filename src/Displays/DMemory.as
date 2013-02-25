@@ -61,8 +61,7 @@ package Displays {
 					var memText:FlxText = new FlxText(bg.x + BORDER + col * (COL_WIDTH + BORDER),
 													  bg.y + BORDER + row * (ROW_HEIGHT + BORDER / 2),
 													  COL_WIDTH, memLine + " : " + memValue.toString())
-					memText.setFormat(U.FONT, 16);
-					add(memText);
+					add(U.BODY_FONT.configureFlxText(memText));
 					
 					row += 1;
 					if (row >= ROWS) {

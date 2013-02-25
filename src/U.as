@@ -5,6 +5,7 @@ package  {
 	import Modules.*;
 	import org.flixel.*;
 	import Testing.Types.InstructionType;
+	import UI.FontTuple;
 	import Values.FixedValue;
 	/**
 	 * ...
@@ -20,18 +21,20 @@ package  {
 		
 		public static const BLIT_ENABLED:Boolean = false;
 		
-		[Embed(source = "../lib/fonts/FuturaLT.ttf", fontFamily = "FUTUR")] private const _1:String;
-		public static const FONT_:String = "FUTUR";
-		[Embed(source = "../lib/fonts/FuturaLT-Bold.ttf", fontFamily = "FUTURB")] private const _2:String;
-		public static const FONT_BOLD:String = "FUTURB";
-		[Embed(source = "../lib/fonts/FuturaLT-Condensed.ttf", fontFamily = "F")] private const _3:String;
-		public static const FNT:String = "F";
-		[Embed(source = "../lib/fonts/FuturaLT-CondensedBold.ttf", fontFamily = "FB")] private const _4:String;
-		public static const FNT_BOLD:String = "FB";
-		[Embed(source = "../lib/fonts/geneva_9.ttf", fontFamily = "GV")] private const _5:String;
-		public static const GENEVA:String = "GV";
-		public static var FONT:String = null;
-		public static var FONT_SIZE:int = 16;
+		[Embed(source = "../lib/fonts/munro.ttf", fontFamily = "MUNRO")] private const _1:String;
+		public static const MUNRO:String = "MUNRO";
+		[Embed(source = "../lib/fonts/munro_narrow.ttf", fontFamily = "MUNRO_N")] private const _2:String;
+		public static const MUNRO_NARROW:String = "MUNRO_N";
+		[Embed(source = "../lib/fonts/munro_small.ttf", fontFamily = "MUNRO_S")] private const _3:String;
+		public static const MUNRO_SMALL:String = "MUNRO_S";
+		public static const SYSTEM:String = "system";
+		
+		public static const LABEL_FONT:FontTuple = new FontTuple(SYSTEM, 16);
+		public static const BODY_FONT:FontTuple = new FontTuple(SYSTEM, 16);
+		public static const TITLE_FONT:FontTuple = new FontTuple(SYSTEM, 32);
+		public static const NODE_FONT:FontTuple = new FontTuple(MUNRO_NARROW, 20);
+		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
+		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
 		
 		public static var levels:Vector.<Level>;
 		public static var state:LevelState;
@@ -95,8 +98,6 @@ package  {
 		
 		public static const MAX_INT:int = 127;
 		public static const MIN_INT:int = -128;
-		
-		public static const SCALE_FONTS_WITH_ZOOM:Boolean = false;
 	}
 
 }

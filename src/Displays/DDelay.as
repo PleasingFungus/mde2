@@ -2,6 +2,7 @@ package Displays {
 	import Layouts.PortLayout;
 	import Modules.Module;
 	import org.flixel.*;
+	import UI.FontTuple;
 	
 	/**
 	 * ...
@@ -90,6 +91,8 @@ package Displays {
 			for each (node in checked)
 				maxDelay = Math.max(node.dist, maxDelay);
 			
+			var font:FontTuple = U.state.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
+			
 			members = []
 			for each (node in checked) {
 				for each (var displayModule:DModule in displayModules)
@@ -101,7 +104,7 @@ package Displays {
 				var green:uint = 0xff - red;
 				var color:uint = 0xff000040 | (red << 16) | (green << 8)
 				add(new FlxSprite(displayModule.x, displayModule.y).makeGraphic(displayModule.width, displayModule.height, color));
-				add(new FlxText(displayModule.x - U.GRID_DIM, displayModule.y + displayModule.height / 2 - 8, displayModule.width + U.GRID_DIM * 2, "" + node.dist).setFormat(U.FONT, U.FONT_SIZE, 0x0, 'center'));
+				add(new FlxText(displayModule.x - U.GRID_DIM, displayModule.y + displayModule.height / 2 - 8, displayModule.width + U.GRID_DIM * 2, "" + node.dist).setFormat(font.id, font.size, 0x0, 'center'));
 			}
 		}
 		

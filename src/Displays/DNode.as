@@ -18,7 +18,7 @@ package Displays {
 			super();
 			makeSprite();
 			label = new FlxText( -1, -1, width);
-			label.setFormat(U.FONT, U.FONT_SIZE, 0x0, 'center');
+			U.NODE_FONT.configureFlxText(label, 0x0, 'center');
 		}
 		
 		protected function makeSprite():void {

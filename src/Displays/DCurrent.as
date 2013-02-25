@@ -22,7 +22,7 @@ package Displays {
 			dWires = DWires;
 			dModules = DModules;
 			
-			add(text = new FlxText( -1, -1, FlxG.width / 4, " ").setFormat(U.FONT, U.FONT_SIZE, 0xff000000));
+			add(text = new FlxText( -1, -1, FlxG.width / 4, " ").setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xff000000));
 			//text.scrollFactor.x = text.scrollFactor.y = 0;
 		}
 		

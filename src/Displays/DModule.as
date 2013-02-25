@@ -7,6 +7,7 @@ package Displays {
 	import Layouts.PortLayout;
 	import Modules.Module;
 	import org.flixel.*;
+	import UI.FontTuple;
 	
 	/**
 	 * ...
@@ -42,7 +43,7 @@ package Displays {
 						moduleColor, true);
 			
 			nameText = new FlxText( -1, -1, width + U.GRID_DIM / 2, getName());
-			nameText.setFormat(U.FONT, U.FONT_SIZE, 0x0, 'center');
+			font.configureFlxText(nameText, 0x0, 'center');
 			nameText.scrollFactor = scrollFactor; //object
 			
 			displayPorts = new Vector.<DPort>;
@@ -78,6 +79,10 @@ package Displays {
 			if (module.dirty || (wasValid != module.validPosition))
 				refresh();
 			
+			var font:FontTuple = this.font;
+			if (nameText.font != font.id || nameText.size != font.size)
+				font.configureFlxText(nameText = new FlxText(-1, -1, width + U.GRID_DIM / 2, getName()), 0x0, 'center');
+			
 			updatePosition();
 			
 			for each (var displayNode:DNode in displayNodes)
@@ -85,13 +90,6 @@ package Displays {
 			
 			for each (var dWire:DWire in displayConnections)
 				dWire.update();
-			
-			if (U.SCALE_FONTS_WITH_ZOOM) {
-				if (nameText.font != U.FONT || nameText.size != U.FONT_SIZE) {
-					nameText = new FlxText(nameText.x, nameText.y, nameText.width * U.FONT_SIZE / nameText.size, nameText.text);
-					nameText.setFormat(U.FONT, U.FONT_SIZE, 0x0, nameText.alignment, nameText.shadow);
-				}
-			}
 			
 			visible = solid = module.exists;
 		}
@@ -109,9 +107,6 @@ package Displays {
 			for each (var displayNode:DNode in displayNodes)
 				displayNode.node.updatePosition();
 			
-			var textSize:int = U.state.zoom >= 0.5 ? U.FONT_SIZE : U.FONT_SIZE * 2;
-			if (textSize != nameText.size)
-				nameText.size = textSize;
 			nameText.x = x;
 			nameText.y = y + (height - nameText.height) / 2;
 		}
@@ -132,6 +127,10 @@ package Displays {
 				nameText.text = getName();
 				nameText.draw();
 			}
+		}
+		
+		protected function get font():FontTuple {
+			return U.state.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
 		}
 	}
 

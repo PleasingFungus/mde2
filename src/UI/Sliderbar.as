@@ -60,7 +60,7 @@ package UI {
 			slider.x = rail.x + width * posFraction - slider.width / 2;
 			
 			//value display
-			valueText = new FlxText( -1, -1, FlxG.width, " ").setFormat(U.FONT, 16, 0xffffff);
+			valueText = new FlxText( -1, -1, FlxG.width, " ").setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xffffff);
 			valueText.text = String(valueRange.min);
 			var textWidth:int = valueText.textWidth;
 			valueText.text = String(valueRange.max);

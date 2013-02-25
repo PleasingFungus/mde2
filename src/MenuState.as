@@ -19,7 +19,7 @@ package  {
 			U.enforceButtonPriorities = false;
 			
 			var title:FlxText = new FlxText(0, 20, FlxG.width, "MULTIDUCK\nEXTRAVAGANZA");
-			title.setFormat(U.FONT, 32, 0xffffff, 'center');
+			U.TITLE_FONT.configureFlxText(title, 0xffffff, 'center');
 			add(title);
 			
 			var levelSelectors:Vector.<MenuButton> = new Vector.<MenuButton>;
@@ -27,7 +27,7 @@ package  {
 				var button:TextButton = new TextButton( -1, -1, level.name, function switchTo(level:Level):void { 
 					FlxG.switchState(new LevelState(level));
 				});
-				button.setFormat(U.FONT, 16, 0xffffff);
+				button.setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xffffff);
 				button.fades = true;
 				button.setParam(level);
 				levelSelectors.push(button);

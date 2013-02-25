@@ -26,7 +26,7 @@ package UI {
 			super.init();
 			
 			if (hotkey)
-				add(hotkeyHint = new FlxText( -1, -1, 1000, hotkey.toString()).setFormat(U.FONT, 16));
+				add(hotkeyHint = new FlxText( -1, -1, 1000, hotkey.toString()).setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size));
 		}
 		
 		override protected function calculateGraphicLoc():void {

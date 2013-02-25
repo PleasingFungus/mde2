@@ -41,24 +41,24 @@ package Displays {
 			var X:int = bg.x + 8;
 			var Width:int = bg.width - 16;
 			var title:FlxText = new FlxText(X, bg.y + 8, Width, level.name);
-			title.setFormat(U.FONT, U.FONT_SIZE * 2, 0xffffff, 'center');
+			U.TITLE_FONT.configureFlxText(title, 0xffffff, 'center');
 			add(title);
 			var Y:int = title.y + title.height + 8;
 			
 			var description:FlxText = new FlxText(X, Y, Width, level.goal.description);
-			description.setFormat(U.FONT, U.FONT_SIZE);
+			U.BODY_FONT.configureFlxText(description);
 			add(description);
 			Y = description.y + description.height + 16;
 			
 			if (level.expectedOps.length) {
-				var expectedOps:FlxText = new FlxText(X, Y, Width, "Ops to support: " + level.expectedOps.join(', ')).setFormat(U.FONT, U.FONT_SIZE);
-				add(expectedOps);
+				var expectedOps:FlxText = new FlxText(X, Y, Width, "Ops to support: " + level.expectedOps.join(', '));
+				add(U.BODY_FONT.configureFlxText(expectedOps));
 				Y = expectedOps.y + expectedOps.height + 16;
 			}
 			
 			if (level.delay) {
-				var delayEnabled:FlxText = new FlxText(X, Y, Width, "Propagation delay enabled.").setFormat(U.FONT, U.FONT_SIZE);
-				add(delayEnabled);
+				var delayEnabled:FlxText = new FlxText(X, Y, Width, "Propagation delay enabled.");
+				add(U.BODY_FONT.configureFlxText(delayEnabled));
 				Y = delayEnabled.y + delayEnabled.height + 16;
 			}
 			
@@ -70,10 +70,10 @@ package Displays {
 			else
 				testType = "Simple run";
 			
-			var testing:FlxText = new FlxText(X, Y, Width, "Testing: "+testType + ", time limit of " + level.goal.timeLimit + " cycles").setFormat(U.FONT, U.FONT_SIZE);
+			var testing:FlxText = new FlxText(X, Y, Width, "Testing: " + testType + ", time limit of " + level.goal.timeLimit + " cycles");
 			if (level.goal is GeneratedGoal)
 				testing.text += " per test";
-			add(testing);
+			add(U.BODY_FONT.configureFlxText(testing));
 		}
 		
 		

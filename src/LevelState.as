@@ -133,7 +133,6 @@ package  {
 			makeDataButton();
 			makeInfoButton();
 			makeBackButton();
-			listOpen == LIST_ZOOM ? makeZoomList() : makeZoomButton();
 			
 			if (mode == MODE_DELAY) {
 				if (!displayDelay || !displayDelay.exists)
@@ -142,6 +141,8 @@ package  {
 				displayDelay.exists = false;
 			
 			if (!editEnabled) {
+				listOpen == LIST_ZOOM ? makeZoomList() : makeZoomButton();
+				
 				listOpen = LIST_NONE;
 				if (currentModule) {
 					currentModule.exists = false;
@@ -150,6 +151,10 @@ package  {
 				return;
 			}
 			
+			makeSaveButton();
+			makeUndoButtons();
+			makeTestButtons();
+			listOpen == LIST_ZOOM ? makeZoomList() : makeZoomButton();
 			listOpen == LIST_MODES ? makeModeMenu() : makeModeButton();
 			if (mode == MODE_MODULE)
 				switch (listOpen) {
@@ -157,9 +162,6 @@ package  {
 					case LIST_CATEGORIES: makeModuleCatList(); break;
 					case LIST_NONE: default: makeModuleCatButton(); break;
 				}
-			makeSaveButton();
-			makeUndoButtons();
-			makeTestButtons();
 		}
 		
 		protected function makeBackButton():void {
@@ -172,19 +174,16 @@ package  {
 		}
 		
 		protected function makeSaveButton():void {
-			saveButton = new GraphicButton(FlxG.width - 85, 50, _save_sprite, save, new Key("S"));
+			saveButton = new GraphicButton(90, 50, _save_sprite, save, new Key("S"));
 			upperLayer.add(saveButton);
 		}
 		
 		protected function makeUndoButtons():void {
-			undoButton = new GraphicButton(FlxG.width - 165, 50, _undo_sprite, undo, new Key("Z"));
+			undoButton = new GraphicButton(10, 50, _undo_sprite, undo, new Key("Z"));
 			upperLayer.add(undoButton);
 			
-			redoButton = new GraphicButton(FlxG.width - 125, 50, _redo_sprite, redo, new Key("Y"));
+			redoButton = new GraphicButton(50, 50, _redo_sprite, redo, new Key("Y"));
 			upperLayer.add(redoButton);
-			
-			var resetButton:GraphicButton = new GraphicButton(FlxG.width - 45, 90, _reset_sprite, reset);
-			upperLayer.add(resetButton);
 		}
 		
 		protected function makeDataButton():void {
@@ -198,21 +197,21 @@ package  {
 			if (!nonNull)
 				return;
 			
-			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 125, 10, _data_sprite, function _():void {
+			var memoryButton:MenuButton = new GraphicButton(50, 90, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory));
 			}, new Key("C"));
 			upperLayer.add(memoryButton);
 		}
 		
 		protected function makeInfoButton():void {
-			var infoButton:MenuButton = new GraphicButton(FlxG.width - 45, 50, _info_sprite, function _():void {
+			var infoButton:MenuButton = new GraphicButton(10, 90, _info_sprite, function _():void {
 				upperLayer.add(new DGoal(level));
 			}, new Key("I"));
 			upperLayer.add(infoButton);
 		}
 		
 		protected function makeZoomButton():void {
-			var zoomButton:MenuButton = new GraphicButton(90, 10, _zoom_sprite, function openList():void {
+			var zoomButton:MenuButton = new GraphicButton(50, 10, _zoom_sprite, function openList():void {
 				listOpen = LIST_ZOOM;
 				makeUI();
 			}, new Key("PLUS"));
@@ -232,7 +231,7 @@ package  {
 					FlxG.camera.scroll.y -= (FlxG.height / 2) / zoom;
 				}, HOTKEYS[zoomLevel]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == zoom));
 			
-			var zoomList:ButtonList = new ButtonList(90, 10, zoomButtons, function onListClose():void {
+			var zoomList:ButtonList = new ButtonList(50, 10, zoomButtons, function onListClose():void {
 				if (listOpen == LIST_ZOOM)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -244,7 +243,7 @@ package  {
 		
 		protected function makeTestButtons():void {
 			if (level.goal.randomizedMemory) {
-				var randomButton:MenuButton = new GraphicButton(FlxG.width - 165, 10, _random_sprite, function _():void {
+				var randomButton:MenuButton = new GraphicButton(90, 90, _random_sprite, function _():void {
 					initialMemory = level.goal.genMem();
 					memory = initialMemory.slice();
 				}, new Key("R"));
@@ -253,7 +252,7 @@ package  {
 			
 			if (level.goal.dynamicallyTested) {
 				var kludge:LevelState = this;
-				var testButton:MenuButton = new GraphicButton(FlxG.width - 85, 10, _test_sprite, function _():void {
+				var testButton:MenuButton = new GraphicButton(130, 90, _test_sprite, function _():void {
 					level.goal.runTest(kludge);
 				}, new Key("T"));
 				upperLayer.add(testButton);
@@ -298,7 +297,7 @@ package  {
 		}
 		
 		protected function makeModuleCatButton():void {
-			var listButton:GraphicButton = new GraphicButton(50, 10, _list_sprite, function openList():void {
+			var listButton:GraphicButton = new GraphicButton(130, 50, _list_sprite, function openList():void {
 				if (currentModule) {
 					currentModule.exists = false;
 					currentModule = null;
@@ -330,7 +329,7 @@ package  {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(50, 10, moduleButtons, function onListClose():void {
+			moduleList = new ButtonList(130, 50, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_CATEGORIES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -372,7 +371,7 @@ package  {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(50, 10, moduleButtons, function onListClose():void {
+			moduleList = new ButtonList(130, 50, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_MODULES)
 					listOpen = LIST_NONE;
 				makeUI();

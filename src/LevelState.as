@@ -172,8 +172,8 @@ package  {
 		}
 		
 		protected function makeSaveButton():void {
-			//saveButton = new GraphicButton(90, 50, _save_sprite, save, new Key("S"));
-			//upperLayer.add(saveButton);
+			var saveButton:GraphicButton = new GraphicButton(90, 50, _save_sprite, loadFromSuccess, new Key("S"));
+			upperLayer.add(saveButton);
 		}
 		
 		protected function makeUndoButtons():void {
@@ -598,9 +598,10 @@ package  {
 			if (runningTest) {
 				if (!time.moment && !displayTime.isPlaying)
 					runningTest = false; //?
-				else if (level.goal.stateValid(this))
+				else if (level.goal.stateValid(this)) {
+					U.save.data[level.name+SUCCESS_SUFFIX] = genSaveString();
 					FlxG.switchState(new SuccessState);
-				else if (time.moment >= level.goal.timeLimit)
+				} else if (time.moment >= level.goal.timeLimit)
 					FlxG.switchState(new FailureState(level));
 			}
 		}
@@ -797,7 +798,7 @@ package  {
 		}
 		
 		
-		protected function load():void {
+		protected function load(saveString:String = null):void {
 			initLayers();
 			displayWires = new Vector.<DWire>;
 			displayModules = new Vector.<DModule>;
@@ -811,8 +812,8 @@ package  {
 			time = new Time;
 			
 			
-			
-			var saveString:String = U.save.data[level.name];
+			if (saveString == null)
+				saveString = U.save.data[level.name];
 			if (saveString) {
 				var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);
 				
@@ -836,6 +837,10 @@ package  {
 				addModule(module);
 		}
 		
+		protected function loadFromSuccess():void {
+			load(U.save.data[level.name + SUCCESS_SUFFIX]);
+		}
+		
 		
 		public function runTest():void {
 			displayTime.startPlaying();
@@ -852,6 +857,8 @@ package  {
 		protected const LIST_CATEGORIES:int = 2;
 		protected const LIST_MODULES:int = 3;
 		protected const LIST_ZOOM:int = 4;
+		
+		protected const SUCCESS_SUFFIX:String = '-succ';
 
 		[Embed(source = "../lib/art/ui/lightbulb.png")] private const _module_sprite:Class;
 		[Embed(source = "../lib/art/ui/wire.png")] private const _connect_sprite:Class;

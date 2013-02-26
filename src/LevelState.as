@@ -44,7 +44,6 @@ package  {
 		
 		protected var undoButton:MenuButton;
 		protected var redoButton:MenuButton;
-		protected var saveButton:GraphicButton;
 		
 		protected var displayTime:DTime;
 		protected var preserveModule:Boolean;
@@ -166,7 +165,6 @@ package  {
 		
 		protected function makeBackButton():void {
 			var backButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _back_sprite, function back():void {
-				save();
 				FlxG.switchState(new MenuState);
 			});
 			backButton.fades = true;
@@ -174,8 +172,8 @@ package  {
 		}
 		
 		protected function makeSaveButton():void {
-			saveButton = new GraphicButton(90, 50, _save_sprite, save, new Key("S"));
-			upperLayer.add(saveButton);
+			//saveButton = new GraphicButton(90, 50, _save_sprite, save, new Key("S"));
+			//upperLayer.add(saveButton);
 		}
 		
 		protected function makeUndoButtons():void {
@@ -536,7 +534,6 @@ package  {
 		protected function checkMenuState():void {
 			undoButton.exists = actionStack.length > 0;
 			redoButton.exists = reactionStack.length > 0;
-			saveButton.loadGraphic(genSaveString() == savedString ? _evas_sprite : _save_sprite);
 			
 			checkCursorState();
 			
@@ -754,7 +751,7 @@ package  {
 			return reactionStack.pop().execute();
 		}
 		
-		protected function save():void {
+		public function save():void {
 			savedString = genSaveString();
 			U.save.data[level.name] = savedString;
 		}
@@ -841,7 +838,6 @@ package  {
 		
 		
 		public function runTest():void {
-			save();
 			displayTime.startPlaying();
 			runningTest = true;
 		}

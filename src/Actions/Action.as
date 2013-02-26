@@ -11,11 +11,13 @@ package Actions {
 		
 		public function execute():Action {
 			U.state.actionStack.push(this);
+			U.state.save();
 			return this;
 		}
 		
 		public function revert():Action {
 			U.state.reactionStack.push(this);
+			U.state.save();
 			return this;
 		}
 	}

@@ -150,7 +150,7 @@ package  {
 				return;
 			}
 			
-			makeSaveButton();
+			makeSaveButtons();
 			makeUndoButtons();
 			makeTestButtons();
 			listOpen == LIST_ZOOM ? makeZoomList() : makeZoomButton();
@@ -171,9 +171,14 @@ package  {
 			upperLayer.add(backButton);
 		}
 		
-		protected function makeSaveButton():void {
-			var saveButton:GraphicButton = new GraphicButton(90, 50, _save_sprite, loadFromSuccess, new Key("S"));
-			upperLayer.add(saveButton);
+		protected function makeSaveButtons():void {
+			if (!findSuccessSave()) return;
+			
+			var loadFromSuccessButton:GraphicButton = new GraphicButton(90, 50, _success_load_sprite, loadFromSuccess, new Key("S"));
+			upperLayer.add(loadFromSuccessButton);
+			
+			var resetButton:GraphicButton = new GraphicButton(130, 50, _reset_sprite, reset);
+			upperLayer.add(resetButton);
 		}
 		
 		protected function makeUndoButtons():void {
@@ -295,7 +300,7 @@ package  {
 		}
 		
 		protected function makeModuleCatButton():void {
-			var listButton:GraphicButton = new GraphicButton(130, 50, _list_sprite, function openList():void {
+			var listButton:GraphicButton = new GraphicButton(130, 10, _list_sprite, function openList():void {
 				if (currentModule) {
 					currentModule.exists = false;
 					currentModule = null;
@@ -327,7 +332,7 @@ package  {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(130, 50, moduleButtons, function onListClose():void {
+			moduleList = new ButtonList(130, 10, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_CATEGORIES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -369,7 +374,7 @@ package  {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(130, 50, moduleButtons, function onListClose():void {
+			moduleList = new ButtonList(130, 10, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_MODULES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -757,17 +762,6 @@ package  {
 			U.save.data[level.name] = savedString;
 		}
 		
-		protected function reset():void {
-			for each (var module:Module in level.modules)
-				if (module.FIXED)
-					module.deregister();
-			
-			savedString = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
-			U.save.data[level.name] = savedString;
-			load();
-			//TODO: transform into a custom action!
-		}
-		
 		protected function genSaveString():String {
 			var saveString:String = "";
 			
@@ -838,7 +832,36 @@ package  {
 		}
 		
 		protected function loadFromSuccess():void {
-			load(U.save.data[level.name + SUCCESS_SUFFIX]);
+			var successSave:String = findSuccessSave();
+			if (successSave == savedString || successSave == null)
+				return;
+			
+			new CustomAction(function loadSuccess(success:String = null, old:String = null):Boolean { load(success); reactionStack = new Vector.<Action>; return true; },
+							 function loadOld(success:String = null, old:String = null):void { load(old); },
+							 successSave, savedString).execute();
+		}
+		
+		protected function findSuccessSave():String {
+			var personalSuccess:String = U.save.data[level.name + SUCCESS_SUFFIX];
+			if (personalSuccess)
+				return personalSuccess;
+			for each (var predecessor:Level in level.predecessors) {
+				var predecessorSuccess:String = U.save.data[predecessor.name + SUCCESS_SUFFIX];
+				if (predecessorSuccess)
+					return predecessorSuccess;
+			}
+			return null;
+		}
+		
+		protected function reset():void {
+			//for each (var module:Module in level.modules)
+				//if (module.FIXED)
+					//module.deregister();
+			//
+			//savedString = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
+			//U.save.data[level.name] = savedString;
+			//load();
+			//TODO: transform into a custom action!
 		}
 		
 		
@@ -872,6 +895,7 @@ package  {
 		[Embed(source = "../lib/art/ui/up.png")] private const _back_sprite:Class;
 		[Embed(source = "../lib/art/ui/floppy.png")] private const _save_sprite:Class;
 		[Embed(source = "../lib/art/ui/yppolf.png")] private const _evas_sprite:Class;
+		[Embed(source = "../lib/art/ui/floppy-trophy.png")] private const _success_load_sprite:Class;
 		[Embed(source = "../lib/art/ui/maglass.png")] private const _zoom_sprite:Class;
 		[Embed(source = "../lib/art/ui/x1b.png")] private const _z1_sprite:Class;
 		[Embed(source = "../lib/art/ui/x1_2b.png")] private const _z2_sprite:Class;

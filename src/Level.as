@@ -13,6 +13,7 @@ package  {
 		public var modules:Vector.<Module>;
 		public var expectedOps:Vector.<OpcodeValue>
 		public var allowedModules:Vector.<Class>
+		public var predecessors:Vector.<Level>;
 		public var delay:Boolean;
 		
 		public function Level(Name:String, Goal:LevelGoal, delay:Boolean = false, AllowedModules:Array = null, ExpectedOps:Array = null, Modules:Array = null) {
@@ -37,10 +38,13 @@ package  {
 				allowedModules = Module.ALL_MODULES;
 			
 			this.delay = delay;
+			
+			predecessors = new Vector.<Level>;
 		}
 		
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
+			
 			levels.push(new Level("Tutorial 1: Wires",
 								  new WireTutorialGoal,
 								  false,
@@ -49,22 +53,31 @@ package  {
 						new Level("Tutorial 2: Acc.",
 								  new AccumulatorTutorialGoal,
 								  false,
-								  [ConstIn, Adder, Latch, DataWriter], []),
-						new Level("Add-CPU",
-								  new GeneratedGoal("Set-Add-Save!", Test),
-								  false,
-								  [ConstIn, And, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
-								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]),
-						new Level("Add-CPU Delay",
-								  new GeneratedGoal("Set-Add-Save!", Test, 12, 10000),
-								  true,
-								  null,
-								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]),
-						new Level("Jump! Jump!",
-								  new GeneratedGoal("Jump!", JumpTest),
-								  false,
-								  [ConstIn, And, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
-								  [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV, OpcodeValue.OP_JMP]));
+								  [ConstIn, Adder, Latch, DataWriter], []));
+			
+			var addCPU:Level = new Level("Add-CPU",
+										 new GeneratedGoal("Set-Add-Save!", Test),
+										 false,
+										 [ConstIn, And, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
+										 [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]);
+			
+			var addCPU_D:Level = new Level("Add-CPU Delay",
+										   new GeneratedGoal("Set-Add-Save!", Test, 12, 10000),
+										   true,
+										   null,
+										   [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]);
+			
+			var cpuJMP:Level = new Level("Jump! Jump!",
+										 new GeneratedGoal("Jump!", JumpTest),
+										 false,
+										 [ConstIn, And, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
+										 [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV, OpcodeValue.OP_JMP]);
+			
+			addCPU_D.predecessors.push(addCPU);
+			cpuJMP.predecessors.push(addCPU);
+			
+			levels.push(addCPU, addCPU_D, cpuJMP);
+			
 			return levels;
 		}
 	}

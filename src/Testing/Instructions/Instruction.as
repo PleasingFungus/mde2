@@ -48,6 +48,12 @@ package Testing.Instructions {
 			switch (type) {
 				case InstructionType.ADD:
 					return AddInstruction;
+				//case InstructionType.SUB:
+					//return SubInstruction;
+				//case InstructionType.AND:
+					//return AndInstruction;
+				case InstructionType.NOT:
+					return NotAnInstruction;
 				case InstructionType.SAVE:
 					return SaveInstruction;
 				case InstructionType.SET:

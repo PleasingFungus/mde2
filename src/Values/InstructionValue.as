@@ -22,6 +22,12 @@ package Values {
 					return operation.getName()+" R" + destArg + "=" + sourceArg;
 				case OpcodeValue.OP_ADD:
 					return operation.getName()+" R" + destArg + "=R" + sourceArg + "+R" + targetArg;
+				case OpcodeValue.OP_SUB:
+					return operation.getName()+" R" + destArg + "=R" + sourceArg + "-R" + targetArg;
+				case OpcodeValue.OP_AND:
+					return operation.getName()+" R" + destArg + "=R" + sourceArg + "&R" + targetArg;
+				case OpcodeValue.OP_NOT:
+					return operation.getName()+" R" + destArg + "=!R" + sourceArg;
 				case OpcodeValue.OP_SAV:
 					return operation.getName()+" M[R" + targetArg + "]=R" + sourceArg;
 				case OpcodeValue.OP_JMP:

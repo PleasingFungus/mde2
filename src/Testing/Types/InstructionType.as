@@ -46,6 +46,9 @@ package Testing.Types {
 		public static var SET:SetType;
 		public static var LOAD:LoadType;
 		public static var ADD:AddType;
+		//public static var SUB:SubType;
+		//public static var AND:AndType;
+		public static var NOT:NotAType;
 		public static var SAVE:SaveType;
 		public static var TYPES:Array;
 		
@@ -53,8 +56,11 @@ package Testing.Types {
 			SET = new SetType();
 			LOAD = new LoadType();
 			ADD = new AddType();
+			//SUB = new SubType();
+			//AND = new AndType();
+			NOT = new NotAType();
 			SAVE = new SaveType();
-			TYPES = [ADD];
+			TYPES = [ADD/*, NOT, SUB, AND*/];
 		}
 	}
 

@@ -44,6 +44,8 @@ package  {
 		
 		protected var undoButton:MenuButton;
 		protected var redoButton:MenuButton;
+		protected var loadButton:MenuButton;
+		protected var resetButton:MenuButton;
 		
 		protected var displayTime:DTime;
 		protected var preserveModule:Boolean;
@@ -174,10 +176,10 @@ package  {
 		protected function makeSaveButtons():void {
 			if (!findSuccessSave()) return;
 			
-			var loadFromSuccessButton:GraphicButton = new GraphicButton(90, 50, _success_load_sprite, loadFromSuccess, new Key("S"));
-			upperLayer.add(loadFromSuccessButton);
+			loadButton = new GraphicButton(90, 50, _success_load_sprite, loadFromSuccess, new Key("S"));
+			upperLayer.add(loadButton);
 			
-			var resetButton:GraphicButton = new GraphicButton(130, 50, _reset_sprite, reset);
+			resetButton = new GraphicButton(130, 50, _reset_sprite, reset);
 			upperLayer.add(resetButton);
 		}
 		
@@ -539,6 +541,8 @@ package  {
 		protected function checkMenuState():void {
 			undoButton.exists = actionStack.length > 0;
 			redoButton.exists = reactionStack.length > 0;
+			loadButton.exists = findSuccessSave() != savedString && findSuccessSave() != null;
+			resetButton.exists = savedString && savedString != RESET_SAVE;
 			
 			checkCursorState();
 			
@@ -793,6 +797,10 @@ package  {
 		
 		
 		protected function load(saveString:String = null):void {
+			for each (var module:Module in level.modules)
+				if (module.FIXED)
+					module.deregister(); //cleanup
+			
 			initLayers();
 			displayWires = new Vector.<DWire>;
 			displayModules = new Vector.<DModule>;
@@ -854,14 +862,12 @@ package  {
 		}
 		
 		protected function reset():void {
-			//for each (var module:Module in level.modules)
-				//if (module.FIXED)
-					//module.deregister();
-			//
-			//savedString = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
-			//U.save.data[level.name] = savedString;
-			//load();
-			//TODO: transform into a custom action!
+			if (RESET_SAVE == savedString || savedString == null)
+				return;
+			
+			new CustomAction(function loadSuccess(old:String = null):Boolean { load(RESET_SAVE); reactionStack = new Vector.<Action>; return true; },
+							 function loadOld(old:String = null):void { load(old); },
+							 savedString).execute();
 		}
 		
 		
@@ -882,6 +888,7 @@ package  {
 		protected const LIST_ZOOM:int = 4;
 		
 		protected const SUCCESS_SUFFIX:String = '-succ';
+		protected const RESET_SAVE:String = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
 
 		[Embed(source = "../lib/art/ui/lightbulb.png")] private const _module_sprite:Class;
 		[Embed(source = "../lib/art/ui/wire.png")] private const _connect_sprite:Class;

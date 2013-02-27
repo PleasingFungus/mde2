@@ -174,8 +174,6 @@ package  {
 		}
 		
 		protected function makeSaveButtons():void {
-			if (!findSuccessSave()) return;
-			
 			loadButton = new GraphicButton(90, 50, _success_load_sprite, loadFromSuccess, new Key("S"));
 			upperLayer.add(loadButton);
 			
@@ -541,8 +539,11 @@ package  {
 		protected function checkMenuState():void {
 			undoButton.exists = actionStack.length > 0;
 			redoButton.exists = reactionStack.length > 0;
-			loadButton.exists = findSuccessSave() != savedString && findSuccessSave() != null;
-			resetButton.exists = savedString && savedString != RESET_SAVE;
+			if (loadButton) {
+				var successSave:String = findSuccessSave();
+				loadButton.exists = successSave != savedString && successSave != null;
+				resetButton.exists = savedString && savedString != RESET_SAVE;
+			}
 			
 			checkCursorState();
 			
@@ -816,6 +817,8 @@ package  {
 			
 			if (saveString == null)
 				saveString = U.save.data[level.name];
+			if (saveString == null)
+				saveString = findSuccessSave();
 			if (saveString) {
 				var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);
 				
@@ -835,7 +838,7 @@ package  {
 				savedString = saveString;
 			}
 			
-			for each (var module:Module in level.modules)
+			for each (module in level.modules)
 				addModule(module);
 		}
 		

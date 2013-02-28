@@ -45,11 +45,16 @@ package  {
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			
-			levels.push(new Level("Tutorial 1: Wires",
+			levels.push(new Level("Tutorial 1A: Wires",
 								  new WireTutorialGoal,
 								  false,
 								  [], [],
-								  [new ConstIn(12, 16, 1), new Adder(20, 16), new DataWriter(28, 16)]),
+								  [new ConstIn(12, 12, 1), new ConstIn(12, 20, 2), new DataWriter(22, 16)]),
+						new Level("Tutorial 1B: Modules",
+								  new WireTutorialGoal,
+								  false,
+								  [Adder, DataWriter], [],
+								  [new ConstIn(12, 16, 1)]),
 						new Level("Tutorial 2: Acc.",
 								  new AccumulatorTutorialGoal,
 								  false,

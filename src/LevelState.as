@@ -798,9 +798,10 @@ package  {
 		
 		
 		protected function load(saveString:String = null):void {
-			for each (var module:Module in level.modules)
-				if (module.FIXED)
-					module.deregister(); //cleanup
+			if (wires)
+				for each (var module:Module in level.modules)
+					if (module.FIXED)
+						module.deregister(); //cleanup
 			
 			initLayers();
 			displayWires = new Vector.<DWire>;

@@ -1,5 +1,6 @@
 package  {
 	import org.flixel.*;
+	import Menu.LevelMenu;
 	
 	/**
 	 * ...
@@ -18,7 +19,7 @@ package  {
 		override public function update():void {
 			super.update();
 			if (FlxG.mouse.justPressed() || FlxG.keys.any())
-				FlxG.switchState(new MenuState);
+				FlxG.switchState(new LevelMenu);
 		}
 		
 	}

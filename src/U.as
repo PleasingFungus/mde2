@@ -36,6 +36,7 @@ package  {
 		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
 		
+		public static var tuts:Vector.<Level>;
 		public static var levels:Vector.<Level>;
 		public static var state:LevelState;
 		
@@ -65,6 +66,7 @@ package  {
 			InstructionType.init();
 			Module.init();
 			
+			tuts = Level.tutorials();
 			levels = Level.list();
 		}
 		

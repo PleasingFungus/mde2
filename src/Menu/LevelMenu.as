@@ -1,28 +1,22 @@
-package  {
-	import flash.geom.Point;
-	import flash.utils.Dictionary;
+package Menu {
 	import org.flixel.*;
-	import Testing.Test;
-	import UI.ButtonList;
-	import UI.TextButton;
-	import UI.MenuButton;
+	import UI.*;
 	
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class MenuState extends FlxState {
+	public class LevelMenu extends FlxState {
 		
 		override public function create():void {
-			C.setPrintReady();
-			U.init();
 			U.enforceButtonPriorities = false;
 			
-			var title:FlxText = new FlxText(0, 20, FlxG.width, "MULTIDUCK\nEXTRAVAGANZA");
+			var title:FlxText = new FlxText(0, 20, FlxG.width, "LEVELS");
 			U.TITLE_FONT.configureFlxText(title, 0xffffff, 'center');
 			add(title);
 			
 			var levelSelectors:Vector.<MenuButton> = new Vector.<MenuButton>;
+			levelSelectors.push(new TextStateButton(MenuState, "Back"));
 			for each (var level:Level in U.levels) {
 				var button:TextButton = new TextButton( -1, -1, level.name, function switchTo(level:Level):void { 
 					FlxG.switchState(new LevelState(level));
@@ -39,6 +33,8 @@ package  {
 			
 			FlxG.bgColor = 0xff000000;
 			FlxG.mouse.show();
+			
+			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
 		
 	}

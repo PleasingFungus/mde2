@@ -19,6 +19,7 @@ package  {
 	import flash.display.BitmapData
 	import flash.geom.Rectangle;
 	import flash.geom.Matrix;
+	import Menu.MenuState;
 	
 	/**
 	 * ...
@@ -94,6 +95,8 @@ package  {
 			makeUI();
 			upperLayer.add(new DGoal(level));
 			U.enforceButtonPriorities = true;
+			
+			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
 		
 		protected function initLayers():void {

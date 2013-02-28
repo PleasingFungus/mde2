@@ -42,7 +42,7 @@ package  {
 			predecessors = new Vector.<Level>;
 		}
 		
-		public static function list():Vector.<Level> {
+		public static function tutorials():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			
 			levels.push(new Level("Tutorial 1A: Wires",
@@ -59,6 +59,12 @@ package  {
 								  new AccumulatorTutorialGoal,
 								  false,
 								  [ConstIn, Adder, Latch, DataWriter], []));
+			
+			return levels;
+		}
+		
+		public static function list():Vector.<Level> {
+			var levels:Vector.<Level> = new Vector.<Level>;
 			
 			var addCPU:Level = new Level("Add-CPU",
 										 new GeneratedGoal("Set-Add-Save!", Test),

@@ -4,6 +4,8 @@ package
 	import flash.events.Event;
 
 	import org.flixel.*;
+	
+	import Menu.MenuState;
 
 	[SWF(width="640", height="480", backgroundColor="#000000")]
 

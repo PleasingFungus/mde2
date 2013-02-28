@@ -25,8 +25,8 @@ package Testing {
 				seed = FlxG.random();
 			FlxG.globalSeed = this.seed = seed;
 			
-			memAddressToSet = C.randomRange(0, U.MAX_INT - U.MIN_INT);
-			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT);
+			memAddressToSet = C.randomRange(U.MAX_INT, U.MAX_INT - U.MIN_INT);
+			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT+1);
 			var values:Vector.<int> = C.buildIntVector(memAddressToSet, memValueToSet);
 			
 			var abstractions:Vector.<InstructionAbstraction> = new Vector.<InstructionAbstraction>;

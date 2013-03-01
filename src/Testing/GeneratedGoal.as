@@ -2,6 +2,7 @@ package Testing {
 	import Modules.Module;
 	import Testing.Instructions.Instruction;
 	import Values.FixedValue;
+	import Values.OpcodeValue;
 	import Values.Value;
 	import LevelStates.LevelState;
 	/**
@@ -12,11 +13,13 @@ package Testing {
 		
 		protected var testClass:Class;
 		protected var currentTest:Test;
+		protected var expectedOps:Vector.<OpcodeValue>;
 		public var testRuns:int;
-		public function GeneratedGoal(Description:String, TestClass:Class, TestRuns:int = 12, Timeout:int=100) {
+		public function GeneratedGoal(Description:String, TestClass:Class, ExpectedOps:Vector.<OpcodeValue>, TestRuns:int = 12, Timeout:int=100) {
 			super(Description);
 			
 			testClass = TestClass;
+			expectedOps = ExpectedOps;
 			testRuns = TestRuns;
 			timeLimit = Timeout;
 			dynamicallyTested = true;
@@ -24,7 +27,7 @@ package Testing {
 		}
 		
 		override public function genMem(Seed:Number = NaN):Vector.<Value> {
-			return memFromTest(new testClass(Seed));
+			return memFromTest(new testClass(expectedOps, Seed));
 		}
 		
 		protected function memFromTest(test:Test = null):Vector.<Value> {
@@ -40,7 +43,7 @@ package Testing {
 			for (var run:int = 0; run < testRuns; run++) {
 				C.log("Run " + run + " start");
 				
-				currentTest = new testClass;
+				currentTest = new testClass(expectedOps);
 				var mem:Vector.<Value> = memFromTest(currentTest);
 				C.log("Memory generated");
 				

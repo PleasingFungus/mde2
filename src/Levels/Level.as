@@ -66,23 +66,9 @@ package Levels {
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			
-			var addCPU:Level = new Level("Add-CPU",
-										 new GeneratedGoal("Set-Add-Save!", Test),
-										 false,
-										 [ConstIn, And, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
-										 [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]);
-			
-			var addCPU_D:Level = new Level("Add-CPU Delay",
-										   new GeneratedGoal("Set-Add-Save!", Test, 12, 10000),
-										   true,
-										   null,
-										   [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV]);
-			
-			var cpuJMP:Level = new Level("Jump! Jump!",
-										 new GeneratedGoal("Jump!", JumpTest),
-										 false,
-										 [ConstIn, And, Adder, Clock, Latch, InstructionMemory, DataMemory, Regfile, InstructionMux, InstructionDemux],
-										 [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV, OpcodeValue.OP_JMP]);
+			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
+			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", "Make a basic CPU... with propagation delay!", LevelShard.CORE.compositWith(LevelShard.DELAY));
+			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
 			
 			addCPU_D.predecessors.push(addCPU);
 			cpuJMP.predecessors.push(addCPU);

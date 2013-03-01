@@ -2,6 +2,7 @@ package  {
 	import Actions.Action;
 	import Controls.ControlSet;
 	import flash.geom.Point;
+	import Levels.LevelShard;
 	import Modules.*;
 	import org.flixel.*;
 	import Testing.Types.InstructionType;
@@ -67,6 +68,7 @@ package  {
 			
 			InstructionType.init();
 			Module.init();
+			LevelShard.init();
 			
 			tuts = Level.tutorials();
 			levels = Level.list();

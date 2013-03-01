@@ -1,6 +1,8 @@
 package Menu {
 	import org.flixel.*;
 	import UI.*;
+	import LevelStates.LevelState;
+	import Levels.Level;
 	
 	/**
 	 * ...

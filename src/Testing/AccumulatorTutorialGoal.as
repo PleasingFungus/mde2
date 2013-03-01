@@ -1,4 +1,5 @@
 package Testing {
+	import LevelStates.LevelState;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

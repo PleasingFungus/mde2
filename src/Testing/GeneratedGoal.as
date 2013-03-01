@@ -3,6 +3,7 @@ package Testing {
 	import Testing.Instructions.Instruction;
 	import Values.FixedValue;
 	import Values.Value;
+	import LevelStates.LevelState;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

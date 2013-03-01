@@ -7,6 +7,8 @@ package  {
 	import Testing.Types.InstructionType;
 	import UI.FontTuple;
 	import Values.FixedValue;
+	import LevelStates.LevelState;
+	import Levels.Level;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

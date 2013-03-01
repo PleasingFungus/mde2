@@ -10,7 +10,7 @@ package Testing {
 		public function WireTutorialGoal() {
 			super("Set memory line 1 to 2!");
 			dynamicallyTested = true;
-			timeLimit = 5;
+			timeLimit = 2;
 		}
 		
 		override public function stateValid(levelState:LevelState, print:Boolean=false):Boolean {

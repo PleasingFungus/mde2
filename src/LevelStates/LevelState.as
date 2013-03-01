@@ -614,9 +614,13 @@ package LevelStates {
 					runningTest = false; //?
 				else if (level.goal.stateValid(this)) {
 					U.save.data[level.name+SUCCESS_SUFFIX] = genSaveString();
-					FlxG.switchState(new SuccessState);
+					FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
+						FlxG.switchState(new SuccessState(level));
+					});
 				} else if (time.moment >= level.goal.timeLimit)
-					FlxG.switchState(new FailureState(level));
+					FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
+						FlxG.switchState(new FailureState(level));
+					});
 			}
 		}
 		

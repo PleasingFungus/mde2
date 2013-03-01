@@ -18,7 +18,6 @@ package Menu {
 			add(title);
 			
 			var levelSelectors:Vector.<MenuButton> = new Vector.<MenuButton>;
-			levelSelectors.push(new TextStateButton(MenuState, "Back"));
 			for each (var level:Level in U.tuts) {
 				var button:TextButton = new TextButton( -1, -1, level.name, function switchTo(level:Level):void { 
 					FlxG.switchState(new LevelState(level));
@@ -28,6 +27,7 @@ package Menu {
 				button.setParam(level);
 				levelSelectors.push(button);
 			}
+			levelSelectors.push(new TextStateButton(MenuState, "Back"));
 			
 			var levelList:ButtonList = new ButtonList(FlxG.width / 2 - 100, FlxG.height / 4 + 20, levelSelectors);
 			levelList.closesOnClickOutside = false;

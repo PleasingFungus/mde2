@@ -565,7 +565,7 @@ package LevelStates {
 			
 			switch (mode) {
 				case MODE_CONNECT:
-					if (listOpen == LIST_NONE)
+					if (listOpen == LIST_NONE && !time.moment)
 						newGraphic = _pen_cursor;
 					break;
 				case MODE_REMOVE:

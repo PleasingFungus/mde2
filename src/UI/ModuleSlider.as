@@ -28,8 +28,8 @@ package UI {
 		}
 		
 		private function init():void {
-			config = module.configuration;
-			configValue = module.configuration.value;
+			config = module.getConfiguration();
+			configValue = config.value;
 			
 			members = [];
 			

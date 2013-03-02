@@ -61,11 +61,11 @@ package UI {
 			
 			//value display
 			valueText = new FlxText( -1, -1, FlxG.width, " ").setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xffffff);
-			valueText.text = String(valueRange.min);
+			valueText.text = valueRange.nameOf(valueRange.min);
 			var textWidth:int = valueText.textWidth;
-			valueText.text = String(valueRange.max);
+			valueText.text = valueRange.nameOf(valueRange.max);
 			textWidth = Math.max(textWidth, valueText.textWidth);
-			valueText.text = String(value);
+			valueText.text = valueRange.nameOf(value);
 			//valueText.alignment = 'center';
 			//valueText.width = textWidth;
 			
@@ -123,8 +123,10 @@ package UI {
 			var sliderFraction:Number = (slider.x - rail.x) / (rail.width - slider.width);
 			value = valueRange.width * sliderFraction + valueRange.min;
 			if (value != oldValue) {
-				valueText.text = String(value);
-				onChange(value);
+				var out:* = onChange(value);
+				if (out is int)
+					value = out as int;
+				valueText.text = valueRange.nameOf(value);
 			}
 		}
 		
@@ -134,7 +136,7 @@ package UI {
 			
 			value = v;
 			
-			valueText.text = v.toString();
+			valueText.text = valueRange.nameOf(v);
 			
 			var fraction:Number = (v - valueRange.min) / valueRange.width;
 			slider.x = rail.x + fraction * (rail.width - slider.width) - slider.width / 2;

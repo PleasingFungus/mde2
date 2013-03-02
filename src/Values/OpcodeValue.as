@@ -18,8 +18,9 @@ package Values {
 				return v as OpcodeValue;
 			else if (v is InstructionValue)
 				return (v as InstructionValue).operation;
-			if (v.toNumber() < OPS.length)
-				return OPS[v.toNumber()];
+			for each (var op:OpcodeValue in OPS)
+				if (op.toNumber() == v.toNumber())
+					return op;
 			return OP_NOOP;
 		}
 		

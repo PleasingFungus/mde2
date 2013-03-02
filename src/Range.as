@@ -18,6 +18,10 @@ package  {
 		
 		public function get midpoint():int { return width / 2 + min; }
 		
+		public function nameOf(value:int):String {
+			return String(value);
+		}
+		
 	}
 
 }

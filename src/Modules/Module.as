@@ -15,7 +15,7 @@ package Modules {
 		
 		public var name:String;
 		public var category:String;
-		public var configuration:Configuration;
+		protected var configuration:Configuration;
 		public var configurableInPlace:Boolean;
 		public var layout:ModuleLayout;
 		public var internalLayout:InternalLayout;
@@ -45,6 +45,10 @@ package Modules {
 			
 			configurableInPlace = true;
 			initialize();
+		}
+		
+		public function getConfiguration():Configuration {
+			return configuration;
 		}
 		
 		protected function generateLayout():ModuleLayout {
@@ -208,7 +212,8 @@ package Modules {
 												Edge, Regfile, Comparator,
 												InstructionMemory, DataMemory,
 												Mux, Demux, InstructionMux, InstructionDemux,
-												Or, ProgramCounter, And, Not, Delay, DataWriter]) {
+												Or, ProgramCounter, And, Not, Delay, DataWriter,
+												InstructionComparator]) {
 				ALL_MODULES.push(moduleClass);
 				ARCHETYPES.push(new moduleClass( -1, -1));
 			}

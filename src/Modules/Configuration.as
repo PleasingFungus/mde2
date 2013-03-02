@@ -12,8 +12,8 @@ package Modules {
 			value = valueRange.initial;
 		}
 		
-		public function setValue(v:int):void {
-			value = v;
+		public function setValue(v:int):int {
+			return value = v;
 		}
 	}
 

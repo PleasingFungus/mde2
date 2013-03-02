@@ -367,8 +367,8 @@ package LevelStates {
 			for each (moduleType in moduleTypes) {
 				moduleButtons.push(new TextButton( -1, -1, Module.getArchetype(moduleType).name, function chooseModule(moduleType:Class):void {
 					archetype = Module.getArchetype(moduleType);
-					if (archetype.configuration)
-						currentModule = new moduleType( -1, -1, archetype.configuration.value);
+					if (archetype.getConfiguration())
+						currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
 					else
 						currentModule = new moduleType( -1, -1);
 					currentModule.initialize();
@@ -395,7 +395,7 @@ package LevelStates {
 			for (var i:int = 0; i < moduleTypes.length; i++ ) {
 				moduleType = moduleTypes[i];
 				archetype = Module.getArchetype(moduleType);
-				if (archetype.configuration)
+				if (archetype.getConfiguration())
 					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+1], archetype)));
 			}
 		}
@@ -488,28 +488,28 @@ package LevelStates {
 				if (FlxG.mouse.justPressed() && !MenuButton.buttonClicked)
 					for each (var dModule:DModule in displayModules)
 						if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc)) {
-							if (!dModule.module.configuration || !dModule.module.configurableInPlace || dModule.module.FIXED)
+							if (!dModule.module.getConfiguration() || !dModule.module.configurableInPlace || dModule.module.FIXED)
 								break;
 							
 							var module:Module = dModule.module;
-							var oldValue:int = module.configuration.value;
+							var oldValue:int = module.getConfiguration().value;
 							var setValue:Function = function setValue(v:int):void {
-								module.configuration.value = v;
+								module.getConfiguration().value = v;
 								module.setByConfig();
 								module.initialize();
 							};
 							var sliderbar:Sliderbar = new Sliderbar(dModule.x + dModule.width / 2, dModule.y + dModule.height / 2,
-																	module.configuration.valueRange, setValue, module.configuration.value);
+																	module.getConfiguration().valueRange, setValue, module.getConfiguration().value);
 							sliderbar.setDieOnClickOutside(true, function onDie():void {
-								var newValue:int = module.configuration.value;
+								var newValue:int = module.getConfiguration().value;
 								if (newValue != oldValue)
 									new CustomAction(function setByConfig(newValue:int, oldValue:int):Boolean {
-										module.configuration.value = newValue;
+										module.getConfiguration().value = newValue;
 										module.setByConfig();
 										module.initialize();
 										return true;
 									}, function setOldConfig(newValue:int, oldValue:int):Boolean {
-										module.configuration.value = oldValue;
+										module.getConfiguration().value = oldValue;
 										module.setByConfig();
 										module.initialize();
 										return true;

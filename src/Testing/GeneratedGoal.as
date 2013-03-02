@@ -27,16 +27,7 @@ package Testing {
 		}
 		
 		override public function genMem(Seed:Number = NaN):Vector.<Value> {
-			return memFromTest(new testClass(expectedOps, Seed));
-		}
-		
-		protected function memFromTest(test:Test = null):Vector.<Value> {
-			if (!test) test = currentTest;
-			var instructions:Vector.<Instruction> = test.instructions;
-			var memory:Vector.<Value> = generateBlankMemory();
-			for (var i:int = 0; i < instructions.length; i++)
-				memory[i] = instructions[i].toMemValue();
-			return memory;
+			return (new testClass(expectedOps, Seed) as Test).initialMemory();
 		}
 		
 		override public function runTest(levelState:LevelState):void {
@@ -44,7 +35,7 @@ package Testing {
 				C.log("Run " + run + " start");
 				
 				currentTest = new testClass(expectedOps);
-				var mem:Vector.<Value> = memFromTest(currentTest);
+				var mem:Vector.<Value> = currentTest.initialMemory();
 				C.log("Memory generated");
 				
 				levelState.initialMemory = mem;

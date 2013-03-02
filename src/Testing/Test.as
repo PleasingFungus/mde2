@@ -7,10 +7,8 @@ package Testing {
 	import Testing.Abstractions.SetAbstraction;
 	import Testing.Instructions.Instruction;
 	import Testing.Instructions.JumpInstruction;
-	import Values.BooleanValue;
 	import Testing.Types.InstructionType;
-	import Values.OpcodeValue;
-	import Values.Value;
+	import Values.*;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -292,16 +290,17 @@ package Testing {
 		
 		
 		public function initialMemory():Vector.<Value> {
-			var mem:Vector.<Value> = new Vector.<Value>;
-			for each (var instr:Instruction in instructions)
-				mem.push(instr.toMemValue());
-			return mem;
+			var memory:Vector.<Value> = generateBlankMemory();
+			for (var i:int = 0; i < instructions.length; i++)
+				memory[i] = instructions[i].toMemValue();
+			return memory;
 		}
 		
-		public function validate(_:Module):Boolean {
-			if (U.state.memory[memAddressToSet].toNumber() == memValueToSet)
-				return true;
-			return false;
+		protected function generateBlankMemory():Vector.<Value> {
+			var memory:Vector.<Value> = new Vector.<Value>;
+			for (var i:int = memory.length; i < U.MAX_INT - U.MIN_INT; i++)
+				memory.push(FixedValue.NULL);
+			return memory;
 		}
 	}
 

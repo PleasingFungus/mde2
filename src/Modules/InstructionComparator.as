@@ -1,9 +1,9 @@
 package Modules {
 	import Components.Port;
 	import Levels.Level;
-	import Values.OpcodeValue;
-	import Values.Value;
-	import Values.BooleanValue;
+	import Values.*;
+	import Layouts.*;
+	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -16,6 +16,8 @@ package Modules {
 			super(X, Y, "I-Comp", Module.CAT_LOGIC, 1, 1, 0);
 			
 			configuration = new OpConfiguration;
+			if (U.state)
+				configuration.setValue(CompareValue);
 
 			setByConfig();
 			delay = 1;
@@ -33,6 +35,23 @@ package Modules {
 		
 		override public function setByConfig():void {
 			compareValue = (configuration as OpConfiguration).opValue;
+		}
+		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = super.generateLayout();
+			layout.ports[0].offset.y += 1;
+			layout.ports[1].offset.y += 1;
+			return layout;
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			var outport:PortLayout = layout.ports[1];
+			return new InternalLayout([new InternalNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
+														[layout.ports[0], layout.ports[1]], [],
+														function getValue():Value { return drive(outputs[0]); }, "=" ),
+									   new InternalNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y - 2),
+														[], [],
+														function getValue():Value { return compareValue; })]);
 		}
 		
 		override public function renderName():String {

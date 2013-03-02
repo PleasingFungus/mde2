@@ -119,6 +119,14 @@ package Modules {
 			return m.register();
 		}
 		
+		public function cleanup():void {
+			deployed = false;
+			exists = false;
+			
+			for each (var portLayout:PortLayout in layout.ports)
+				portLayout.port.cleanup();
+		}
+		
 		public function deregister():Module {
 			iterContainedLines(function h(X:int, Y:int):void {
 				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), null);

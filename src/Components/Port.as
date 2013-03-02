@@ -24,6 +24,11 @@ package Components {
 			connections = Connections ? Connections : new Vector.<Carrier>;
 		}
 		
+		public function cleanup():void {
+			connections = new Vector.<Carrier>;
+			source = null;
+		}
+		
 		public function getConnections():Vector.<Carrier> {
 			return connections;
 		}

@@ -50,9 +50,7 @@ package Layouts {
 				if (!port.isSource())
 					port.source.propagateSource(); //re-propagate
 			}
-			
-			port.connections = new Vector.<Carrier>;
-			port.source = null;
+			port.cleanup();
 		}
 		
 		public function deregister():void {

@@ -19,7 +19,7 @@ package LevelStates {
 	import flash.display.BitmapData
 	import flash.geom.Rectangle;
 	import flash.geom.Matrix;
-	import Menu.MenuState;
+	import Menu.*;
 	import Levels.Level;
 	
 	/**
@@ -171,7 +171,10 @@ package LevelStates {
 		
 		protected function makeBackButton():void {
 			var backButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _back_sprite, function back():void {
-				FlxG.switchState(new MenuState);
+				if (U.tuts.indexOf(level) != -1)
+					FlxG.switchState(new TutorialMenu);
+				else
+					FlxG.switchState(new LevelMenu);
 			});
 			backButton.fades = true;
 			upperLayer.add(backButton);
@@ -806,11 +809,6 @@ package LevelStates {
 		
 		
 		protected function load(saveString:String = null):void {
-			if (wires)
-				for each (var module:Module in level.modules)
-					if (module.FIXED)
-						module.deregister(); //cleanup
-			
 			initLayers();
 			displayWires = new Vector.<DWire>;
 			displayModules = new Vector.<DModule>;
@@ -847,8 +845,10 @@ package LevelStates {
 				savedString = saveString;
 			}
 			
-			for each (module in level.modules)
+			for each (var module:Module in level.modules) {
+				module.cleanup();
 				addModule(module);
+			}
 		}
 		
 		protected function loadFromSuccess():void {

@@ -20,12 +20,18 @@ package Testing {
 		public var memValueToSet:int
 		public var instructions:Vector.<Instruction>;
 		protected var expectedOps:Vector.<OpcodeValue>;
+		protected var instructionTypes:Vector.<InstructionType>;
 		
 		public function Test(ExpectedOps:Vector.<OpcodeValue>, seed:Number = NaN) {
 			expectedOps = ExpectedOps;
 			if (isNaN(seed))
 				seed = FlxG.random();
 			FlxG.globalSeed = this.seed = seed;
+			
+			instructionTypes = new Vector.<InstructionType>;
+			for each (var instructionType:InstructionType in [InstructionType.ADD, InstructionType.SUB])
+				if (expectedOps.indexOf(instructionType.mapToOp()) != -1)
+					instructionTypes.push(instructionType);
 			
 			memAddressToSet = C.randomRange(U.MAX_INT, U.MAX_INT - U.MIN_INT);
 			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT+1);
@@ -139,11 +145,18 @@ package Testing {
 		protected function genAbstractions(abstractions:Vector.<InstructionAbstraction>, values:Vector.<int>, depth:int):void {
 			log("Instructions: " + abstractions);
 			log("Values: " + values);
+			var abstraction:InstructionAbstraction;
 			
-			while (values.length)
-				abstractions.push(genAbstraction(values.pop(), depth, getArgs(abstractions, depth)));
+			while (values.length) {
+				var value:int = values.pop();
+				abstraction = genAbstraction(value, depth, getArgs(abstractions, depth));
+				if (abstraction.value != value)
+					throw new Error("!!!");
+				abstractions.push(abstraction);
+			}
 			
-			for each (var abstraction:InstructionAbstraction in abstractions)
+			//prepare to SET args of last layer of instructions
+			for each (abstraction in abstractions)
 				if (abstraction.depth == depth)
 					for each (var arg:int in abstraction.args)
 						if (values.indexOf(arg) == -1)
@@ -158,7 +171,7 @@ package Testing {
 			log("Attempting to produce " +value);
 			log("Args: " + args);
 			var fullReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
-			for each (type in InstructionType.TYPES)
+			for each (type in instructionTypes)
 				if (type.can_produce_with(value, args))
 					fullReuseInstrs.push(type);
 			if (fullReuseInstrs.length) {
@@ -170,7 +183,7 @@ package Testing {
 			log("No full re-use instrs")
 			
 			var partialReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
-			for each (type in InstructionType.TYPES)
+			for each (type in instructionTypes)
 				if (type.can_produce_with_one_of(value, args))
 					partialReuseInstrs.push(type);
 			if (partialReuseInstrs.length) {
@@ -190,7 +203,7 @@ package Testing {
 			}
 			log("No partial re-use instrs")
 			
-			type = C.randomChoice(InstructionType.TYPES);
+			type = instructionTypes[C.randomRange(0, instructionTypes.length)];
 			abstraction = type.produce_unrestrained(value, depth);
 			log("Added " + abstraction);
 			return abstraction;
@@ -204,8 +217,12 @@ package Testing {
 		protected function genInstruction(line:int, abstraction:InstructionAbstraction, virtualRegisters:Vector.<int>,
 										   abstractions:Vector.<InstructionAbstraction>):Instruction {
 			var registers:Vector.<int> = new Vector.<int>;
-			for each (var arg:int in abstraction.args)
-				registers.push(virtualRegisters.indexOf(arg));
+			for each (var arg:int in abstraction.args) {
+				var vrIndex:int = virtualRegisters.indexOf(arg);
+				if (vrIndex == -1)
+					throw new Error("!!!");
+				registers.push(vrIndex);
+			}
 			
 			if (abstraction.value != C.INT_NULL) {
 				var destination:int = findRegisterFor(abstraction.depth, line, abstraction.value, virtualRegisters, abstractions);
@@ -258,8 +275,11 @@ package Testing {
 			log("Free register values: " + freeRegValues);
 			
 			if (freeRegValues.length) {
-				log("Storing " + value + " in existing slot " + virtualRegisters.indexOf(freeRegValues[0])+" currently holding "+freeRegValues[0]);
-				return virtualRegisters.indexOf(freeRegValues[0]);
+				log("Storing " + value + " in existing slot " + virtualRegisters.indexOf(freeRegValues[0]) + " currently holding " + freeRegValues[0]);
+				var regIndex:int = virtualRegisters.indexOf(freeRegValues[0]);
+				if (regIndex == -1)
+					throw new Error("!!!");
+				return regIndex;
 			}
 			log("Storing " + value + " in previously unallocated register " + virtualRegisters.length);
 			return virtualRegisters.length;

@@ -15,8 +15,11 @@ package Testing.Instructions {
 		
 		override protected function findArgs(registers:Vector.<int>, abstract:InstructionAbstraction):Vector.<InstructionArg> {
 			var args:Vector.<InstructionArg> = new Vector.<InstructionArg>;
-			for each (var reg:int in registers)
+			for each (var reg:int in registers) {
+				if (reg < 0)
+					throw new Error("!!!");
 				args.push(new InstructionArg(InstructionArg.REG, reg));
+			}
 			return args;
 		}
 		

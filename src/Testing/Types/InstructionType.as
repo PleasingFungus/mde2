@@ -1,5 +1,6 @@
 package Testing.Types {
 	import Testing.Abstractions.InstructionAbstraction;
+	import Values.OpcodeValue;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -13,6 +14,10 @@ package Testing.Types {
 		
 		public function toString():String {
 			return "<"+this.name+">";
+		}
+		
+		public function mapToOp():OpcodeValue {
+			return OpcodeValue.OP_NOOP;
 		}
 		
 		public function can_produce(value:int):Boolean {
@@ -46,21 +51,19 @@ package Testing.Types {
 		public static var SET:SetType;
 		public static var LOAD:LoadType;
 		public static var ADD:AddType;
-		//public static var SUB:SubType;
+		public static var SUB:SubType;
 		//public static var AND:AndType;
 		public static var NOT:NotAType;
 		public static var SAVE:SaveType;
-		public static var TYPES:Array;
 		
 		public static function init():void {
 			SET = new SetType();
 			LOAD = new LoadType();
 			ADD = new AddType();
-			//SUB = new SubType();
+			SUB = new SubType();
 			//AND = new AndType();
 			NOT = new NotAType();
 			SAVE = new SaveType();
-			TYPES = [ADD/*, NOT, SUB, AND*/];
 		}
 	}
 

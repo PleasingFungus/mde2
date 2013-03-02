@@ -69,7 +69,7 @@ package Levels {
 			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
 			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", "Make a basic CPU... with propagation delay!", LevelShard.CORE.compositWith(LevelShard.DELAY));
 			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
-			var cpuADV:Level = new ShardLevel("Advanced Ops", "Make a CPU that do arithmetic!", LevelShard.CORE.compositWith(LevelShard.ADV));
+			var cpuADV:Level = new ShardLevel("Advanced Ops", "Make a CPU that does arithmetic!", LevelShard.CORE.compositWith(LevelShard.ADV));
 			
 			addCPU_D.predecessors.push(addCPU);
 			cpuJMP.predecessors.push(addCPU);

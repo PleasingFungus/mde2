@@ -1,4 +1,5 @@
 package Testing.Abstractions {
+	import Testing.Types.InstructionType;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

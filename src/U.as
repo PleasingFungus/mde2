@@ -72,6 +72,8 @@ package  {
 			
 			tuts = Level.tutorials();
 			levels = Level.list();
+			
+			C.warmupFactors(MAX_INT);
 		}
 		
 		public static function load():void {

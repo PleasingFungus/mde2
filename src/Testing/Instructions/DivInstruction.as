@@ -13,7 +13,7 @@ package Testing.Instructions {
 		}
 		
 		override public function execute(memory:Dictionary, registers:Dictionary):int {
-			registers[args[0].value] = registers[args[2].value] ? registers[args[1].value] / registers[args[2].value] : NaN;
+			registers[args[0].value] = registers[args[2].value] ? int(registers[args[1].value] / registers[args[2].value]) : NaN;
 			return C.INT_NULL;
 		}
 		

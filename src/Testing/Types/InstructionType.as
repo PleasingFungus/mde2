@@ -52,6 +52,8 @@ package Testing.Types {
 		public static var LOAD:LoadType;
 		public static var ADD:AddType;
 		public static var SUB:SubType;
+		public static var MUL:MulType;
+		public static var DIV:DivType;
 		//public static var AND:AndType;
 		public static var NOT:NotAType;
 		public static var SAVE:SaveType;
@@ -61,6 +63,8 @@ package Testing.Types {
 			LOAD = new LoadType();
 			ADD = new AddType();
 			SUB = new SubType();
+			MUL = new MulType();
+			DIV = new DivType();
 			//AND = new AndType();
 			NOT = new NotAType();
 			SAVE = new SaveType();

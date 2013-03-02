@@ -29,7 +29,7 @@ package Testing {
 			FlxG.globalSeed = this.seed = seed;
 			
 			instructionTypes = new Vector.<InstructionType>;
-			for each (var instructionType:InstructionType in [InstructionType.ADD, InstructionType.SUB])
+			for each (var instructionType:InstructionType in [InstructionType.ADD, InstructionType.SUB, InstructionType.MUL, InstructionType.DIV])
 				if (expectedOps.indexOf(instructionType.mapToOp()) != -1)
 					instructionTypes.push(instructionType);
 			

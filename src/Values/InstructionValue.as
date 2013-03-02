@@ -24,6 +24,10 @@ package Values {
 					return operation.getName()+" R" + destArg + "=R" + sourceArg + "+R" + targetArg;
 				case OpcodeValue.OP_SUB:
 					return operation.getName()+" R" + destArg + "=R" + sourceArg + "-R" + targetArg;
+				case OpcodeValue.OP_MUL:
+					return operation.getName()+" R" + destArg + "=R" + sourceArg + "*R" + targetArg;
+				case OpcodeValue.OP_DIV:
+					return operation.getName()+" R" + destArg + "=R" + sourceArg + "/R" + targetArg;
 				case OpcodeValue.OP_AND:
 					return operation.getName()+" R" + destArg + "=R" + sourceArg + "&R" + targetArg;
 				case OpcodeValue.OP_NOT:

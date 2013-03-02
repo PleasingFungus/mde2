@@ -1,5 +1,6 @@
 package  
 {
+	import flash.utils.Dictionary;
 	import org.flixel.FlxG;
 	import flash.geom.Point;
 	
@@ -188,6 +189,59 @@ package
 				if (vec.indexOf(int_) == -1)
 					vec.push(int_);
 			return vec;
+		}
+		
+		public static function eratosthenes(lim:int):Array {
+			// Create a list of consecutive integers from 2 to n: (2, 3, 4, ..., n).
+			var primeList:Array = [];
+			primeList.length = lim + 1; //technically 2 longer than needed
+			//Initially, let p equal 2, the first prime number.
+			var p:int = 2;
+			while (p <= lim) {
+				//Starting from p, count up in increments of p
+				for (var mult:int = p*2; mult <= lim; mult += p)
+					//and mark each of these numbers greater than p itself in the list. note that some of them may have already been marked.
+					primeList[mult] = true;
+				
+				do {
+					p++;	
+				} while (p <= lim && primeList[p]);
+			}
+			
+			var primes:Array = [];
+			for (p = 1; p <= lim; p++)
+				if (!primeList[p])
+					primes.push(p);
+			
+			return primes;
+		}
+		
+		public static var PRIMES_TO_255:Array = eratosthenes(255);
+		
+		private static var FACTORS:Dictionary = new Dictionary;
+		public static function factorsOf(n:int):Array {
+			if (n < 0) return null;
+			
+			var factors:Array = [1];
+			if (n == 1) factors;
+			
+			if (FACTORS[n]) return FACTORS[n];
+			
+			var lim:int = n / 2;
+			
+			for (var f:int = 2; f <= lim; f++)
+				if (n % f == 0)
+					factors.push(f);
+			factors.push(n);
+			
+			FACTORS[n] = factors;
+			
+			return factors;
+		}
+		
+		public static function warmupFactors(lim:int):void {
+			for (var i:int = 2; i <= lim; i++)
+				factorsOf(i);
 		}
 	}
 

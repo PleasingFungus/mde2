@@ -824,8 +824,8 @@ package LevelStates {
 			
 			if (saveString == null)
 				saveString = U.save.data[level.name];
-			if (saveString == null)
-				saveString = findSuccessSave();
+			//if (saveString == null)
+				//saveString = findSuccessSave();
 			if (saveString) {
 				var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);
 				

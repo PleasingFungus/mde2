@@ -119,7 +119,11 @@ package Modules {
 			return this;
 		}
 		
-		public static function place(m:Module):Module {
+		public static function place(m:Module, at:Point = null):Module {
+			if (at) {
+				m.x = at.x;
+				m.y = at.y;
+			}
 			return m.register();
 		}
 		
@@ -149,7 +153,7 @@ package Modules {
 			return this;
 		}
 		
-		public static function remove(m:Module):Module {
+		public static function remove(m:Module, at:Point = null):Module {
 			return m.deregister();
 		}
 		

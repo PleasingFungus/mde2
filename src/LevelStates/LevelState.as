@@ -498,45 +498,65 @@ package LevelStates {
 				}
 			} else {
 				if (FlxG.mouse.justPressed() && !MenuButton.buttonClicked)
-					for each (var dModule:DModule in displayModules)
-						if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc)) {
-							if (!dModule.module.getConfiguration() || !dModule.module.configurableInPlace || dModule.module.FIXED)
-								break;
-							
-							var module:Module = dModule.module;
-							var oldValue:int = module.getConfiguration().value;
-							var setValue:Function = function setValue(v:int):void {
-								module.getConfiguration().value = v;
-								module.setByConfig();
-								module.initialize();
-							};
-							var sliderbar:Sliderbar = new Sliderbar(dModule.x + dModule.width / 2, dModule.y + dModule.height / 2,
-																	module.getConfiguration().valueRange, setValue, module.getConfiguration().value);
-							sliderbar.setDieOnClickOutside(true, function onDie():void {
-								var newValue:int = module.getConfiguration().value;
-								if (newValue != oldValue)
-									new CustomAction(function setByConfig(newValue:int, oldValue:int):Boolean {
-										module.getConfiguration().value = newValue;
-										module.setByConfig();
-										module.initialize();
-										return true;
-									}, function setOldConfig(newValue:int, oldValue:int):Boolean {
-										module.getConfiguration().value = oldValue;
-										module.setByConfig();
-										module.initialize();
-										return true;
-									}, newValue, oldValue).execute();
-							});
-							upperLayer.add(sliderbar);
-						}
+					if (FlxG.keys.pressed("SHIFT"))
+						addEditSliderbar();
+					else
+						pickUpModule();
 				
 				if (ControlSet.DELETE_KEY.justPressed())
 					destroyModules();
 			}
 		}
 		
+		protected function pickUpModule():void {
+			for each (var dModule:DModule in displayModules)
+				if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc)) {
+					if (dModule.module.FIXED)
+						break;
+					
+					currentModule = dModule.module;
+					new CustomAction(Module.remove, Module.place, dModule.module, new Point(currentModule.x, currentModule.y)).execute();
+					currentModule.exists = true;
+					break;
+				}
+		}
+		
+		protected function addEditSliderbar():void {
+			for each (var dModule:DModule in displayModules)
+				if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc)) {
+					if (!dModule.module.getConfiguration() || !dModule.module.configurableInPlace || dModule.module.FIXED)
+						break;
+					
+					var module:Module = dModule.module;
+					var oldValue:int = module.getConfiguration().value;
+					var setValue:Function = function setValue(v:int):void {
+						module.getConfiguration().value = v;
+						module.setByConfig();
+						module.initialize();
+					};
+					var sliderbar:Sliderbar = new Sliderbar(dModule.x + dModule.width / 2, dModule.y + dModule.height / 2,
+															module.getConfiguration().valueRange, setValue, module.getConfiguration().value);
+					sliderbar.setDieOnClickOutside(true, function onDie():void {
+						var newValue:int = module.getConfiguration().value;
+						if (newValue != oldValue)
+							new CustomAction(function setByConfig(newValue:int, oldValue:int):Boolean {
+								module.getConfiguration().value = newValue;
+								module.setByConfig();
+								module.initialize();
+								return true;
+							}, function setOldConfig(newValue:int, oldValue:int):Boolean {
+								module.getConfiguration().value = oldValue;
+								module.setByConfig();
+								module.initialize();
+								return true;
+							}, newValue, oldValue).execute();
+					});
+					upperLayer.add(sliderbar);
+				}
+		}
+		
 		protected function placeModule():void {
-			new CustomAction(Module.place, Module.remove, currentModule).execute();
+			new CustomAction(Module.place, Module.remove, currentModule, new Point(currentModule.x, currentModule.y)).execute();
 			currentModule = null;
 		}
 		

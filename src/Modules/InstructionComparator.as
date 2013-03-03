@@ -68,7 +68,7 @@ package Modules {
 		
 		override protected function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
-			values.push(compareValue);
+			values.push(compareValue.toNumber());
 			return values;
 		}
 		

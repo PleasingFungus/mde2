@@ -62,7 +62,7 @@ package Testing {
 				if (line == currentTest.memAddressToSet) {
 					if (lineValue.toNumber() != currentTest.memValueToSet) {
 						if (print)
-							C.log("Expected value not set correctly: " + line+" " + lineValue.toNumber() + " instead of " + currentTest.memValueToSet);
+							C.log("Expected value not set correctly: " + line + " " + (lineValue.toNumber() == C.INT_NULL ? "NULL" : lineValue.toNumber()) + " instead of " + currentTest.memValueToSet);
 						return false;
 					}
 				} else if (line < currentTest.instructions.length) {

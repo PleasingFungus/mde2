@@ -18,13 +18,13 @@ package Testing.Types {
 		}
 		
 		
-		override protected function operate(a:int, b:int):int {
+		override protected function produceValue(a:int, b:int):int {
 			return a * b;
 		}
 		
-		override protected function reverseOp(v:int, b:int):int {
-			if (b)
-				return v / b;
+		override protected function produceArgB(a:int, v:int):int {
+			if (a)
+				return v / a;
 			return NaN;
 		}
 		

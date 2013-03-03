@@ -15,11 +15,11 @@ package Testing.Types {
 		}
 		
 		
-		protected function operate(a:int, b:int):int {
+		protected function produceValue(a:int, b:int):int {
 			return C.INT_NULL;
 		}
 		
-		protected function reverseOp(a:int, b:int):int {
+		protected function produceArgB(a:int, v:int):int {
 			return C.INT_NULL;
 		}
 		
@@ -29,15 +29,15 @@ package Testing.Types {
 		}
 		
 		override public function can_produce_with_one(value:int, arg:int):Boolean {
-			var a2:int = reverseOp(value, arg);
-			if (a2 <= U.MAX_INT && a2 >= U.MIN_INT)
+			var b:int = produceArgB(value, arg);
+			if (b <= U.MAX_INT && b >= U.MIN_INT && produceValue(arg, b) == value)
 				return true;
 			
 			if (!symmetric)
 				return false;
 			
-			a2 = operate(arg, value);
-			return a2 <= U.MAX_INT && a2 >= U.MIN_INT;
+			b = produceValue(arg, value);
+			return b <= U.MAX_INT && b >= U.MIN_INT && produceValue(arg, b) == value;
 		}
 		
 		override public function can_produce_with_one_of(value:int, args:Vector.<int>):Boolean {
@@ -49,10 +49,10 @@ package Testing.Types {
 		
 		override public function can_produce_with(value:int, args:Vector.<int>):Boolean {
 			for (var i:int = 0; i < args.length; i++) {
-				var a1:int = args[i];
+				var a:int = args[i];
 				for (var j:int = i; j < args.length; j++) {
-					var a2:int = args[j];
-					if (operate(a1, a2) == value || (!symmetric && operate(a2, a1) == value))
+					var b:int = args[j];
+					if (produceValue(a, b) == value || (!symmetric && produceValue(b, a) == value))
 						return true;
 				}
 			}
@@ -63,25 +63,27 @@ package Testing.Types {
 		override public function produce_with_one(value:int, depth:int, arg:int):InstructionAbstraction {
 			if (symmetric) {
 				var order:int = int(FlxG.random() * 2); //0 or 1
-				return new abstraction(depth, order ? arg : reverseOp(value, arg), order ?  reverseOp(value, arg) : arg);
+				return new abstraction(depth,
+									   order ? arg : produceArgB(arg, value),
+									   order ?  produceArgB(arg, value) : arg);
 			}
 			
-			var a2:int = reverseOp(value, arg);
-			if (a2 <= U.MAX_INT && a2 >= U.MIN_INT)
-				return new abstraction(depth, reverseOp(value, arg), arg);
-			return new abstraction(depth, arg, operate(arg, value));
+			var b:int = produceArgB(arg, value);
+			if (b <= U.MAX_INT && b >= U.MIN_INT && produceValue(arg, b) == value)
+				return new abstraction(depth, arg, b);
+			return new abstraction(depth, arg, produceValue(arg, value));
 		}
 		
 		override public function produce_with(value:int, depth:int, args:Vector.<int>):InstructionAbstraction {
             var pairs:Array = [];
 			for (var i:int = 0; i < args.length; i++) {
-				var a1:int = args[i];
+				var a:int = args[i];
 				for (var j:int = i; j < args.length; j++) {
-					var a2:int = args[j];
-					if (operate(a1, a2) == value)
-                        pairs.push([a1, a2]);
-					if (!symmetric && operate(a2, a1) == value)
-						pairs.push([a2, a1]);
+					var b:int = args[j];
+					if (produceValue(a, b) == value)
+                        pairs.push([a, b]);
+					if (!symmetric && produceValue(b, a) == value)
+						pairs.push([b, a]);
 				}
 			}
             var pair:Array = C.randomChoice(pairs);

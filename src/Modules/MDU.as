@@ -56,7 +56,7 @@ package Modules {
 			switch (control.toNumber()) {
 				case OpcodeValue.OP_NOOP.toNumber(): return U.V_UNPOWERED;
 				case OpcodeValue.OP_MUL.toNumber(): return new NumericValue(inputA.toNumber() * inputB.toNumber());
-				case OpcodeValue.OP_DIV.toNumber(): return inputB.toNumber() ? new NumericValue(inputA.toNumber() / inputB.toNumber()) : U.V_UNKNOWN;
+				case OpcodeValue.OP_DIV.toNumber(): return inputB.toNumber() ? new NumericValue(int(inputA.toNumber() / inputB.toNumber())) : U.V_UNKNOWN;
 				default: return U.V_UNKNOWN;
 			}
 		}

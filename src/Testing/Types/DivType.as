@@ -2,6 +2,8 @@ package Testing.Types {
 	import Testing.Abstractions.DivAbstraction;
 	import Testing.Abstractions.InstructionAbstraction;
 	import Values.OpcodeValue;
+	import org.flixel.FlxG;
+	
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -17,26 +19,28 @@ package Testing.Types {
 			return OpcodeValue.OP_DIV;
 		}
 		
-		override public function can_produce(value:int):Boolean {
-			return value != 0;
-		}
 		
-		
-		override protected function operate(a:int, b:int):int {
+		override protected function produceValue(a:int, b:int):int {
 			if (b)
 				return a / b;
 			return NaN;
 		}
 		
-		override protected function reverseOp(v:int, b:int):int {
-			return v * b;
+		override protected function produceArgB(a:int, v:int):int {
+			if ((!v && a) || (!a && !v))
+				return NaN;
+			if (!a)
+				return FlxG.random() > 0.5 ? C.randomRange(U.MIN_INT, 0) : C.randomRange(1, U.MAX_INT + 1);
+			return v / a;
 		}
 		
 		
 		override public function produce_unrestrained(value:int, depth:int):InstructionAbstraction {
-            var a1:int = C.randomRange(U.MIN_INT, U.MAX_INT + 1);
-            var a2:int = a1 / value;
-			return new DivAbstraction(depth, a1, a2);
+			var divisor:int = FlxG.random() > 0.5 ? C.randomRange(U.MIN_INT, 0) : C.randomRange(1, U.MAX_INT + 1);
+			if (value == 0)
+				return new DivAbstraction(depth, 0, divisor);
+            var a1:int = value * divisor;
+			return new DivAbstraction(depth, a1, divisor);
 		}
 		
 	}

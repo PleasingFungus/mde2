@@ -556,8 +556,8 @@ package LevelStates {
 		}
 		
 		protected function checkMenuState():void {
-			undoButton.exists = actionStack.length > 0;
-			redoButton.exists = reactionStack.length > 0;
+			undoButton.exists = canUndo();
+			redoButton.exists = canRedo();
 			if (loadButton) {
 				var successSave:String = findSuccessSave();
 				loadButton.exists = successSave != savedString && successSave != null;
@@ -773,15 +773,23 @@ package LevelStates {
 			}
 		}
 		
+		private function canUndo():Boolean {
+			return actionStack.length > 0 && !currentWire && !currentModule;
+		}
+		
+		private function canRedo():Boolean {
+			return reactionStack.length > 0 && !currentWire && !currentModule;
+		}
+		
 		
 		private function undo():Action {
-			if (!actionStack.length)
+			if (!canUndo())
 				return null;
 			return actionStack.pop().revert();
 		}
 		
 		private function redo():Action {
-			if (!reactionStack.length)
+			if (!canRedo())
 				return null;
 			return reactionStack.pop().execute();
 		}

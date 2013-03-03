@@ -44,6 +44,8 @@ package LevelStates {
 		protected var UIChanged:Boolean;
 		protected var editEnabled:Boolean = true;
 		
+		protected var UIEnableKey:Key = new Key("U");
+		
 		protected var undoButton:MenuButton;
 		protected var redoButton:MenuButton;
 		protected var loadButton:MenuButton;
@@ -108,7 +110,8 @@ package LevelStates {
 		
 		private function addWire(w:Wire, fixed:Boolean = true):void {
 			w.FIXED = fixed;
-			Wire.place(w);
+			if (!Wire.place(w))
+				return;
 			
 			var displayWire:DWire = new DWire(w);
 			midLayer.add(displayWire);
@@ -117,6 +120,9 @@ package LevelStates {
 		
 		private function addModule(m:Module, fixed:Boolean = true):void {
 			if (!m) return;
+			
+			if (!m.validPosition)
+				return;
 			
 			m.FIXED = fixed;
 			m.register();
@@ -403,7 +409,7 @@ package LevelStates {
 		override public function update():void {
 			updateUI();
 			super.update();
-			checkBuildControls();
+			checkControls();
 			checkMenuState();
 			checkTime();
 			forceScroll();
@@ -422,6 +428,12 @@ package LevelStates {
 					b.update();
 				}
 			}
+		}
+		
+		protected function checkControls():void {
+			if (UIEnableKey.justPressed())
+				upperLayer.visible = !upperLayer.visible;
+			checkBuildControls();
 		}
 		
 		protected function checkBuildControls():void {
@@ -728,7 +740,8 @@ package LevelStates {
 			realBuf.draw(buf, matrix);
 			FlxG.camera.buffer = realBuf;
 			
-			upperLayer.draw();
+			if (upperLayer.exists && upperLayer.visible)
+				upperLayer.draw();
 		}
 		
 		private var debugLineH:FlxSprite;

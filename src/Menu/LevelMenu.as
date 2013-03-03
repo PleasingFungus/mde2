@@ -29,7 +29,7 @@ package Menu {
 			}
 			levelSelectors.push(new TextStateButton(MenuState, "Back"));
 			
-			var levelList:ButtonList = new ButtonList(FlxG.width / 2 - 100, FlxG.height / 4 + 20, levelSelectors);
+			var levelList:ButtonList = new ButtonList(FlxG.width / 2 - 100, FlxG.height / 4 - 20, levelSelectors);
 			levelList.closesOnClickOutside = false;
 			add(levelList);
 			

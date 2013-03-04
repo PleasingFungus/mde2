@@ -72,6 +72,10 @@ package Modules {
 			return name;
 		}
 		
+		public function getDescription():String {
+			return null;
+		}
+		
 		public function drive(port:Port):Value {
 			return U.V_UNPOWERED;
 		}

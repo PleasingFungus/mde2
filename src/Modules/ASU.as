@@ -65,6 +65,10 @@ package Modules {
 			return name + "\n\n" + drive(outputs[0]);
 		}
 		
+		override public function getDescription():String {
+			return "If control is "+OpcodeValue.OP_ADD+", outputs the sum of its inputs. If control is "+OpcodeValue.OP_SUB+", outputs the difference."
+		}
+		
 	}
 
 }

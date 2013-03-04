@@ -384,7 +384,7 @@ package LevelStates {
 					displayModules.push(midLayer.add(new DModule(currentModule)));
 					
 					preserveModule = true;
-				}, "Place "+Module.getArchetype(moduleType).name+" module" /*TODO: replace with module description!*/).setParam(moduleType));
+				}, "").setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getDescription));
 			}
 			
 			//put 'em in a list

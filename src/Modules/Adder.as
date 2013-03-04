@@ -42,6 +42,10 @@ package Modules {
 		override public function renderName():String {
 			return name + "\n\n" + drive(outputs[0]);
 		}
+		
+		override public function getDescription():String {
+			return "Outputs the sum of its inputs."
+		}
 	}
 
 }

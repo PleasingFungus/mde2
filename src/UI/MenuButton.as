@@ -26,6 +26,7 @@ package UI {
 		public var fades:Boolean;
 		public var callWithParam:Object;
 		public var tooltip:String;
+		public var tooltipCallback:Function;
 		public var hotkey:Key;
 		protected var holdTime:Number;
 		
@@ -114,7 +115,7 @@ package UI {
 		}
 		
 		protected function updateMouseover():void {
-			if (!tooltip)
+			if (!tooltip && tooltipCallback == null)
 				return;
 			
 			var mouseoverVisible:Boolean = moused && mouseTime >= MOUSEOVER_TIME;
@@ -126,6 +127,10 @@ package UI {
 			
 			if (!mouseoverText)
 				U.state.upperLayer.add(mouseoverText = new FloatText(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, FlxG.width, tooltip))));
+			if (tooltipCallback != null && tooltip != tooltipCallback()) {
+				tooltip = tooltipCallback();
+				mouseoverText.text.text = tooltip;
+			}
 			
 			var adjMouse:FlxPoint = new FlxPoint(FlxG.mouse.x + FlxG.camera.scroll.x * (coreGraphic.scrollFactor.x - 1), 
 												 FlxG.mouse.y + FlxG.camera.scroll.y * (coreGraphic.scrollFactor.y - 1));
@@ -204,6 +209,11 @@ package UI {
 		
 		public function setSelected(Selected:Boolean):MenuButton {
 			selected = Selected;
+			return this;
+		}
+		
+		public function setTooltipCallback(callback:Function):MenuButton {
+			tooltipCallback = callback;
 			return this;
 		}
 		

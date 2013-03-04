@@ -46,6 +46,10 @@ package Modules {
 			return BooleanValue.TRUE;
 		}
 		
+		override public function getDescription():String {
+			return "Outputs "+BooleanValue.TRUE+" iff all inputs are non-zero, else "+BooleanValue.FALSE+"."
+		}
+		
 	}
 
 }

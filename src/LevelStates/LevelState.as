@@ -509,50 +509,43 @@ package LevelStates {
 		}
 		
 		protected function pickUpModule():void {
-			for each (var dModule:DModule in displayModules)
-				if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc)) {
-					if (dModule.module.FIXED)
-						break;
-					
-					currentModule = dModule.module;
-					new CustomAction(Module.remove, Module.place, dModule.module, new Point(currentModule.x, currentModule.y)).execute();
-					currentModule.exists = true;
-					break;
-				}
+			var mousedModule:Module = findMousedModule();
+			if (mousedModule && !mousedModule.FIXED) {
+				currentModule = mousedModule;
+				new CustomAction(Module.remove, Module.place, mousedModule, new Point(mousedModule.x, mousedModule.y)).execute();
+				mousedModule.exists = true;
+			}
 		}
 		
 		protected function addEditSliderbar():void {
-			for each (var dModule:DModule in displayModules)
-				if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc)) {
-					if (!dModule.module.getConfiguration() || !dModule.module.configurableInPlace || dModule.module.FIXED)
-						break;
-					
-					var module:Module = dModule.module;
-					var oldValue:int = module.getConfiguration().value;
-					var setValue:Function = function setValue(v:int):void {
-						module.getConfiguration().value = v;
+			/*var module:Module = findMousedModule();
+			if (!module || module.FIXED || !module.getConfiguration() || !module.configurableInPlace)
+				return;
+			
+			var oldValue:int = module.getConfiguration().value;
+			var setValue:Function = function setValue(v:int):void {
+				module.getConfiguration().value = v;
+				module.setByConfig();
+				module.initialize();
+			};
+			var sliderbar:Sliderbar = new Sliderbar(dModule.x + dModule.width / 2, dModule.y + dModule.height / 2,
+													module.getConfiguration().valueRange, setValue, module.getConfiguration().value);
+			sliderbar.setDieOnClickOutside(true, function onDie():void {
+				var newValue:int = module.getConfiguration().value;
+				if (newValue != oldValue)
+					new CustomAction(function setByConfig(newValue:int, oldValue:int):Boolean {
+						module.getConfiguration().value = newValue;
 						module.setByConfig();
 						module.initialize();
-					};
-					var sliderbar:Sliderbar = new Sliderbar(dModule.x + dModule.width / 2, dModule.y + dModule.height / 2,
-															module.getConfiguration().valueRange, setValue, module.getConfiguration().value);
-					sliderbar.setDieOnClickOutside(true, function onDie():void {
-						var newValue:int = module.getConfiguration().value;
-						if (newValue != oldValue)
-							new CustomAction(function setByConfig(newValue:int, oldValue:int):Boolean {
-								module.getConfiguration().value = newValue;
-								module.setByConfig();
-								module.initialize();
-								return true;
-							}, function setOldConfig(newValue:int, oldValue:int):Boolean {
-								module.getConfiguration().value = oldValue;
-								module.setByConfig();
-								module.initialize();
-								return true;
-							}, newValue, oldValue).execute();
-					});
-					upperLayer.add(sliderbar);
-				}
+						return true;
+					}, function setOldConfig(newValue:int, oldValue:int):Boolean {
+						module.getConfiguration().value = oldValue;
+						module.setByConfig();
+						module.initialize();
+						return true;
+					}, newValue, oldValue).execute();
+			});
+			upperLayer.add(sliderbar);*/
 		}
 		
 		protected function placeModule():void {
@@ -561,11 +554,16 @@ package LevelStates {
 		}
 		
 		private function destroyModules():void {
+			var mousedModule:Module = findMousedModule();
+			if (mousedModule && !mousedModule.FIXED)
+				new CustomAction(Module.remove, Module.place, mousedModule).execute();
+		}
+		
+		private function findMousedModule():Module {
 			for each (var dModule:DModule in displayModules)
-				if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc) && !dModule.module.FIXED) {
-					new CustomAction(Module.remove, Module.place, dModule.module).execute();
-					//break;
-				}
+				if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc))
+					return dModule.module;
+			return null;
 		}
 		
 		protected function checkRemoveControls():void {
@@ -597,19 +595,21 @@ package LevelStates {
 			var offsetY:int = 0;
 			
 			//TODO: check to see if a button is moused
-			
-			switch (mode) {
-				case MODE_CONNECT:
-					if (listOpen == LIST_NONE && !time.moment)
+			if (listOpen == LIST_NONE && !time.moment)
+				switch (mode) {
+					case MODE_CONNECT:
 						newGraphic = _pen_cursor;
-					break;
-				case MODE_REMOVE:
-					if (listOpen == LIST_NONE) {
+						break;
+					case MODE_REMOVE:
 						newGraphic = _remove_cursor;
 						offsetX = offsetY = -14;
-					}
-					break;
-			}
+						break;
+					case MODE_MODULE:
+						newGraphic = _grab_cursor;
+						offsetX = -4;
+						offsetY = -3;
+						break;
+				}
 			
 			if (cursorGraphic != newGraphic) {
 				FlxG.mouse.load(newGraphic, 1, offsetX, offsetY);
@@ -969,6 +969,7 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/test.png")] private const _test_sprite:Class;
 		
 		[Embed(source = "../../lib/art/ui/pen.png")] private const _pen_cursor:Class;
+		[Embed(source = "../../lib/art/ui/grabby_cursor.png")] private const _grab_cursor:Class;
 		[Embed(source = "../../lib/art/ui/remove_cursor.png")] private const _remove_cursor:Class;
 	}
 

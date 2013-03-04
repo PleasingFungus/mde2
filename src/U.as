@@ -30,12 +30,14 @@ package  {
 		public static const MUNRO_NARROW:String = "MUNRO_N";
 		[Embed(source = "../lib/fonts/munro_small.ttf", fontFamily = "MUNRO_S")] private const _3:String;
 		public static const MUNRO_SMALL:String = "MUNRO_S";
+		[Embed(source = "../lib/fonts/munro-webfont.ttf", fontFamily = "MUNRO_W")] private const _4:String;
+		public static const MUNRO_WEB:String = "MUNRO_W";
 		public static const SYSTEM:String = "system";
 		
 		public static const LABEL_FONT:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const BODY_FONT:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const TITLE_FONT:FontTuple = new FontTuple(SYSTEM, 32);
-		public static const NODE_FONT:FontTuple = new FontTuple(MUNRO_NARROW, 20);
+		public static const NODE_FONT:FontTuple = new FontTuple(MUNRO_WEB, 32);
 		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
 		

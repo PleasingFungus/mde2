@@ -588,11 +588,13 @@ package LevelStates {
 				checkModuleState();
 		}
 		
-		protected var cursorGraphic:Class
+		protected var cursorGraphic:Class;
+		protected var wasHidden:Boolean;
 		protected function checkCursorState():void {
 			var newGraphic:Class = null;
 			var offsetX:int = 0;
 			var offsetY:int = 0;
+			var hide:Boolean;
 			
 			//TODO: check to see if a button is moused
 			if (listOpen == LIST_NONE && !time.moment)
@@ -605,15 +607,28 @@ package LevelStates {
 						offsetX = offsetY = -14;
 						break;
 					case MODE_MODULE:
-						newGraphic = _grab_cursor;
-						offsetX = -4;
-						offsetY = -3;
+						if (currentModule) {
+							hide = true;
+							break;
+						}
+						
+						var mousedModule:Module = findMousedModule();
+						if (mousedModule && !mousedModule.FIXED) {
+							newGraphic = _grab_cursor;
+							offsetX = -4;
+							offsetY = -3;
+						}
+						
 						break;
 				}
 			
-			if (cursorGraphic != newGraphic) {
-				FlxG.mouse.load(newGraphic, 1, offsetX, offsetY);
+			if (hide) {
+				FlxG.mouse.hide();
+				wasHidden = true;
+			} else if (cursorGraphic != newGraphic || wasHidden) {
+				FlxG.mouse.show(newGraphic, 1, offsetX, offsetY);
 				cursorGraphic = newGraphic;
+				wasHidden = false;
 			}
 		}
 		

@@ -2,28 +2,25 @@ package Displays {
 	import Components.Carrier;
 	import Components.Port;
 	import org.flixel.*;
+	import UI.FloatText;
 	
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class DCurrent extends FlxGroup {
+	public class DCurrent extends FloatText {
 		
 		private var dWires:Vector.<DWire>;
 		private var dModules:Vector.<DModule>;
-		private var text:FlxText;
-		private var bg:FlxSprite;
 		private var lastMouse:FlxBasic;
 		private var lastCarrier:Carrier;
 		private var lastMoment:int;
 		public function DCurrent(DWires:Vector.<DWire>, DModules:Vector.<DModule>) {
-			super()
+			super(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, FlxG.width / 4, " "), 0xffffff));
 			
 			dWires = DWires;
 			dModules = DModules;
-			
-			add(text = new FlxText( -1, -1, FlxG.width / 4, " ").setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xff000000));
-			//text.scrollFactor.x = text.scrollFactor.y = 0;
+			text.scrollFactor.x = text.scrollFactor.y = 0;
 		}
 		
 		override public function update():void {
@@ -59,8 +56,6 @@ package Displays {
 			lastMoment = U.state.time.moment;
 			
 			text.text = getDisplayText(carrier);
-			
-			//TODO: set up bg
 		}
 		
 		protected function getDisplayText(carrier:Carrier):String {
@@ -106,12 +101,12 @@ package Displays {
 		}
 		
 		private function position():void {
-			text.x = FlxG.mouse.x - FlxG.camera.scroll.x + PAD;
-			text.y = FlxG.mouse.y - FlxG.camera.scroll.y + PAD;
+			x = FlxG.mouse.x - FlxG.camera.scroll.x + PAD;
+			y = FlxG.mouse.y - FlxG.camera.scroll.y + PAD;
 			
-			if (text.x + text.textWidth > FlxG.width || text.y + text.height > FlxG.height) {
-				text.x -= text.textWidth + PAD;
-				text.y -= text.height + PAD;
+			if (x + width > FlxG.width || y + height > FlxG.height) {
+				x -= width + PAD;
+				y -= height + PAD;
 			}
 		}
 		

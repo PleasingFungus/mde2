@@ -11,7 +11,6 @@ package Menu {
 		override public function create():void {
 			C.setPrintReady();
 			U.init();
-			U.enforceButtonPriorities = false;
 			
 			var title:FlxText = new FlxText(0, 20, FlxG.width, "MULTIDUCK\nEXTRAVAGANZA");
 			U.TITLE_FONT.configureFlxText(title, 0xffffff, 'center');

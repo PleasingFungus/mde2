@@ -99,7 +99,7 @@ package UI {
 			if (FlxG.mouse.justPressed()) {
 				barClicked = adjMouse.x >= rail.x && adjMouse.x <= rail.x + rail.width && adjMouse.y >= slider.y && adjMouse.y <= slider.y + slider.height;
 				if (barClicked)
-					MenuButton.buttonClicked = true;
+					U.buttonManager.clicked = true;
 				else if (tick && dieOnClickOutside) {
 					exists = false;
 					if (onDeath != null)

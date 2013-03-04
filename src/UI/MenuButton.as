@@ -84,8 +84,9 @@ package UI {
 				nextSelected = false;
 			}
 			
-			if (moused && FlxG.mouse.justPressed() && (!buttonClicked || !U.enforceButtonPriorities)) {
-				buttonClicked = true;
+			if (moused && FlxG.mouse.justPressed() && (!U.buttonManager || !U.buttonManager.clicked)) {
+				if (U.buttonManager)
+					U.buttonManager.clicked = true;
 				choose();
 			} else if (!disabled && hotkey) {
 				if (hotkey.justPressed()) {
@@ -182,8 +183,6 @@ package UI {
 		protected function forceRender():void {
 			super.draw();
 		}
-		
-		public static var buttonClicked:Boolean;
 		
 		public static const FADE_TIME:Number = 0.27; //deep wisdom of the elder sages (trial & error)
 		protected const REPEAT_TIME:Number = 0.25;

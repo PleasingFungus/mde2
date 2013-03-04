@@ -104,7 +104,7 @@ package Displays {
 												 FlxG.mouse.y + FlxG.camera.scroll.y * (bg.scrollFactor.y - 1));
 			
 			if (bg.overlapsPoint(adjMouse))
-				MenuButton.buttonClicked = true;
+				U.buttonManager.clicked = true;
 			else
 				exists = false;
 			

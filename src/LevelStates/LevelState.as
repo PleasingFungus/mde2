@@ -7,6 +7,7 @@ package LevelStates {
 	import Displays.*;
 	import Modules.Module;
 	import UI.ButtonList;
+	import UI.ButtonManager;
 	import UI.ModuleSlider;
 	import UI.Sliderbar;
 	import UI.TextButton;
@@ -97,7 +98,6 @@ package LevelStates {
 			
 			makeUI();
 			upperLayer.add(new DGoal(level));
-			U.enforceButtonPriorities = true;
 			
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
@@ -136,6 +136,7 @@ package LevelStates {
 		
 		protected function makeUI():void {
 			upperLayer = new FlxGroup;
+			new ButtonManager;
 			UIChanged = true;
 			
 			upperLayer.add(editEnabled ? displayTime = new DTime(FlxG.width / 2 - 50, 10) : displayTime);
@@ -417,7 +418,7 @@ package LevelStates {
 		}
 		
 		protected function updateUI():void {
-			MenuButton.buttonClicked = false;
+			U.buttonManager.update();
 			UIChanged = false;
 			preserveModule = false;
 			
@@ -456,7 +457,7 @@ package LevelStates {
 		protected function checkConnectControls():void {
 			
 			if (FlxG.mouse.justPressed()) {
-				if (MenuButton.buttonClicked)
+				if (U.buttonManager.clicked)
 					return;
 				
 				currentWire = new Wire(U.pointToGrid(U.mouseLoc))
@@ -490,18 +491,19 @@ package LevelStates {
 				currentModule.y = mousePoint.y;
 				
 				if (FlxG.mouse.justPressed() && !preserveModule) {
-					if (MenuButton.buttonClicked) {
+					if (U.buttonManager.clicked) {
 						currentModule.exists = false;
 						currentModule = null;
 					} else if (currentModule.validPosition)
 						placeModule();
 				}
 			} else {
-				if (FlxG.mouse.justPressed() && !MenuButton.buttonClicked)
+				if (FlxG.mouse.justPressed() && !U.buttonManager.clicked) {
 					if (FlxG.keys.pressed("SHIFT"))
 						addEditSliderbar();
 					else
 						pickUpModule();
+				}
 				
 				if (ControlSet.DELETE_KEY.justPressed())
 					destroyModules();

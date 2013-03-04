@@ -11,8 +11,6 @@ package Menu {
 	public class LevelMenu extends FlxState {
 		
 		override public function create():void {
-			U.enforceButtonPriorities = false;
-			
 			var title:FlxText = new FlxText(0, 20, FlxG.width, "LEVELS");
 			U.TITLE_FONT.configureFlxText(title, 0xffffff, 'center');
 			add(title);

@@ -6,6 +6,7 @@ package  {
 	import Modules.*;
 	import org.flixel.*;
 	import Testing.Types.InstructionType;
+	import UI.ButtonManager;
 	import UI.FontTuple;
 	import Values.FixedValue;
 	import LevelStates.LevelState;
@@ -41,9 +42,11 @@ package  {
 		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
 		
+		public static var save:FlxSave;
 		public static var tuts:Vector.<Level>;
 		public static var levels:Vector.<Level>;
 		public static var state:LevelState;
+		public static var buttonManager:ButtonManager = buttonManager;
 		
 		public static const GRID_DIM:int = 16;
 		
@@ -54,11 +57,9 @@ package  {
 		public static const COORD_DELIM:String = ',';
 		public static const POINT_DELIM:String = ',,';
 		
-		public static var save:FlxSave;
+		
 		
 		private static var initialized:Boolean = false;
-		
-		public static var enforceButtonPriorities:Boolean = true;
 		
 		public static function init():void {			
 			if (initialized)

@@ -48,7 +48,7 @@ package Displays {
 			add(timeBox);
 			add(timeText);
 			
-			stepButton = new GraphicButton(timeBox.x, timeBox.y + timeBox.height / 2, _step_sprite, U.state.time.step, new Key("L"));
+			stepButton = new GraphicButton(timeBox.x, timeBox.y + timeBox.height / 2, _step_sprite, U.state.time.step, "Step forward 1 tick", new Key("L"));
 			stepButton.X -= stepButton.fullWidth;
 			stepButton.Y -= stepButton.fullHeight / 2;
 			add(stepButton);
@@ -59,7 +59,7 @@ package Displays {
 				ticksPerSec = 2;
 				startPlaying();
 				derock = 0;
-			}, new Key("SPACE"));
+			}, "Progress time forward", new Key("SPACE"));
 			playButton.X -= playButton.fullWidth;
 			add(playButton);
 			
@@ -68,7 +68,7 @@ package Displays {
 				
 				ticksPerSec = 20;
 				derock = 0;
-			}, new Key("N"));
+			}, "Set play-speed to 10x", new Key("N"));
 			add(fastButton);
 			
 			pauseButton = new GraphicButton(playButton.X, playButton.Y, _pause_sprite, function pause():void {
@@ -76,7 +76,7 @@ package Displays {
 				
 				playing = 0;
 				derock = 0;
-			}, new Key("SPACE"));
+			}, "Pause", new Key("SPACE"));
 			pauseButton.X -= playButton.fullWidth;
 			pauseButton.exists = false;
 			add(pauseButton);
@@ -84,10 +84,10 @@ package Displays {
 			stopButton = new GraphicButton(timeBox.x + timeBox.width, stepButton.Y, _stop_sprite, function reset():void {
 				U.state.time.reset();
 				playing = 0;
-			}, new Key("BACKSPACE"));
+			}, "Reset time to 0", new Key("BACKSPACE"));
 			add(stopButton);
 			
-			backstepButton = new GraphicButton(stopButton.X + stopButton.fullWidth, stopButton.Y, _backstep_sprite, U.state.time.backstep, new Key("K"));
+			backstepButton = new GraphicButton(stopButton.X + stopButton.fullWidth, stopButton.Y, _backstep_sprite, U.state.time.backstep, "Step back 1 tick", new Key("K"));
 			add(backstepButton);
 			
 			rewindButton = new GraphicButton(backstepButton.X + backstepButton.fullWidth, backstepButton.Y, _back_sprite, function back():void {
@@ -96,7 +96,7 @@ package Displays {
 				playing = -1;
 				timeSinceToggle = 0;
 				derock = 0;
-			}, new Key("M"));
+			}, "Progress time backwards", new Key("M"));
 			add(rewindButton);
 			rewindButton.exists = false;
 		}

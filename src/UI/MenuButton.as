@@ -18,11 +18,14 @@ package UI {
 		protected var highlightBorder:Point;
 		
 		public var moused:Boolean;
+		protected var mouseTime:Number;
+		protected var mouseoverText:FloatText;
 		
 		public var camera:FlxCamera;
 		
 		public var fades:Boolean;
 		public var callWithParam:Object;
+		public var tooltip:String;
 		public var hotkey:Key;
 		protected var holdTime:Number;
 		
@@ -31,12 +34,13 @@ package UI {
 		protected var onSelect:Function;
 		public var disabled:Boolean;
 		
-		public function MenuButton(X:int, Y:int, OnSelect:Function = null, Hotkey:Key = null) {
+		public function MenuButton(X:int, Y:int, OnSelect:Function = null, Tooltip:String = null, Hotkey:Key = null) {
 			super();
 			
 			x = X;
 			y = Y;
 			onSelect = OnSelect;
+			tooltip = Tooltip;
 			hotkey = Hotkey;
 			
 			if (!highlightBorder)
@@ -78,7 +82,13 @@ package UI {
 			moused = highlight.overlapsPoint(FlxG.mouse, true, camera) && (!U.buttonManager || !U.buttonManager.moused);
 			if (moused && U.buttonManager)
 				U.buttonManager.moused = true;
-			var DEBUG_BM:* = U.buttonManager;
+			if (moused)
+				if (!lastMoused)
+					mouseTime = FlxG.elapsed;
+				else
+					mouseTime += FlxG.elapsed;
+			updateMouseover();
+				
 			//if (!lastMoused && moused && onSelect != null)
 				//C.sound.play(SEL_SOUND, 0.125);
 			
@@ -101,6 +111,32 @@ package UI {
 					}
 				}
 			}
+		}
+		
+		protected function updateMouseover():void {
+			if (!tooltip)
+				return;
+			
+			var mouseoverVisible:Boolean = moused && mouseTime >= MOUSEOVER_TIME;
+			if (!mouseoverVisible) {
+				if (mouseoverText)
+					mouseoverText.visible = false;
+				return;
+			}
+			
+			if (!mouseoverText)
+				U.state.upperLayer.add(mouseoverText = new FloatText(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, FlxG.width, tooltip))));
+			
+			var adjMouse:FlxPoint = new FlxPoint(FlxG.mouse.x + FlxG.camera.scroll.x * (coreGraphic.scrollFactor.x - 1), 
+												 FlxG.mouse.y + FlxG.camera.scroll.y * (coreGraphic.scrollFactor.y - 1));
+			mouseoverText.x = adjMouse.x - mouseoverText.width;
+			if (mouseoverText.x < 5)
+				mouseoverText.x = 5;
+			mouseoverText.y = adjMouse.y - mouseoverText.height;
+			if (mouseoverText.y < 5)
+				mouseoverText.y = 5;
+			
+			mouseoverText.visible = true;
 		}
 		
 		protected function choose():void {
@@ -187,6 +223,7 @@ package UI {
 		
 		public static const FADE_TIME:Number = 0.27; //deep wisdom of the elder sages (trial & error)
 		protected const REPEAT_TIME:Number = 0.25;
+		protected const MOUSEOVER_TIME:Number = 0.5;
 	}
 
 }

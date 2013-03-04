@@ -13,10 +13,10 @@ package UI {
 		
 		public var callsWithName:Boolean;
 		
-		public function TextButton(X:int, Y:int, Desc:String, OnSelect:Function = null, Hotkey:Key = null ) {
+		public function TextButton(X:int, Y:int, Desc:String, OnSelect:Function = null, Tooltip:String = null, Hotkey:Key = null ) {
 			desc = Desc;
 			highlightBorder = new Point(5, 10);
-			super(X, Y, OnSelect, Hotkey);
+			super(X, Y, OnSelect, Tooltip, Hotkey);
 		}
 		
 		override public function init():void {

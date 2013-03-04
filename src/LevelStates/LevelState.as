@@ -182,24 +182,24 @@ package LevelStates {
 					FlxG.switchState(new TutorialMenu);
 				else
 					FlxG.switchState(new LevelMenu);
-			});
+			}, "Exit to menu");
 			backButton.fades = true;
 			upperLayer.add(backButton);
 		}
 		
 		protected function makeSaveButtons():void {
-			loadButton = new GraphicButton(90, 50, _success_load_sprite, loadFromSuccess, new Key("S"));
+			loadButton = new GraphicButton(90, 50, _success_load_sprite, loadFromSuccess, "Load last successful", new Key("S"));
 			upperLayer.add(loadButton);
 			
-			resetButton = new GraphicButton(130, 50, _reset_sprite, reset);
+			resetButton = new GraphicButton(130, 50, _reset_sprite, reset, "Erase all placed parts");
 			upperLayer.add(resetButton);
 		}
 		
 		protected function makeUndoButtons():void {
-			undoButton = new GraphicButton(10, 50, _undo_sprite, undo, new Key("Z"));
+			undoButton = new GraphicButton(10, 50, _undo_sprite, undo, "Undo", new Key("Z"));
 			upperLayer.add(undoButton);
 			
-			redoButton = new GraphicButton(50, 50, _redo_sprite, redo, new Key("Y"));
+			redoButton = new GraphicButton(50, 50, _redo_sprite, redo, "Redo", new Key("Y"));
 			upperLayer.add(redoButton);
 		}
 		
@@ -216,14 +216,14 @@ package LevelStates {
 			
 			var memoryButton:MenuButton = new GraphicButton(50, 90, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory));
-			}, new Key("C"));
+			}, "View contents of memory", new Key("C"));
 			upperLayer.add(memoryButton);
 		}
 		
 		protected function makeInfoButton():void {
 			var infoButton:MenuButton = new GraphicButton(10, 90, _info_sprite, function _():void {
 				upperLayer.add(new DGoal(level));
-			}, new Key("I"));
+			}, "Level info", new Key("I"));
 			upperLayer.add(infoButton);
 		}
 		
@@ -231,7 +231,7 @@ package LevelStates {
 			var zoomButton:MenuButton = new GraphicButton(50, 10, _zoom_sprite, function openList():void {
 				listOpen = LIST_ZOOM;
 				makeUI();
-			}, new Key("PLUS"));
+			}, "Display zoom controls", new Key("PLUS"));
 			upperLayer.add(zoomButton);
 		}
 		
@@ -246,7 +246,7 @@ package LevelStates {
 					
 					FlxG.camera.scroll.x -= (FlxG.width / 2) / zoom;
 					FlxG.camera.scroll.y -= (FlxG.height / 2) / zoom;
-				}, HOTKEYS[zoomLevel]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == zoom));
+				}, "Set zoom to "+Math.pow(2, -zoomLevel), HOTKEYS[zoomLevel]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == zoom));
 			
 			var zoomList:ButtonList = new ButtonList(50, 10, zoomButtons, function onListClose():void {
 				if (listOpen == LIST_ZOOM)
@@ -263,7 +263,7 @@ package LevelStates {
 				var randomButton:MenuButton = new GraphicButton(90, 90, _random_sprite, function _():void {
 					initialMemory = level.goal.genMem();
 					memory = initialMemory.slice();
-				}, new Key("R"));
+				}, "Generate new memory", new Key("R"));
 				upperLayer.add(randomButton);
 			}
 			
@@ -271,7 +271,7 @@ package LevelStates {
 				var kludge:LevelState = this;
 				var testButton:MenuButton = new GraphicButton(130, 90, _test_sprite, function _():void {
 					level.goal.runTest(kludge);
-				}, new Key("T"));
+				}, "Test your machine!", new Key("T"));
 				upperLayer.add(testButton);
 			}
 		}
@@ -280,7 +280,7 @@ package LevelStates {
 			var modeButton:MenuButton = new GraphicButton(10, 10, MODE_SPRITES[mode], function openList():void {
 				listOpen = LIST_MODES;
 				makeUI();
-			}, new Key("TAB"));
+			}, "Display list of edit modes", new Key("TAB"));
 			upperLayer.add(modeButton);
 		}
 		
@@ -300,7 +300,7 @@ package LevelStates {
 			for each (var newMode:int in modes) {
 				modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 					mode = newMode;
-				}, HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
+				}, "Enter "+MODE_NAMES[newMode]+" mode", HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
 			}
 			
 			var modeList:ButtonList = new ButtonList(10, 10, modeSelectButtons, function onListClose():void {
@@ -322,7 +322,7 @@ package LevelStates {
 				
 				listOpen = LIST_CATEGORIES;
 				makeUI();
-			}, new Key("FIVE"));
+			}, "Choose modules", new Key("FIVE"));
 			
 			upperLayer.add(listButton);
 		}
@@ -342,7 +342,7 @@ package LevelStates {
 					listOpen = LIST_MODULES;
 					moduleCategory = category;
 					makeUI();
-				}).setParam(category).setDisabled(!allowed));
+				}, "Choose "+category+" modules" /*TODO: replace with category description?*/).setParam(category).setDisabled(!allowed));
 			}
 			
 			//put 'em in a list
@@ -384,7 +384,7 @@ package LevelStates {
 					displayModules.push(midLayer.add(new DModule(currentModule)));
 					
 					preserveModule = true;
-				}).setParam(moduleType));
+				}, "Place "+Module.getArchetype(moduleType).name+" module" /*TODO: replace with module description!*/).setParam(moduleType));
 			}
 			
 			//put 'em in a list
@@ -886,8 +886,8 @@ package LevelStates {
 			
 			if (saveString == null)
 				saveString = U.save.data[level.name];
-			//if (saveString == null)
-				//saveString = findSuccessSave();
+			if (saveString == null)
+				saveString = findSuccessSave();
 			if (saveString) {
 				var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);
 				
@@ -964,6 +964,7 @@ package LevelStates {
 		protected const MODE_CONNECT:int = 1;
 		protected const MODE_REMOVE:int = 2;
 		protected const MODE_DELAY:int = 3;
+		private const MODE_NAMES:Array = ["module", "wire", "delete", "delay"];
 		
 		protected const LIST_NONE:int = 0;
 		protected const LIST_MODES:int = 1;

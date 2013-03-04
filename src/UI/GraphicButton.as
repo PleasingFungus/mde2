@@ -13,10 +13,10 @@ package UI {
 		protected var graphic:FlxSprite;
 		protected var hotkeyHint:FlxText;
 		
-		public function GraphicButton(X:int, Y:int, RawGraphic:Class, OnSelect:Function = null, Hotkey:Key = null) {
+		public function GraphicButton(X:int, Y:int, RawGraphic:Class, OnSelect:Function = null, Tooltip:String= null, Hotkey:Key = null) {
 			rawGraphic = RawGraphic;
 			highlightBorder = new Point(2, 2);
-			super(X, Y, OnSelect, Hotkey);
+			super(X, Y, OnSelect, Tooltip, Hotkey);
 		}
 		
 		override public function init():void {

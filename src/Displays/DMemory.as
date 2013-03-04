@@ -97,15 +97,10 @@ package Displays {
 		}
 		
 		protected function checkClick():void {
-			if (!tick || !FlxG.mouse.justPressed())
+			if (!tick)
 				return;
 			
-			var adjMouse:FlxPoint = new FlxPoint(FlxG.mouse.x + FlxG.camera.scroll.x * (bg.scrollFactor.x - 1), 
-												 FlxG.mouse.y + FlxG.camera.scroll.y * (bg.scrollFactor.y - 1));
-			
-			if (bg.overlapsPoint(adjMouse))
-				U.buttonManager.clicked = true;
-			else
+			if (FlxG.mouse.justPressed())
 				exists = false;
 			
 		}

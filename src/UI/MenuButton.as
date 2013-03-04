@@ -75,7 +75,10 @@ package UI {
 				return;
 			
 			var lastMoused:Boolean = moused;
-			moused = highlight.overlapsPoint(FlxG.mouse, true, camera);
+			moused = highlight.overlapsPoint(FlxG.mouse, true, camera) && (!U.buttonManager || !U.buttonManager.moused);
+			if (moused && U.buttonManager)
+				U.buttonManager.moused = true;
+			var DEBUG_BM:* = U.buttonManager;
 			//if (!lastMoused && moused && onSelect != null)
 				//C.sound.play(SEL_SOUND, 0.125);
 			
@@ -84,9 +87,7 @@ package UI {
 				nextSelected = false;
 			}
 			
-			if (moused && FlxG.mouse.justPressed() && (!U.buttonManager || !U.buttonManager.clicked)) {
-				if (U.buttonManager)
-					U.buttonManager.clicked = true;
+			if (moused && FlxG.mouse.justPressed()) {
 				choose();
 			} else if (!disabled && hotkey) {
 				if (hotkey.justPressed()) {

@@ -455,20 +455,16 @@ package LevelStates {
 		}
 		
 		protected function checkConnectControls():void {
-			
-			if (FlxG.mouse.justPressed()) {
-				if (U.buttonManager.clicked)
-					return;
-				
-				currentWire = new Wire(U.pointToGrid(U.mouseLoc))
-				displayWires.push(midLayer.add(new DWire(currentWire)));
-			} else if (currentWire) {
+			if (currentWire) {
 				if (FlxG.mouse.pressed())
 					currentWire.attemptPathTo(U.pointToGrid(U.mouseLoc))
 				else {
 					new CustomAction(Wire.place, Wire.remove, currentWire).execute();
 					currentWire = null;
 				}
+			} else if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
+				currentWire = new Wire(U.pointToGrid(U.mouseLoc))
+				displayWires.push(midLayer.add(new DWire(currentWire)));
 			}
 			
 			
@@ -491,14 +487,14 @@ package LevelStates {
 				currentModule.y = mousePoint.y;
 				
 				if (FlxG.mouse.justPressed() && !preserveModule) {
-					if (U.buttonManager.clicked) {
+					if (U.buttonManager.moused) {
 						currentModule.exists = false;
 						currentModule = null;
 					} else if (currentModule.validPosition)
 						placeModule();
 				}
 			} else {
-				if (FlxG.mouse.justPressed() && !U.buttonManager.clicked) {
+				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
 					if (FlxG.keys.pressed("SHIFT"))
 						addEditSliderbar();
 					else
@@ -562,6 +558,9 @@ package LevelStates {
 		}
 		
 		private function findMousedModule():Module {
+			if (U.buttonManager.moused)
+				return null;
+			
 			for each (var dModule:DModule in displayModules)
 				if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc))
 					return dModule.module;
@@ -598,15 +597,17 @@ package LevelStates {
 			var offsetY:int = 0;
 			var hide:Boolean;
 			
-			//TODO: check to see if a button is moused
 			if (listOpen == LIST_NONE && !time.moment)
 				switch (mode) {
 					case MODE_CONNECT:
-						newGraphic = _pen_cursor;
+						if (!U.buttonManager.moused)
+							newGraphic = _pen_cursor;
 						break;
 					case MODE_REMOVE:
-						newGraphic = _remove_cursor;
-						offsetX = offsetY = -14;
+						if (!U.buttonManager.moused) {
+							newGraphic = _remove_cursor;
+							offsetX = offsetY = -14;
+						}
 						break;
 					case MODE_MODULE:
 						if (currentModule) {
@@ -627,10 +628,13 @@ package LevelStates {
 			if (hide) {
 				FlxG.mouse.hide();
 				wasHidden = true;
-			} else if (cursorGraphic != newGraphic || wasHidden) {
-				FlxG.mouse.show(newGraphic, 1, offsetX, offsetY);
-				cursorGraphic = newGraphic;
+			} else if (wasHidden) {
+				FlxG.mouse.show(cursorGraphic, 1, offsetX, offsetY);
 				wasHidden = false;
+			}
+			if (cursorGraphic != newGraphic) {
+				FlxG.mouse.load(newGraphic, 1, offsetX, offsetY);
+				cursorGraphic = newGraphic;
 			}
 		}
 		
@@ -944,6 +948,16 @@ package LevelStates {
 		public function runTest():void {
 			displayTime.startPlaying();
 			runningTest = true;
+		}
+		
+		override public function destroy():void {
+			super.destroy();
+			
+			if (cursorGraphic)
+				FlxG.mouse.load();
+			if (wasHidden)
+				FlxG.mouse.show();
+			U.buttonManager.destroy();
 		}
 		
 		protected const MODE_MODULE:int = 0;

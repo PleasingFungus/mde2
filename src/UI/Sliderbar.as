@@ -95,11 +95,13 @@ package UI {
 		protected function checkClick():void {
 			var adjMouse:FlxPoint = new FlxPoint(FlxG.mouse.x + FlxG.camera.scroll.x * (slider.scrollFactor.x - 1), 
 												 FlxG.mouse.y + FlxG.camera.scroll.y * (slider.scrollFactor.y - 1));
+			var barMoused:Boolean = adjMouse.x >= rail.x && adjMouse.x <= rail.x + rail.width && adjMouse.y >= slider.y && adjMouse.y <= slider.y + slider.height && (!U.buttonManager || !U.buttonManager.moused);
+			if (barMoused && U.buttonManager)
+				U.buttonManager.moused = true
 			
 			if (FlxG.mouse.justPressed()) {
-				barClicked = adjMouse.x >= rail.x && adjMouse.x <= rail.x + rail.width && adjMouse.y >= slider.y && adjMouse.y <= slider.y + slider.height;
-				if (barClicked)
-					U.buttonManager.clicked = true;
+				if (barMoused)
+					barClicked = true;
 				else if (tick && dieOnClickOutside) {
 					exists = false;
 					if (onDeath != null)

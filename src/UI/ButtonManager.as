@@ -7,14 +7,16 @@ package UI {
 	 */
 	public class ButtonManager extends FlxBasic {
 		
-		public var clicked:Boolean;
+		public var moused:Boolean;
 		public function ButtonManager() {
 			super();
+			if (U.buttonManager)
+				moused = U.buttonManager.moused;
 			U.buttonManager = this;
 		}
 		
 		override public function update():void {
-			clicked = false;
+			moused = false;
 		}
 		
 		override public function destroy():void {

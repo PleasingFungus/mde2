@@ -51,8 +51,8 @@ package UI {
 		
 		override public function update():void {
 			super.update();
-			if (!U.buttonManager.clicked && FlxG.mouse.justPressed() && overlapsPoint(FlxG.mouse)) 
-				U.buttonManager.clicked = true;
+			if (!U.buttonManager.moused && overlapsPoint(FlxG.mouse)) 
+				U.buttonManager.moused = true;
 		}
 		
 		private const BORDER_WIDTH:int = 4;

@@ -132,12 +132,12 @@ package UI {
 				mouseoverText.text.text = tooltip;
 			}
 			
-			var adjMouse:FlxPoint = new FlxPoint(FlxG.mouse.x + FlxG.camera.scroll.x * (coreGraphic.scrollFactor.x - 1), 
-												 FlxG.mouse.y + FlxG.camera.scroll.y * (coreGraphic.scrollFactor.y - 1));
-			mouseoverText.x = adjMouse.x - mouseoverText.width;
+			//var adjMouse:FlxPoint = new FlxPoint(FlxG.mouse.x + FlxG.camera.scroll.x * (coreGraphic.scrollFactor.x - 1), 
+												 //FlxG.mouse.y + FlxG.camera.scroll.y * (coreGraphic.scrollFactor.y - 1));
+			mouseoverText.x = FlxG.mouse.x - FlxG.camera.scroll.x - mouseoverText.width;
 			if (mouseoverText.x < 5)
 				mouseoverText.x = 5;
-			mouseoverText.y = adjMouse.y - mouseoverText.height;
+			mouseoverText.y = FlxG.mouse.y - FlxG.camera.scroll.y - mouseoverText.height;
 			if (mouseoverText.y < 5)
 				mouseoverText.y = 5;
 			

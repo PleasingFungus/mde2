@@ -12,6 +12,7 @@ package UI {
 		public function FloatText(Text:FlxText) {
 			text = Text;
 			super( -1, -1);
+			text.scrollFactor.x = text.scrollFactor.y = 0;
 			init();
 		}
 		

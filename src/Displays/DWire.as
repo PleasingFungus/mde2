@@ -118,7 +118,7 @@ package Displays {
 		}
 		
 		protected function getColor():uint {
-			if (overlapsPoint(U.mouseFlxLoc))
+			if (!U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc))
 				return 0xfff03c;
 			
 			if (wire.getSource() == null || wire.connections.length < 2)

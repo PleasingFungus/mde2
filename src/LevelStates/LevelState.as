@@ -39,7 +39,6 @@ package LevelStates {
 		
 		protected var displayWires:Vector.<DWire>;
 		protected var displayModules:Vector.<DModule>;
-		//protected var buttons:Vector.<MenuButton>
 		protected var mode:int = MODE_CONNECT;
 		protected var listOpen:int;
 		protected var UIChanged:Boolean;
@@ -142,6 +141,7 @@ package LevelStates {
 			upperLayer.add(editEnabled ? displayTime = new DTime(FlxG.width / 2 - 50, 10) : displayTime);
 			upperLayer.add(new Scroller);
 			upperLayer.add(new DCurrent(displayWires, displayModules));
+			upperLayer.add(new DModuleInfo);
 			makeDataButton();
 			makeInfoButton();
 			makeBackButton();
@@ -557,7 +557,7 @@ package LevelStates {
 				new CustomAction(Module.remove, Module.place, mousedModule).execute();
 		}
 		
-		private function findMousedModule():Module {
+		public function findMousedModule():Module {
 			if (U.buttonManager.moused)
 				return null;
 			
@@ -600,7 +600,7 @@ package LevelStates {
 			if (listOpen == LIST_NONE && !time.moment)
 				switch (mode) {
 					case MODE_CONNECT:
-						if (!U.buttonManager.moused)
+						if (!U.buttonManager.moused && !findMousedModule())
 							newGraphic = _pen_cursor;
 						break;
 					case MODE_REMOVE:

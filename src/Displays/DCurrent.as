@@ -20,7 +20,6 @@ package Displays {
 			
 			dWires = DWires;
 			dModules = DModules;
-			text.scrollFactor.x = text.scrollFactor.y = 0;
 		}
 		
 		override public function update():void {
@@ -30,6 +29,11 @@ package Displays {
 		
 		private function checkMouse():void {
 			var moused:FlxBasic, carrier:Carrier;
+			
+			if (U.buttonManager.moused) {
+				lastMouse = null;
+				return;
+			}
 			
 			for each (var dModule:DModule in dModules)
 				for each (var dPort:DPort in dModule.displayPorts)

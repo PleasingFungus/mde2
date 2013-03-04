@@ -28,6 +28,10 @@ package Modules {
 			return "EDGE-"+edgeLength;
 		}
 		
+		override public function getDescription():String {
+			return "After recieving a non-"+BooleanValue.FALSE+" input, outputs that value for the next " + configuration.value + " ticks.";
+		}
+		
 		override public function initialize():void {
 			super.initialize();
 			lastValue = null;

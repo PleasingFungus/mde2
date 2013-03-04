@@ -29,6 +29,10 @@ package Modules {
 			return out.slice(0, out.length - 1);
 		}
 		
+		override public function getDescription():String {
+			return "Outputs "+BooleanValue.TRUE+" if any input is "+BooleanValue.TRUE+", else "+BooleanValue.FALSE+"."
+		}
+		
 		override protected function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(width);

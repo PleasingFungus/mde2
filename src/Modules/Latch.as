@@ -40,6 +40,10 @@ package Modules {
 			return "LCH" +"\n\n" + value;
 		}
 		
+		override public function getDescription():String {
+			return "Outputs the contained value, and also, each tick, sets the contained value to the input value if the write-control is "+BooleanValue.TRUE+"."
+		}
+		
 		override public function drive(port:Port):Value {
 			return value;
 		}

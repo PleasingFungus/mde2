@@ -29,6 +29,10 @@ package Modules {
 			return out.slice(0, out.length - 1);
 		}
 		
+		override public function getDescription():String {
+			return "Outputs "+BooleanValue.FALSE+" if any input is "+BooleanValue.FALSE+", else "+BooleanValue.TRUE+"."
+		}
+		
 		override protected function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(width);
@@ -44,10 +48,6 @@ package Modules {
 					return BooleanValue.FALSE;
 			}
 			return BooleanValue.TRUE;
-		}
-		
-		override public function getDescription():String {
-			return "Outputs "+BooleanValue.TRUE+" iff all inputs are non-zero, else "+BooleanValue.FALSE+"."
 		}
 		
 	}

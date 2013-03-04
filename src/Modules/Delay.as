@@ -25,6 +25,10 @@ package Modules {
 			return name + "\n\n" + drive(outputs[0]);
 		}
 		
+		override public function getDescription():String {
+			return "Outputs the input value. (Has a propagation delay of " + configuration.value + " ticks.)";
+		}
+		
 		override protected function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(delay);

@@ -48,6 +48,10 @@ package Modules {
 			return out;
 		}
 		
+		override public function getDescription():String {
+			return "Each tick, writes the input value to the specified line of memory."
+		}
+		
 		protected function get data():NumericValue { 
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown) return null;

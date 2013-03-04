@@ -24,6 +24,10 @@ package Modules {
 			return name + "\n\n" + drive(outputs[0]);
 		}
 		
+		override public function getDescription():String {
+			return "If input is " + BooleanValue.FALSE + ", outputs " + BooleanValue.TRUE + ". Else, outputs " + BooleanValue.FALSE + ".";
+		}
+		
 	}
 
 }

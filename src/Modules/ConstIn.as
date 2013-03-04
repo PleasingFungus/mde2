@@ -36,6 +36,10 @@ package Modules {
 			return name + "\n\n" + value;
 		}
 		
+		override public function getDescription():String {
+			return "Outputs "+configuration.value+"."
+		}
+		
 		override public function drive(port:Port):Value {
 			return value;
 		}

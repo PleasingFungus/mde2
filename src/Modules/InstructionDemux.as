@@ -59,6 +59,10 @@ package Modules {
 			return "I-Demux\n\n" + controls[0].getValue()+": "+ drive(null);
 		}
 		
+		override public function getDescription():String {
+			return "Outputs the value of the input corresponding to the control value."
+		}
+		
 		override public function drive(port:Port):Value {
 			var control:Value = controls[0].getValue();
 			if (control.unknown || control.unpowered)

@@ -65,6 +65,10 @@ package Modules {
 			return name + "\n\n" + drive(outputs[0]);
 		}
 		
+		override public function getDescription():String {
+			return "If control is "+OpcodeValue.OP_MUL+", outputs the product of its inputs. If control is "+OpcodeValue.OP_DIV+", outputs the quotient."
+		}
+		
 	}
 
 }

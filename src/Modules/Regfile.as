@@ -123,6 +123,10 @@ package Modules {
 			return "Registers" +"\n\n" + values;
 		}
 		
+		override public function getDescription():String {
+			return "Contains " + width + " registers. Outputs values from two specified registers. Also, each tick, sets the value in a specified register to the input value if the write-control is " + BooleanValue.TRUE + ".";
+		}
+		
 		override public function drive(port:Port):Value {
 			var portIndex:int = outputs.indexOf(port);
 			var selectValue:Value = (portIndex == 0 ? source : target).getValue();

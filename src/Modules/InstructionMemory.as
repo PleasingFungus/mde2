@@ -31,6 +31,10 @@ package Modules {
 			return out;
 		}
 		
+		override public function getDescription():String {
+			return "Outputs the opcode, source, target & destination of the instruction at the specified line."
+		}
+		
 		override public function drive(port:Port):Value {
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown) return line;

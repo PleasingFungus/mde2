@@ -24,6 +24,10 @@ package Modules {
 			return "CLK" + "\n"+period+"\n\n" + drive(null);
 		}
 		
+		override public function getDescription():String {
+			return "Outputs "+EDGE+" once every "+configuration.value+" ticks, and "+NO_EDGE+" the rest of the time."
+		}
+		
 		override public function drive(port:Port):Value {
 			if ((U.state.time.moment - 1) % period == 0)
 				return EDGE;

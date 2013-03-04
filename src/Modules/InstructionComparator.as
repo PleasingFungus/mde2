@@ -58,6 +58,10 @@ package Modules {
 			return "I=" + "\n"+compareValue+"\n\n" + drive(null);
 		}
 		
+		override public function getDescription():String {
+			return "Outputs "+BooleanValue.TRUE+" if the input is "+(configuration as OpConfiguration).opValue+", else "+BooleanValue.FALSE+"."
+		}
+		
 		
 		override public function drive(port:Port):Value {
 			var input:Value = inputs[0].getValue();

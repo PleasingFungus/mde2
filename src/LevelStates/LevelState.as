@@ -562,7 +562,7 @@ package LevelStates {
 				return null;
 			
 			for each (var dModule:DModule in displayModules)
-				if (dModule.module.exists && dModule.overlapsPoint(U.mouseFlxLoc))
+				if (dModule.module.exists && dModule.module.deployed && dModule.overlapsPoint(U.mouseFlxLoc))
 					return dModule.module;
 			return null;
 		}

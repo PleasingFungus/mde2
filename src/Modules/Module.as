@@ -226,7 +226,7 @@ package Modules {
 				ARCHETYPES.push(new moduleClass( -1, -1));
 			}
 			
-			for each (var category:String in [CAT_ARITH, CAT_CONTROL, CAT_DATA, CAT_LOGIC, CAT_STORAGE, CAT_TIME, CAT_MISC])
+			for each (var category:String in [CAT_ARITH, CAT_LOGIC, CAT_STORAGE, CAT_TIME, CAT_MISC])
 				ALL_CATEGORIES.push(category);
 		}
 		
@@ -238,8 +238,6 @@ package Modules {
 		public static const ARCHETYPES:Vector.<Module> = new Vector.<Module>;
 		
 		public static const CAT_ARITH:String = "Arithmetic";
-		public static const CAT_CONTROL:String = "Control";
-		public static const CAT_DATA:String = "Data";
 		public static const CAT_LOGIC:String = "Logic";
 		public static const CAT_STORAGE:String = "Storage";
 		public static const CAT_TIME:String = "Time";

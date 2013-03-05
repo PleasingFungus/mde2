@@ -107,13 +107,16 @@ package UI {
 			
 			if (FlxG.mouse.justPressed() && updatedOnce && 
 				(justDie ||
-				(closesOnClickOutside && !bg.overlapsPoint(FlxG.mouse))))
+				(closesOnClickOutside && bg.overlapsPoint(FlxG.mouse, true))))
 				exists = false;
 			else if (ControlSet.CANCEL_KEY.justPressed() && updatedOnce)
 				exists = false;
 			if (!exists && onDeath != null)
 				onDeath();
 			updatedOnce = true;
+			
+			if (exists && U.buttonManager && !U.buttonManager.moused && bg.overlapsPoint(FlxG.mouse, true))
+				U.buttonManager.moused = true;
 		}
 		
 		protected const BG_BORDER:int = 5;

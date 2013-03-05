@@ -55,6 +55,7 @@ package LevelStates {
 		protected var preserveModule:Boolean;
 		protected var runningTest:Boolean;
 		
+		protected var recentModules:Vector.<Class>;
 		protected var moduleCategory:String;
 		protected var moduleList:ButtonList;
 		protected var moduleSliders:Vector.<ModuleSlider>;
@@ -94,6 +95,7 @@ package LevelStates {
 			initialMemory = level.goal.genMem(0.5);
 			
 			load();
+			recentModules = new Vector.<Class>;
 			
 			makeUI();
 			upperLayer.add(new DGoal(level));
@@ -345,6 +347,26 @@ package LevelStates {
 				}, "Choose "+category+" modules" /*TODO: replace with category description?*/).setParam(category).setDisabled(!allowed));
 			}
 			
+			if (recentModules.length) {
+				moduleButtons.push(new TextButton( -1, -1, "<Recent>").setDisabled(true));
+				for each (moduleType in recentModules) {
+					moduleButtons.push(new TextButton( -1, -1, Module.getArchetype(moduleType).name, function chooseModule(moduleType:Class):void {
+						archetype = Module.getArchetype(moduleType);
+						if (archetype.getConfiguration())
+							currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
+						else
+							currentModule = new moduleType( -1, -1);
+						currentModule.initialize();
+						
+						modules.push(currentModule);
+						displayModules.push(midLayer.add(new DModule(currentModule)));
+						addRecentModule(moduleType);
+						
+						preserveModule = true;
+					}, "").setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getDescription));
+				}
+			}
+			
 			//put 'em in a list
 			moduleList = new ButtonList(130, 10, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_CATEGORIES)
@@ -354,6 +376,14 @@ package LevelStates {
 			moduleList.setSpacing(4);
 			moduleList.justDie = true;
 			upperLayer.add(moduleList);
+			
+			moduleSliders = new Vector.<ModuleSlider>;
+			for (var i:int = 0; i < recentModules.length; i++ ) {
+				moduleType = recentModules[i];
+				var archetype:Module = Module.getArchetype(moduleType);
+				if (archetype.getConfiguration())
+					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+Module.ALL_CATEGORIES.length+1], archetype)));
+			}
 		}
 		
 		protected function makeModuleList():void {
@@ -382,6 +412,7 @@ package LevelStates {
 					
 					modules.push(currentModule);
 					displayModules.push(midLayer.add(new DModule(currentModule)));
+					addRecentModule(moduleType);
 					
 					preserveModule = true;
 				}, "").setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getDescription));
@@ -405,6 +436,14 @@ package LevelStates {
 				if (archetype.getConfiguration())
 					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+1], archetype)));
 			}
+		}
+		
+		protected function addRecentModule(moduleType:Class):void {
+			if (recentModules.indexOf(moduleType) >= 0)
+				recentModules.splice(recentModules.indexOf(moduleType), 1);
+			else if (recentModules.length > 3)
+				recentModules.pop();
+			recentModules.unshift( moduleType);
 		}
 		
 		override public function update():void {

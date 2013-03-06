@@ -20,6 +20,7 @@ package Displays {
 		private var playButton:GraphicButton;
 		private var fastButton:GraphicButton;
 		private var rewindButton:GraphicButton;
+		private var rFastButton:GraphicButton;
 		private var pauseButton:GraphicButton;
 		private var stopButton:GraphicButton;
 		
@@ -59,7 +60,7 @@ package Displays {
 				ticksPerSec = 2;
 				startPlaying();
 				derock = 0;
-			}, "Progress time forward", new Key("SPACE"));
+			}, "Play at 1x speed", new Key("SPACE"));
 			playButton.X -= playButton.fullWidth;
 			add(playButton);
 			
@@ -67,8 +68,9 @@ package Displays {
 				if (!derock) return;
 				
 				ticksPerSec = 20;
+				startPlaying();
 				derock = 0;
-			}, "Set play-speed to 10x", new Key("N"));
+			}, "Play at 10x speed", new Key("N"));
 			add(fastButton);
 			
 			pauseButton = new GraphicButton(playButton.X, playButton.Y, _pause_sprite, function pause():void {
@@ -94,11 +96,21 @@ package Displays {
 				if (!derock) return;
 				
 				playing = -1;
+				ticksPerSec = 2;
 				timeSinceToggle = 0;
 				derock = 0;
-			}, "Progress time backwards", new Key("M"));
+			}, "Reverse at 1x speed", new Key("M"));
 			add(rewindButton);
 			rewindButton.exists = false;
+			
+			rFastButton = new GraphicButton(rewindButton.X, rewindButton.Y, _reverse_fast_sprite, function reverseFast():void {
+				if (!derock) return;
+				
+				ticksPerSec = 20;
+				playing = -1;
+				derock = 0;
+			}, "Reverse at 10x speed", new Key("N"));
+			add(rFastButton);
 		}
 		
 		override public function update():void {
@@ -108,10 +120,12 @@ package Displays {
 			timeText.text = U.state.time.toString();
 			
 			stopButton.exists = backstepButton.exists = U.state.time.moment > 0;
-			playButton.exists = playing != 1 || ticksPerSec != 2;
-			fastButton.exists = playing && ticksPerSec != 20;
+			playButton.exists = (playing != 1) != (ticksPerSec != 2);
+			fastButton.exists = !playButton.exists;
+			rewindButton.exists = ((playing != -1) != (ticksPerSec != 2)) && U.state.time.moment > 0;
+			rFastButton.exists = !rewindButton.exists && U.state.time.moment > 0;
+			
 			pauseButton.exists = playing != 0;
-			rewindButton.exists = playing != -1 && U.state.time.moment > 0;
 			
 			derock++;
 		}
@@ -144,6 +158,7 @@ package Displays {
 		[Embed(source = "../../lib/art/ui/play.png")] private const _play_sprite:Class;
 		[Embed(source = "../../lib/art/ui/fast.png")] private const _fast_sprite:Class;
 		[Embed(source = "../../lib/art/ui/back.png")] private const _back_sprite:Class;
+		[Embed(source = "../../lib/art/ui/rfast.png")] private const _reverse_fast_sprite:Class;
 		[Embed(source = "../../lib/art/ui/stop.png")] private const _stop_sprite:Class;
 		[Embed(source = "../../lib/art/ui/pause.png")] private const _pause_sprite:Class;
 	}

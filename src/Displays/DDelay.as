@@ -1,4 +1,5 @@
 package Displays {
+	import flash.utils.Dictionary;
 	import Layouts.PortLayout;
 	import Modules.Module;
 	import org.flixel.*;
@@ -12,40 +13,55 @@ package Displays {
 		
 		public var modules:Vector.<Module>;
 		public var displayModules:Vector.<DModule>;
+		public var interactive:Boolean;
 		
 		private var sourceModule:Module;
+		private var moduleDistances:Dictionary;
+		private var clickedModules:Array;
 		public function DDelay(Modules:Vector.<Module>, DisplayModules:Vector.<DModule>) {
 			modules = Modules;
 			displayModules = DisplayModules;
+			clickedModules = [];
 			super();
 		}
 		
 		override public function update():void {
-			checkMouse();
+			visible = U.state.VIEW_MODE_DELAY == U.state.viewMode;
+			if (visible)
+				checkMouse();
 			super.update();
 		}
 		
 		protected function checkMouse():void {
-			var moused:Boolean;
-			for each (var displayModule:DModule in displayModules)
-				if (displayModule.module.exists && displayModule.overlapsPoint(U.mouseFlxLoc)) {
-					if (displayModule.module != sourceModule)
-						setSourceModule(displayModule.module);
-					moused = true;
-					break;
-				}
-			
-			if (!moused)
-				unsetSourceModule();
+			var mousedModule:Module = U.state.findMousedModule();
+			if (!mousedModule) {
+				if (clicked && clickedModules.length)
+					clickedModules = [];
+				
+				if (!clickedModules.length)
+					unsetSourceModule();
+				else if (lastClicked != sourceModule)
+					setSourceModule(lastClicked);
+			} else if (!lastDistances || lastDistances[moduleId(mousedModule)] != null) {
+				if (mousedModule != sourceModule)
+					setSourceModule(mousedModule);
+				if (clicked && lastClicked != mousedModule)
+					clickedModules.push( { 'module' : mousedModule, 'dist' : lastDistances ? lastDistances[moduleId(mousedModule)].dist : mousedModule.delay,
+										   'moduleDistances' : moduleDistances})
+			}
 		}
 		
 		protected function setSourceModule(SourceModule:Module):void {
 			sourceModule = SourceModule;
 			
+			var baseDelay:int = 0;
+			if (clickedModules.length)
+				baseDelay = clickedModules[clickedModules.length - 1].dist;
+			
 			var node:Object;
 			var toCheck:Array = [{
 				'module' : SourceModule,
-				'dist' : SourceModule.delay,
+				'dist' : SourceModule.delay + baseDelay,
 				'parent' : null
 			}];
 			var checked:Array = [];
@@ -87,14 +103,24 @@ package Displays {
 				
 			}
 			
-			var maxDelay:int = int.MIN_VALUE;
+			moduleDistances = new Dictionary;
 			for each (node in checked)
-				maxDelay = Math.max(node.dist, maxDelay);
+				moduleDistances[moduleId(node.module)] = node;
+			
+			renderDistances(moduleDistances);
+		}
+		
+		protected function renderDistances(moduleDistances:Dictionary):void {
+			members = []
+			var node:Object;
 			
 			var font:FontTuple = U.state.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
 			
-			members = []
-			for each (node in checked) {
+			var maxDelay:int = int.MIN_VALUE;
+			for each (node in moduleDistances)
+				maxDelay = Math.max(node.dist, maxDelay);
+			
+			for each (node in moduleDistances) {
 				for each (var displayModule:DModule in displayModules)
 					if (displayModule.module == node.module)
 						break;
@@ -110,9 +136,28 @@ package Displays {
 		
 		protected function unsetSourceModule():void {
 			sourceModule = null;
-			members = []
+			members = [];
 		}
 		
+		protected function get lastClicked():Module {
+			if (clickedModules.length)
+				return clickedModules[clickedModules.length - 1].module;
+			return null;
+		}
+		
+		protected function get lastDistances():Dictionary {
+			if (clickedModules.length)
+				return clickedModules[clickedModules.length - 1].moduleDistances;
+			return null;
+		}
+		
+		protected function get clicked():Boolean {
+			return interactive && !U.buttonManager.moused && FlxG.mouse.justPressed();
+		}
+		
+		protected function moduleId(module:Module):int {
+			return U.state.modules.indexOf(module);
+		}
 	}
 
 }

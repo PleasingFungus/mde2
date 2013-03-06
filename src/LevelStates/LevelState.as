@@ -53,6 +53,7 @@ package LevelStates {
 		protected var resetButton:MenuButton;
 		
 		protected var displayTime:DTime;
+		protected var displayDelay:DDelay;
 		protected var preserveModule:Boolean;
 		protected var runningTest:Boolean;
 		
@@ -60,7 +61,6 @@ package LevelStates {
 		protected var moduleCategory:String;
 		protected var moduleList:ButtonList;
 		protected var moduleSliders:Vector.<ModuleSlider>;
-		protected var displayDelay:DDelay;
 		
 		public var actionStack:Vector.<Action>;
 		public var reactionStack:Vector.<Action>;
@@ -149,11 +149,11 @@ package LevelStates {
 			makeInfoButton();
 			makeBackButton();
 			
-			if (mode == MODE_DELAY) {
-				if (!displayDelay || !displayDelay.exists)
+			if (level.delay) {
+				if (!displayDelay)
 					midLayer.add(displayDelay = new DDelay(modules, displayModules));
-			} else if (displayDelay)
-				displayDelay.exists = false;
+				displayDelay.interactive = MODE_DELAY == mode;
+			}
 			
 			if (!editEnabled) {
 				makeZoomButton();
@@ -310,6 +310,8 @@ package LevelStates {
 			for each (var newMode:int in modes) {
 				modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 					mode = newMode;
+					if (MODE_DELAY == mode)
+						viewMode = VIEW_MODE_DELAY;
 				}, "Enter "+MODE_NAMES[newMode]+" mode", HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
 			}
 			
@@ -701,6 +703,13 @@ package LevelStates {
 						}
 						
 						break;
+					case MODE_DELAY:
+						if (findMousedModule()) {
+							newGraphic = _delay_cursor
+							offsetX = -9;
+							offsetY = -14;
+						}
+						break;
 				}
 			
 			if (hide) {
@@ -1065,7 +1074,7 @@ package LevelStates {
 		private const MODE_NAMES:Array = ["module", "wire", "delete", "delay"];
 		
 		[Embed(source = "../../lib/art/ui/eye.png")] private const _view_normal_sprite:Class;
-		[Embed(source = "../../lib/art/ui/eye_delay.png")] private const _view_delay_sprite:Class;
+		[Embed(source = "../../lib/art/ui/eye_delayb.png")] private const _view_delay_sprite:Class;
 		private const VIEW_MODE_SPRITES:Array = [_view_normal_sprite, _view_delay_sprite];
 		private const VIEW_MODE_NAMES:Array = ["normal", "delay"];
 		
@@ -1093,6 +1102,7 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/pen.png")] private const _pen_cursor:Class;
 		[Embed(source = "../../lib/art/ui/grabby_cursor.png")] private const _grab_cursor:Class;
 		[Embed(source = "../../lib/art/ui/remove_cursor.png")] private const _remove_cursor:Class;
+		[Embed(source = "../../lib/art/ui/delay_cursor.png")] private const _delay_cursor:Class;
 	}
 
 }

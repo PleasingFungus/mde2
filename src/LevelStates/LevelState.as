@@ -40,6 +40,7 @@ package LevelStates {
 		protected var displayWires:Vector.<DWire>;
 		protected var displayModules:Vector.<DModule>;
 		protected var mode:int = MODE_CONNECT;
+		public var viewMode:int = VIEW_MODE_NORMAL;
 		protected var listOpen:int;
 		protected var UIChanged:Boolean;
 		protected var editEnabled:Boolean = true;
@@ -155,9 +156,10 @@ package LevelStates {
 				displayDelay.exists = false;
 			
 			if (!editEnabled) {
-				listOpen == LIST_ZOOM ? makeZoomList() : makeZoomButton();
+				makeZoomButton();
+				if (level.delay)
+					makeViewModeButton();
 				
-				listOpen = LIST_NONE;
 				if (currentModule) {
 					currentModule.exists = false;
 					currentModule = null;
@@ -170,6 +172,12 @@ package LevelStates {
 			makeTestButtons();
 			listOpen == LIST_ZOOM ? makeZoomList() : makeZoomButton();
 			listOpen == LIST_MODES ? makeModeMenu() : makeModeButton();
+			
+			if (listOpen == LIST_VIEW_MODES)
+				makeViewModeMenu();
+			else if (level.delay)
+				makeViewModeButton();
+			
 			if (mode == MODE_MODULE)
 				switch (listOpen) {
 					case LIST_MODULES: makeModuleList(); break;
@@ -307,6 +315,37 @@ package LevelStates {
 			
 			var modeList:ButtonList = new ButtonList(10, 10, modeSelectButtons, function onListClose():void {
 				if (listOpen == LIST_MODES)
+					listOpen = LIST_NONE;
+				makeUI();
+			});
+			modeList.setSpacing(4);
+			modeList.justDie = true;
+			upperLayer.add(modeList);
+		}
+		
+		protected function makeViewModeButton():void {
+			var modeButton:MenuButton = new GraphicButton(90, 10, VIEW_MODE_SPRITES[viewMode], function openList():void {
+				listOpen = LIST_VIEW_MODES;
+				makeUI();
+			}, "Display list of view modes", new Key("V"));
+			upperLayer.add(modeButton);
+		}
+		
+		protected function makeViewModeMenu():void {
+			if (currentModule) {
+				currentModule.exists = false;
+				currentModule = null;
+			}
+			
+			var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+			for each (var newMode:int in [VIEW_MODE_NORMAL, VIEW_MODE_DELAY]) {
+				modeSelectButtons.push(new GraphicButton( -1, -1, VIEW_MODE_SPRITES[newMode], function selectMode(newMode:int):void {
+					viewMode = newMode;
+				}, "Enter "+VIEW_MODE_NAMES[newMode]+" view mode").setParam(newMode).setSelected(newMode == viewMode));
+			}
+			
+			var modeList:ButtonList = new ButtonList(90, 10, modeSelectButtons, function onListClose():void {
+				if (listOpen == LIST_VIEW_MODES)
 					listOpen = LIST_NONE;
 				makeUI();
 			});
@@ -1003,13 +1042,16 @@ package LevelStates {
 		protected const MODE_CONNECT:int = 1;
 		protected const MODE_REMOVE:int = 2;
 		protected const MODE_DELAY:int = 3;
-		private const MODE_NAMES:Array = ["module", "wire", "delete", "delay"];
+		
+		public const VIEW_MODE_NORMAL:int = 0;
+		public const VIEW_MODE_DELAY:int = 1;
 		
 		protected const LIST_NONE:int = 0;
 		protected const LIST_MODES:int = 1;
 		protected const LIST_CATEGORIES:int = 2;
 		protected const LIST_MODULES:int = 3;
 		protected const LIST_ZOOM:int = 4;
+		protected const LIST_VIEW_MODES:int = 5;
 		
 		protected const SUCCESS_SUFFIX:String = '-succ';
 		protected const RESET_SAVE:String = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
@@ -1019,20 +1061,29 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/remove.png")] private const _remove_sprite:Class;
 		[Embed(source = "../../lib/art/ui/delay.png")] private const _delay_sprite:Class;
 		private const MODE_SPRITES:Array = [_module_sprite, _connect_sprite, _remove_sprite, _delay_sprite];
-		[Embed(source = "../../lib/art/ui/list.png")] private const _list_sprite:Class;
 		private const HOTKEYS:Array = [new Key("THREE"), new Key("ONE"), new Key("TWO"), new Key("FOUR")];
+		private const MODE_NAMES:Array = ["module", "wire", "delete", "delay"];
+		
+		[Embed(source = "../../lib/art/ui/eye.png")] private const _view_normal_sprite:Class;
+		[Embed(source = "../../lib/art/ui/eye_delay.png")] private const _view_delay_sprite:Class;
+		private const VIEW_MODE_SPRITES:Array = [_view_normal_sprite, _view_delay_sprite];
+		private const VIEW_MODE_NAMES:Array = ["normal", "delay"];
+		
+		[Embed(source = "../../lib/art/ui/list.png")] private const _list_sprite:Class;
 		[Embed(source = "../../lib/art/ui/undo.png")] private const _undo_sprite:Class;
 		[Embed(source = "../../lib/art/ui/redo.png")] private const _redo_sprite:Class;
 		[Embed(source = "../../lib/art/ui/up.png")] private const _back_sprite:Class;
 		[Embed(source = "../../lib/art/ui/floppy.png")] private const _save_sprite:Class;
 		[Embed(source = "../../lib/art/ui/yppolf.png")] private const _evas_sprite:Class;
 		[Embed(source = "../../lib/art/ui/floppy-trophy.png")] private const _success_load_sprite:Class;
+		
 		[Embed(source = "../../lib/art/ui/maglass.png")] private const _zoom_sprite:Class;
 		[Embed(source = "../../lib/art/ui/x1b.png")] private const _z1_sprite:Class;
 		[Embed(source = "../../lib/art/ui/x1_2b.png")] private const _z2_sprite:Class;
 		[Embed(source = "../../lib/art/ui/x1_4b.png")] private const _z3_sprite:Class;
 		[Embed(source = "../../lib/art/ui/x1_8b.png")] private const _z4_sprite:Class;
 		private const ZOOMS:Array = [_z1_sprite, _z2_sprite, _z3_sprite];
+		
 		[Embed(source = "../../lib/art/ui/code.png")] private const _data_sprite:Class;
 		[Embed(source = "../../lib/art/ui/info.png")] private const _info_sprite:Class;
 		[Embed(source = "../../lib/art/ui/random.png")] private const _random_sprite:Class;

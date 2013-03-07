@@ -231,6 +231,12 @@ package UI {
 			super.draw();
 		}
 		
+		public function setExists(e:Boolean):void {
+			exists = e;
+			if (mouseoverText)
+				mouseoverText.exists = e;
+		}
+		
 		public static const FADE_TIME:Number = 0.27; //deep wisdom of the elder sages (trial & error)
 		protected const REPEAT_TIME:Number = 0.25;
 		protected const MOUSEOVER_TIME:Number = 0.5;

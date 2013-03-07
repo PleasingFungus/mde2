@@ -119,13 +119,14 @@ package Displays {
 				run();
 			timeText.text = U.state.time.toString();
 			
-			stopButton.exists = backstepButton.exists = U.state.time.moment > 0;
-			playButton.exists = (playing != 1) != (ticksPerSec != 2);
-			fastButton.exists = !playButton.exists;
-			rewindButton.exists = ((playing != -1) != (ticksPerSec != 2)) && U.state.time.moment > 0;
-			rFastButton.exists = !rewindButton.exists && U.state.time.moment > 0;
+			stopButton.setExists(U.state.time.moment > 0);
+			backstepButton.setExists(U.state.time.moment > 0);
+			playButton.setExists((playing != 1) != (ticksPerSec != 2));
+			fastButton.setExists(!playButton.exists);
+			rewindButton.setExists(((playing != -1) != (ticksPerSec != 2)) && U.state.time.moment > 0);
+			rFastButton.setExists(!rewindButton.exists && U.state.time.moment > 0);
 			
-			pauseButton.exists = playing != 0;
+			pauseButton.setExists(playing != 0);
 			
 			derock++;
 		}

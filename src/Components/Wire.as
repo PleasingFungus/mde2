@@ -1,5 +1,6 @@
 package Components {
 	import flash.geom.Point;
+	import Modules.Module;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -30,6 +31,8 @@ package Components {
 			var start:Point = path[0]; //amusing variant: start = path[path.length - 1]?
 			path = new Vector.<Point>;
 			path.push(start);
+			if (constrained && U.state.objTypeAtPoint(start) == Module)
+				return false;
 			
 			var pathEnd:Point = path[path.length - 1];
 			var nextPoint:Point;
@@ -38,7 +41,7 @@ package Components {
 				if ((!delta.x || !mayMoveThrough(nextPoint)) && delta.y)
 					nextPoint = new Point(pathEnd.x, pathEnd.y + (delta.y > 0 ? 1 : -1));
 				
-				if (constrained && U.state.lineContents(pathEnd, nextPoint))
+				if (constrained && (U.state.lineContents(pathEnd, nextPoint) || U.state.objTypeAtPoint(nextPoint) == Module))
 					break;
 				
 				path.push(pathEnd = nextPoint);

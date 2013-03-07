@@ -829,6 +829,23 @@ package LevelStates {
 			if (!carriers.length) carriersAtPoints[coordStr] = null;
 		}
 		
+		public function objTypeAtPoint(p:Point):Class {
+			var contents:* = carriersAtPoints[p.x + U.COORD_DELIM + p.y];
+			if (!contents)
+				return null;
+			if (contents is Module)
+				return Module;
+			return Vector;
+		}
+		
+		public function setPointContents(p:Point, module:Module):void {
+			carriersAtPoints[p.x + U.COORD_DELIM + p.y] = module;
+		}
+		
+		public function moduleContentsAtPoint(p:Point):Module {
+			return carriersAtPoints[p.x + U.COORD_DELIM + p.y];
+		}
+		
 		
 		
 		private var buf:BitmapData;

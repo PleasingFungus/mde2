@@ -115,6 +115,10 @@ package Modules {
 				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), self);
 			});
 			
+			iterContainedPoints(function p(X:int, Y:int):void {
+				U.state.setPointContents(new Point(X, Y), self);
+			});
+			
 			for each (var portLayout:PortLayout in layout.ports) {
 				portLayout.register();
 				portLayout.attemptConnect();
@@ -140,16 +144,20 @@ package Modules {
 		}
 		
 		public function deregister():Module {
+			for each (var portLayout:PortLayout in layout.ports) {
+				portLayout.disconnect();
+				portLayout.deregister();
+			}
+			
+			iterContainedPoints(function p(X:int, Y:int):void {
+				U.state.setPointContents(new Point(X, Y), null);
+			});
+			
 			iterContainedLines(function h(X:int, Y:int):void {
 				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), null);
 			}, function v(X:int, Y:int):void {
 				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), null);
 			});
-			
-			for each (var portLayout:PortLayout in layout.ports) {
-				portLayout.disconnect();
-				portLayout.deregister();
-			}
 			
 			deployed = false;
 			exists = false;
@@ -164,7 +172,7 @@ package Modules {
 		public function get validPosition():Boolean {
 			if (deployed) return true;
 			
-			var OK:Object = { 'x' : true, 'y' : true };
+			var OK:Object = { 'x' : true, 'y' : true, 'p' : true };
 			var self:Module = this;
 			iterContainedLines(function h(X:int, Y:int):void {
 				if (!OK.x) return;
@@ -177,6 +185,21 @@ package Modules {
 			});
 			
 			if (!OK.x || !OK.y)
+				return false;
+			
+			iterContainedPoints(function p(X:int, Y:int):void {
+				if (!OK.p) return;
+				var point:Point = new Point(X, Y);
+				var pointContents:Class = U.state.objTypeAtPoint(point);
+				if (pointContents != Module) {
+					if (pointContents != null)
+						OK.p = false;
+					return;
+				}
+				OK.p = self == U.state.moduleContentsAtPoint(point);
+			});
+			
+			if (!OK.p)
 				return false;
 			
 			for each (var portLayout:PortLayout in layout.ports)
@@ -195,6 +218,13 @@ package Modules {
 					if (Y < topLeft.y + layout.dim.y - 1)
 						fV(X, Y);
 				}
+		}
+		
+		private function iterContainedPoints(fP:Function):void {
+			var topLeft:Point = this.topLeft;
+			for (var X:int = topLeft.x; X < topLeft.x + layout.dim.x; X++)
+				for (var Y:int = topLeft.y; Y < topLeft.y + layout.dim.y; Y++)
+					fP(X, Y);
 		}
 		
 		public function get topLeft():Point {

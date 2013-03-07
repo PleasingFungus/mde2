@@ -105,9 +105,10 @@ package UI {
 		override public function update():void {
 			super.update();
 			
+			var moused:Boolean = bg.overlapsPoint(FlxG.mouse, true);
 			if (FlxG.mouse.justPressed() && updatedOnce && 
 				(justDie ||
-				(closesOnClickOutside && bg.overlapsPoint(FlxG.mouse, true))))
+				(closesOnClickOutside && !moused)))
 				exists = false;
 			else if (ControlSet.CANCEL_KEY.justPressed() && updatedOnce)
 				exists = false;
@@ -115,7 +116,7 @@ package UI {
 				onDeath();
 			updatedOnce = true;
 			
-			if (exists && U.buttonManager && !U.buttonManager.moused && bg.overlapsPoint(FlxG.mouse, true))
+			if (exists && U.buttonManager && !U.buttonManager.moused && moused)
 				U.buttonManager.moused = true;
 		}
 		

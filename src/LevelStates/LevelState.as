@@ -269,7 +269,6 @@ package LevelStates {
 				makeUI();
 			});
 			zoomList.setSpacing(4);
-			zoomList.justDie = true;
 			upperLayer.add(zoomList);
 		}
 		
@@ -330,7 +329,6 @@ package LevelStates {
 				makeUI();
 			});
 			modeList.setSpacing(4);
-			modeList.justDie = true;
 			upperLayer.add(modeList);
 		}
 		
@@ -361,7 +359,6 @@ package LevelStates {
 				makeUI();
 			});
 			modeList.setSpacing(4);
-			modeList.justDie = true;
 			upperLayer.add(modeList);
 		}
 		
@@ -424,7 +421,6 @@ package LevelStates {
 				makeUI();
 			});
 			moduleList.setSpacing(4);
-			moduleList.justDie = true;
 			upperLayer.add(moduleList);
 			
 			moduleSliders = new Vector.<ModuleSlider>;
@@ -475,7 +471,6 @@ package LevelStates {
 				makeUI();
 			});
 			moduleList.setSpacing(4);
-			moduleList.justDie = true;
 			upperLayer.add(moduleList);
 			
 			//make some sliders
@@ -746,10 +741,10 @@ package LevelStates {
 				moduleSliders = null;
 				makeUI();
 			} else if (moduleSliders) {
-				moduleList.justDie = moduleList.closesOnClickOutside = true;
+				moduleList.closesOnClickOutside = true;
 				for each (moduleSlider in moduleSliders)
 					if (moduleSlider.overlapsPoint(FlxG.mouse)) {
-						moduleList.justDie = moduleList.closesOnClickOutside = false;
+						moduleList.closesOnClickOutside = false;
 						break;
 					}
 			}

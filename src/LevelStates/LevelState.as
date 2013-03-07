@@ -241,7 +241,7 @@ package LevelStates {
 			var zoomButton:MenuButton = new GraphicButton(50, 10, _zoom_sprite, function openList():void {
 				listOpen = LIST_ZOOM;
 				makeUI();
-			}, "Display zoom controls", new Key("PLUS"));
+			}, "Display zoom controls", new Key("O"));
 			upperLayer.add(zoomButton);
 		}
 		
@@ -256,6 +256,11 @@ package LevelStates {
 					
 					FlxG.camera.scroll.x -= (FlxG.width / 2) / zoom;
 					FlxG.camera.scroll.y -= (FlxG.height / 2) / zoom;
+					
+					if (listOpen == LIST_ZOOM) {
+						listOpen = LIST_NONE;
+						makeUI();
+					}
 				}, "Set zoom to "+Math.pow(2, -zoomLevel), HOTKEYS[zoomLevel]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == zoom));
 			
 			var zoomList:ButtonList = new ButtonList(50, 10, zoomButtons, function onListClose():void {
@@ -312,6 +317,10 @@ package LevelStates {
 					mode = newMode;
 					if (MODE_DELAY == mode)
 						viewMode = VIEW_MODE_DELAY;
+					if (listOpen == LIST_MODES) {
+						listOpen = LIST_NONE;
+						makeUI();
+					}
 				}, "Enter "+MODE_NAMES[newMode]+" mode", HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
 			}
 			

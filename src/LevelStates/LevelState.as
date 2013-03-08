@@ -141,10 +141,10 @@ package LevelStates {
 			new ButtonManager;
 			UIChanged = true;
 			
-			upperLayer.add(editEnabled ? displayTime = new DTime(FlxG.width / 2 - 50, 10) : displayTime);
 			upperLayer.add(new Scroller);
 			upperLayer.add(new DCurrent(displayWires, displayModules));
 			upperLayer.add(new DModuleInfo);
+			upperLayer.add(editEnabled ? displayTime = new DTime(FlxG.width / 2 - 50, 10) : displayTime);
 			makeDataButton();
 			makeInfoButton();
 			makeBackButton();
@@ -184,6 +184,7 @@ package LevelStates {
 					case LIST_CATEGORIES: makeModuleCatList(); break;
 					case LIST_NONE: default: makeModuleCatButton(); break;
 				}
+			
 		}
 		
 		protected function makeBackButton():void {

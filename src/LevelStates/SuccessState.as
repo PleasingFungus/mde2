@@ -30,7 +30,9 @@ package LevelStates {
 			super.update();
 			if (FlxG.mouse.justPressed() || FlxG.keys.any())
 				FlxG.fade(0xff000000, MenuButton.FADE_TIME, function switchStates():void {
-					if (U.tuts.indexOf(level) != -1)
+					if (U.tutorialState == U.TUT_BEAT_TUT_1)
+						FlxG.switchState(new LevelState(U.tuts[1]));
+					else if (U.tuts.indexOf(level) != -1)
 						FlxG.switchState(new TutorialMenu);
 					else
 						FlxG.switchState(new LevelMenu);

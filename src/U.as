@@ -57,6 +57,18 @@ package  {
 		public static const COORD_DELIM:String = ',';
 		public static const POINT_DELIM:String = ',,';
 		
+		public static var tutorialState:int;
+		public static const TUT_NEW:int = 0;
+		public static const TUT_READ_HTP:int = 1;
+		public static const TUT_BEAT_TUT_1:int = 2;
+		public static const TUT_BEAT_TUT_2:int = 3;
+		
+		public static function updateTutState(newTutState:int):int {
+			if (newTutState > tutorialState)
+				return U.save.data['tut'] = tutorialState = newTutState;
+			return tutorialState;
+		}
+		
 		
 		
 		private static var initialized:Boolean = false;
@@ -68,6 +80,8 @@ package  {
 			
 			save = new FlxSave();
 			save.bind("MultiduckExtravaganza");
+			
+			tutorialState = save.data['tut'];
 			
 			InstructionType.init();
 			Module.init();

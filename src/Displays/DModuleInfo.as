@@ -34,6 +34,7 @@ package Displays {
 		}
 		
 		override public function draw():void {
+			if (!renderBuddy) return;
 			position();
 			super.draw();
 		}

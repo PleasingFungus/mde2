@@ -761,7 +761,13 @@ package LevelStates {
 				if (!time.moment && !displayTime.isPlaying)
 					runningTest = false; //?
 				else if (level.goal.stateValid(this)) {
-					U.save.data[level.name+SUCCESS_SUFFIX] = genSaveString();
+					U.save.data[level.name + SUCCESS_SUFFIX] = genSaveString();
+					
+					if (level == U.tuts[0])
+						U.updateTutState(U.TUT_BEAT_TUT_1);
+					else if (level == U.tuts[1])
+						U.updateTutState(U.TUT_BEAT_TUT_2);
+					
 					FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
 						FlxG.switchState(new SuccessState(level));
 					});

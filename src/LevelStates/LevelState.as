@@ -547,6 +547,11 @@ package LevelStates {
 					checkRemoveControls();
 					break;
 			}
+			
+			if (ControlSet.DELETE_KEY.pressed() && !currentWire && !currentModule) {
+				destroyModules();
+				destroyWires();
+			}
 		}
 		
 		protected function checkConnectControls():void {
@@ -563,15 +568,9 @@ package LevelStates {
 			}
 			
 			
-			if (currentWire) {
-				if (ControlSet.CANCEL_KEY.justPressed()) {
-					currentWire.exists = false;
-					currentWire = null;
-				}
-				
-			} else {
-				if (ControlSet.DELETE_KEY.justPressed())
-					destroyWires();
+			if (currentWire && ControlSet.CANCEL_KEY.justPressed()) {
+				currentWire.exists = false;
+				currentWire = null;
 			}
 		}
 		
@@ -595,9 +594,6 @@ package LevelStates {
 					else
 						pickUpModule();
 				}
-				
-				if (ControlSet.DELETE_KEY.justPressed())
-					destroyModules();
 			}
 		}
 		
@@ -663,7 +659,7 @@ package LevelStates {
 		}
 		
 		protected function checkRemoveControls():void {
-			if (FlxG.mouse.pressed() || ControlSet.DELETE_KEY.pressed()) {
+			if (FlxG.mouse.pressed()) {
 				destroyModules();
 				destroyWires();
 			}

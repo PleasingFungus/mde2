@@ -45,6 +45,9 @@ package Components {
 					break;
 				
 				path.push(pathEnd = nextPoint);
+				
+				if (!mayMoveThrough(nextPoint))
+					break;
 			}
 			
 			while (constrained && path.length > 1 && !validPosition())
@@ -55,6 +58,16 @@ package Components {
 		}
 		
 		protected function mayMoveThrough(p:Point):Boolean {
+			var objType:Class = U.state.objTypeAtPoint(p);
+			if (objType == null)
+				return true;
+			if (objType == Module)
+				return false;
+			
+			var carriers:Vector.<Carrier> = U.state.carriersAtPoint(p);
+			for each (var carrier:Carrier in carriers)
+				if (carrier is Port)
+					return false;
 			return true;
 		}
 		

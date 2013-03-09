@@ -797,6 +797,9 @@ package LevelStates {
 		
 		
 		private function destroyWires():void {
+			if (U.buttonManager.moused)
+				return;
+			
 			for each (var wire:DWire in displayWires)
 				if (wire.exists && wire.overlapsPoint(U.mouseFlxLoc)) {
 					new CustomAction(Wire.remove, Wire.place, wire.wire).execute();

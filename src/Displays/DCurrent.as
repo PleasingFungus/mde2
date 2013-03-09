@@ -32,7 +32,7 @@ package Displays {
 		private function checkMouse():void {
 			var moused:FlxBasic, carrier:Carrier;
 			
-			if (U.buttonManager.moused) {
+			if (U.buttonManager.moused || U.state.findMousedModule()) {
 				lastMouse = null;
 				return;
 			}

@@ -40,16 +40,17 @@ package Displays {
 		}
 		
 		private function position():void {
-			renderBuddy.x = FlxG.mouse.x - FlxG.camera.scroll.x + PAD;
-			renderBuddy.y = FlxG.mouse.y - FlxG.camera.scroll.y + PAD;
+			renderBuddy.x = FlxG.mouse.x - FlxG.camera.scroll.x + XPAD;
+			renderBuddy.y = FlxG.mouse.y - FlxG.camera.scroll.y + YPAD;
 			
-			if (renderBuddy.x + renderBuddy.width > FlxG.width || renderBuddy.y + renderBuddy.height > FlxG.height) {
-				renderBuddy.x -= renderBuddy.width + PAD;
-				renderBuddy.y -= renderBuddy.height + PAD;
-			}
+			if (renderBuddy.x + renderBuddy.width > FlxG.width)
+				renderBuddy.x -= renderBuddy.width + XPAD;
+			if (renderBuddy.y + renderBuddy.height > FlxG.height)
+				renderBuddy.y -= renderBuddy.height + YPAD;
 		}
 		
-		private var PAD:int = 20;
+		private var XPAD:int = 20;
+		private var YPAD:int = 35;
 	}
 
 }

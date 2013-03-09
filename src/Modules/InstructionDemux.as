@@ -44,7 +44,7 @@ package Modules {
 			var kludge:InstructionDemux = this;
 			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
 															[layout.ports[layout.ports.length - 2]], controlLines,
-															function getValue():BooleanValue { return getIndex() != C.INT_NULL ? BooleanValue.TRUE : BooleanValue.FALSE; });
+															controls[0].getValue);
 			nodes.push(controlNode);
 			return new InternalLayout(nodes);
 		}

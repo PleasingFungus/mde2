@@ -126,7 +126,7 @@ package UI {
 			}
 			
 			if (!mouseoverText)
-				U.state.upperLayer.add(mouseoverText = new FloatText(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, FlxG.width, tooltip))));
+				U.state.upperLayer.add(mouseoverText = new FloatText(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, FlxG.width / 2 - 20, tooltip))));
 			if (tooltipCallback != null && tooltip != tooltipCallback()) {
 				tooltip = tooltipCallback();
 				mouseoverText.text.text = tooltip;
@@ -134,12 +134,13 @@ package UI {
 			
 			//var adjMouse:FlxPoint = new FlxPoint(FlxG.mouse.x + FlxG.camera.scroll.x * (coreGraphic.scrollFactor.x - 1), 
 												 //FlxG.mouse.y + FlxG.camera.scroll.y * (coreGraphic.scrollFactor.y - 1));
-			mouseoverText.x = FlxG.mouse.x - FlxG.camera.scroll.x - mouseoverText.width;
+			mouseoverText.x = FlxG.mouse.x - FlxG.camera.scroll.x - mouseoverText.width - 5;
 			if (mouseoverText.x < 5)
-				mouseoverText.x = 5;
+				mouseoverText.x = FlxG.mouse.x - FlxG.camera.scroll.x + 20;
+				
 			mouseoverText.y = FlxG.mouse.y - FlxG.camera.scroll.y - mouseoverText.height;
 			if (mouseoverText.y < 5)
-				mouseoverText.y = 5;
+				mouseoverText.y = FlxG.mouse.y - FlxG.camera.scroll.y + 28;
 			
 			mouseoverText.visible = true;
 		}

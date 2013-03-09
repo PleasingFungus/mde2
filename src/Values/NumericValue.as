@@ -23,6 +23,8 @@ package Values {
 				return v as NumericValue;
 			return new NumericValue(v.toNumber());
 		}
+		
+		public static const NULL:NumericValue = new NumericValue(C.INT_NULL);
 	}
 
 }

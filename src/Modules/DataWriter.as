@@ -1,15 +1,8 @@
 package Modules {
-	import Layouts.ModuleLayout;
-	import Values.BooleanValue;
-	import Values.IndexedValue;
-	import Values.NumericValue;
-	import Values.Value;
-	import Values.Delta;
+	import Values.*;
+	import Layouts.*;
 	import Components.Port;
 	
-	import Layouts.PortLayout;
-	import Layouts.InternalLayout;
-	import Layouts.InternalNode;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -50,21 +43,6 @@ package Modules {
 		
 		override public function getDescription():String {
 			return "Each tick, writes the input value to the specified line of memory."
-		}
-		
-		protected function get data():NumericValue { 
-			var line:Value = controls[0].getValue();
-			if (line.unpowered || line.unknown) return null;
-			
-			var index:int = line.toNumber();
-			if (index < 0 || index >= U.state.memory.length)
-				return null;
-			
-			var memoryValue:Value = U.state.memory[index];
-			if (!memoryValue)
-				return null;
-			
-			return NumericValue.fromValue(memoryValue);
 		}
 		
 		override public function updateState():Boolean {

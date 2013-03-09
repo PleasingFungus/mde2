@@ -48,11 +48,8 @@ package Modules {
 		override public function renderName():String {
 			var out:String = "DMEM\n\n" + controls[0].getValue()+": ";
 			
-			var dataValue:NumericValue = getData();
-			if (dataValue)
-				out += dataValue;
-			else
-				out += new NumericValue(0);
+			var dataValue:Value = getData();
+			out += dataValue;
 			
 			return out;
 		}
@@ -73,22 +70,22 @@ package Modules {
 			if (!memoryValue)
 				return U.V_UNKNOWN;
 			
-			return NumericValue.fromValue(memoryValue);
+			return memoryValue;
 		}
 		
-		protected function getData():NumericValue { 
+		protected function getData():Value { 
 			var line:Value = controls[1].getValue();
-			if (line.unpowered || line.unknown) return null;
+			if (line.unpowered || line.unknown) return line;
 			
 			var index:int = line.toNumber();
 			if (index < 0 || index >= U.state.memory.length)
-				return null;
+				return U.V_UNPOWERED;
 			
 			var memoryValue:Value = U.state.memory[index];
 			if (!memoryValue)
-				return null;
+				return NumericValue.NULL;
 			
-			return NumericValue.fromValue(memoryValue);
+			return memoryValue;
 		}
 		
 		override public function updateState():Boolean {
@@ -96,7 +93,8 @@ package Modules {
 				return false; //can only store at most once per cycle
 			
 			var line:Value = controls[1].getValue();
-			if (line.unpowered || line.unknown || line.toNumber() < 0 || line.toNumber() > U.state.memory.length) return false;
+			if (line.unpowered || line.unknown ||
+				line.toNumber() < 0 || line.toNumber() >= U.state.memory.length) return false;
 			
 			if (!writeOK())
 				return false;

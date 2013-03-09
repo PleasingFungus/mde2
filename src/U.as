@@ -46,7 +46,7 @@ package  {
 		public static var tuts:Vector.<Level>;
 		public static var levels:Vector.<Level>;
 		public static var state:LevelState;
-		public static var buttonManager:ButtonManager = buttonManager;
+		public static var buttonManager:ButtonManager;
 		
 		public static const GRID_DIM:int = 16;
 		

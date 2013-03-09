@@ -13,7 +13,7 @@ package Modules {
 	public class MDU extends Module {
 		
 		public function MDU(X:int, Y:int) {
-			super(X, Y, "*/", Module.CAT_ARITH, 2, 1, 1);
+			super(X, Y, "Mul/Div", Module.CAT_ARITH, 2, 1, 1);
 			delay = 4;
 		}
 		

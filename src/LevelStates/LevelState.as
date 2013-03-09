@@ -321,7 +321,7 @@ package LevelStates {
 						listOpen = LIST_NONE;
 						makeUI();
 					}
-				}, "Enter "+MODE_NAMES[newMode]+" mode", HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
+				}, "Enter "+MODE_NAMES[newMode]+" mode. "+MODE_DESCRIPTIONS[newMode], HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
 			}
 			
 			var modeList:ButtonList = new ButtonList(10, 10, modeSelectButtons, function onListClose():void {
@@ -411,6 +411,11 @@ package LevelStates {
 						addRecentModule(moduleType);
 						
 						preserveModule = true;
+						
+						if (listOpen == LIST_CATEGORIES) {
+							listOpen = LIST_NONE;
+							makeUI();
+						}
 					}, "").setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getDescription));
 				}
 			}
@@ -462,6 +467,11 @@ package LevelStates {
 					addRecentModule(moduleType);
 					
 					preserveModule = true;
+						
+					if (listOpen == LIST_MODULES) {
+						listOpen = LIST_NONE;
+						makeUI();
+					}
 				}, "").setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getDescription));
 			}
 			
@@ -487,7 +497,7 @@ package LevelStates {
 		protected function addRecentModule(moduleType:Class):void {
 			if (recentModules.indexOf(moduleType) >= 0)
 				recentModules.splice(recentModules.indexOf(moduleType), 1);
-			else if (recentModules.length > 3)
+			else if (recentModules.length >= 3)
 				recentModules.pop();
 			recentModules.unshift( moduleType);
 		}
@@ -1100,6 +1110,10 @@ package LevelStates {
 		private const MODE_SPRITES:Array = [_module_sprite, _connect_sprite, _remove_sprite, _delay_sprite];
 		private const HOTKEYS:Array = [new Key("THREE"), new Key("ONE"), new Key("TWO"), new Key("FOUR")];
 		private const MODE_NAMES:Array = ["module", "wire", "delete", "delay"];
+		private const MODE_DESCRIPTIONS:Array = ["Select modules to place from the drop-down menu; click to move or press DELETE to delete.",
+												 "Click and drag to place wires; place DELETE to delete them.",
+												 "Click to delete modules and wires.",
+												 "Mouse to see delay starting from modules; click to see delays along paths."];
 		
 		[Embed(source = "../../lib/art/ui/eye.png")] private const _view_normal_sprite:Class;
 		[Embed(source = "../../lib/art/ui/eye_delayb.png")] private const _view_delay_sprite:Class;

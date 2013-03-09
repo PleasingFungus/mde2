@@ -670,12 +670,12 @@ package LevelStates {
 		}
 		
 		protected function checkMenuState():void {
-			undoButton.exists = canUndo();
-			redoButton.exists = canRedo();
+			undoButton.setExists(canUndo());
+			redoButton.setExists(canRedo());
 			if (loadButton) {
 				var successSave:String = findSuccessSave();
-				loadButton.exists = successSave != savedString && successSave != null;
-				resetButton.exists = savedString && savedString != RESET_SAVE;
+				loadButton.setExists(successSave != savedString && successSave != null);
+				resetButton.setExists(savedString && savedString != RESET_SAVE);
 			}
 			
 			checkCursorState();

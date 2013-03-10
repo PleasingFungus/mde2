@@ -35,8 +35,6 @@ package UI {
 			}
 			
 			text = new FlxText(x + highlightBorder.x, y + highlightBorder.y, FlxG.width, desc);
-			if (hotkey)
-				text.text += " (" + hotkey + ")";
 			text.setFormat(font, size, graphicColor, align);
 			add(text);
 			

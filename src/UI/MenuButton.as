@@ -43,6 +43,13 @@ package UI {
 			onSelect = OnSelect;
 			tooltip = Tooltip;
 			hotkey = Hotkey;
+			if (hotkey) {
+				if (tooltip)
+					tooltip += "\n";
+				else
+					tooltip = "";
+				tooltip += "Hotkey: "+hotkey.key;
+			}
 			
 			if (!highlightBorder)
 				highlightBorder = new Point;

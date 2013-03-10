@@ -16,7 +16,11 @@ package Values {
 			return value.toString();
 		}
 		
-		override public function toNumber():Number { return value; }
+		override public function toNumber():Number {
+			if (value == C.INT_NULL)
+				return 0;
+			return value;
+		}
 		
 		public static function fromValue(v:Value):NumericValue {
 			if (v is NumericValue)

@@ -58,7 +58,7 @@ package Levels {
 						new Level("Tutorial 2: Acc.",
 								  new AccumulatorTutorialGoal,
 								  false,
-								  [ConstIn, Adder, Latch, DataWriter], []));
+								  [ConstIn, Adder, BabyLatch, DataWriter], []));
 			
 			return levels;
 		}

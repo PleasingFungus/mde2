@@ -124,7 +124,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Contains " + width + " registers. Outputs values from two specified registers. Also, each tick, sets the value in a specified register to the input value if the write-control is " + BooleanValue.TRUE + ".";
+			return "Stores " + width + " values, and continuously outputs two of them, specified by index. Each tick, sets one specified value to the input if the write-control is " + BooleanValue.TRUE + ".";
 		}
 		
 		override public function drive(port:Port):Value {

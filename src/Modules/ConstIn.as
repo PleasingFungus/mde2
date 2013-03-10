@@ -37,7 +37,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Always outputs "+configuration.value+"."
+			return "Continuously outputs "+configuration.value+"."
 		}
 		
 		override public function drive(port:Port):Value {

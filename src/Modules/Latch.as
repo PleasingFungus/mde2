@@ -1,12 +1,7 @@
 package Modules {
 	import Components.Port;
-	import Layouts.NodeTuple;
 	import Values.*
-	
-	import Layouts.ModuleLayout;
-	import Layouts.PortLayout;
-	import Layouts.InternalLayout;
-	import Layouts.InternalNode;
+	import Layouts.*;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -41,7 +36,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Outputs the contained value, and also, each tick, sets the contained value to the input value if the write-control is "+BooleanValue.TRUE+"."
+			return "Stores & continuously outputs a value. Each tick, sets its value to the input if the control is "+BooleanValue.TRUE+"."
 		}
 		
 		override public function drive(port:Port):Value {

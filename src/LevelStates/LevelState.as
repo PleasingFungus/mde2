@@ -6,6 +6,7 @@ package LevelStates {
 	import Controls.*;
 	import Displays.*;
 	import Modules.Module;
+	import Testing.GeneratedGoal;
 	import UI.ButtonList;
 	import UI.ButtonManager;
 	import UI.ModuleSlider;
@@ -55,7 +56,9 @@ package LevelStates {
 		protected var displayTime:DTime;
 		protected var displayDelay:DDelay;
 		protected var preserveModule:Boolean;
-		protected var runningTest:Boolean;
+		protected var testText:FlxText;
+		protected var lastRunTime:Number;
+		protected var runningDisplayTest:Boolean;
 		
 		protected var recentModules:Vector.<Class>;
 		protected var moduleCategory:String;
@@ -283,9 +286,9 @@ package LevelStates {
 			}
 			
 			if (level.goal.dynamicallyTested) {
-				var kludge:LevelState = this;
 				var testButton:MenuButton = new GraphicButton(130, 90, _test_sprite, function _():void {
-					level.goal.runTest(kludge);
+					level.goal.startRun();
+					lastRunTime = elapsed;
 				}, "Test your machine!", new Key("T"));
 				upperLayer.add(testButton);
 			}
@@ -503,13 +506,29 @@ package LevelStates {
 		}
 		
 		override public function update():void {
+			elapsed += FlxG.elapsed;
+			
+			if (level.goal.running) {
+				checkTestControls();
+				if (level.goal.running) {
+					var delay:Number;
+					if (level.goal is GeneratedGoal)
+						delay = 2 / (level.goal as GeneratedGoal).testRuns;
+					else
+						delay = 0;
+					if (elapsed - lastRunTime > delay)
+						runTest();
+					if (level.goal.running)
+						return;
+				}
+			}
+			
 			updateUI();
 			super.update();
 			checkControls();
 			checkMenuState();
 			checkTime();
 			forceScroll();
-			elapsed += FlxG.elapsed;
 		}
 		
 		protected function updateUI():void {
@@ -763,9 +782,9 @@ package LevelStates {
 				makeUI();
 			}
 			
-			if (runningTest) {
+			if (runningDisplayTest) {
 				if (!time.moment && !displayTime.isPlaying)
-					runningTest = false; //?
+					runningDisplayTest = false; //?
 				else if (level.goal.stateValid(this)) {
 					U.save.data[level.name + SUCCESS_SUFFIX] = genSaveString();
 					
@@ -905,7 +924,9 @@ package LevelStates {
 			realBuf.draw(buf, matrix);
 			FlxG.camera.buffer = realBuf;
 			
-			if (upperLayer.exists && upperLayer.visible)
+			if (level.goal.running)
+				drawTestText();
+			else if (upperLayer.exists && upperLayer.visible)
 				upperLayer.draw();
 		}
 		
@@ -1069,9 +1090,36 @@ package LevelStates {
 		}
 		
 		
-		public function runTest():void {
+		protected function runTest():void {
+			var success:Boolean = level.goal.runTestStep(this);
+			lastRunTime = elapsed;
+			if (!level.goal.running && success) {
+				if (success)
+					C.log("Success!");
+				else
+					C.log("Failure!");
+				runDisplayTest();
+			}
+		}
+		
+		protected function checkTestControls():void {
+			if (FlxG.mouse.justPressed() || ControlSet.CANCEL_KEY.justPressed())
+				level.goal.endRun();
+		}
+		
+		protected function drawTestText():void {
+			if (!testText)
+				testText = U.LABEL_FONT.configureFlxText(new FlxText(0, FlxG.height / 2, FlxG.width, " "), 0x000000, 'center');
+			testText.text = "TESTING" + level.goal.getProgress() + "\nClick or " + ControlSet.CANCEL_KEY.key + " to cancel";
+			testText.y = FlxG.height / 2 - testText.height / 2;
+			testText.draw();
+		}
+		
+		
+		protected function runDisplayTest():void {
+			time.reset();
 			displayTime.startPlaying();
-			runningTest = true;
+			runningDisplayTest = true;
 		}
 		
 		override public function destroy():void {

@@ -11,14 +11,14 @@ package Testing {
 	 */
 	public class GeneratedGoal extends LevelGoal {
 		
-		protected var testClass:Class;
 		protected var currentTest:Test;
 		protected var expectedOps:Vector.<OpcodeValue>;
 		public var testRuns:int;
-		public function GeneratedGoal(Description:String, TestClass:Class, ExpectedOps:Vector.<OpcodeValue>, TestRuns:int = 12, Timeout:int=100) {
+		
+		protected var currentRun:int;
+		public function GeneratedGoal(Description:String, ExpectedOps:Vector.<OpcodeValue>, TestRuns:int = 12, Timeout:int=100) {
 			super(Description);
 			
-			testClass = TestClass;
 			expectedOps = ExpectedOps;
 			testRuns = TestRuns;
 			timeLimit = Timeout;
@@ -27,33 +27,24 @@ package Testing {
 		}
 		
 		override public function genMem(Seed:Number = NaN):Vector.<Value> {
-			return (new testClass(expectedOps, Seed) as Test).initialMemory();
+			return (new Test(expectedOps, Seed) as Test).initialMemory();
 		}
 		
-		override public function runTest(levelState:LevelState):void {
-			for (var run:int = 0; run < testRuns; run++) {
-				C.log("Run " + run + " start");
-				
-				currentTest = new testClass(expectedOps);
-				var mem:Vector.<Value> = currentTest.initialMemory();
-				C.log("Memory generated");
-				
-				levelState.initialMemory = mem;
-				levelState.time.reset();
-				while (levelState.time.moment < timeLimit && !stateValid(levelState))
-					levelState.time.step();
-				
-				if (!stateValid(levelState))
-					break;
-			}
+		override public function startRun():void {
+			super.startRun();
+			currentRun = 0;
+		}
+		
+		override public function runTestStep(levelState:LevelState):Boolean {
+			C.log("Run " + currentRun + " start");
 			
-			if (stateValid(levelState, true))
-				C.log("Success!");
-			else
-				C.log("Failure!");
+			currentRun += 1;
+			currentTest = new Test(expectedOps, currentRun + 0.5);
+			var mem:Vector.<Value> = currentTest.initialMemory();
+			C.log("Memory generated");
 			
-			levelState.time.reset();
-			levelState.runTest();
+			levelState.initialMemory = mem;
+			return super.runTestStep(levelState);
 		}
 		
 		override public function stateValid(levelState:LevelState, print:Boolean=false):Boolean {
@@ -78,6 +69,14 @@ package Testing {
 				}
 			}
 			return true;
+		}
+		
+		override public function getProgress():String {
+			return currentRun+"/"+testRuns;
+		}
+		
+		override protected function done():Boolean {
+			return currentRun >= testRuns;
 		}
 		
 	}

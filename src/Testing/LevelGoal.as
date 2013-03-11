@@ -12,6 +12,8 @@ package Testing {
 		public var dynamicallyTested:Boolean;
 		public var randomizedMemory:Boolean;
 		public var timeLimit:int = int.MAX_VALUE;
+		
+		public var running:Boolean;
 		public function LevelGoal(Description:String) {
 			description = Description;
 		}
@@ -27,18 +29,31 @@ package Testing {
 			return memory;
 		}
 		
-		public function runTest(levelState:LevelState):void {
+		public function startRun():void {
+			running = true;
+		}
+		
+		public function endRun():void {
+			running = false;
+		}
+		
+		public function runTestStep(levelState:LevelState):Boolean {
 			levelState.time.reset();
 			while (levelState.time.moment < timeLimit && !stateValid(levelState))
 				levelState.time.step();
 			
-			if (stateValid(levelState, true))
-				C.log("Success!");
-			else
-				C.log("Failure!");
-			
-			levelState.time.reset();
-			levelState.runTest();
+			var success:Boolean = stateValid(levelState, true);
+			if (!success || done())
+				endRun();
+			return success;
+		}
+		
+		public function getProgress():String {
+			return "";
+		}
+		
+		protected function done():Boolean {
+			return true;
 		}
 		
 		public function stateValid(levelState:LevelState, print:Boolean=false):Boolean {

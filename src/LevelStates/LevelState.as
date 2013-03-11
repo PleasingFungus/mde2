@@ -557,7 +557,7 @@ package LevelStates {
 		protected function checkConnectControls():void {
 			if (currentWire) {
 				if (FlxG.mouse.pressed())
-					currentWire.attemptPathTo(U.pointToGrid(U.mouseLoc))
+					currentWire.attemptPathTo(U.pointToGrid(U.mouseLoc), true)
 				else {
 					new CustomAction(Wire.place, Wire.remove, currentWire).execute();
 					currentWire = null;
@@ -1102,7 +1102,7 @@ package LevelStates {
 		protected const SUCCESS_SUFFIX:String = '-succ';
 		protected const RESET_SAVE:String = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
 
-		[Embed(source = "../../lib/art/ui/lightbulb.png")] private const _module_sprite:Class;
+		[Embed(source = "../../lib/art/ui/module.png")] private const _module_sprite:Class;
 		[Embed(source = "../../lib/art/ui/wire.png")] private const _connect_sprite:Class;
 		[Embed(source = "../../lib/art/ui/remove.png")] private const _remove_sprite:Class;
 		[Embed(source = "../../lib/art/ui/delay.png")] private const _delay_sprite:Class;

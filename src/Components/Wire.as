@@ -25,14 +25,130 @@ package Components {
 			exists = true;
 		}
 		
-		public function attemptPathTo(target:Point):Boolean {
+		public function attemptPathTo(target:Point, smartPathEnabled:Boolean = false):Boolean {
 			if (lastPathEnd && target.equals(lastPathEnd)) return false; //ehh
 			
-			var start:Point = path[0]; //amusing variant: start = path[path.length - 1]?
-			path = new Vector.<Point>;
+			var newPath:Vector.<Point>;
+			if (smartPathEnabled)
+				newPath = smartPath(path[0], target);
+			if (!newPath)
+				newPath = dumbPath(path[0], target);
+			path = newPath;
+			
+			while (constrained && path.length > 1 && !validPosition())
+				path.pop();
+			
+			lastPathEnd = path[path.length - 1];
+			return true;
+		}
+		
+		protected function smartPath(start:Point, target:Point):Vector.<Point> {
+			if (constrained && U.state.objTypeAtPoint(start) == Module)
+				return null;
+			
+			var manhattan:int = C.manhattan(start, target);
+			
+			var toCheck:Array = [{
+				'point' : start,
+				'distFromStart' : 0,
+				'distToEnd' : manhattan,
+				'totalDist' : manhattan,
+				'parent' : null,
+				'delta' : new Point
+			}];
+			var checked:Array = [];
+			
+			var deltas:Array = [new Point( -1, 0), new Point(0, -1), new Point(1, 0), new Point(0, 1)];
+			
+			while (toCheck.length) {
+				var curNode:Object = toCheck.pop();
+				var curPoint:Point = curNode.point;
+				
+				if (curPoint.equals(target) || checked.length > 80)
+					break;
+				
+				for each (var delta:Point in deltas) {
+					var nextPoint:Point = curPoint.add(delta);
+				
+					if (constrained && (U.state.lineContents(curPoint, nextPoint) ||
+										(!nextPoint.equals(target) && !mayMoveThrough(nextPoint))))
+						continue;
+					
+					var alreadyFound:Boolean = false;
+					for each (var checkedNode:Object in checked)
+						if (nextPoint.equals(checkedNode.point)) {
+							alreadyFound = true;
+							break;
+						}
+					if (alreadyFound)
+						continue;
+					
+					var nextNode:Object = {
+						'point' : nextPoint,
+						'distFromStart' : curNode.distFromStart + 1,// + (delta.equals(curNode.delta) ? 1 : 1.25),
+						'distToEnd' : C.manhattan(nextPoint, target),
+						'parent' : curNode,
+						'delta' : delta
+					}
+					nextNode['totalDist'] = nextNode.distFromStart + nextNode.distToEnd;
+					
+					for each (var foundNode:Object in toCheck)
+						if (nextPoint.equals(foundNode.point)) {
+							alreadyFound = true;
+							if (foundNode.totalDist > nextNode.totalDist) {
+								foundNode.distFromStart = nextNode.distFromStart;
+								foundNode.totalDist = nextNode.totalDist;
+								foundNode.parent = nextNode.parent;
+							}
+							break;
+						}
+					if (alreadyFound)
+						continue;
+					
+					for (var i:int = 0; i < toCheck.length; i++)
+						if (toCheck[i].distToEnd <= nextNode.distToEnd)
+							break;
+					toCheck.splice(i, 0, nextNode);
+				}
+				
+				checked.push(curNode);
+			}
+			
+			if (!curPoint.equals(target)) {
+				if (!toCheck.length) //completely blocked
+					return null;
+				//try to salvage what you can of the path (find the closest node checked)
+				curNode = checked[0];
+				for (i = 1; i < checked.length; i++)
+					if (checked[i].totalDist < curNode.totalDist)
+						curNode = checked[i];
+			}
+			
+			var reversedPath:Vector.<Point> = new Vector.<Point>;
+			do {
+				reversedPath.push(curNode.point);
+				curNode = curNode.parent;
+			} while (curNode);
+			
+			var path:Vector.<Point> = new Vector.<Point>;
+			while (reversedPath.length)
+				path.push(reversedPath.pop());
+			
+			if (curPoint.equals(target))
+				return path;
+			
+			//try to dumbpath to continue
+			var pathToEnd:Vector.<Point> = dumbPath(path[path.length - 1], target);
+			for (i = 1; i < pathToEnd.length; i++)
+				path.push(pathToEnd[i]);
+			return path;
+		}
+		
+		protected function dumbPath(start:Point, target:Point):Vector.<Point> {
+			var path:Vector.<Point> = new Vector.<Point>;
 			path.push(start);
 			if (constrained && U.state.objTypeAtPoint(start) == Module)
-				return false;
+				return path;
 			
 			var pathEnd:Point = path[path.length - 1];
 			var nextPoint:Point;
@@ -50,11 +166,7 @@ package Components {
 					break;
 			}
 			
-			while (constrained && path.length > 1 && !validPosition())
-				path.pop();
-			
-			lastPathEnd = path[path.length - 1];
-			return true;
+			return path;
 		}
 		
 		protected function mayMoveThrough(p:Point):Boolean {
@@ -72,6 +184,9 @@ package Components {
 		}
 		
 		protected function validPosition():Boolean {
+			if (U.state.objTypeAtPoint(path[0]) == Module || U.state.objTypeAtPoint(path[path.length -1]) == Module)
+				return false;
+			
 			var source:Port = null;
 			for each (var carriers:Vector.<Carrier> in [U.state.carriersAtPoint(path[0]), U.state.carriersAtPoint(path[path.length - 1])])
 				if (carriers)

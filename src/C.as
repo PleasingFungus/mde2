@@ -243,6 +243,10 @@ package
 			for (var i:int = 2; i <= lim; i++)
 				factorsOf(i);
 		}
+		
+		public static function manhattan(p1:Point, p2:Point):Number {
+			return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+		}
 	}
 
 }

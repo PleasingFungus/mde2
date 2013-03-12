@@ -1095,7 +1095,7 @@ package LevelStates {
 		protected function runTest():void {
 			var success:Boolean = level.goal.runTestStep(this);
 			lastRunTime = elapsed;
-			if (!level.goal.running && success) {
+			if (!level.goal.running) {
 				if (success)
 					C.log("Success!");
 				else

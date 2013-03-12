@@ -4,6 +4,7 @@ package Displays {
 	import UI.MenuButton;
 	import Controls.ControlSet;
 	import Levels.Level;
+	import Values.OpcodeValue;
 	
 	/**
 	 * ...
@@ -52,7 +53,13 @@ package Displays {
 			Y = description.y + description.height + 16;
 			
 			if (level.expectedOps.length) {
-				var expectedOps:FlxText = new FlxText(X, Y, Width, "Ops to support: " + level.expectedOps.join(', '));
+				var optext:String =  "Ops to support: "
+				for each (var op:OpcodeValue in level.expectedOps) {
+					optext += "\n" + op;
+					if (op.description)
+						optext += ": " + op.description;
+				}
+				var expectedOps:FlxText = new FlxText(X, Y, Width,optext);
 				add(U.BODY_FONT.configureFlxText(expectedOps));
 				Y = expectedOps.y + expectedOps.height + 16;
 			}

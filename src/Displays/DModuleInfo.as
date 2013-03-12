@@ -28,7 +28,11 @@ package Displays {
 			var mousedModule:Module = U.state.findMousedModule();
 			renderBuddy.visible = mousedModule != null;
 			if (mousedModule && mousedModule != lastModule) {
-				renderBuddy.text.text = mousedModule.name +": "+mousedModule.getDescription();
+				var tip:String = mousedModule.name;
+				if (mousedModule.getDescription())
+					tip += ": " + mousedModule.getDescription();
+				renderBuddy.text.text = tip;
+				
 				lastModule = mousedModule;
 			}
 		}

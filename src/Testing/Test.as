@@ -16,9 +16,13 @@ package Testing {
 	public class Test {
 		
 		public var seed:Number;
-		public var memAddressToSet:int;
-		public var memValueToSet:int
-		public var instructions:Vector.<Instruction>;
+		
+		public var initialMemory:Vector.<Value>;
+		public var expectedMemory:Vector.<Value>;
+		
+		protected var memAddressToSet:int;
+		protected var memValueToSet:int
+		protected var instructions:Vector.<Instruction>;
 		protected var expectedOps:Vector.<OpcodeValue>;
 		protected var instructionTypes:Vector.<InstructionType>;
 		
@@ -28,6 +32,12 @@ package Testing {
 				seed = FlxG.random();
 			FlxG.globalSeed = this.seed = seed;
 			
+			generate();
+			initialMemory = genInitialMemory();
+			expectedMemory = genExpectedMemory();
+		}
+		
+		protected function generate():void {
 			instructionTypes = new Vector.<InstructionType>;
 			for each (var instructionType:InstructionType in [InstructionType.ADD, InstructionType.SUB, InstructionType.MUL, InstructionType.DIV])
 				if (expectedOps.indexOf(instructionType.mapToOp()) != -1)
@@ -309,10 +319,16 @@ package Testing {
 		
 		
 		
-		public function initialMemory():Vector.<Value> {
+		protected function genInitialMemory():Vector.<Value> {
 			var memory:Vector.<Value> = generateBlankMemory();
 			for (var i:int = 0; i < instructions.length; i++)
 				memory[i] = instructions[i].toMemValue();
+			return memory;
+		}
+		
+		protected function genExpectedMemory():Vector.<Value> {
+			var memory:Vector.<Value> = initialMemory.slice();
+			memory[memAddressToSet] = new NumericValue(memValueToSet);
 			return memory;
 		}
 		

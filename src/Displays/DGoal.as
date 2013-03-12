@@ -1,6 +1,6 @@
 package Displays {
 	import org.flixel.*;
-	import Testing.GeneratedGoal;
+	import Testing.Goals.GeneratedGoal;
 	import UI.MenuButton;
 	import Controls.ControlSet;
 	import Levels.Level;

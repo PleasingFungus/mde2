@@ -35,7 +35,10 @@ package Values {
 				case OpcodeValue.OP_SAV:
 					return operation.getName()+" M[R" + targetArg + "]=R" + sourceArg;
 				case OpcodeValue.OP_JMP:
-					return operation.getName()+" OVER "+ sourceArg;
+					return operation.getName() + " OVER " + sourceArg;
+				
+				case OpcodeValue.OP_SAVI:
+					return operation.getName()+" M[" + targetArg + "]=" + sourceArg;
 			}
 			
 			var out:String = operation.getName() + "(" + sourceArg.toNumber();
@@ -58,6 +61,8 @@ package Values {
 		}
 		
 		override public function eq(v:Value):Boolean {
+			if (this == v)
+				return true;
 			if (!v || !(v is InstructionValue))
 				return false;
 			var iv:InstructionValue = v as InstructionValue;

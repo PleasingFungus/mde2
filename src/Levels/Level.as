@@ -2,6 +2,7 @@ package Levels {
 	import Modules.*;
 	import Testing.*;
 	import Values.OpcodeValue;
+	import Testing.Goals.*;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -58,7 +59,12 @@ package Levels {
 						new Level("Tutorial 2: Acc.",
 								  new AccumulatorTutorialGoal,
 								  false,
-								  [ConstIn, Adder, BabyLatch, DataWriter], []));
+								  [ConstIn, Adder, BabyLatch, DataWriter], []),
+						new Level("Tutorial 3: Opcodes",
+								  new OpcodeTutorialGoal,
+								  false,
+								  [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], [OpcodeValue.OP_SAVI]));
+			levels[3].predecessors.push(levels[2]);
 			
 			return levels;
 		}

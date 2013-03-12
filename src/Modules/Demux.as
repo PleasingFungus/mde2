@@ -1,6 +1,9 @@
 package Modules {
 	import Components.Port;
-	import Values.Value;
+	import Values.*;
+	
+	import Layouts.*;
+	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -16,6 +19,37 @@ package Modules {
 			delay = Math.ceil(Math.log(Width) / Math.log(2));
 		}
 		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = super.generateLayout();
+			for (var i:int = 0; i < inputs.length; i++) {
+				layout.ports[i].offset.y += 1;
+			}
+			layout.ports[layout.ports.length - 2].offset.x += 2;
+			return layout;
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			if (!U.state) return null;
+			
+			var nodes:Array = [];
+			var controlLines:Array = [];
+			for (var i:int = 0; i < inputs.length; i++) {
+				nodes.push(new InternalNode(this, new Point(layout.ports[i].offset.x + 3, layout.ports[i].offset.y), [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
+											inputs[i].getValue, i+"", true));
+				controlLines.push(new NodeTuple(layout.ports[layout.ports.length - 1], nodes[i], function (i:int):Boolean {
+					var control:Value = controls[0].getValue();
+					return !control.unknown && !control.unpowered && control.toNumber() == i;
+				}, i));
+			}
+			
+			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
+															[layout.ports[layout.ports.length - 2]], controlLines,
+															controls[0].getValue);
+			nodes.push(controlNode);
+			return new InternalLayout(nodes);
+		}
+		
+		
 		protected function resetPorts():void {
 			inputs = new Vector.<Port>;
 			for (var i:int = 0; i < width; i++)
@@ -24,6 +58,10 @@ package Modules {
 		
 		override public function renderName():String {
 			return "Demux\n\n" + controls[0].getValue()+": "+ drive(null);
+		}
+		
+		override public function getDescription():String {
+			return "Outputs the value of the input corresponding to the control value.";
 		}
 		
 		override protected function getSaveValues():Array {

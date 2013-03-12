@@ -6,7 +6,7 @@ package LevelStates {
 	import Controls.*;
 	import Displays.*;
 	import Modules.Module;
-	import Testing.GeneratedGoal;
+	import Testing.Goals.GeneratedGoal;
 	import UI.ButtonList;
 	import UI.ButtonManager;
 	import UI.ModuleSlider;
@@ -475,7 +475,9 @@ package LevelStates {
 						listOpen = LIST_NONE;
 						makeUI();
 					}
-				}, "").setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getDescription));
+				}, "").setParam(moduleType));
+				if (Module.getArchetype(moduleType).getDescription() != null)
+					moduleButtons[moduleButtons.length - 1].setTooltipCallback(Module.getArchetype(moduleType).getDescription);
 			}
 			
 			//put 'em in a list

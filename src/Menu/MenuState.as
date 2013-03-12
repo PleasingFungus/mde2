@@ -25,7 +25,7 @@ package Menu {
 				options.push(new TextStateButton(LevelMenu, "Play"));
 			
 			var optionList:ButtonList = new ButtonList(FlxG.width / 2 - 100, FlxG.height / 4 + 20, options);
-			optionList.closesOnClickOutside = false;
+			optionList.closesOnClickOutside = optionList.closesOnEsc = false;
 			add(optionList);
 			
 			FlxG.bgColor = 0xff000000;

@@ -21,6 +21,7 @@ package UI {
 		protected var verticalSpace:int = 10;
 		
 		public var closesOnClickOutside:Boolean;
+		public var closesOnEsc:Boolean;
 		public var justDie:Boolean;
 		public var onDeath:Function;
 		public function ButtonList(X:int, Y:int, Buttons:Vector.<MenuButton>, OnDeath:Function = null) {
@@ -31,6 +32,7 @@ package UI {
 			onDeath = OnDeath;
 			
 			closesOnClickOutside = true;
+			closesOnEsc = true;
 			
 			create();
 		}
@@ -110,7 +112,7 @@ package UI {
 				(justDie ||
 				(closesOnClickOutside && !moused)))
 				exists = false;
-			else if (ControlSet.CANCEL_KEY.justPressed() && updatedOnce)
+			else if (closesOnEsc && ControlSet.CANCEL_KEY.justPressed() && updatedOnce)
 				exists = false;
 			if (!exists && onDeath != null)
 				onDeath();

@@ -119,9 +119,12 @@ package Components {
 					return null;
 				//try to salvage what you can of the path (find the closest node checked)
 				curNode = checked[0];
-				for (i = 1; i < checked.length; i++)
-					if (checked[i].totalDist < curNode.totalDist)
+				for (i = 1; i < checked.length; i++) {
+					var curDist:int = curNode.totalDist;
+					var checkedDist:int = checked[i].totalDist;
+					if (checkedDist < curDist || (checkedDist == curDist && checked[i].distFromStart < curNode.distFromStart))
 						curNode = checked[i];
+				}
 			}
 			
 			var reversedPath:Vector.<Point> = new Vector.<Point>;

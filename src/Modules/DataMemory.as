@@ -83,7 +83,7 @@ package Modules {
 			
 			var memoryValue:Value = U.state.memory[index];
 			if (!memoryValue)
-				return NumericValue.NULL;
+				return FixedValue.NULL;
 			
 			return memoryValue;
 		}

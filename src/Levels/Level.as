@@ -60,11 +60,16 @@ package Levels {
 								  new AccumulatorTutorialGoal,
 								  false,
 								  [ConstIn, Adder, BabyLatch, DataWriter], []),
-						new Level("Tutorial 3: Opcodes",
+						new Level("Tutorial 3A: Instructions",
+								  new InstructionTutorialGoal,
+								  false,
+								  [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], []),
+						new Level("Tutorial 3B: Opcodes",
 								  new OpcodeTutorialGoal,
 								  false,
 								  [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], [OpcodeValue.OP_SAVI]));
 			levels[3].predecessors.push(levels[2]);
+			levels[4].predecessors.push(levels[2]);
 			
 			return levels;
 		}

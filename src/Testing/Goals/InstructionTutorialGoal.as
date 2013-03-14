@@ -11,7 +11,7 @@ package Testing.Goals {
 		public function InstructionTutorialGoal() {
 			super("Split instructions into their component parts!\n\n");
 			description += "Instructions are made up of four numbers. The first number, the opcode, says what type of instruction it is. "
-			description += "The other three, the source, target, & destination, have meanings that vary by opcode.\n\n"
+			description += "The other three, the source, target, & destination, have meanings that vary by opcode.\n"
 			description += "For this level, for each instruction in memory, just write the opcode, source, target & destination over four lines."
 			dynamicallyTested = true;
 			timeLimit = 36;

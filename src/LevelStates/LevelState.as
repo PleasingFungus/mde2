@@ -45,6 +45,7 @@ package LevelStates {
 		protected var listOpen:int;
 		protected var UIChanged:Boolean;
 		protected var editEnabled:Boolean = true;
+		public var goalPage:int; //for dgoal; to persist between instances
 		
 		protected var UIEnableKey:Key = new Key("U");
 		

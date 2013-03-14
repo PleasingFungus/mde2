@@ -1,6 +1,7 @@
 package Displays {
 	import org.flixel.*;
 	import Testing.Goals.GeneratedGoal;
+	import UI.GraphicButton;
 	import UI.MenuButton;
 	import Controls.ControlSet;
 	import Levels.Level;
@@ -14,6 +15,9 @@ package Displays {
 		
 		private var bg:FlxSprite;
 		public var level:Level;
+		private var pages:Vector.<FlxText>;
+		private var forwardButton:GraphicButton;
+		private var backButton:GraphicButton;
 		public function DGoal(level:Level) {
 			super();
 			this.level = level;
@@ -47,10 +51,10 @@ package Displays {
 			add(title);
 			var Y:int = title.y + title.height + 8;
 			
+			pages = new Vector.<FlxText>;
 			var description:FlxText = new FlxText(X, Y, Width, level.goal.description);
 			U.BODY_FONT.configureFlxText(description);
-			add(description);
-			Y = description.y + description.height + 16;
+			pages.push(add(description));
 			
 			if (level.expectedOps.length) {
 				var optext:String =  "Ops to support: "
@@ -59,29 +63,25 @@ package Displays {
 					if (op.description)
 						optext += ": " + op.description;
 				}
-				var expectedOps:FlxText = new FlxText(X, Y, Width,optext);
-				add(U.BODY_FONT.configureFlxText(expectedOps));
-				Y = expectedOps.y + expectedOps.height + 16;
+				var expectedOps:FlxText = new FlxText(X, Y, Width, optext);
+				pages.push(add(U.BODY_FONT.configureFlxText(expectedOps)));
 			}
 			
-			if (level.delay) {
-				var delayEnabled:FlxText = new FlxText(X, Y, Width, "Propagation delay enabled.");
-				add(U.BODY_FONT.configureFlxText(delayEnabled));
-				Y = delayEnabled.y + delayEnabled.height + 16;
+			var miscInfo:Array = [];
+			if (level.delay)
+				miscInfo.push("Propagation delay enabled.");
+			if (level.goal is GeneratedGoal)
+				miscInfo.push("Testing: " + (level.goal as GeneratedGoal).testRuns + " random programs, time limit of " + level.goal.timeLimit + " cycles per test");
+			
+			if (miscInfo.length) {
+				var miscInfoText:FlxText = new FlxText(X, Y, Width, miscInfo.join('\n\n'));
+				pages.push(add(U.BODY_FONT.configureFlxText(miscInfoText)));
 			}
 			
-			//var goal:FlxText = new FlxText(description.x, description.y + description.height + 8, description.width,
-										   //"Goal: M["+
-			var testType:String;
-			if (level.goal is GeneratedGoal)
-				testType = (level.goal as GeneratedGoal).testRuns + " random programs";
-			else
-				testType = "Simple run";
-			
-			var testing:FlxText = new FlxText(X, Y, Width, "Testing: " + testType + ", time limit of " + level.goal.timeLimit + " cycles");
-			if (level.goal is GeneratedGoal)
-				testing.text += " per test";
-			add(U.BODY_FONT.configureFlxText(testing));
+			var kludge:DGoal = this;
+			add(new GraphicButton(bg.x + bg.width / 2 - 16, bg.y + bg.height - 48, _close_sprite, function close():void { kludge.exists = false } ))
+			add(forwardButton = new GraphicButton(bg.x + 16, bg.y + bg.height - 48, _forward_sprite, function forward():void { U.state.goalPage++; } ));
+			add(backButton = new GraphicButton(bg.x + bg.width - 48, bg.y + bg.height - 48, _back_sprite, function back():void { U.state.goalPage--; } ));
 		}
 		
 		
@@ -89,13 +89,22 @@ package Displays {
 		
 		override public function update():void {
 			super.update();
+			U.buttonManager.moused = true;
+			checkPages();
 			checkClick();
 			checkControls();
 			tick++;
 		}
 		
+		protected function checkPages():void {
+			for (var page:int = 0; page < pages.length; page++)
+				pages[page].exists = page == U.state.goalPage;
+			forwardButton.exists = U.state.goalPage < pages.length - 1;
+			backButton.exists = U.state.goalPage > 0;
+		}
+		
 		protected function checkClick():void {
-			if (tick && FlxG.mouse.justPressed())
+			if (tick && FlxG.mouse.justPressed() && !bg.overlapsPoint(FlxG.mouse, true))
 				exists = false;
 		}
 		
@@ -106,6 +115,10 @@ package Displays {
 		
 		private const WIDTH_FRACTION:Number = 3 / 4;
 		private const HEIGHT_FRACTION:Number = 3 / 4;
+		
+		[Embed(source = "../../lib/art/ui/close.png")] private const _close_sprite:Class;
+		[Embed(source = "../../lib/art/ui/forward.png")] private const _forward_sprite:Class;
+		[Embed(source = "../../lib/art/ui/back_w.png")] private const _back_sprite:Class;
 	}
 
 }

@@ -239,6 +239,13 @@ package Components {
 			log(this +" adding connections");
 			addConnections(U.state.carriersAtPoint(path[0]));
 			addConnections(U.state.carriersAtPoint(path[path.length - 1]));
+			for (var i:int = 1; i < path.length - 1; i++)
+				for each (var connection:Carrier in U.state.carriersAtPoint(path[i])) {
+					if (connection == this || connections.indexOf(connection) != -1 || !connection.isEndpoint(path[i]))
+						continue;
+					addConnection(connection);
+					joinConnection(connection);
+				}
 		}
 		
 		protected function restoreOldConnections():void {
@@ -278,6 +285,10 @@ package Components {
 				else if (connection.getSource() != this.source)
 					throw new Error("Multiple sources in one mesh!");
 			}
+		}
+		
+		public function isEndpoint(p:Point):Boolean {
+			return path[0].equals(p) || path[path.length - 1].equals(p);
 		}
 		
 		

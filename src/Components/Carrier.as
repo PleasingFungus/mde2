@@ -1,4 +1,5 @@
 package Components {
+	import flash.geom.Point;
 	import Modules.Module;
 	/**
 	 * ...
@@ -12,6 +13,7 @@ package Components {
 		function resetSource():void;
 		function setSource(source:Port):void;
 		function addConnection(connection:Carrier):void;
+		function isEndpoint(p:Point):Boolean;
 	}
 	
 }

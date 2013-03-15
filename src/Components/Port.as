@@ -1,4 +1,5 @@
 package Components {
+	import flash.geom.Point;
 	import Modules.Module;
 	import Values.DelayDelta;
 	import Values.Value;
@@ -77,6 +78,9 @@ package Components {
 			connections.push(Connection);
 		}
 		
+		public function isEndpoint(p:Point):Boolean {
+			return false; //not implemented
+		}
 		
 		
 		

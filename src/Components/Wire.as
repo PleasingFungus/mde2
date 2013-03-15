@@ -71,7 +71,7 @@ package Components {
 					var nextPoint:Point = curPoint.add(delta);
 				
 					if (constrained && (U.state.lineContents(curPoint, nextPoint) ||
-										(!nextPoint.equals(target) && !mayMoveThrough(nextPoint))))
+										(!nextPoint.equals(target) && !mayMoveThrough(nextPoint, delta))))
 						continue;
 					
 					var alreadyFound:Boolean = false;
@@ -157,7 +157,7 @@ package Components {
 			var nextPoint:Point;
 			for (var delta:Point = target.subtract(pathEnd); delta.x || delta.y; delta = target.subtract(pathEnd)) {
 				nextPoint = new Point(pathEnd.x + (delta.x > 0 ? 1 : -1), pathEnd.y);
-				if ((!delta.x || !mayMoveThrough(nextPoint)) && delta.y)
+				if ((!delta.x || !mayMoveThrough(nextPoint, delta)) && delta.y)
 					nextPoint = new Point(pathEnd.x, pathEnd.y + (delta.y > 0 ? 1 : -1));
 				
 				if (constrained && (U.state.lineContents(pathEnd, nextPoint) || U.state.objTypeAtPoint(nextPoint) == Module))
@@ -165,14 +165,14 @@ package Components {
 				
 				path.push(pathEnd = nextPoint);
 				
-				if (!mayMoveThrough(nextPoint))
+				if (!mayMoveThrough(nextPoint, delta))
 					break;
 			}
 			
 			return path;
 		}
 		
-		protected function mayMoveThrough(p:Point):Boolean {
+		protected function mayMoveThrough(p:Point, delta:Point):Boolean {
 			var objType:Class = U.state.objTypeAtPoint(p);
 			if (objType == null)
 				return true;
@@ -183,6 +183,12 @@ package Components {
 			for each (var carrier:Carrier in carriers)
 				if (carrier is Port)
 					return false;
+			
+			var otherSide:Point = delta.x < 0 || delta.y < 0 ? p.add(delta) : p;
+			var otherWire:Wire = U.state.lineContents(otherSide, p);
+			if (otherWire)
+				return false;
+			
 			return true;
 		}
 		
@@ -239,6 +245,10 @@ package Components {
 			log(this +" adding connections");
 			addConnections(U.state.carriersAtPoint(path[0]));
 			addConnections(U.state.carriersAtPoint(path[path.length - 1]));
+			checkForEndpoints();
+		}
+		
+		protected function checkForEndpoints():void {
 			for (var i:int = 1; i < path.length - 1; i++)
 				for each (var connection:Carrier in U.state.carriersAtPoint(path[i])) {
 					if (connection == this || connections.indexOf(connection) != -1 || !connection.isEndpoint(path[i]))

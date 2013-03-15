@@ -32,7 +32,7 @@ package Layouts {
 			getValue = GetValue;
 		}
 		
-		override protected function mayMoveThrough(p:Point):Boolean {
+		override protected function mayMoveThrough(p:Point, delta:Point):Boolean {
 			return p.equals(endpoint) || bounds.containsPoint(p);
 		}
 		

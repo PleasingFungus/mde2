@@ -1,6 +1,6 @@
 package Testing.Goals {
 	import Levels.LevelShard;
-	import Testing.Test;
+	import Testing.Tests.Test;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

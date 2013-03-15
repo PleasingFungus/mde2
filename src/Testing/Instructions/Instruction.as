@@ -2,7 +2,6 @@ package Testing.Instructions {
 	import flash.utils.Dictionary;
 	import Testing.Abstractions.InstructionAbstraction;
 	import Testing.Types.InstructionType;
-	import Testing.InstructionArg;
 	import Values.InstructionValue;
 	/**
 	 * ...

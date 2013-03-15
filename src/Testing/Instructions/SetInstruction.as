@@ -1,6 +1,5 @@
 package Testing.Instructions {
 	import Testing.Abstractions.InstructionAbstraction;
-	import Testing.InstructionArg;
 	import flash.utils.Dictionary;
 	import Values.InstructionValue;
 	import Values.OpcodeValue;

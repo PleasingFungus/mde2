@@ -6,7 +6,7 @@ package Testing.Goals {
 	import Values.OpcodeValue;
 	import Values.Value;
 	import LevelStates.LevelState;
-	import Testing.Test;
+	import Testing.Tests.Test;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

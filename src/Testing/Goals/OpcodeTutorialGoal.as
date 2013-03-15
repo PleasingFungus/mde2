@@ -1,5 +1,5 @@
 package Testing.Goals {
-	import Testing.OpcodeTest;
+	import Testing.Tests.OpcodeTest;
 	import Values.InstructionValue;
 	import Values.NumericValue;
 	import Values.OpcodeValue;

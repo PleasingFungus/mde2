@@ -2,7 +2,6 @@ package Testing.Instructions {
 	import Testing.Abstractions.InstructionAbstraction;
 	import Values.InstructionValue;
 	import Values.OpcodeValue;
-	import Testing.InstructionArg
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

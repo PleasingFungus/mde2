@@ -80,8 +80,8 @@ package Displays {
 			
 			var kludge:DGoal = this;
 			add(new GraphicButton(bg.x + bg.width / 2 - 16, bg.y + bg.height - 48, _close_sprite, function close():void { kludge.exists = false } ))
-			add(forwardButton = new GraphicButton(bg.x + 16, bg.y + bg.height - 48, _forward_sprite, function forward():void { U.state.goalPage++; } ));
-			add(backButton = new GraphicButton(bg.x + bg.width - 48, bg.y + bg.height - 48, _back_sprite, function back():void { U.state.goalPage--; } ));
+			add(forwardButton = new GraphicButton(bg.x + bg.width - 48, bg.y + bg.height - 48, _forward_sprite, function forward():void { U.state.goalPage++; } ));
+			add(backButton = new GraphicButton(bg.x + 16, bg.y + bg.height - 48, _back_sprite, function back():void { U.state.goalPage--; } ));
 		}
 		
 		

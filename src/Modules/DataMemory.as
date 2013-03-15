@@ -100,6 +100,9 @@ package Modules {
 				return false;
 			
 			var input:Value = inputs[0].getValue();
+			if (input.unpowered)
+				return false;
+			
 			U.state.time.deltas.push(new Delta(U.state.time.moment, this,
 											   new IndexedValue(U.state.memory[line.toNumber()], line.toNumber())));
 			U.state.memory[line.toNumber()] = input;

@@ -76,7 +76,7 @@ package Modules {
 				return control;
 			var index:int = control.toNumber();
 			if (index < 0 || index >= width)
-				return U.V_UNKNOWN;
+				return U.V_UNPOWERED;
 			return inputs[index].getValue();
 		}
 		

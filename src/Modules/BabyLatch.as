@@ -33,6 +33,9 @@ package Modules {
 		
 		override protected function statefulUpdate():Boolean {
 			var input:Value = inputs[0].getValue();
+			if (input.unpowered)
+				return false;
+			
 			U.state.time.deltas.push(new Delta(U.state.time.moment, this, value));
 			value = input;
 			return true;

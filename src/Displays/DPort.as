@@ -59,6 +59,9 @@ package Displays {
 		}
 		
 		protected function getColor():uint {
+			if (!U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc))
+				return 0xfff03c;
+			
 			if (!port.getSource())
 				return 0xff0000;
 			

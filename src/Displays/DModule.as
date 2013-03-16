@@ -113,8 +113,6 @@ package Displays {
 		
 		override public function draw():void {
 			super.draw();
-			for each (var displayPort:DPort in displayPorts)
-				displayPort.draw();
 			
 			if (module.internalLayout && U.state.zoom >= 0.5) {	
 				for each (var displayConnection:DWire in displayConnections)
@@ -127,6 +125,9 @@ package Displays {
 				nameText.text = getName();
 				nameText.draw();
 			}
+			
+			for each (var displayPort:DPort in displayPorts)
+				displayPort.draw();
 		}
 		
 		protected function get font():FontTuple {

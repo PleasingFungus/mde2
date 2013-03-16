@@ -60,7 +60,7 @@ package Modules {
 			var tup:NodeTuple;
 			
 			for (var i:int = 0; i < width; i++) {
-				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2 + (i % 2 ? -1 : 1), layout.offset.y + 3.5 + i * 2);
+				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2, layout.offset.y + 3.5 + i * 2);
 				nodes.push(new InternalNode(this, loc, [layout.ports[layout.ports.length - 2], layout.ports[layout.ports.length - 1]], [],
 											function getValue(i:int):Value {
 												return values[i];

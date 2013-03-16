@@ -1,6 +1,8 @@
 package Modules {
 	import Components.Port;
 	import Values.Value;
+	import Layouts.ModuleLayout;
+	import Layouts.DefaultLayout;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -14,6 +16,13 @@ package Modules {
 			configuration = new Configuration(new Range(2, 8, Width));
 			configurableInPlace = false;
 			delay = Math.ceil(Math.log(width) / Math.log(2));
+		}
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = new DefaultLayout(this, 2, 5);
+			for (var i:int = 0; i < layout.ports.length; i++)
+				if (i != 1)
+					layout.ports[i].offset.y += 1;
+			return layout;
 		}
 		
 		protected function resetPorts():void {

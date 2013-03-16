@@ -8,10 +8,10 @@ package Layouts {
 	 */
 	public class DefaultLayout extends ModuleLayout {
 		
-		public function DefaultLayout(module:Module) {
+		public function DefaultLayout(module:Module, spacing:int = 4, padding:int = 3) {
 			var dim:Point = new Point(
-				module.controls.length * SPACING + PADDING,
-				Math.max(module.inputs.length, module.outputs.length) * SPACING + PADDING
+				module.controls.length * spacing + padding,
+				Math.max(module.inputs.length, module.outputs.length) * spacing + padding
 			);
 			
 			var offset:Point = new Point(
@@ -23,19 +23,19 @@ package Layouts {
 			var i:int;
 			for (i = 0; i < module.inputs.length; i++)
 				ports.push(new PortLayout(module.inputs[i], new Point(offset.x - 0.5,
-																	  offset.y + 0.5 + i * SPACING + Math.round(PADDING / 2))));
+																	  offset.y + 0.5 + i * spacing + Math.round(padding / 2))));
 			for (i = 0; i < module.controls.length; i++)
-				ports.push(new PortLayout(module.controls[i], new Point(offset.x + 0.5 + i * SPACING + Math.round(PADDING / 2),
+				ports.push(new PortLayout(module.controls[i], new Point(offset.x + 0.5 + i * spacing + Math.round(padding / 2),
 																		offset.y - 0.5), true));
 			for (i = 0; i < module.outputs.length; i++)
 				ports.push(new PortLayout(module.outputs[i], new Point(offset.x + dim.x + 0.5,
-																	   offset.y + 0.5 + i * SPACING + Math.round(PADDING / 2)), false, true));
+																	   offset.y + 0.5 + i * spacing + Math.round(padding / 2)), false, true));
 			
 			super(module, offset, dim, ports);
+			if (padding < 1)
+				throw new Error("padding must be at least 1!");
+			
 		}
-		
-		private const SPACING:int = 4;
-		private const PADDING:int = 3; //minimum 1!
 	}
 
 }

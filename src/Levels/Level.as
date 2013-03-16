@@ -67,14 +67,9 @@ package Levels {
 						new Level("Tutorial 3B: Opcodes",
 								  new OpcodeTutorialGoal,
 								  false,
-								  [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], [OpcodeValue.OP_SAVI]),
-						new Level("Tutorial 4: Registers",
-								  new RegfileGoal,
-								  false,
-								  [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory, Mux, Demux, InstructionDemux], [OpcodeValue.OP_SET, OpcodeValue.OP_ADD]));
+								  [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], [OpcodeValue.OP_SAVI]));
 			levels[3].predecessors.push(levels[2]);
 			levels[4].predecessors.push(levels[2]);
-			levels[5].predecessors.push(levels[4]);
 			
 			return levels;
 		}

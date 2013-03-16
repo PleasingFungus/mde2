@@ -54,11 +54,8 @@ package Testing.Goals {
 		
 		override public function stateValid(levelState:LevelState, print:Boolean = false):Boolean {
 			for (var line:int = 0; line < levelState.memory.length; line++)
-				if (!levelState.memory[line].eq(currentTest.expectedMemory[line])) {
-					if (done())
-						C.log("Discrepancy on line " + line + "; " + currentTest.expectedMemory[line] + " expected, " + levelState.memory[line] + " present");
+				if (!levelState.memory[line].eq(currentTest.expectedMemory[line]))
 					return false;
-				}
 			return true;
 		}
 		

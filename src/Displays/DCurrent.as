@@ -82,7 +82,7 @@ package Displays {
 				}
 				
 				if (port.source && !port.source.getValue().unknown && !port.stable)
-					displayText += " D" + (port.remainingDelay() - 1);
+					displayText += " D" + port.remainingDelay();
 				displayText += " <- ";
 			} else
 				displayText += "Wire: ";

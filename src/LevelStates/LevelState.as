@@ -144,17 +144,16 @@ package LevelStates {
 			upperLayer = new FlxGroup;
 			new ButtonManager;
 			UIChanged = true;
-			
 			addUIActives();
-			
 			makeViewButtons();
+			
 			if (!editEnabled) {
-				makeViewLists();
-				
 				if (currentModule) {
 					currentModule.exists = false;
 					currentModule = null;
 				}
+				
+				makeViewLists();
 				return;
 			}
 			

@@ -1,5 +1,6 @@
 package LevelStates {
 	import Components.Port;
+	import Layouts.PortLayout;
 	import Modules.Module;
 	import Values.Delta;
 	/**
@@ -29,7 +30,7 @@ package LevelStates {
 		}
 		
 		public function step():void {
-			var module:Module, port:Port;
+			var module:Module, port:Port, portLayout:PortLayout;
 			
 			if (U.state.level.delay && moment == 0)
 				for each (module in U.state.modules)
@@ -37,8 +38,8 @@ package LevelStates {
 						port.lastMinuteInit();
 			
 			for each (module in U.state.modules)
-				for each (port in module.outputs)
-					port.cacheValue();
+				for each (portLayout in module.layout.ports)
+					portLayout.port.cacheValue();
 			
 			moment += 1;
 			
@@ -46,8 +47,8 @@ package LevelStates {
 				module.updateState();
 			
 			for each (module in U.state.modules)
-				for each (port in module.outputs)
-					port.clearCachedValue();
+				for each (portLayout in module.layout.ports)
+					portLayout.port.clearCachedValue();
 			
 			if (U.state.level.delay)
 				for each (module in U.state.modules)

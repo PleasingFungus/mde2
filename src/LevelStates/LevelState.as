@@ -1022,6 +1022,9 @@ package LevelStates {
 			if (!wiresExist)
 				saveString += U.SAVE_DELIM;
 			
+			if (level.delay)
+				saveString += time.clockPeriod + U.SAVE_DELIM;
+			
 			return saveString;
 		}
 		
@@ -1059,6 +1062,12 @@ package LevelStates {
 					for each (var moduleString:String in moduleStrings.split(U.SAVE_DELIM))
 						addModule(Module.fromString(moduleString), false);
 				
+				var miscStringsString:String = saveArray[2];
+				if (miscStringsString.length) {
+					var miscStrings:Array = miscStringsString.split(U.SAVE_DELIM);
+					if (level.delay)
+						time.clockPeriod = int(miscStrings[0]);
+				}
 				
 				savedString = saveString;
 			}

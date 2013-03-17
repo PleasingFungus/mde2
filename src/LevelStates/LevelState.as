@@ -145,24 +145,11 @@ package LevelStates {
 			new ButtonManager;
 			UIChanged = true;
 			
-			upperLayer.add(new Scroller);
-			upperLayer.add(new DCurrent(displayWires, displayModules));
-			upperLayer.add(new DModuleInfo);
-			upperLayer.add(editEnabled ? displayTime = new DTime(FlxG.width / 2 - 50, 10) : displayTime);
-			makeDataButton();
-			makeInfoButton();
-			makeBackButton();
+			addUIActives();
 			
-			if (level.delay) {
-				if (!displayDelay)
-					midLayer.add(displayDelay = new DDelay(modules, displayModules));
-				displayDelay.interactive = MODE_DELAY == mode;
-			}
-			
+			makeViewButtons();
 			if (!editEnabled) {
-				makeZoomButton();
-				if (level.delay)
-					makeViewModeButton();
+				makeViewLists();
 				
 				if (currentModule) {
 					currentModule.exists = false;
@@ -171,16 +158,44 @@ package LevelStates {
 				return;
 			}
 			
+			makeEditButtons();
+			makeViewLists();
+			makeEditLists();
+		}
+		
+		protected function addUIActives():void {
+			upperLayer.add(new Scroller);
+			upperLayer.add(new DCurrent(displayWires, displayModules));
+			upperLayer.add(new DModuleInfo);
+			if (level.delay) {
+				if (!displayDelay)
+					midLayer.add(displayDelay = new DDelay(modules, displayModules));
+				displayDelay.interactive = MODE_DELAY == mode;
+			}
+		}
+		
+		protected function makeViewButtons():void {
+			makeDataButton();
+			makeInfoButton();
+			makeBackButton();
+			upperLayer.add(editEnabled ? displayTime = new DTime(FlxG.width / 2 - 50, 10) : displayTime);
+		}
+		
+		protected function makeViewLists():void {
+			LIST_ZOOM == listOpen ? makeZoomList() : makeZoomButton();
+			if (level.delay)
+				LIST_VIEW_MODES == listOpen ? makeViewModeMenu() : makeViewModeButton()
+		}
+		
+		protected function makeEditButtons():void {
 			makeSaveButtons();
 			makeUndoButtons();
 			makeTestButtons();
-			
-			if (level.delay) {
+			if (level.delay)
 				makeClockButton();
-				LIST_VIEW_MODES == listOpen ? makeViewModeMenu() : makeViewModeButton()
-			}
-			
-			LIST_ZOOM == listOpen ? makeZoomList() : makeZoomButton();
+		}
+		
+		protected function makeEditLists():void {
 			LIST_MODES == listOpen ? makeModeMenu() : makeModeButton();
 			if (mode == MODE_MODULE)
 				switch (listOpen) {
@@ -188,8 +203,8 @@ package LevelStates {
 					case LIST_CATEGORIES: makeModuleCatList(); break;
 					case LIST_NONE: default: makeModuleCatButton(); break;
 				}
-			
 		}
+		
 		
 		protected function makeBackButton():void {
 			var backButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _back_sprite, function back():void {
@@ -1050,6 +1065,15 @@ package LevelStates {
 			if (saveString) {
 				var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);
 				
+				//ordering is key
+				//misc info first
+				var miscStringsString:String = saveArray[2];
+				if (miscStringsString.length) {
+					var miscStrings:Array = miscStringsString.split(U.SAVE_DELIM);
+					if (level.delay)
+						time.clockPeriod = int(miscStrings[0]);
+				}
+				
 				//load wires
 				var wireStrings:String = saveArray[1];
 				if (wireStrings.length)
@@ -1061,13 +1085,6 @@ package LevelStates {
 				if (moduleStrings.length)
 					for each (var moduleString:String in moduleStrings.split(U.SAVE_DELIM))
 						addModule(Module.fromString(moduleString), false);
-				
-				var miscStringsString:String = saveArray[2];
-				if (miscStringsString.length) {
-					var miscStrings:Array = miscStringsString.split(U.SAVE_DELIM);
-					if (level.delay)
-						time.clockPeriod = int(miscStrings[0]);
-				}
 				
 				savedString = saveString;
 			}

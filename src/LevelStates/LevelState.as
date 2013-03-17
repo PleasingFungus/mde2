@@ -355,6 +355,10 @@ package LevelStates {
 			for each (var newMode:int in [VIEW_MODE_NORMAL, VIEW_MODE_DELAY]) {
 				modeSelectButtons.push(new GraphicButton( -1, -1, VIEW_MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 					viewMode = newMode;
+					if (listOpen == LIST_VIEW_MODES) {
+						listOpen = LIST_NONE;
+						makeUI();
+					}
 				}, "Enter "+VIEW_MODE_NAMES[newMode]+" view mode").setParam(newMode).setSelected(newMode == viewMode));
 			}
 			

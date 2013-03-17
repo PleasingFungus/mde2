@@ -174,13 +174,13 @@ package LevelStates {
 			makeSaveButtons();
 			makeUndoButtons();
 			makeTestButtons();
-			listOpen == LIST_ZOOM ? makeZoomList() : makeZoomButton();
-			listOpen == LIST_MODES ? makeModeMenu() : makeModeButton();
+			LIST_ZOOM == listOpen ? makeZoomList() : makeZoomButton();
+			LIST_MODES == listOpen ? makeModeMenu() : makeModeButton();
 			
-			if (listOpen == LIST_VIEW_MODES)
-				makeViewModeMenu();
-			else if (level.delay)
-				makeViewModeButton();
+			if (level.delay) {
+				LIST_VIEW_MODES == listOpen ? makeViewModeMenu() : makeViewModeButton()
+				makeClockButton();
+			}
 			
 			if (mode == MODE_MODULE)
 				switch (listOpen) {
@@ -231,7 +231,7 @@ package LevelStates {
 			
 			var memoryButton:MenuButton = new GraphicButton(50, 90, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory));
-			}, "View contents of memory", new Key("C"));
+			}, "View contents of memory", new Key("M"));
 			upperLayer.add(memoryButton);
 		}
 		
@@ -240,6 +240,10 @@ package LevelStates {
 				upperLayer.add(new DGoal(level));
 			}, "Level info", new Key("I"));
 			upperLayer.add(infoButton);
+		}
+		
+		protected function makeClockButton():void {
+			upperLayer.add(new DClock(10, 130));
 		}
 		
 		protected function makeZoomButton():void {

@@ -251,7 +251,7 @@ package Modules {
 												InstructionMemory, DataMemory,
 												Mux, Demux, InstructionMux, InstructionDemux,
 												Or, ProgramCounter, And, Not, Delay, DataWriter,
-												InstructionComparator, MDU, BabyLatch]) {
+												InstructionComparator, MDU, BabyLatch, SysDelayClock]) {
 				ALL_MODULES.push(moduleClass);
 				ARCHETYPES.push(new moduleClass( -1, -1));
 			}

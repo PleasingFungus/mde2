@@ -16,7 +16,7 @@ package Displays {
 		public function DClock(X:int, Y:int) {
 			lastNum = U.state.time.clockPeriod;
 			super(X, Y, _clock_sprite, function onClick():void {
-				U.state.upperLayer.add(new Sliderbar(X + fullWidth, Y + fullWidth, new Range(2, 127, U.state.time.clockPeriod),
+				U.state.upperLayer.add(new Sliderbar(X + fullWidth, Y + fullWidth, new Range(2, 63, U.state.time.clockPeriod),
 													 function setClockPeriod(v:int):void { U.state.time.clockPeriod = v },
 													 U.state.time.clockPeriod).setDieOnClickOutside(true, function setNum():void {
 														if (lastNum != U.state.time.clockPeriod)

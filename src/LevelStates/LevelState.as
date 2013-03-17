@@ -174,14 +174,14 @@ package LevelStates {
 			makeSaveButtons();
 			makeUndoButtons();
 			makeTestButtons();
-			LIST_ZOOM == listOpen ? makeZoomList() : makeZoomButton();
-			LIST_MODES == listOpen ? makeModeMenu() : makeModeButton();
 			
 			if (level.delay) {
-				LIST_VIEW_MODES == listOpen ? makeViewModeMenu() : makeViewModeButton()
 				makeClockButton();
+				LIST_VIEW_MODES == listOpen ? makeViewModeMenu() : makeViewModeButton()
 			}
 			
+			LIST_ZOOM == listOpen ? makeZoomList() : makeZoomButton();
+			LIST_MODES == listOpen ? makeModeMenu() : makeModeButton();
 			if (mode == MODE_MODULE)
 				switch (listOpen) {
 					case LIST_MODULES: makeModuleList(); break;

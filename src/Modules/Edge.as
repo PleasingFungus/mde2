@@ -15,7 +15,7 @@ package Modules {
 		private var lastValueSeen:int;
 		private var lastMomentStored:int;
 		public function Edge(X:int, Y:int, EdgeLength:int = 2) {
-			super(X, Y, "Edge", Module.CAT_MISC, 1, 1, 0);
+			super(X, Y, "Edge", Module.CAT_TIME, 1, 1, 0);
 			configuration = new Configuration(new Range(1, 32, EdgeLength));
 			setByConfig();
 		}

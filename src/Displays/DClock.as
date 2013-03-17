@@ -1,6 +1,7 @@
 package Displays {
 	import Actions.CustomAction;
 	import Controls.Key;
+	import org.flixel.FlxPoint;
 	import org.flixel.FlxText;
 	import UI.GraphicButton;
 	import UI.Sliderbar;
@@ -26,6 +27,7 @@ package Displays {
 													 }));
 			}, "Set system clock period", HKEY);
 			numberText = U.LABEL_FONT.configureFlxText(new FlxText(X, Y + 8, fullWidth, " "), 0x0, 'center');
+			numberText.scrollFactor = new FlxPoint;
 		}
 		
 		override public function draw():void {

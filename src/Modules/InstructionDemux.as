@@ -3,6 +3,8 @@ package Modules {
 	import Values.*;
 	
 	import Layouts.*;
+	import Layouts.Nodes.StandardNode;
+	import Layouts.Nodes.NodeTuple;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -35,14 +37,14 @@ package Modules {
 			var controlLines:Array = [];
 			for (var i:int = 0; i < inputs.length; i++) {
 				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2, layout.ports[i].offset.y);
-				nodes.push(new InternalNode(this, loc, [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
+				nodes.push(new StandardNode(this, loc, [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
 											inputs[i].getValue, U.state.level.expectedOps[i].toString(), true));
 				controlLines.push(new NodeTuple(layout.ports[layout.ports.length - 1], nodes[i], function (i:int):Boolean { 
 					return getIndex() == i;
 				}, i));
 			}
 			
-			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
+			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
 															[layout.ports[layout.ports.length - 2]], controlLines,
 															controls[0].getValue);
 			nodes.push(controlNode);

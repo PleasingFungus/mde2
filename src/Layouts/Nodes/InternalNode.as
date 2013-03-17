@@ -1,10 +1,12 @@
-package Layouts {
+package Layouts.Nodes {
 	import Components.Port;
 	import Components.Wire;
 	import flash.geom.Rectangle;
 	import Modules.Module;
 	import flash.geom.Point;
 	import Values.Value;
+	import Layouts.InternalWire;
+	import Layouts.PortLayout;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -17,13 +19,15 @@ package Layouts {
 		public var controlTuples:Vector.<NodeTuple>;
 		public var internalWires:Vector.<InternalWire>;
 		public var GetValue:Function;
+		public var dim:Point;
 		public var offset:Point;
 		public var param:*;
 		public var isSource:Boolean;
-		public function InternalNode(Parent:Module, Offset:Point, Connections:Array,
+		public function InternalNode(Parent:Module, Dim:Point, Offset:Point, Connections:Array,
 									 ControlTuples:Array = null, GetValue:Function = null, Name:String = null,
 									 IsSource:Boolean = false, Param:* = null) {
 			name = Name;
+			dim = Dim;
 			this.GetValue = GetValue;
 			isSource = IsSource;
 			param = Param;

@@ -3,6 +3,8 @@ package Modules {
 	import Values.*;
 	
 	import Layouts.*;
+	import Layouts.Nodes.StandardNode;
+	import Layouts.Nodes.NodeTuple;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -61,7 +63,7 @@ package Modules {
 			
 			for (var i:int = 0; i < width; i++) {
 				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2, layout.offset.y + 3.5 + i * 2);
-				nodes.push(new InternalNode(this, loc, [layout.ports[layout.ports.length - 2], layout.ports[layout.ports.length - 1]], [],
+				nodes.push(new StandardNode(this, loc, [layout.ports[layout.ports.length - 2], layout.ports[layout.ports.length - 1]], [],
 											function getValue(i:int):Value {
 												return values[i];
 											}, i + "", true, i));
@@ -69,14 +71,14 @@ package Modules {
 			
 			var writeConnections:Array = nodes.slice();
 			writeConnections.push(layout.ports[0]);
-			var writeNode:InternalNode = new InternalNode(this, new Point(layout.ports[0].offset.x + 4, layout.ports[0].offset.y),
+			var writeNode:StandardNode = new StandardNode(this, new Point(layout.ports[0].offset.x + 4, layout.ports[0].offset.y),
 														  writeConnections, [], inputs[0].getValue);
 			
 			var writeOK:Function = function writeOK():Boolean {
 				var control:Value = write.getValue();
 				return !control.unknown && !control.unpowered && control.toNumber() != 0;
 			}
-			var writeControlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
+			var writeControlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 																[new NodeTuple(layout.ports[0], writeNode, writeOK)], function isEnabled():BooleanValue {
 																	return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE;
 																});
@@ -89,7 +91,7 @@ package Modules {
 				tup.reverseTruncate = true;
 				controlLines.push(tup);
 			}
-			var writeTargetNode:InternalNode = new InternalNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), [layout.ports[2]], controlLines,
+			var writeTargetNode:StandardNode = new StandardNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), [layout.ports[2]], controlLines,
 																function getValue():Value { return destination.getValue(); } );
 			
 			controlLines = [];
@@ -97,7 +99,7 @@ package Modules {
 				controlLines.push(new NodeTuple(nodes[i], layout.ports[layout.ports.length - 2], function writeChosen(index:int):Boolean {
 					return source.getValue().toNumber() == index;
 				}, i));
-			var sourceTargetNode:InternalNode = new InternalNode(this, new Point(layout.ports[3].offset.x, layout.ports[3].offset.y + 2), [layout.ports[3]], controlLines,
+			var sourceTargetNode:StandardNode = new StandardNode(this, new Point(layout.ports[3].offset.x, layout.ports[3].offset.y + 2), [layout.ports[3]], controlLines,
 																 function getValue():Value { return source.getValue(); } );
 			
 			controlLines = [];
@@ -108,7 +110,7 @@ package Modules {
 				tup.suggestedIntersect = 4;
 				controlLines.push(tup);
 			}
-			var targetTargetNode:InternalNode = new InternalNode(this, new Point(layout.ports[4].offset.x, layout.ports[4].offset.y + 2), [layout.ports[4]], controlLines,
+			var targetTargetNode:StandardNode = new StandardNode(this, new Point(layout.ports[4].offset.x, layout.ports[4].offset.y + 2), [layout.ports[4]], controlLines,
 																 function getValue():Value { return target.getValue(); } );
 			
 			nodes.push(writeNode);

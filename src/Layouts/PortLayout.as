@@ -3,6 +3,7 @@ package Layouts {
 	import flash.geom.Point;
 	import Modules.Module;
 	import Components.Carrier;
+	import Layouts.Nodes.Node;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

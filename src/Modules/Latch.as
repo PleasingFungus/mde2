@@ -2,6 +2,8 @@ package Modules {
 	import Components.Port;
 	import Values.*
 	import Layouts.*;
+	import Layouts.Nodes.StandardNode;
+	import Layouts.Nodes.NodeTuple;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -23,9 +25,9 @@ package Modules {
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			var dataNode:InternalNode = new InternalNode(this, new Point(layout.ports[2].offset.x - 2, layout.ports[2].offset.y), [layout.ports[0], layout.ports[2]], [],
+			var dataNode:StandardNode = new StandardNode(this, new Point(layout.ports[2].offset.x - 2, layout.ports[2].offset.y), [layout.ports[0], layout.ports[2]], [],
 														 function getValue():Value { return value; });
-			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
+			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 															[new NodeTuple(layout.ports[0], dataNode, writeOK)],
 															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; } , "W");
 			return new InternalLayout([controlNode, dataNode]);

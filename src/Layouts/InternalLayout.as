@@ -1,5 +1,7 @@
 package Layouts {
 	import flash.geom.Rectangle;
+	import Layouts.Nodes.InternalNode;
+	import Layouts.Nodes.NodeTuple;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

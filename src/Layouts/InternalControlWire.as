@@ -3,6 +3,8 @@ package Layouts {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import org.flixel.FlxSprite;
+	import Layouts.Nodes.InternalNode;
+	import Layouts.Nodes.NodeTuple;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

@@ -2,9 +2,9 @@ package Displays {
 	import Components.Port;
 	import Components.Wire;
 	import Layouts.InternalDWire;
-	import Layouts.InternalNode;
 	import Layouts.InternalWire;
 	import Layouts.PortLayout;
+	import Layouts.Nodes.InternalNode;
 	import Modules.Module;
 	import org.flixel.*;
 	import UI.FontTuple;

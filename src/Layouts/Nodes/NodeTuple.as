@@ -1,4 +1,4 @@
-package Layouts {
+package Layouts.Nodes {
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

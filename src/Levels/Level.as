@@ -74,6 +74,27 @@ package Levels {
 			return levels;
 		}
 		
+		public static function delayTutorials():Vector.<Level> {
+			var levels:Vector.<Level> = new Vector.<Level>;
+			
+			levels.push(/*new Level("Delay 1: Adder",
+								  new WireTutorialGoal(20),
+								  true,
+								  [Adder, DataWriter], [],
+								  [new ConstIn(12, 16, 1)]),*/
+						new Level("Delay 2A: Acc.",
+								  new AccumulatorTutorialGoal,
+								  true,
+								  [ConstIn, Adder, Latch, MagicWriter, SysDelayClock], []),
+						new Level("Delay 2B: Acc.",
+								  new AccumulatorTutorialGoal,
+								  true,
+								  [ConstIn, Adder, Latch, DataWriter, SysDelayClock], []));
+			levels[1].predecessors.push(levels[0]);
+			//levels[2].predecessors.push(levels[1]);
+			return levels;
+		}
+		
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			

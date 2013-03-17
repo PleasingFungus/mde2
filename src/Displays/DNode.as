@@ -3,7 +3,7 @@ package Displays {
 	import flash.geom.Rectangle;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxText;
-	import Layouts.InternalNode;
+	import Layouts.Nodes.InternalNode;
 	
 	/**
 	 * ...
@@ -22,7 +22,7 @@ package Displays {
 		}
 		
 		protected function makeSprite():void {
-			makeGraphic(U.GRID_DIM * 2, U.GRID_DIM * 2, 0xff202020, false, "node");
+			makeGraphic(U.GRID_DIM * node.dim.x, U.GRID_DIM * node.dim.y, 0xff202020, false, "node");
 			var borderWidth:int = 2;
 			framePixels.fillRect(new Rectangle(borderWidth, borderWidth, width - borderWidth*2, height - borderWidth*2), 0xff8b8bdb);
 			offset.x = width / 2;
@@ -38,6 +38,7 @@ package Displays {
 			label.x = x - 1 - offset.x;
 			label.y = y + 1 - offset.y;
 			label.text = node.getLabel();
+			//TODO: truncate
 			label.draw();
 		}
 		

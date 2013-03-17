@@ -3,6 +3,8 @@ package Modules {
 	import Components.Port;
 	
 	import Layouts.*;
+	import Layouts.Nodes.StandardNode;
+	import Layouts.Nodes.NodeTuple;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -30,16 +32,16 @@ package Modules {
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			var writeNode:InternalNode = new InternalNode(this, new Point(layout.ports[2].offset.x, layout.ports[0].offset.y), [layout.ports[0], layout.ports[3]], [],
+			var writeNode:StandardNode = new StandardNode(this, new Point(layout.ports[2].offset.x, layout.ports[0].offset.y), [layout.ports[0], layout.ports[3]], [],
 														  getData, "[M]");
-			var lineNode:InternalNode = new InternalNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 3), [layout.ports[2], writeNode], [],
+			var lineNode:StandardNode = new StandardNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 3), [layout.ports[2], writeNode], [],
 														 function getValue():Value {
 															 var v:Value = controls[1].getValue();
 															 if (v.toNumber() < 0)
 																return U.V_UNKNOWN;
 															return v;
 														} , "L");
-			var controlNode:InternalNode = new InternalNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
+			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 															[new NodeTuple(layout.ports[0], writeNode, writeOK)],
 															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; } , "W");
 			return new InternalLayout([lineNode, writeNode, controlNode]);

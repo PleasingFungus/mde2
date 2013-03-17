@@ -44,6 +44,7 @@ package  {
 		
 		public static var save:FlxSave;
 		public static var tuts:Vector.<Level>;
+		public static var delayTuts:Vector.<Level>;
 		public static var levels:Vector.<Level>;
 		public static var state:LevelState;
 		public static var buttonManager:ButtonManager;
@@ -88,6 +89,7 @@ package  {
 			LevelShard.init();
 			
 			tuts = Level.tutorials();
+			delayTuts = Level.delayTutorials();
 			levels = Level.list();
 			
 			C.warmupFactors(MAX_INT);

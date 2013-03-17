@@ -21,8 +21,10 @@ package Menu {
 			options.push(new TextStateButton(HowToPlayState, U.tutorialState >= U.TUT_READ_HTP ? "How To Play" : "Start"));
 			if (U.tutorialState >= U.TUT_READ_HTP)
 				options.push(new TextStateButton(TutorialMenu, "Tutorials"));
-			if (U.tutorialState >= U.TUT_BEAT_TUT_2)
+			if (U.tutorialState >= U.TUT_BEAT_TUT_2) {
 				options.push(new TextStateButton(LevelMenu, "Play"));
+				options.push(new TextStateButton(DelayTutMenu, "Delay Tutorials"));
+			}
 			
 			var optionList:ButtonList = new ButtonList(FlxG.width / 2 - 100, FlxG.height / 4 + 20, options);
 			optionList.closesOnClickOutside = optionList.closesOnEsc = false;

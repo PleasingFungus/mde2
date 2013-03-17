@@ -7,10 +7,10 @@ package Testing.Goals {
 	 */
 	public class WireTutorialGoal extends LevelGoal {
 		
-		public function WireTutorialGoal() {
+		public function WireTutorialGoal(TimeLimit:int =2) {
 			super("Set memory line 1 to 2!");
 			dynamicallyTested = true;
-			timeLimit = 2;
+			timeLimit = timeLimit = TimeLimit;
 		}
 		
 		override public function stateValid(levelState:LevelState, print:Boolean=false):Boolean {

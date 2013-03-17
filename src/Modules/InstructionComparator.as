@@ -3,6 +3,7 @@ package Modules {
 	import Levels.Level;
 	import Values.*;
 	import Layouts.*;
+	import Layouts.Nodes.StandardNode;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -46,10 +47,10 @@ package Modules {
 		
 		override protected function generateInternalLayout():InternalLayout {
 			var outport:PortLayout = layout.ports[1];
-			return new InternalLayout([new InternalNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
+			return new InternalLayout([new StandardNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
 														[layout.ports[0], layout.ports[1]], [],
 														function getValue():Value { return drive(outputs[0]); }, "=" ),
-									   new InternalNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y - 2),
+									   new StandardNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y - 2),
 														[], [],
 														function getValue():Value { return compareValue; })]);
 		}

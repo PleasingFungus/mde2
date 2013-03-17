@@ -156,16 +156,19 @@ package Components {
 			var pathEnd:Point = path[path.length - 1];
 			var nextPoint:Point;
 			for (var delta:Point = target.subtract(pathEnd); delta.x || delta.y; delta = target.subtract(pathEnd)) {
-				nextPoint = new Point(pathEnd.x + (delta.x > 0 ? 1 : -1), pathEnd.y);
-				if ((!delta.x || !mayMoveThrough(nextPoint, delta)) && delta.y)
-					nextPoint = new Point(pathEnd.x, pathEnd.y + (delta.y > 0 ? 1 : -1));
+				var nextDelta:Point = delta.x > 0 ? RIGHT_DELTA : LEFT_DELTA;
+				nextPoint = pathEnd.add(nextDelta);
+				if ((!delta.x || !mayMoveThrough(nextPoint, nextDelta)) && delta.y) {
+					nextDelta = delta.y > 0 ? DOWN_DELTA : UP_DELTA;
+					nextPoint = pathEnd.add(nextDelta);
+				}
 				
 				if (constrained && (U.state.lineContents(pathEnd, nextPoint) || U.state.objTypeAtPoint(nextPoint) == Module))
 					break;
 				
 				path.push(pathEnd = nextPoint);
 				
-				if (!mayMoveThrough(nextPoint, delta))
+				if (!mayMoveThrough(nextPoint, nextDelta))
 					break;
 			}
 			
@@ -184,8 +187,7 @@ package Components {
 				if (carrier is Port)
 					return false;
 			
-			var otherSide:Point = delta.x < 0 || delta.y < 0 ? p.add(delta) : p;
-			var otherWire:Wire = U.state.lineContents(otherSide, p);
+			var otherWire:Wire = U.state.lineContents(p, p.add(delta));
 			if (otherWire)
 				return false;
 			
@@ -400,5 +402,10 @@ package Components {
 			wire.path = path;
 			return wire;
 		}
+		
+		private const LEFT_DELTA:Point = new Point( -1, 0);
+		private const RIGHT_DELTA:Point = new Point( 1, 0);
+		private const UP_DELTA:Point = new Point( 0, -1);
+		private const DOWN_DELTA:Point = new Point( 0, 1);
 	}
 }

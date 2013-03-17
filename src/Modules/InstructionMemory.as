@@ -20,34 +20,21 @@ package Modules {
 		}
 		
 		override public function renderName():String {
-			var out:String = "IMEM\n\n" + controls[0].getValue()+": ";
-			
-			var instrValue:InstructionValue = instruction;
-			if (instrValue)
-				out += instrValue;
-			else
-				out += OpcodeValue.OP_NOOP;
-			
-			return out;
+			return "IMEM\n\n" + controls[0].getValue()+": "+value;
 		}
 		
 		override public function getDescription():String {
 			return "Outputs the opcode, source, target & destination of the instruction at the specified line."
 		}
 		
-		override public function drive(port:Port):Value {
-			var line:Value = controls[0].getValue();
-			if (line.unpowered || line.unknown) return line;
-			
-			var index:int = line.toNumber();
-			if (index >= U.state.memory.length)
-				return U.V_UNKNOWN;
-			
-			var memoryValue:Value = U.state.memory[index];
+		override public function drive(port:Port):Value {			
+			var memoryValue:Value = value;
 			if (!memoryValue)
+				return U.V_UNPOWERED;
+			if (!(memoryValue is InstructionValue))
 				return U.V_UNKNOWN;
 			
-			var instrValue:InstructionValue = InstructionValue.fromValue(memoryValue);
+			var instrValue:InstructionValue = memoryValue as InstructionValue;
 			
 			var portIndex:int = outputs.indexOf(port);
 			switch (portIndex) {
@@ -55,24 +42,19 @@ package Modules {
 				case 1: return instrValue.sourceArg;
 				case 2: return instrValue.targetArg;
 				case 3: return instrValue.destArg;
+				default: return null; //crashme!
 			}
-			
-			return null; //crashme!
 		}
 		
-		protected function get instruction():InstructionValue { 
+		protected function get value():Value { 
 			var line:Value = controls[0].getValue();
-			if (line.unpowered || line.unknown) return null;
+			if (line.unpowered || line.unknown) return line;
 			
 			var index:int = line.toNumber();
-			if (index >= U.state.memory.length)
-				return null;
+			if (index >= U.state.memory.length || index < 0)
+				return U.V_UNPOWERED;
 			
-			var memoryValue:Value = U.state.memory[index];
-			if (!memoryValue)
-				return null;
-			
-			return InstructionValue.fromValue(memoryValue);
+			return U.state.memory[index];
 		}
 	}
 

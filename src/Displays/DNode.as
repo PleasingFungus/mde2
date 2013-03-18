@@ -13,6 +13,7 @@ package Displays {
 		
 		public var node:InternalNode;
 		private var label:FlxText;
+		private var lastValueString:String;
 		public function DNode(node:InternalNode) {
 			this.node = node;
 			super();
@@ -39,8 +40,15 @@ package Displays {
 			
 			label.x = x - 1 - offset.x;
 			label.y = y + 1 - offset.y;
-			label.text = node.getValue()+"";
-			//TODO: truncate
+			var valueString:String = node.getValue().toString();
+			if (valueString != lastValueString) {
+				label.text = valueString;
+				for (var i:int = valueString.length - 2; i > 0 && label.height > height; i--)
+					label.text = valueString.substr(0, i) + "...";
+				if (label.height > height)
+					label.text = "...";
+				lastValueString = valueString;
+			}
 			label.draw();
 		}
 		

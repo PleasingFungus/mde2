@@ -1,5 +1,6 @@
 package Modules {
 	import Components.Port;
+	import Layouts.Nodes.WideNode;
 	import Values.*;
 	
 	import Layouts.*;
@@ -63,7 +64,7 @@ package Modules {
 			
 			for (var i:int = 0; i < width; i++) {
 				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2, layout.offset.y + 3.5 + i * 2);
-				nodes.push(new StandardNode(this, loc, [layout.ports[layout.ports.length - 2], layout.ports[layout.ports.length - 1]], [],
+				nodes.push(new WideNode(this, loc, [layout.ports[layout.ports.length - 2], layout.ports[layout.ports.length - 1]], [],
 											function getValue(i:int):Value {
 												return values[i];
 											}, i + "", true, i));

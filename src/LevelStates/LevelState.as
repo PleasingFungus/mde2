@@ -165,7 +165,7 @@ package LevelStates {
 		protected function addUIActives():void {
 			upperLayer.add(new Scroller);
 			upperLayer.add(new DCurrent(displayWires, displayModules));
-			upperLayer.add(new DModuleInfo);
+			upperLayer.add(new DModuleInfo(displayModules));
 			if (level.delay) {
 				if (!displayDelay)
 					midLayer.add(displayDelay = new DDelay(modules, displayModules));

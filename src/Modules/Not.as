@@ -2,6 +2,9 @@ package Modules {
 	import Components.Port;
 	import Values.Value;
 	import Values.BooleanValue;
+	import Layouts.*;
+	import Layouts.Nodes.TallNode;
+	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -11,6 +14,13 @@ package Modules {
 		public function Not(X:int, Y:int) {
 			super(X, Y, "Not", Module.CAT_LOGIC, 1, 1, 0);
 			delay = 1;
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			var outport:PortLayout = layout.ports[1];
+			return new InternalLayout([new TallNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
+														[layout.ports[0], layout.ports[1]], [],
+													    function getValue():Value { return drive(outputs[0]); }, "!" )]);
 		}
 		
 		override public function drive(port:Port):Value {

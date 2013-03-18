@@ -1,8 +1,10 @@
 package Modules {
 	import Components.Port;
-	import Values.Value;
-	import Values.OpcodeValue;
-	import Values.InstructionValue;
+	import Values.*;
+	import Layouts.ModuleLayout;
+	import Layouts.Nodes.*;
+	import Layouts.InternalLayout;
+	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -19,8 +21,31 @@ package Modules {
 			delay = 10;
 		}
 		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = super.generateLayout();
+			layout.dim.x += 4;
+			layout.offset.x -= 4;
+			layout.ports[0].offset.x -= 4;
+			for (var i:int = 1; i < 5; i++)
+				layout.ports[i].offset.y += 1;
+			return layout;
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			var opcodeNode:InternalNode = new WideNode(this, new Point(layout.ports[1].offset.x - 3, layout.ports[1].offset.y), [layout.ports[1]], [], function getOpcode():Value { return drive(outputs[0]); }, "O" );
+			var sourceNode:InternalNode = new WideNode(this, new Point(layout.ports[2].offset.x - 3, layout.ports[2].offset.y), [layout.ports[2]], [], function getSource():Value { return drive(outputs[1]); }, "S" );
+			var targetNode:InternalNode = new WideNode(this, new Point(layout.ports[3].offset.x - 3, layout.ports[3].offset.y), [layout.ports[3]], [], function getTarget():Value { return drive(outputs[2]); }, "T" );
+			var destinNode:InternalNode = new WideNode(this, new Point(layout.ports[4].offset.x - 3, layout.ports[4].offset.y), [layout.ports[4]], [], function getDestin():Value { return drive(outputs[3]); }, "D" ); 
+			var memNode:InternalNode = new BigTallNode(this, new Point(layout.ports[0].offset.x, layout.ports[0].offset.y + 6), [opcodeNode, sourceNode, targetNode, destinNode], [],
+												   getValue, "[M]");
+			var lineNode:InternalNode = new WideNode(this, new Point(layout.ports[0].offset.x, layout.ports[0].offset.y + 2),
+													 [layout.ports[0], memNode], [],
+													 controls[0].getValue, "Ln");
+			return new InternalLayout([opcodeNode, sourceNode, targetNode, destinNode, memNode, lineNode]);
+		}
+		
 		override public function renderName():String {
-			return "IMEM\n\n" + controls[0].getValue()+": "+value;
+			return "IMEM\n\n" + controls[0].getValue()+": "+getValue();
 		}
 		
 		override public function getDescription():String {
@@ -28,7 +53,7 @@ package Modules {
 		}
 		
 		override public function drive(port:Port):Value {			
-			var memoryValue:Value = value;
+			var memoryValue:Value = getValue();
 			if (!memoryValue)
 				return U.V_UNPOWERED;
 			if (!(memoryValue is InstructionValue))
@@ -46,7 +71,7 @@ package Modules {
 			}
 		}
 		
-		protected function get value():Value { 
+		protected function getValue():Value { 
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown) return line;
 			

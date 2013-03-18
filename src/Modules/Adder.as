@@ -4,8 +4,8 @@ package Modules {
 	import Values.Value;
 	
 	import Layouts.*;
+	import Layouts.Nodes.TallNode;
 	import flash.geom.Point;
-	import Layouts.Nodes.StandardNode;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -25,7 +25,7 @@ package Modules {
 		
 		override protected function generateInternalLayout():InternalLayout {
 			var outport:PortLayout = layout.ports[2];
-			return new InternalLayout([new StandardNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
+			return new InternalLayout([new TallNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
 														[layout.ports[0], layout.ports[1], layout.ports[2]], [],
 													    function getValue():Value { return drive(outputs[0]); }, "+" )]);
 		}

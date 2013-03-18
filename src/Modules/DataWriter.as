@@ -2,6 +2,7 @@ package Modules {
 	import Values.*;
 	import Layouts.*;
 	import Layouts.Nodes.StandardNode;
+	import Layouts.Nodes.WideNode;
 	import Components.Port;
 	
 	import flash.geom.Point;
@@ -30,10 +31,10 @@ package Modules {
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			var writeNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [layout.ports[0]], [],
+			var writeNode:WideNode = new WideNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [layout.ports[0]], [],
 															null, "[M]");
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]], [],
-															controls[0].getValue, "L");
+															controls[0].getValue, "Ln");
 			return new InternalLayout([controlNode, writeNode]);
 		}
 		

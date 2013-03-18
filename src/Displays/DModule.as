@@ -111,6 +111,15 @@ package Displays {
 			nameText.y = y + (height - nameText.height) / 2;
 		}
 		
+		public function descriptionAt(fp:FlxPoint):String {
+			for each (var displayNode:DNode in displayNodes)
+				if (displayNode.overlapsPoint(fp))
+					return displayNode.node.getLabel();
+			if (module.getDescription())
+				return module.name +": " + module.getDescription();
+			return module.name;
+		}
+		
 		override public function draw():void {
 			super.draw();
 			

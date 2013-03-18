@@ -26,10 +26,10 @@ package Modules {
 		
 		override protected function generateInternalLayout():InternalLayout {
 			var dataNode:StandardNode = new StandardNode(this, new Point(layout.ports[2].offset.x - 2, layout.ports[2].offset.y), [layout.ports[0], layout.ports[2]], [],
-														 function getValue():Value { return value; });
+														 function getValue():Value { return value; }, "Stored value");
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 															[new NodeTuple(layout.ports[0], dataNode, writeOK)],
-															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; } , "W");
+															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; }, "Stored value will be set to input value");
 			return new InternalLayout([controlNode, dataNode]);
 		}
 		

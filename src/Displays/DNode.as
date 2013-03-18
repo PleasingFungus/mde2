@@ -1,8 +1,8 @@
 package Displays {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import org.flixel.FlxSprite;
-	import org.flixel.FlxText;
+	import Layouts.Nodes.WideNode;
+	import org.flixel.*;
 	import Layouts.Nodes.InternalNode;
 	
 	/**
@@ -22,9 +22,10 @@ package Displays {
 		}
 		
 		protected function makeSprite():void {
-			makeGraphic(U.GRID_DIM * node.dim.x, U.GRID_DIM * node.dim.y, 0xff202020, false, "node");
+			makeGraphic(U.GRID_DIM * node.dim.x, U.GRID_DIM * node.dim.y, 0xff202020, false, "node"+node.dim.x+','+node.dim.y);
 			var borderWidth:int = 2;
-			framePixels.fillRect(new Rectangle(borderWidth, borderWidth, width - borderWidth*2, height - borderWidth*2), 0xff8b8bdb);
+			pixels.fillRect(new Rectangle(borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2), 0xffffffff);
+			
 			offset.x = width / 2;
 			offset.y = height / 2;
 		}
@@ -33,13 +34,20 @@ package Displays {
 			var l:Point = node.Loc;
 			x = l.x * U.GRID_DIM;
 			y = l.y * U.GRID_DIM;
+			color = (!U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? 0xfff03c : 0x8b8bdb;
 			super.draw();
 			
 			label.x = x - 1 - offset.x;
 			label.y = y + 1 - offset.y;
-			label.text = node.getLabel();
+			label.text = node.getValue()+"";
 			//TODO: truncate
 			label.draw();
+		}
+		
+		override public function overlapsPoint(fp:FlxPoint, InScreenSpace:Boolean = false, Camera:FlxCamera = null):Boolean {
+			if (InScreenSpace || Camera)
+				return super.overlapsPoint(fp, InScreenSpace, Camera);
+			return fp.x >= x - offset.x && fp.y >= y - offset.y && fp.x < x - offset.x + width && fp.y < y - offset.y + height;
 		}
 		
 	}

@@ -9,10 +9,11 @@ package Displays {
 	 */
 	public class DModuleInfo extends FlxBasic {
 		
-		private var lastModule:Module;
 		private var renderBuddy:FloatText;
-		public function DModuleInfo() {
+		private var displayModules:Vector.<DModule>;
+		public function DModuleInfo(DisplayModules:Vector.<DModule>) {
 			super();
+			displayModules = DisplayModules;
 		}
 		
 		override public function update():void {
@@ -27,14 +28,15 @@ package Displays {
 		private function checkMouse():void {
 			var mousedModule:Module = U.state.findMousedModule();
 			renderBuddy.visible = mousedModule != null;
-			if (mousedModule && mousedModule != lastModule) {
-				var tip:String = mousedModule.name;
-				if (mousedModule.getDescription())
-					tip += ": " + mousedModule.getDescription();
-				renderBuddy.text.text = tip;
-				
-				lastModule = mousedModule;
-			}
+			if (mousedModule)
+				//second iteration to avoid repeating checks on constraints from findMousedModule
+				for each (var dModule:DModule in displayModules)
+					if (dModule.module == mousedModule) {
+						var tip:String = dModule.descriptionAt(U.mouseFlxLoc);
+						if (tip != renderBuddy.text.text)
+							renderBuddy.text.text = tip;
+						break;
+					}
 		}
 		
 		override public function draw():void {

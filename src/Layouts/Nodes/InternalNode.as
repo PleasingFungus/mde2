@@ -55,7 +55,7 @@ package Layouts.Nodes {
 			
 			if (GetValue != null) {
 				if (out)
-					out += ":"
+					out += ": "
 				
 				out += getValue();
 			}

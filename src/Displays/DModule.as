@@ -115,9 +115,13 @@ package Displays {
 			for each (var displayNode:DNode in displayNodes)
 				if (displayNode.overlapsPoint(fp))
 					return displayNode.node.getLabel();
+			
+			var out:String = module.name;
 			if (module.getDescription())
-				return module.name +": " + module.getDescription();
-			return module.name;
+				out += ": " + module.getDescription();
+			if (U.state.level.delay && module.delay)
+				out += " DELAY: " + module.delay+".";
+			return out;
 		}
 		
 		override public function draw():void {

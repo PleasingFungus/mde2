@@ -209,6 +209,8 @@ package LevelStates {
 			var backButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _back_sprite, function back():void {
 				if (U.tuts.indexOf(level) != -1)
 					FlxG.switchState(new TutorialMenu);
+				else if (U.delayTuts.indexOf(level) != -1)
+					FlxG.switchState(new DelayTutMenu);
 				else
 					FlxG.switchState(new LevelMenu);
 			}, "Exit to menu");

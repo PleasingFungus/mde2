@@ -1,5 +1,6 @@
 package LevelStates {
 	import Levels.Level;
+	import Menu.DelayTutMenu;
 	import Menu.TutorialMenu;
 	import org.flixel.*;
 	import Menu.LevelMenu;
@@ -34,6 +35,8 @@ package LevelStates {
 						FlxG.switchState(new LevelState(U.tuts[1]));
 					else if (U.tuts.indexOf(level) != -1)
 						FlxG.switchState(new TutorialMenu);
+					else if (U.delayTuts.indexOf(level) != -1)
+						FlxG.switchState(new DelayTutMenu);
 					else
 						FlxG.switchState(new LevelMenu);
 				});

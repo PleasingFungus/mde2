@@ -82,16 +82,14 @@ package Levels {
 								  true,
 								  [Adder, DataWriter], [],
 								  [new ConstIn(12, 16, 1)]),*/
-						new Level("Delay 2A: Acc.",
-								  new AccumulatorTutorialGoal,
+						new Level("Delay 2A: Basic Acc.",
+								  new MagicAccumDelayTutGoal,
 								  true,
 								  [ConstIn, Adder, Latch, MagicWriter, SysDelayClock], []),
-						new Level("Delay 2B: Acc.",
-								  new AccumulatorTutorialGoal,
+						new Level("Delay 2B: Full Acc.",
+								  new AccumDelayTutGoal,
 								  true,
-								  [ConstIn, Adder, Latch, DataWriter, SysDelayClock], []));
-			levels[1].predecessors.push(levels[0]);
-			//levels[2].predecessors.push(levels[1]);
+								  [ConstIn, Adder, Latch, DataMemory, SysDelayClock], []));
 			return levels;
 		}
 		

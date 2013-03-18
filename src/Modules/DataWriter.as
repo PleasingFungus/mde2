@@ -32,7 +32,7 @@ package Modules {
 		
 		override protected function generateInternalLayout():InternalLayout {
 			var writeNode:WideNode = new WideNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [layout.ports[0]], [],
-															null, "Memory at line");
+															getData, "Memory at line");
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]], [],
 															controls[0].getValue, "Line no.");
 			return new InternalLayout([controlNode, writeNode]);
@@ -69,6 +69,21 @@ package Modules {
 			var indexedOldValue:IndexedValue = oldValue as IndexedValue;
 			U.state.memory[indexedOldValue.index] = indexedOldValue.subValue;
 			lastMomentStored = -1;
+		}
+		
+		protected function getData():Value { 
+			var line:Value = controls[0].getValue();
+			if (line.unpowered || line.unknown) return line;
+			
+			var index:int = line.toNumber();
+			if (index < 0 || index >= U.state.memory.length)
+				return U.V_UNPOWERED;
+			
+			var memoryValue:Value = U.state.memory[index];
+			if (!memoryValue)
+				return FixedValue.NULL;
+			
+			return memoryValue;
 		}
 		
 	}

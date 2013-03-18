@@ -12,7 +12,7 @@ package Values {
 		
 		override public function toString():String {
 			if (value == C.INT_NULL)
-				return "NULL";
+				return "NIL";
 			return value.toString();
 		}
 		

@@ -32,15 +32,19 @@ package Modules {
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			var opcodeNode:InternalNode = new WideNode(this, new Point(layout.ports[1].offset.x - 3, layout.ports[1].offset.y), [layout.ports[1]], [], function getOpcode():Value { return drive(outputs[0]); }, "O" );
-			var sourceNode:InternalNode = new WideNode(this, new Point(layout.ports[2].offset.x - 3, layout.ports[2].offset.y), [layout.ports[2]], [], function getSource():Value { return drive(outputs[1]); }, "S" );
-			var targetNode:InternalNode = new WideNode(this, new Point(layout.ports[3].offset.x - 3, layout.ports[3].offset.y), [layout.ports[3]], [], function getTarget():Value { return drive(outputs[2]); }, "T" );
-			var destinNode:InternalNode = new WideNode(this, new Point(layout.ports[4].offset.x - 3, layout.ports[4].offset.y), [layout.ports[4]], [], function getDestin():Value { return drive(outputs[3]); }, "D" ); 
+			var opcodeNode:InternalNode = new WideNode(this, new Point(layout.ports[1].offset.x - 3, layout.ports[1].offset.y), [layout.ports[1]], [],
+													   function getOpcode():Value { return drive(outputs[0]); }, "Opcode" );
+			var sourceNode:InternalNode = new WideNode(this, new Point(layout.ports[2].offset.x - 3, layout.ports[2].offset.y), [layout.ports[2]], [],
+													   function getSource():Value { return drive(outputs[1]); }, "Source" );
+			var targetNode:InternalNode = new WideNode(this, new Point(layout.ports[3].offset.x - 3, layout.ports[3].offset.y), [layout.ports[3]], [],
+													   function getTarget():Value { return drive(outputs[2]); }, "Target" );
+			var destinNode:InternalNode = new WideNode(this, new Point(layout.ports[4].offset.x - 3, layout.ports[4].offset.y), [layout.ports[4]], [],
+													   function getDestin():Value { return drive(outputs[3]); }, "Destination" ); 
 			var memNode:InternalNode = new BigTallNode(this, new Point(layout.ports[0].offset.x, layout.ports[0].offset.y + 6), [opcodeNode, sourceNode, targetNode, destinNode], [],
-												   getValue, "[M]");
+												   getValue, "Memory at line");
 			var lineNode:InternalNode = new WideNode(this, new Point(layout.ports[0].offset.x, layout.ports[0].offset.y + 2),
 													 [layout.ports[0], memNode], [],
-													 controls[0].getValue, "Ln");
+													 controls[0].getValue, "Line no.");
 			return new InternalLayout([opcodeNode, sourceNode, targetNode, destinNode, memNode, lineNode]);
 		}
 		

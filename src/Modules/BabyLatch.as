@@ -17,7 +17,7 @@ package Modules {
 		
 		override protected function generateInternalLayout():InternalLayout {
 			return new InternalLayout([new StandardNode(this, new Point(layout.ports[1].offset.x - 2, layout.ports[1].offset.y), [layout.ports[0], layout.ports[1]], [],
-														function getValue():Value { return value; })]);
+														function getValue():Value { return value; }, "Stored value")]);
 		}
 		
 		override public function renderName():String {

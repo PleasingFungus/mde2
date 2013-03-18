@@ -1,5 +1,6 @@
 package Modules {
 	import Components.Port;
+	import Layouts.Nodes.WideNode;
 	import Levels.Level;
 	import Values.*;
 	import Layouts.*;
@@ -39,9 +40,7 @@ package Modules {
 		}
 		
 		override protected function generateLayout():ModuleLayout {
-			var layout:ModuleLayout = super.generateLayout();
-			layout.ports[0].offset.y += 1;
-			layout.ports[1].offset.y += 1;
+			var layout:ModuleLayout = new DefaultLayout(this, 1, 5);
 			return layout;
 		}
 		
@@ -49,10 +48,10 @@ package Modules {
 			var outport:PortLayout = layout.ports[1];
 			return new InternalLayout([new StandardNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
 														[layout.ports[0], layout.ports[1]], [],
-														function getValue():Value { return drive(outputs[0]); }, "=" ),
-									   new StandardNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y - 2),
+														function getValue():Value { return drive(outputs[0]); }, "Opcodes match" ),
+									   new WideNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y - 2),
 														[], [],
-														function getValue():Value { return compareValue; })]);
+														function getValue():Value { return compareValue; }, "Comparison opcode")]);
 		}
 		
 		override public function renderName():String {

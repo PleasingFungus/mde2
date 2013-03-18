@@ -25,7 +25,7 @@ package Modules {
 			var lport:PortLayout = layout.ports[0];
 			return new InternalLayout([new StandardNode(this, new Point(lport.offset.x - layout.dim.x / 2 - 1 / 2, lport.offset.y),
 														[lport], [],
-													    function getValue():Value { return value; } )]);
+													    function getValue():Value { return value; }, "Value" )]);
 		}
 		
 		override public function setByConfig():void {

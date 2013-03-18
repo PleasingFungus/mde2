@@ -39,7 +39,7 @@ package Modules {
 			for (var i:int = 0; i < inputs.length; i++) {
 				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2, layout.ports[i].offset.y);
 				nodes.push(new WideNode(this, loc, [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
-											inputs[i].getValue, U.state.level.expectedOps[i].toString(), true));
+											inputs[i].getValue, "Input value for "+U.state.level.expectedOps[i], true));
 				controlLines.push(new NodeTuple(layout.ports[layout.ports.length - 1], nodes[i], function (i:int):Boolean { 
 					return getIndex() == i;
 				}, i));
@@ -47,7 +47,7 @@ package Modules {
 			
 			var controlNode:WideNode = new WideNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
 															[layout.ports[layout.ports.length - 2]], controlLines,
-															controls[0].getValue);
+															controls[0].getValue, "Selected input");
 			nodes.push(controlNode);
 			return new InternalLayout(nodes);
 		}

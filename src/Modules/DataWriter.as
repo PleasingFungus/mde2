@@ -32,9 +32,9 @@ package Modules {
 		
 		override protected function generateInternalLayout():InternalLayout {
 			var writeNode:WideNode = new WideNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [layout.ports[0]], [],
-															null, "[M]");
+															null, "Memory at line");
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]], [],
-															controls[0].getValue, "Ln");
+															controls[0].getValue, "Line no.");
 			return new InternalLayout([controlNode, writeNode]);
 		}
 		

@@ -1,4 +1,5 @@
 package Modules {
+	import Layouts.Nodes.WideNode;
 	import Values.Value;
 	import Values.NumericValue;
 	import Values.OpcodeValue;
@@ -30,10 +31,10 @@ package Modules {
 		override protected function generateInternalLayout():InternalLayout {
 			var controlport:PortLayout = layout.ports[2];
 			var outport:PortLayout = layout.ports[3];
-			return new InternalLayout([new StandardNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
+			return new InternalLayout([new WideNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
 														[layout.ports[0], layout.ports[1], outport], [],
-														function getValue():Value { return drive(outputs[0]); } ),
-									   new StandardNode(this, new Point(controlport.offset.x, controlport.offset.y + 3),
+														function getValue():Value { return drive(outputs[0]); }, "Result" ),
+									   new WideNode(this, new Point(controlport.offset.x, controlport.offset.y + 3),
 														[controlport], [],
 														function getValue():Value {
 															switch (controls[0].getValue().toNumber()) {
@@ -41,7 +42,7 @@ package Modules {
 																case OpcodeValue.OP_SUB.toNumber(): return OpcodeValue.OP_SUB;
 																default: return U.V_UNKNOWN;
 															}
-														})]);
+														}, "Operation")]);
 		}
 		
 		override public function drive(port:Port):Value {

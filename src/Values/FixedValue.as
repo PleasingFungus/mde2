@@ -16,7 +16,7 @@ package Values {
 		
 		override public function toNumber():Number { return value; }
 		
-		public static var NULL:FixedValue = new FixedValue("NULL", C.INT_NULL);
+		public static var NULL:FixedValue = new FixedValue("NIL", C.INT_NULL);
 	}
 
 }

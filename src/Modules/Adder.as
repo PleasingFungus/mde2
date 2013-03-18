@@ -27,7 +27,7 @@ package Modules {
 			var outport:PortLayout = layout.ports[2];
 			return new InternalLayout([new TallNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
 														[layout.ports[0], layout.ports[1], layout.ports[2]], [],
-													    function getValue():Value { return drive(outputs[0]); }, "+" )]);
+													    function getValue():Value { return drive(outputs[0]); }, "Sum" )]);
 		}
 		
 		override public function drive(port:Port):Value {

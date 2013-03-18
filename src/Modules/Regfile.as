@@ -67,13 +67,13 @@ package Modules {
 				nodes.push(new WideNode(this, loc, [layout.ports[layout.ports.length - 2], layout.ports[layout.ports.length - 1]], [],
 											function getValue(i:int):Value {
 												return values[i];
-											}, i + "", true, i));
+											}, "Stored value no."+i, true, i));
 			}
 			
 			var writeConnections:Array = nodes.slice();
 			writeConnections.push(layout.ports[0]);
 			var writeNode:StandardNode = new StandardNode(this, new Point(layout.ports[0].offset.x + 4, layout.ports[0].offset.y),
-														  writeConnections, [], inputs[0].getValue);
+														  writeConnections, [], inputs[0].getValue, "Input");
 			
 			var writeOK:Function = function writeOK():Boolean {
 				var control:Value = write.getValue();
@@ -82,7 +82,7 @@ package Modules {
 			var writeControlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 																[new NodeTuple(layout.ports[0], writeNode, writeOK)], function isEnabled():BooleanValue {
 																	return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE;
-																});
+																}, "Specified stored value will be set to input value");
 			
 			controlLines = [];
 			for (i = 0; i < nodes.length; i++) {
@@ -93,7 +93,7 @@ package Modules {
 				controlLines.push(tup);
 			}
 			var writeTargetNode:StandardNode = new StandardNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), [layout.ports[2]], controlLines,
-																function getValue():Value { return destination.getValue(); } );
+																function getValue():Value { return destination.getValue(); }, "No. of stored value to set" );
 			
 			controlLines = [];
 			for (i = 0; i < nodes.length; i++)
@@ -101,7 +101,7 @@ package Modules {
 					return source.getValue().toNumber() == index;
 				}, i));
 			var sourceTargetNode:StandardNode = new StandardNode(this, new Point(layout.ports[3].offset.x, layout.ports[3].offset.y + 2), [layout.ports[3]], controlLines,
-																 function getValue():Value { return source.getValue(); } );
+																 function getValue():Value { return source.getValue(); }, "No. of 1st stored value to output" );
 			
 			controlLines = [];
 			for (i = 0; i < nodes.length; i++) {
@@ -112,7 +112,7 @@ package Modules {
 				controlLines.push(tup);
 			}
 			var targetTargetNode:StandardNode = new StandardNode(this, new Point(layout.ports[4].offset.x, layout.ports[4].offset.y + 2), [layout.ports[4]], controlLines,
-																 function getValue():Value { return target.getValue(); } );
+																 function getValue():Value { return target.getValue(); }, "No. of 2nd stored value to output" );
 			
 			nodes.push(writeNode);
 			nodes.push(writeControlNode);

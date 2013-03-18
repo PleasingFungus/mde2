@@ -32,12 +32,12 @@ package Modules {
 		
 		override protected function generateInternalLayout():InternalLayout {
 			var writeNode:InternalNode = new BigNode(this, new Point(layout.ports[3].offset.x - 4, layout.ports[3].offset.y), [layout.ports[0], layout.ports[3]], [],
-														  getData, "[M]");
+														  getData, "Memory at line");
 			var lineNode:InternalNode = new WideNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), [layout.ports[2], writeNode], [],
-													 controls[1].getValue, "Ln");
+													 controls[1].getValue, "Line no.");
 			var controlNode:InternalNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 															[new NodeTuple(layout.ports[0], writeNode, writeOK)],
-															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; } );
+															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; }, "Memory at line will be set to input value" );
 			return new InternalLayout([writeNode, lineNode, controlNode]);
 		}
 		

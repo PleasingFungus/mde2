@@ -32,7 +32,7 @@ package Modules {
 			var outport:PortLayout = layout.ports[3];
 			return new InternalLayout([new StandardNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
 														[layout.ports[0], layout.ports[1], outport], [],
-														function getValue():Value { return drive(outputs[0]); } ),
+														function getValue():Value { return drive(outputs[0]); }, "Result"),
 									   new StandardNode(this, new Point(controlport.offset.x, controlport.offset.y + 3),
 														[controlport], [],
 														function getValue():Value {
@@ -41,7 +41,7 @@ package Modules {
 																case OpcodeValue.OP_DIV.toNumber(): return OpcodeValue.OP_DIV;
 																default: return U.V_UNKNOWN;
 															}
-														})]);
+														}, "Operation")]);
 		}
 		
 		override public function drive(port:Port):Value {

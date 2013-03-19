@@ -295,7 +295,7 @@ package LevelStates {
 					}
 				}, "Set zoom to "+Math.pow(2, -zoomLevel), HOTKEYS[zoomLevel]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == zoom));
 			
-			var zoomList:ButtonList = new ButtonList(50, 10, zoomButtons, function onListClose():void {
+			var zoomList:ButtonList = new ButtonList(45, 5, zoomButtons, function onListClose():void {
 				if (listOpen == LIST_ZOOM)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -361,7 +361,7 @@ package LevelStates {
 				}, "Enter "+MODE_NAMES[newMode]+" mode. "+MODE_DESCRIPTIONS[newMode], HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
 			}
 			
-			var modeList:ButtonList = new ButtonList(10, 10, modeSelectButtons, function onListClose():void {
+			var modeList:ButtonList = new ButtonList(5, 5, modeSelectButtons, function onListClose():void {
 				if (listOpen == LIST_MODES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -388,14 +388,16 @@ package LevelStates {
 			for each (var newMode:int in [VIEW_MODE_NORMAL, VIEW_MODE_DELAY]) {
 				modeSelectButtons.push(new GraphicButton( -1, -1, VIEW_MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 					viewMode = newMode;
-					if (listOpen == LIST_VIEW_MODES) {
+					if (MODE_DELAY == mode)
+						mode = MODE_CONNECT;
+					if (LIST_VIEW_MODES == listOpen ) {
 						listOpen = LIST_NONE;
 						makeUI();
 					}
 				}, "Enter "+VIEW_MODE_NAMES[newMode]+" view mode").setParam(newMode).setSelected(newMode == viewMode));
 			}
 			
-			var modeList:ButtonList = new ButtonList(90, 10, modeSelectButtons, function onListClose():void {
+			var modeList:ButtonList = new ButtonList(85, 5, modeSelectButtons, function onListClose():void {
 				if (listOpen == LIST_VIEW_MODES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -462,7 +464,7 @@ package LevelStates {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(130, 10, moduleButtons, function onListClose():void {
+			moduleList = new ButtonList(125, 5, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_CATEGORIES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -519,7 +521,7 @@ package LevelStates {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(130, 10, moduleButtons, function onListClose():void {
+			moduleList = new ButtonList(125, 5, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_MODULES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -1235,8 +1237,6 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/undo.png")] private const _undo_sprite:Class;
 		[Embed(source = "../../lib/art/ui/redo.png")] private const _redo_sprite:Class;
 		[Embed(source = "../../lib/art/ui/up.png")] private const _back_sprite:Class;
-		[Embed(source = "../../lib/art/ui/floppy.png")] private const _save_sprite:Class;
-		[Embed(source = "../../lib/art/ui/yppolf.png")] private const _evas_sprite:Class;
 		[Embed(source = "../../lib/art/ui/floppy-trophy.png")] private const _success_load_sprite:Class;
 		
 		[Embed(source = "../../lib/art/ui/maglass.png")] private const _zoom_sprite:Class;

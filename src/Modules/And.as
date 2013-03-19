@@ -22,7 +22,7 @@ package Modules {
 			outputs.push(new Port(true, this));
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			var out:String = "And\n\n";
 			for each (var input:Port in inputs)
 				out += input.getValue() + ',';

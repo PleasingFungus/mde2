@@ -20,7 +20,7 @@ package Modules {
 			compareValue = configuration.value;
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "=" + "\n"+compareValue+"\n\n" + drive(null);
 		}
 		

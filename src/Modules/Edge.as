@@ -24,7 +24,7 @@ package Modules {
 			edgeLength = configuration.value;
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "EDGE-"+edgeLength;
 		}
 		

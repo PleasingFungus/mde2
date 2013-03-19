@@ -68,7 +68,7 @@ package Modules {
 				ports.push(new Port(isOutput, this));
 		}
 		
-		public function renderName():String {
+		public function renderDetails():String {
 			return name;
 		}
 		

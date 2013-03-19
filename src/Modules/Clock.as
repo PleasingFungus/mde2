@@ -20,7 +20,7 @@ package Modules {
 			period = configuration.value;
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "CLK" + "\n"+period+"\n\n" + drive(null);
 		}
 		

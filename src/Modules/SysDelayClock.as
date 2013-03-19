@@ -19,7 +19,7 @@ package Modules {
 			edgeLength = Math.min(configuration.value, U.state ? U.state.time.clockPeriod - 1 : int.MAX_VALUE);
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "SYSCLK" + "\n"+U.state.time.clockPeriod+"\n"+edgeLength+"-"+(U.state.time.clockPeriod - edgeLength)+"\n\n" + drive(null);
 		}
 		

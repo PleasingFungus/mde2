@@ -38,7 +38,7 @@ package Modules {
 			return new InternalLayout([controlNode, writeNode]);
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			var out:String = "DWRITE\n\n" + controls[0].getValue();
 			return out;
 		}

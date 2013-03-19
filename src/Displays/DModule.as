@@ -20,6 +20,7 @@ package Displays {
 		public var displayNodes:Vector.<DNode>;
 		public var displayConnections:Vector.<InternalDWire>;
 		private var nameText:FlxText;
+		private var detailsText:FlxText;
 		private var locked:Boolean;
 		private var wasValid:Boolean;
 		public function DModule(module:Module) {
@@ -42,9 +43,9 @@ package Displays {
 						module.layout.dim.y * U.GRID_DIM,
 						moduleColor, true);
 			
-			nameText = new FlxText( -1, -1, width + U.GRID_DIM / 2, getName());
-			font.configureFlxText(nameText, 0x0, 'center');
-			nameText.scrollFactor = scrollFactor; //object
+			detailsText = new FlxText( -1, -1, width + U.GRID_DIM / 2, getDetails());
+			font.configureFlxText(detailsText, 0x0, 'center');
+			detailsText.scrollFactor = scrollFactor; //object
 			
 			displayPorts = new Vector.<DPort>;
 			for each (var layout:PortLayout in module.layout.ports)
@@ -52,16 +53,21 @@ package Displays {
 			
 			displayNodes = new Vector.<DNode>;
 			displayConnections = new Vector.<InternalDWire>;
-			if (module.internalLayout)
+			if (module.internalLayout) {
 				for each (var node:InternalNode in module.internalLayout.nodes) {
 					displayNodes.push(new DNode(node));
 					for each (var connection:InternalWire in node.internalWires)
 						displayConnections.push(new InternalDWire(connection));
 				}
+				
+				nameText = new FlxText( -1, -1, width, module.name);
+				U.NODE_FONT.configureFlxText(nameText, 0x0, 'center');
+				nameText.scrollFactor = scrollFactor;
+			}
 		}
 		
-		private function getName():String {
-			var displayName:String = module.renderName();
+		private function getDetails():String {
+			var displayName:String = module.renderDetails();
 			if (U.state.level.delay && module.delay)
 				displayName += "\n\nD" + module.delay;
 			return displayName;
@@ -80,8 +86,8 @@ package Displays {
 				refresh();
 			
 			var font:FontTuple = this.font;
-			if (nameText.font != font.id || nameText.size != font.size)
-				font.configureFlxText(nameText = new FlxText(-1, -1, width + U.GRID_DIM / 2, getName()), 0x0, 'center');
+			if (detailsText.font != font.id || detailsText.size != font.size)
+				font.configureFlxText(detailsText = new FlxText(-1, -1, width + U.GRID_DIM / 2, getDetails()), 0x0, 'center');
 			
 			updatePosition();
 			
@@ -107,8 +113,13 @@ package Displays {
 			for each (var displayNode:DNode in displayNodes)
 				displayNode.node.updatePosition();
 			
-			nameText.x = x;
-			nameText.y = y + (height - nameText.height) / 2;
+			detailsText.x = x;
+			detailsText.y = y + (height - detailsText.height) / 2;
+			
+			if (nameText) {
+				nameText.x = x;
+				nameText.y = y + height - (nameText.height + 2);
+			}
 		}
 		
 		public function descriptionAt(fp:FlxPoint):String {
@@ -133,10 +144,11 @@ package Displays {
 						displayConnection.draw();
 				for each (var displayNode:DNode in displayNodes)
 					displayNode.draw();
+				nameText.draw();
 			}
 			else if (U.state.zoom >= 0.25) {
-				nameText.text = getName();
-				nameText.draw();
+				detailsText.text = getDetails();
+				detailsText.draw();
 			}
 			
 			for each (var displayPort:DPort in displayPorts)

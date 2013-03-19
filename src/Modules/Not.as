@@ -30,7 +30,7 @@ package Modules {
 			return BooleanValue.fromValue(input).boolValue ? BooleanValue.FALSE : BooleanValue.TRUE;
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return name + "\n\n" + drive(outputs[0]);
 		}
 		

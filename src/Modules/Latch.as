@@ -33,7 +33,7 @@ package Modules {
 			return new InternalLayout([controlNode, dataNode]);
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "LCH" +"\n\n" + value;
 		}
 		

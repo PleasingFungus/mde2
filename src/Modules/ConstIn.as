@@ -32,7 +32,7 @@ package Modules {
 			initialValue = configuration.value;
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return name + "\n\n" + value;
 		}
 		

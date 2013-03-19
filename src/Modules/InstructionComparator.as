@@ -54,7 +54,7 @@ package Modules {
 														function getValue():Value { return compareValue; }, "Comparison opcode")]);
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "I=" + "\n"+compareValue+"\n\n" + drive(null);
 		}
 		

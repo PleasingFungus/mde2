@@ -58,7 +58,7 @@ package Modules {
 				inputs.push(new Port(false, this));
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "I-Demux\n\n" + controls[0].getValue()+": "+ drive(null);
 		}
 		

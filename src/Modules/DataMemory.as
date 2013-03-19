@@ -41,7 +41,7 @@ package Modules {
 			return new InternalLayout([writeNode, lineNode, controlNode]);
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			var out:String = "DMEM\n\n" + controls[0].getValue()+": ";
 			
 			var dataValue:Value = getData();

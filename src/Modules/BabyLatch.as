@@ -20,7 +20,7 @@ package Modules {
 														function getValue():Value { return value; }, "Stored value")]);
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "LCH" +"\n\n" + value;
 		}
 		

@@ -62,7 +62,7 @@ package Modules {
 			}
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return name + "\n\n" + drive(outputs[0]);
 		}
 		

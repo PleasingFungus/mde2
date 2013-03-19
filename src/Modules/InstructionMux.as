@@ -25,7 +25,7 @@ package Modules {
 				outputs.push(new Port(true, this));
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "I-Mux\n\n" + inputs[0].getValue()+"->"+ controls[0].getValue();
 		}
 		

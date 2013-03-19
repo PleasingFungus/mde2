@@ -40,7 +40,7 @@ package Modules {
 			return new NumericValue(inputA.toNumber() + inputB.toNumber());
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return name + "\n\n" + drive(outputs[0]);
 		}
 		

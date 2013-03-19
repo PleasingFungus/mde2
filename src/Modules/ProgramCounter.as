@@ -17,7 +17,7 @@ package Modules {
 			delay = 5;
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "PC" +"\n\n" + value;
 		}
 		

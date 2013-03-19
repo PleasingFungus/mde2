@@ -48,7 +48,7 @@ package Modules {
 			return new InternalLayout([opcodeNode, sourceNode, targetNode, destinNode, memNode, lineNode]);
 		}
 		
-		override public function renderName():String {
+		override public function renderDetails():String {
 			return "IMEM\n\n" + controls[0].getValue()+": "+getValue();
 		}
 		

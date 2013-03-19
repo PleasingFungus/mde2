@@ -40,7 +40,7 @@ package Testing.Goals {
 			currentRun = 0;
 		}
 		
-		override public function runTestStep(levelState:LevelState):Boolean {
+		override public function runTestStep(levelState:LevelState):void {
 			C.log("Run " + currentRun + " start");
 			
 			currentRun += 1;
@@ -49,7 +49,7 @@ package Testing.Goals {
 			C.log("Memory generated");
 			
 			levelState.initialMemory = mem;
-			return super.runTestStep(levelState);
+			super.runTestStep(levelState);
 		}
 		
 		override public function stateValid(levelState:LevelState, print:Boolean = false):Boolean {

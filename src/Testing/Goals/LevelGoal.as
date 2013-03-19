@@ -11,6 +11,7 @@ package Testing.Goals {
 		public var description:String;
 		public var dynamicallyTested:Boolean;
 		public var randomizedMemory:Boolean;
+		public var succeeded:Boolean;
 		public var timeLimit:int = int.MAX_VALUE;
 		
 		public var running:Boolean;
@@ -31,21 +32,21 @@ package Testing.Goals {
 		
 		public function startRun():void {
 			running = true;
+			succeeded = false;
 		}
 		
 		public function endRun():void {
 			running = false;
 		}
 		
-		public function runTestStep(levelState:LevelState):Boolean {
+		public function runTestStep(levelState:LevelState):void {
 			levelState.time.reset();
 			while (levelState.time.moment < timeLimit && !stateValid(levelState))
 				levelState.time.step();
 			
-			var success:Boolean = stateValid(levelState, true);
-			if (!success || done())
+			succeeded = stateValid(levelState, true);
+			if (!succeeded || done())
 				endRun();
-			return success;
 		}
 		
 		public function getProgress():String {

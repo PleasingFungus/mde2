@@ -54,6 +54,7 @@ package LevelStates {
 		protected var loadButton:MenuButton;
 		protected var resetButton:MenuButton;
 		
+		
 		protected var displayTime:DTime;
 		protected var displayDelay:DDelay;
 		protected var preserveModule:Boolean;
@@ -177,7 +178,12 @@ package LevelStates {
 			makeDataButton();
 			makeInfoButton();
 			makeBackButton();
-			upperLayer.add(editEnabled ? displayTime = new DTime(FlxG.width / 2 - 50, 10) : displayTime);
+			if (editEnabled)
+				upperLayer.add(displayTime = new DTime(FlxG.width / 2 - 50, 10))
+			else {
+				upperLayer.add(displayTime);
+				makeEndTestButton();
+			}
 		}
 		
 		protected function makeViewLists():void {
@@ -259,7 +265,7 @@ package LevelStates {
 		}
 		
 		protected function makeClockButton():void {
-			upperLayer.add(new DClock(10, 130));
+			upperLayer.add(new DClock(130, 90));
 		}
 		
 		protected function makeZoomButton():void {
@@ -302,17 +308,23 @@ package LevelStates {
 				var randomButton:MenuButton = new GraphicButton(90, 90, _random_sprite, function _():void {
 					initialMemory = level.goal.genMem();
 					memory = initialMemory.slice();
+					upperLayer.add(new DMemory(memory));
 				}, "Generate new memory", new Key("R"));
 				upperLayer.add(randomButton);
 			}
 			
 			if (level.goal.dynamicallyTested) {
-				var testButton:MenuButton = new GraphicButton(130, 90, _test_sprite, function _():void {
+				var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 40, _test_sprite, function _():void {
 					level.goal.startRun();
 					lastRunTime = elapsed;
 				}, "Test your machine!", new Key("T"));
 				upperLayer.add(testButton);
 			}
+		}
+		
+		protected function makeEndTestButton():void {
+			var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 40, _inv_test_sprite, finishDisplayTest, "Finish the test!", new Key("T"));
+			upperLayer.add(testButton);
 		}
 		
 		protected function makeModeButton():void {
@@ -804,30 +816,36 @@ package LevelStates {
 		}
 		
 		protected function checkTime():void {
-			if (editEnabled != time.moment == 0) {
-				editEnabled = time.moment == 0;
+			var editShouldBeEnabled:Boolean = time.moment == 0 && !runningDisplayTest;
+			if (editShouldBeEnabled != editEnabled) {
+				editEnabled = editShouldBeEnabled;
 				makeUI();
 			}
 			
-			if (runningDisplayTest) {
-				if (!time.moment && !displayTime.isPlaying)
-					runningDisplayTest = false; //?
-				else if (level.goal.stateValid(this)) {
-					U.save.data[level.name + SUCCESS_SUFFIX] = genSaveString();
-					
-					if (level == U.tuts[0])
-						U.updateTutState(U.TUT_BEAT_TUT_1);
-					else if (level == U.tuts[1])
-						U.updateTutState(U.TUT_BEAT_TUT_2);
-					
-					FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
-						FlxG.switchState(new SuccessState(level));
-					});
-				} else if (time.moment >= level.goal.timeLimit)
-					FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
-						FlxG.switchState(new FailureState(level));
-					});
+			if (runningDisplayTest && (level.goal.stateValid(this) || time.moment >= level.goal.timeLimit))
+				finishDisplayTest();
+		}
+		
+		protected function finishDisplayTest():void {
+			runningDisplayTest = false;
+			
+			if (!level.goal.succeeded) {
+				FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
+					FlxG.switchState(new FailureState(level));
+				});
+				return;
 			}
+			
+			U.save.data[level.name + SUCCESS_SUFFIX] = genSaveString();
+			
+			if (level == U.tuts[0])
+				U.updateTutState(U.TUT_BEAT_TUT_1);
+			else if (level == U.tuts[1])
+				U.updateTutState(U.TUT_BEAT_TUT_2);
+			
+			FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
+				FlxG.switchState(new SuccessState(level));
+			});
 		}
 		
 		//protected function get buttonMoused():MenuButton {
@@ -1129,10 +1147,10 @@ package LevelStates {
 		
 		
 		protected function runTest():void {
-			var success:Boolean = level.goal.runTestStep(this);
+			level.goal.runTestStep(this);
 			lastRunTime = elapsed;
 			if (!level.goal.running) {
-				if (success)
+				if (level.goal.succeeded)
 					C.log("Success!");
 				else
 					C.log("Failure!");
@@ -1225,6 +1243,7 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/random.png")] private const _random_sprite:Class;
 		[Embed(source = "../../lib/art/ui/reset.png")] private const _reset_sprite:Class;
 		[Embed(source = "../../lib/art/ui/test.png")] private const _test_sprite:Class;
+		[Embed(source = "../../lib/art/ui/tset.png")] private const _inv_test_sprite:Class;
 		
 		[Embed(source = "../../lib/art/ui/pen.png")] private const _pen_cursor:Class;
 		[Embed(source = "../../lib/art/ui/grabby_cursor.png")] private const _grab_cursor:Class;

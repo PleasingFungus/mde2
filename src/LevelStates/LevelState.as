@@ -59,6 +59,7 @@ package LevelStates {
 		protected var displayDelay:DDelay;
 		protected var preserveModule:Boolean;
 		protected var testText:FlxText;
+		protected var testBG:FlxSprite;
 		protected var lastRunTime:Number;
 		protected var runningDisplayTest:Boolean;
 		
@@ -1159,13 +1160,20 @@ package LevelStates {
 		}
 		
 		protected function checkTestControls():void {
-			if (FlxG.mouse.justPressed() || ControlSet.CANCEL_KEY.justPressed())
+			if (FlxG.mouse.justPressed() || ControlSet.CANCEL_KEY.justPressed()) {
 				level.goal.endRun();
+				time.reset();
+			}
 		}
 		
 		protected function drawTestText():void {
-			if (!testText)
+			if (!testText) {
 				testText = U.LABEL_FONT.configureFlxText(new FlxText(0, FlxG.height / 2, FlxG.width, " "), 0x000000, 'center');
+				testText.scrollFactor.x = testText.scrollFactor.y = 0;
+				testBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0x80000000);
+				testBG.scrollFactor.x = testBG.scrollFactor.y = 0;
+			}
+			testBG.draw();
 			testText.text = "TESTING" + level.goal.getProgress() + "\nClick or " + ControlSet.CANCEL_KEY.key + " to cancel";
 			testText.y = FlxG.height / 2 - testText.height / 2;
 			testText.draw();

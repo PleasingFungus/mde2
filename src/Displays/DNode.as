@@ -35,7 +35,7 @@ package Displays {
 			var l:Point = node.Loc;
 			x = l.x * U.GRID_DIM;
 			y = l.y * U.GRID_DIM;
-			color = (node.parent.deployed && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? 0xfff03c : 0x8b8bdb;
+			color = (node.parent.deployed && U.state.viewMode == U.state.VIEW_MODE_NORMAL && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? 0xfff03c : 0x8b8bdb;
 			super.draw();
 			
 			label.x = x - 1 - offset.x;

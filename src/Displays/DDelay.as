@@ -128,7 +128,7 @@ package Displays {
 				var distFraction:Number = node.dist / maxDelay;
 				var red:uint = 0xff * distFraction;
 				var green:uint = 0xff - red;
-				var color:uint = 0xff000040 | (red << 16) | (green << 8)
+				var color:uint = 0xcc000040 | (red << 16) | (green << 8)
 				add(new FlxSprite(displayModule.x, displayModule.y).makeGraphic(displayModule.width, displayModule.height, color));
 				add(new FlxText(displayModule.x - U.GRID_DIM, displayModule.y + displayModule.height / 2 - 8, displayModule.width + U.GRID_DIM * 2, "" + node.dist).setFormat(font.id, font.size, 0x0, 'center'));
 			}

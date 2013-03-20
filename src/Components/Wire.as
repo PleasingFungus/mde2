@@ -43,7 +43,7 @@ package Components {
 		}
 		
 		protected function smartPath(start:Point, target:Point):Vector.<Point> {
-			if (constrained && U.state.objTypeAtPoint(start) == Module)
+			if (constrained && U.state.grid.objTypeAtPoint(start) == Module)
 				return null;
 			
 			var manhattan:int = C.manhattan(start, target);
@@ -70,7 +70,7 @@ package Components {
 				for each (var delta:Point in deltas) {
 					var nextPoint:Point = curPoint.add(delta);
 				
-					if (constrained && (U.state.lineContents(curPoint, nextPoint) ||
+					if (constrained && (U.state.grid.lineContents(curPoint, nextPoint) ||
 										(!nextPoint.equals(target) && !mayMoveThrough(nextPoint, delta))))
 						continue;
 					
@@ -150,7 +150,7 @@ package Components {
 		protected function dumbPath(start:Point, target:Point):Vector.<Point> {
 			var path:Vector.<Point> = new Vector.<Point>;
 			path.push(start);
-			if (constrained && U.state.objTypeAtPoint(start) == Module)
+			if (constrained && U.state.grid.objTypeAtPoint(start) == Module)
 				return path;
 			
 			var pathEnd:Point = path[path.length - 1];
@@ -163,7 +163,7 @@ package Components {
 					nextPoint = pathEnd.add(nextDelta);
 				}
 				
-				if (constrained && (U.state.lineContents(pathEnd, nextPoint) || U.state.objTypeAtPoint(nextPoint) == Module))
+				if (constrained && (U.state.grid.lineContents(pathEnd, nextPoint) || U.state.grid.objTypeAtPoint(nextPoint) == Module))
 					break;
 				
 				path.push(pathEnd = nextPoint);
@@ -176,18 +176,18 @@ package Components {
 		}
 		
 		protected function mayMoveThrough(p:Point, delta:Point):Boolean {
-			var objType:Class = U.state.objTypeAtPoint(p);
+			var objType:Class = U.state.grid.objTypeAtPoint(p);
 			if (objType == null)
 				return true;
 			if (objType == Module)
 				return false;
 			
-			var carriers:Vector.<Carrier> = U.state.carriersAtPoint(p);
+			var carriers:Vector.<Carrier> = U.state.grid.carriersAtPoint(p);
 			for each (var carrier:Carrier in carriers)
 				if (carrier is Port)
 					return false;
 			
-			var otherWire:Wire = U.state.lineContents(p, p.add(delta));
+			var otherWire:Wire = U.state.grid.lineContents(p, p.add(delta));
 			if (otherWire)
 				return false;
 			
@@ -195,11 +195,11 @@ package Components {
 		}
 		
 		protected function validPosition():Boolean {
-			if (U.state.objTypeAtPoint(path[0]) == Module || U.state.objTypeAtPoint(path[path.length -1]) == Module)
+			if (U.state.grid.objTypeAtPoint(path[0]) == Module || U.state.grid.objTypeAtPoint(path[path.length -1]) == Module)
 				return false;
 			
 			var source:Port = null;
-			for each (var carriers:Vector.<Carrier> in [U.state.carriersAtPoint(path[0]), U.state.carriersAtPoint(path[path.length - 1])])
+			for each (var carriers:Vector.<Carrier> in [U.state.grid.carriersAtPoint(path[0]), U.state.grid.carriersAtPoint(path[path.length - 1])])
 				if (carriers)
 					for each (var carrier:Carrier in carriers) {
 						var carrierSource:Port = carrier.getSource();
@@ -236,23 +236,23 @@ package Components {
 			
 			U.state.wires.push(this);
 			for (var i:int = 0; i < path.length - 1; i++)
-				U.state.setLineContents(path[i], path[i + 1], this);
+				U.state.grid.setLineContents(path[i], path[i + 1], this);
 			for each (var p:Point in path)
-				U.state.addCarrierAtPoint(p, this);
+				U.state.grid.addCarrierAtPoint(p, this);
 			
 			return true;
 		}
 		
 		protected function checkForConnections():void {
 			log(this +" adding connections");
-			addConnections(U.state.carriersAtPoint(path[0]));
-			addConnections(U.state.carriersAtPoint(path[path.length - 1]));
+			addConnections(U.state.grid.carriersAtPoint(path[0]));
+			addConnections(U.state.grid.carriersAtPoint(path[path.length - 1]));
 			checkForEndpoints();
 		}
 		
 		protected function checkForEndpoints():void {
 			for (var i:int = 1; i < path.length - 1; i++)
-				for each (var connection:Carrier in U.state.carriersAtPoint(path[i])) {
+				for each (var connection:Carrier in U.state.grid.carriersAtPoint(path[i])) {
 					if (connection == this || connections.indexOf(connection) != -1 || !connection.isEndpoint(path[i]))
 						continue;
 					addConnection(connection);
@@ -315,9 +315,9 @@ package Components {
 				return false;
 			
 			for each (var p:Point in path)
-				U.state.removeCarrierFromPoint(p, this);
+				U.state.grid.removeCarrierFromPoint(p, this);
 			for (var i:int = 0; i < path.length - 1; i++)
-				U.state.setLineContents(path[i], path[i + 1], null);
+				U.state.grid.setLineContents(path[i], path[i + 1], null);
 			U.state.wires.splice(U.state.wires.indexOf(this), 1);
 			exists = false;
 			

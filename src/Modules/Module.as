@@ -123,13 +123,13 @@ package Modules {
 			var self:Module = this;
 			
 			iterContainedLines(function h(X:int, Y:int):void {
-				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), self);
+				U.state.grid.setLineContents(new Point(X, Y), new Point(X + 1, Y), self);
 			}, function v(X:int, Y:int):void {
-				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), self);
+				U.state.grid.setLineContents(new Point(X, Y), new Point(X, Y + 1), self);
 			});
 			
 			iterContainedPoints(function p(X:int, Y:int):void {
-				U.state.setPointContents(new Point(X, Y), self);
+				U.state.grid.setPointContents(new Point(X, Y), self);
 			});
 			
 			for each (var portLayout:PortLayout in layout.ports) {
@@ -163,13 +163,13 @@ package Modules {
 			}
 			
 			iterContainedPoints(function p(X:int, Y:int):void {
-				U.state.setPointContents(new Point(X, Y), null);
+				U.state.grid.setPointContents(new Point(X, Y), null);
 			});
 			
 			iterContainedLines(function h(X:int, Y:int):void {
-				U.state.setLineContents(new Point(X, Y), new Point(X + 1, Y), null);
+				U.state.grid.setLineContents(new Point(X, Y), new Point(X + 1, Y), null);
 			}, function v(X:int, Y:int):void {
-				U.state.setLineContents(new Point(X, Y), new Point(X, Y + 1), null);
+				U.state.grid.setLineContents(new Point(X, Y), new Point(X, Y + 1), null);
 			});
 			
 			deployed = false;
@@ -189,11 +189,11 @@ package Modules {
 			var self:Module = this;
 			iterContainedLines(function h(X:int, Y:int):void {
 				if (!OK.x) return;
-				var inLine:* = U.state.lineContents(new Point(X, Y), new Point(X + 1, Y));
+				var inLine:* = U.state.grid.lineContents(new Point(X, Y), new Point(X + 1, Y));
 				OK.x = !inLine || self == inLine;
 			}, function v(X:int, Y:int):void {
 				if (!OK.y) return;
-				var inLine:* = U.state.lineContents(new Point(X, Y), new Point(X, Y + 1));
+				var inLine:* = U.state.grid.lineContents(new Point(X, Y), new Point(X, Y + 1));
 				OK.y = !inLine || self == inLine;
 			});
 			
@@ -203,13 +203,13 @@ package Modules {
 			iterContainedPoints(function p(X:int, Y:int):void {
 				if (!OK.p) return;
 				var point:Point = new Point(X, Y);
-				var pointContents:Class = U.state.objTypeAtPoint(point);
+				var pointContents:Class = U.state.grid.objTypeAtPoint(point);
 				if (pointContents != Module) {
 					if (pointContents != null)
 						OK.p = false;
 					return;
 				}
-				OK.p = self == U.state.moduleContentsAtPoint(point);
+				OK.p = self == U.state.grid.moduleContentsAtPoint(point);
 			});
 			
 			if (!OK.p)

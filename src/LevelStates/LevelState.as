@@ -74,14 +74,11 @@ package LevelStates {
 		protected var currentModule:Module;
 		
 		public var time:Time;
+		public var grid:Grid;
 		public var wires:Vector.<Wire>;
 		public var modules:Vector.<Module>;
 		public var memory:Vector.<Value>;
 		public var initialMemory:Vector.<Value>;
-		
-		public var horizontalLines:Dictionary;
-		public var verticalLines:Dictionary;
-		public var carriersAtPoints:Dictionary;
 		
 		public var level:Level;
 		public function LevelState(level:Level) {
@@ -882,58 +879,6 @@ package LevelStates {
 		}
 		
 		
-		public function lineToSpec(a:Point, b:Point):String {
-			var horizontal:Boolean = a.x != b.x;
-			var root:Point = horizontal ? a.x < b.x ? a : b : a.y < b.y ? a : b;
-			return root.x + U.COORD_DELIM + root.y;
-		}
-		
-		public function lineContents(a:Point, b:Point):* {
-			var horizontal:Boolean = a.x != b.x;
-			return (horizontal ? horizontalLines : verticalLines)[lineToSpec(a, b)]
-		}
-		
-		public function setLineContents(a:Point, b:Point, newContents:*):* {
-			var horizontal:Boolean = a.x != b.x;
-			return (horizontal ? horizontalLines : verticalLines)[lineToSpec(a, b)] = newContents;
-		}
-		
-		public function carriersAtPoint(p:Point):Vector.<Carrier> {
-			return carriersAtPoints[p.x + U.COORD_DELIM + p.y];
-		}
-		
-		public function addCarrierAtPoint(p:Point, carrier:Carrier):void {
-			var coordStr:String = p.x + U.COORD_DELIM + p.y;
-			var carriers:Vector.<Carrier> = carriersAtPoints[coordStr];
-			if (!carriers) carriers = carriersAtPoints[coordStr] = new Vector.<Carrier>;
-			carriers.push(carrier);
-		}
-		
-		public function removeCarrierFromPoint(p:Point, carrier:Carrier):void {
-			var coordStr:String = p.x + U.COORD_DELIM + p.y;
-			var carriers:Vector.<Carrier> = carriersAtPoints[coordStr];
-			carriers.splice(carriers.indexOf(carrier), 1);
-			if (!carriers.length) carriersAtPoints[coordStr] = null;
-		}
-		
-		public function objTypeAtPoint(p:Point):Class {
-			var contents:* = carriersAtPoints[p.x + U.COORD_DELIM + p.y];
-			if (!contents)
-				return null;
-			if (contents is Module)
-				return Module;
-			return Vector;
-		}
-		
-		public function setPointContents(p:Point, module:Module):void {
-			carriersAtPoints[p.x + U.COORD_DELIM + p.y] = module;
-		}
-		
-		public function moduleContentsAtPoint(p:Point):Module {
-			return carriersAtPoints[p.x + U.COORD_DELIM + p.y];
-		}
-		
-		
 		
 		private var buf:BitmapData;
 		private var matrix:Matrix;
@@ -980,30 +925,41 @@ package LevelStates {
 		
 		private var debugLineH:FlxSprite;
 		private var debugLineV:FlxSprite;
+		private var debugPoint:FlxSprite;
 		private function debugRenderCollision():void {
 			if (!debugLineH) {
 				debugLineH = new FlxSprite().makeGraphic(U.GRID_DIM, 3, 0xffff00ff);
 				debugLineH.offset.y = 1;
 				debugLineV = new FlxSprite().makeGraphic(3, U.GRID_DIM, 0xffff00ff);
 				debugLineV.offset.x = 1;
+				debugPoint = new FlxSprite().makeGraphic(5, 5, 0xffff00ff);
+				debugPoint.offset.x = debugPoint.offset.y = 2;
 			}
 			
 			var s:String, coords:Array;
 			
-			for (s in horizontalLines) {
-				if (!horizontalLines[s]) continue;
+			for (s in grid.horizontalLines) {
+				if (!grid.horizontalLines[s]) continue;
 				coords = s.split(U.COORD_DELIM);
 				debugLineH.x = int(coords[0]) * U.GRID_DIM;
 				debugLineH.y = int(coords[1]) * U.GRID_DIM;
 				debugLineH.draw();
 			}
 			
-			for (s in verticalLines) {
-				if (!verticalLines[s]) continue;
+			for (s in grid.verticalLines) {
+				if (!grid.verticalLines[s]) continue;
 				coords = s.split(U.COORD_DELIM);
 				debugLineV.x = int(coords[0]) * U.GRID_DIM;
 				debugLineV.y = int(coords[1]) * U.GRID_DIM;
 				debugLineV.draw();
+			}
+			
+			for (s in grid.carriersAtPoints) {
+				if (!(grid.carriersAtPoints[s] is Module)) continue;
+				coords = s.split(U.COORD_DELIM);
+				debugPoint.x = int(coords[0]) * U.GRID_DIM;
+				debugPoint.y = int(coords[1]) * U.GRID_DIM;
+				debugPoint.draw();
 			}
 		}
 		
@@ -1073,9 +1029,7 @@ package LevelStates {
 			
 			wires = new Vector.<Wire>;
 			modules = new Vector.<Module>;
-			horizontalLines = new Dictionary;
-			verticalLines = new Dictionary;
-			carriersAtPoints = new Dictionary;
+			grid = new Grid;
 			
 			time = new Time;
 			

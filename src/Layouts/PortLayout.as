@@ -25,12 +25,12 @@ package Layouts {
 		
 		public function register():void {
 			setLineContents(port);
-			U.state.addCarrierAtPoint(Loc, port);
+			U.state.grid.addCarrierAtPoint(Loc, port);
 		}
 		
 		public function attemptConnect():void {
 			var connectPoint:Point = Loc;
-			for each (var carrier:Carrier in U.state.carriersAtPoint(connectPoint))
+			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(connectPoint))
 				if (carrier != port) {
 					port.addConnection(carrier);
 					carrier.addConnection(port);
@@ -55,7 +55,7 @@ package Layouts {
 		}
 		
 		public function deregister():void {
-			U.state.removeCarrierFromPoint(Loc, port);
+			U.state.grid.removeCarrierFromPoint(Loc, port);
 			setLineContents(null);
 		}
 		
@@ -63,19 +63,19 @@ package Layouts {
 		private function setLineContents(contents:*):void {
 			var connectionPoint:Point = Loc;
 			var origin:Point = connectionPoint.add(new Point(vertical ? 0 : reversed ? -1 : 1, vertical ? reversed ? -1 : 1 : 0));
-			U.state.setLineContents(connectionPoint, origin, contents);
+			U.state.grid.setLineContents(connectionPoint, origin, contents);
 		}
 		
 		public function get validPosition():Boolean {
 			if (!port.isOutput) return true;
 			
-			var objType:Class = U.state.objTypeAtPoint(Loc);
+			var objType:Class = U.state.grid.objTypeAtPoint(Loc);
 			if (objType == null)
 				return true;
 			if (objType == Module)
 				return false;
 			
-			for each (var carrier:Carrier in U.state.carriersAtPoint(Loc))
+			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(Loc))
 				if (carrier.getSource() && carrier.getSource() != port)
 					return false;
 			return true;

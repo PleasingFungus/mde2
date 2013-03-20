@@ -142,7 +142,7 @@ package Displays {
 		}
 		
 		protected function drawJoin(current:Point):void {
-			var carriersAt:Vector.<Carrier> = U.state.carriersAtPoint(current);
+			var carriersAt:Vector.<Carrier> = U.state.grid.carriersAtPoint(current);
 			if (!carriersAt || carriersAt.length < 2)
 				return;
 			

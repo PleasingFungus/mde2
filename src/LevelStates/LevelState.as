@@ -459,7 +459,7 @@ package LevelStates {
 							listOpen = LIST_NONE;
 							makeUI();
 						}
-					}, "").setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getDescription));
+					}, "").setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getFullDescription));
 				}
 			}
 			
@@ -517,7 +517,7 @@ package LevelStates {
 					}
 				}, "").setParam(moduleType));
 				if (Module.getArchetype(moduleType).getDescription() != null)
-					moduleButtons[moduleButtons.length - 1].setTooltipCallback(Module.getArchetype(moduleType).getDescription);
+					moduleButtons[moduleButtons.length - 1].setTooltipCallback(Module.getArchetype(moduleType).getFullDescription);
 			}
 			
 			//put 'em in a list

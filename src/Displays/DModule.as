@@ -129,9 +129,7 @@ package Displays {
 			
 			var out:String = module.name;
 			if (module.getDescription())
-				out += ": " + module.getDescription();
-			if (U.state.level.delay && module.delay)
-				out += " DELAY: " + module.delay+".";
+				out += ": " + module.getFullDescription();
 			return out;
 		}
 		

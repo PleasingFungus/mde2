@@ -76,6 +76,19 @@ package Modules {
 			return null;
 		}
 		
+		public function getFullDescription():String {
+			var desc:String = getDescription();
+			if (!desc) {
+				if (U.state && U.state.level.delay && delay)
+					return "DELAY: " + delay+".";
+				return desc;
+			}
+			
+			if (U.state && U.state.level.delay && delay)
+				desc += " DELAY: " + delay + ".";
+			return desc;
+		}
+		
 		public function drive(port:Port):Value {
 			return U.V_UNPOWERED;
 		}

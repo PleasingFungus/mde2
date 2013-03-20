@@ -137,6 +137,22 @@ package Displays {
 		protected function unsetSourceModule():void {
 			sourceModule = null;
 			members = [];
+			
+			var font:FontTuple = U.state.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
+			
+			var maxDelay:int;
+			for each (var module:Module in modules)
+				if (module.exists)
+					maxDelay = Math.max(module.delay, maxDelay);
+			
+			for each (var displayModule:DModule in displayModules) {
+				var distFraction:Number = displayModule.module.delay / maxDelay;
+				var red:uint = 0xff * distFraction;
+				var green:uint = 0xff - red;
+				var color:uint = 0xcc000040 | (red << 16) | (green << 8)
+				add(new FlxSprite(displayModule.x, displayModule.y).makeGraphic(displayModule.width, displayModule.height, color));
+				add(new FlxText(displayModule.x - U.GRID_DIM, displayModule.y + displayModule.height / 2 - 8, displayModule.width + U.GRID_DIM * 2, "" + displayModule.module.delay).setFormat(font.id, font.size, 0x0, 'center'));
+			}
 		}
 		
 		protected function get lastClicked():Module {

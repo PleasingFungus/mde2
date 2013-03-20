@@ -1,4 +1,5 @@
 package Displays {
+	import Components.Wire;
 	import flash.utils.Dictionary;
 	import Layouts.PortLayout;
 	import Modules.Module;
@@ -15,20 +16,55 @@ package Displays {
 		public var displayModules:Vector.<DModule>;
 		public var interactive:Boolean;
 		
+		private var lastModulesExt:Vector.<Boolean>;
+		private var lastWiresExt:Vector.<Boolean>;
+		
 		private var sourceModule:Module;
 		private var moduleDistances:Dictionary;
 		private var clickedModules:Array;
 		public function DDelay(Modules:Vector.<Module>, DisplayModules:Vector.<DModule>) {
 			modules = Modules;
 			displayModules = DisplayModules;
+			makeExtLists();
 			clickedModules = [];
 			super();
 		}
 		
+		protected function makeExtLists():void {
+			lastModulesExt = new Vector.<Boolean>;
+			for each (var module:Module in modules)
+				lastModulesExt.push(module.deployed);
+			
+			lastWiresExt = new Vector.<Boolean>;
+			for each (var wire:Wire in U.state.wires)
+				lastWiresExt.push(wire.exists);
+		}
+		
+		protected function findExtMatch():Boolean {
+			if (modules.length != lastModulesExt.length ||
+				U.state.wires.length != lastWiresExt.length)
+				return false;
+			
+			for (var i:int = 0; i < modules.length; i++)
+				if (modules[i].deployed != lastModulesExt[i])
+					return false;
+			
+			for (i = 0; i < U.state.wires.length; i++)
+				if (U.state.wires[i].exists != lastWiresExt[i])
+					return false;
+			
+			return true;
+		}
+		
 		override public function update():void {
 			visible = U.state.VIEW_MODE_DELAY == U.state.viewMode;
-			if (visible)
+			if (visible) {
 				checkMouse();
+				if (!findExtMatch()) {
+					generate();
+					makeExtLists();
+				}
+			}
 			super.update();
 		}
 		
@@ -49,19 +85,35 @@ package Displays {
 					clickedModules.push( { 'module' : mousedModule, 'dist' : lastDistances ? lastDistances[moduleId(mousedModule)].dist : mousedModule.delay,
 										   'moduleDistances' : moduleDistances})
 			}
+			
+			
 		}
 		
 		protected function setSourceModule(SourceModule:Module):void {
 			sourceModule = SourceModule;
-			
+			generate();
+		}
+		
+		protected function generate():void {
+			members = [];
+			if (sourceModule) {
+				for (var i:int = 0; i < clickedModules.length; i++)
+					if (!clickedModules[i].module.deployed)
+						clickedModules = i ? clickedModules.slice(i - 1) : []; //breaks implicitly!
+				generateFromSource();
+			} else
+				generateGeneric();
+		}
+		
+		protected function generateFromSource():void {
 			var baseDelay:int = 0;
 			if (clickedModules.length)
 				baseDelay = clickedModules[clickedModules.length - 1].dist;
 			
 			var node:Object;
 			var toCheck:Array = [{
-				'module' : SourceModule,
-				'dist' : SourceModule.delay + baseDelay,
+				'module' : sourceModule,
+				'dist' : sourceModule.delay + baseDelay,
 				'parent' : null
 			}];
 			var checked:Array = [];
@@ -111,7 +163,6 @@ package Displays {
 		}
 		
 		protected function renderDistances(moduleDistances:Dictionary):void {
-			members = []
 			var node:Object;
 			
 			var font:FontTuple = U.state.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
@@ -136,16 +187,21 @@ package Displays {
 		
 		protected function unsetSourceModule():void {
 			sourceModule = null;
-			members = [];
-			
+			generate();
+		}
+		
+		protected function generateGeneric():void {
 			var font:FontTuple = U.state.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
 			
 			var maxDelay:int;
 			for each (var module:Module in modules)
-				if (module.exists)
+				if (module.deployed)
 					maxDelay = Math.max(module.delay, maxDelay);
 			
 			for each (var displayModule:DModule in displayModules) {
+				if (!displayModule.exists)	
+					continue;
+				
 				var distFraction:Number = displayModule.module.delay / maxDelay;
 				var red:uint = 0xff * distFraction;
 				var green:uint = 0xff - red;

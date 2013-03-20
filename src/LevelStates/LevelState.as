@@ -321,7 +321,8 @@ package LevelStates {
 		}
 		
 		protected function makeEndTestButton():void {
-			var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 40, _inv_test_sprite, finishDisplayTest, "Finish the test!", new Key("T"));
+			var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 40, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite,
+														  finishDisplayTest, "Finish the test!", new Key("T"));
 			upperLayer.add(testButton);
 		}
 		
@@ -1205,7 +1206,8 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/random.png")] private const _random_sprite:Class;
 		[Embed(source = "../../lib/art/ui/reset.png")] private const _reset_sprite:Class;
 		[Embed(source = "../../lib/art/ui/test.png")] private const _test_sprite:Class;
-		[Embed(source = "../../lib/art/ui/tset.png")] private const _inv_test_sprite:Class;
+		[Embed(source = "../../lib/art/ui/tset_success.png")] private const _test_success_sprite:Class;
+		[Embed(source = "../../lib/art/ui/tset_failure.png")] private const _test_failure_sprite:Class;
 		
 		[Embed(source = "../../lib/art/ui/pen.png")] private const _pen_cursor:Class;
 		[Embed(source = "../../lib/art/ui/grabby_cursor.png")] private const _grab_cursor:Class;

@@ -199,7 +199,7 @@ package Displays {
 					maxDelay = Math.max(module.delay, maxDelay);
 			
 			for each (var displayModule:DModule in displayModules) {
-				if (!displayModule.exists)	
+				if (!displayModule.module.deployed)	
 					continue;
 				
 				var distFraction:Number = displayModule.module.delay / maxDelay;

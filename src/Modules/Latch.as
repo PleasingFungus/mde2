@@ -9,54 +9,116 @@ package Modules {
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class Latch extends StatefulModule {
+	public class Latch extends Module {
 		
-		public function Latch(X:int, Y:int, InitialValue:int = 0) {
-			super(X, Y, "Latch", Module.CAT_STORAGE, 1, 1, 1, InitialValue);
-			//configuration = new Configuration(new Range( -32, 31, InitialValue));
+		public var values:Vector.<Value>
+		public var width:int;
+		protected var lastMomentStored:int;
+		public function Latch(X:int, Y:int, Width:int = 1) {
+			Width = Math.max(Width, 1); //back-compat
+			configuration = new Configuration(new Range(1, 8, Width));
+			setByConfig();
+			
+			super(X, Y, "Latch", Module.CAT_STORAGE, Width, Width, 1);
+			
 			delay = 2;
+			configurableInPlace = false;
+		}
+		
+		override public function initialize():void {
+			super.initialize();
+			
+			values = new Vector.<Value>;
+			var init:Value = new NumericValue(0);
+			for (var i:int = 0; i < width; i++)
+				values.push(init);
+			
+			lastMomentStored = -1;
+		}
+		
+		override public function setByConfig():void {
+			width = configuration.value;
+		}
+		
+		override protected function getSaveValues():Array {
+			var values:Array = super.getSaveValues();
+			values.push(width);
+			return values;
 		}
 		
 		override protected function generateLayout():ModuleLayout {
-			var layout:ModuleLayout = super.generateLayout();
-			layout.ports[0].offset.y += 2;
-			layout.ports[2].offset.y += 2;
+			var layout:ModuleLayout = new DefaultLayout(this, 2, 5);
+			for (var i:int = 0; i < layout.ports.length; i++)
+				if (layout.ports[i].port != controls[0])
+					layout.ports[i].offset.y += 1;
+				else
+					layout.ports[i].offset.x -= 1;
 			return layout;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			var dataNode:StandardNode = new StandardNode(this, new Point(layout.ports[2].offset.x - 2, layout.ports[2].offset.y), [layout.ports[0], layout.ports[2]], [],
-														 function getValue():Value { return value; }, "Stored value");
-			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
-															[new NodeTuple(layout.ports[0], dataNode, writeOK)],
-															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; }, "Stored value will be set to input value");
-			return new InternalLayout([controlNode, dataNode]);
+			var nodes:Array = [];
+			var tuples:Array = [];
+			for (var i:int = 0; i < width; i++) {
+				var outPort:PortLayout = layout.ports[i + width + 1];
+				var dataNode:StandardNode = new StandardNode(this, new Point(outPort.offset.x - 2, outPort.offset.y), [layout.ports[i], outPort], [],
+															 outputs[i].getValue /*?*/, "Stored value " + i);
+				nodes.push(dataNode);
+				tuples.push(new NodeTuple(layout.ports[i], dataNode, writeOK));
+			}
+			
+			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[width].offset.x, layout.ports[width].offset.y + 2), [layout.ports[width]],
+															tuples, function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; },
+															"Stored value(s) will be set to input value(s)");
+			nodes.push(controlNode);
+			return new InternalLayout(nodes);
 		}
 		
 		override public function renderDetails():String {
-			return "LCH" +"\n\n" + value;
+			return "LCH" +"\n\n" + values;
 		}
 		
 		override public function getDescription():String {
-			return "Stores & continuously outputs a value. Each tick, sets its value to the input if the control is "+BooleanValue.TRUE+"."
+			return "Stores & continuously outputs "+width+" value(s). Each tick, sets its value(s) to the input(s) if the control is "+BooleanValue.TRUE+"."
 		}
 		
 		override public function drive(port:Port):Value {
-			return value;
+			return values[outputs.indexOf(port)];
 		}
 		
-		override protected function statefulUpdate():Boolean {
+		override public function updateState():Boolean {
+			if (U.state.time.moment == lastMomentStored) return false; //can only store at most once per cycle
+			
+			var stored:Boolean = statefulUpdate();
+			if (stored)
+				lastMomentStored = U.state.time.moment;
+			return stored;
+		}
+		
+		protected function statefulUpdate():Boolean {
 			if (!writeOK())
 				return false;
 			
-			var input:Value = inputs[0].getValue();
-			if (input.unpowered)
-				return false;
-			
-			U.state.time.deltas.push(new Delta(U.state.time.moment, this, value));
-			value = input;
-			return true;
+			var changed:Boolean = false;
+			for (var i:int = 0; i < width; i++) {
+				var input:Value = inputs[i].getValue();
+				if (input.unpowered)
+					continue;
+				
+				U.state.time.deltas.push(new Delta(U.state.time.moment, this, new IndexedValue(values[i], i)));
+				values[i] = input;
+				changed = true;
+			}
+			return changed;
 		}
+		
+		override public function revertTo(oldValue:Value):void {
+			var indexedOldValue:IndexedValue = oldValue as IndexedValue;
+			values[indexedOldValue.index] = indexedOldValue.subValue;
+			lastMomentStored = -1;
+		}
+		
+		
 		
 		protected function writeOK():Boolean {
 			var control:Value = controls[0].getValue();

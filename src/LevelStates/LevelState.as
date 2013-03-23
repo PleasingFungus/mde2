@@ -180,7 +180,8 @@ package LevelStates {
 				upperLayer.add(displayTime = new DTime(FlxG.width / 2 - 50, 10))
 			else {
 				upperLayer.add(displayTime);
-				makeEndTestButton();
+				if (runningDisplayTest)
+					makeEndTestButton();
 			}
 		}
 		

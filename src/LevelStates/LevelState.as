@@ -587,8 +587,6 @@ package LevelStates {
 		}
 		
 		protected function checkControls():void {
-			if (UIEnableKey.justPressed())
-				upperLayer.visible = !upperLayer.visible;
 			checkBuildControls();
 		}
 		
@@ -649,7 +647,7 @@ package LevelStates {
 				}
 			} else {
 				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
-					if (FlxG.keys.pressed("SHIFT"))
+					if (ControlSet.MODIFIER_KEY.pressed())
 						addEditSliderbar();
 					else
 						pickUpModule();
@@ -749,9 +747,14 @@ package LevelStates {
 						
 						var mousedModule:Module = findMousedModule();
 						if (mousedModule && !mousedModule.FIXED) {
-							newGraphic = _grab_cursor;
-							offsetX = -4;
-							offsetY = -3;
+							if (ControlSet.MODIFIER_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration()) {
+								newGraphic = _wrench_cursor;
+								offsetX = offsetY = -3;
+							} else {
+								newGraphic = _grab_cursor;
+								offsetX = -4;
+								offsetY = -3;
+							}
 						}
 						
 						break;
@@ -764,7 +767,7 @@ package LevelStates {
 						break;
 				}
 			
-			if (hide) {
+			if (hide || !upperLayer.visible) {
 				FlxG.mouse.hide();
 				wasHidden = true;
 			} else if (wasHidden) {
@@ -1194,6 +1197,7 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/grabby_cursor.png")] private const _grab_cursor:Class;
 		[Embed(source = "../../lib/art/ui/remove_cursor.png")] private const _remove_cursor:Class;
 		[Embed(source = "../../lib/art/ui/delay_cursor.png")] private const _delay_cursor:Class;
+		[Embed(source = "../../lib/art/ui/wrench_cursor.png")] private const _wrench_cursor:Class;
 	}
 
 }

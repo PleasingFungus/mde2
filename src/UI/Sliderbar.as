@@ -12,6 +12,7 @@ package UI {
 		public var y:int;
 		public var width:int;
 		public var height:int;
+		private var textWidth:int;
 		
 		protected var valueRange:Range;
 		protected var value:int;
@@ -52,32 +53,41 @@ package UI {
 			
 			//"rail"
 			rail = new FlxSprite(x, slider.y + slider.height / 2).makeGraphic(width, 4, 0xffa0a0a0);
-			rail.y -= rail.height / 2;
 			add(rail);
 			add(slider);
-			
-			var posFraction:Number = (value - valueRange.min) / (valueRange.max - valueRange.min);
-			slider.x = rail.x + width * posFraction - slider.width / 2;
 			
 			//value display
 			valueText = new FlxText( -1, -1, FlxG.width, " ").setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xffffff);
 			valueText.text = valueRange.nameOf(valueRange.min);
-			var textWidth:int = valueText.textWidth;
+			textWidth = valueText.textWidth;
 			valueText.text = valueRange.nameOf(valueRange.max);
 			textWidth = Math.max(textWidth, valueText.textWidth);
 			valueText.text = valueRange.nameOf(value);
 			//valueText.alignment = 'center';
 			//valueText.width = textWidth;
 			
-			var textBorder:int = 2;
-			valueText.x = x + width / 2 - textWidth / 2;
-			valueText.y = y + height - valueText.height - textBorder;
-			
-			valueBox = new FlxSprite(valueText.x - textBorder, valueText.y - textBorder).makeGraphic(textWidth + textBorder * 2, valueText.height + textBorder * 2, 0xff202020, true);
-			valueBox.framePixels.fillRect(new Rectangle(textBorder / 2, textBorder / 2, valueBox.width - textBorder, valueBox.height - textBorder), 0xff666666);
+			valueBox = new FlxSprite(valueText.x - TEXT_BORDER, valueText.y - TEXT_BORDER).makeGraphic(textWidth + TEXT_BORDER * 2, valueText.height + TEXT_BORDER * 2, 0xff202020, true);
+			valueBox.framePixels.fillRect(new Rectangle(TEXT_BORDER / 2, TEXT_BORDER / 2, valueBox.width - TEXT_BORDER, valueBox.height - TEXT_BORDER), 0xff666666);
 			
 			add(valueBox);
 			add(valueText);
+			
+			positionElements();
+		}
+		
+		protected function positionElements():void {
+			rail.x = x;
+			rail.y = y + slider.height / 2;
+			
+			var posFraction:Number = (value - valueRange.min) / (valueRange.max - valueRange.min);
+			slider.x = rail.x + width * posFraction - slider.width / 2;
+			slider.y = y;
+			
+			valueText.x = x + width / 2 - textWidth / 2;
+			valueText.y = y + height - valueText.height - TEXT_BORDER;
+			
+			valueBox.x = valueText.x - TEXT_BORDER;
+			valueBox.y = valueText.y - TEXT_BORDER;
 		}
 		
 		public function setDieOnClickOutside(die:Boolean, onDie:Function = null):Sliderbar {
@@ -145,6 +155,8 @@ package UI {
 			
 			return true;
 		}
+		
+		private const TEXT_BORDER:int = 2;
 	}
 
 }

@@ -247,6 +247,9 @@ package
 		public static function manhattan(p1:Point, p2:Point):Number {
 			return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
 		}
+		
+		public static const NUMBERS:Array = ["ZERO", "ONE", "TWO", "THREE", "FOUR",
+											 "FIVE", "SIX", "SEVEN", "EIGHT", "NINE"];
 	}
 
 }

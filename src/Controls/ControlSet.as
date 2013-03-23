@@ -68,8 +68,12 @@ package Controls {
 		}
 		
 		public static function reset():void {
-			
+			NUMBER_HOTKEYS = new Vector.<Key>;
+			for each (var number:String in C.NUMBERS)
+				NUMBER_HOTKEYS.push(new Key(number));
 		}
+		
+		public static var NUMBER_HOTKEYS:Vector.<Key>;
 	}
 
 }

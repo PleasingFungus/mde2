@@ -291,7 +291,7 @@ package LevelStates {
 						listOpen = LIST_NONE;
 						makeUI();
 					}
-				}, "Set zoom to "+Math.pow(2, -zoomLevel), HOTKEYS[zoomLevel]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == zoom));
+				}, "Set zoom to "+Math.pow(2, -zoomLevel), ControlSet.NUMBER_HOTKEYS[zoomLevel+1]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == zoom));
 			
 			var zoomList:ButtonList = new ButtonList(45, 5, zoomButtons, function onListClose():void {
 				if (listOpen == LIST_ZOOM)
@@ -357,7 +357,7 @@ package LevelStates {
 						listOpen = LIST_NONE;
 						makeUI();
 					}
-				}, "Enter "+MODE_NAMES[newMode]+" mode. "+MODE_DESCRIPTIONS[newMode], HOTKEYS[newMode]).setParam(newMode).setSelected(newMode == mode));
+				}, "Enter "+MODE_NAMES[newMode]+" mode. "+MODE_DESCRIPTIONS[newMode], ControlSet.NUMBER_HOTKEYS[modes.indexOf(newMode)+1]).setParam(newMode).setSelected(newMode == mode));
 			}
 			
 			var modeList:ButtonList = new ButtonList(5, 5, modeSelectButtons, function onListClose():void {
@@ -393,7 +393,7 @@ package LevelStates {
 						listOpen = LIST_NONE;
 						makeUI();
 					}
-				}, "Enter "+VIEW_MODE_NAMES[newMode]+" view mode").setParam(newMode).setSelected(newMode == viewMode));
+				}, "Enter "+VIEW_MODE_NAMES[newMode]+" view mode", ControlSet.NUMBER_HOTKEYS[newMode+1]).setParam(newMode).setSelected(newMode == viewMode));
 			}
 			
 			var modeList:ButtonList = new ButtonList(85, 5, modeSelectButtons, function onListClose():void {
@@ -667,34 +667,15 @@ package LevelStates {
 		}
 		
 		protected function addEditSliderbar():void {
-			/*var module:Module = findMousedModule();
+			var module:Module = findMousedModule();
 			if (!module || module.FIXED || !module.getConfiguration() || !module.configurableInPlace)
 				return;
 			
-			var oldValue:int = module.getConfiguration().value;
-			var setValue:Function = function setValue(v:int):void {
-				module.getConfiguration().value = v;
-				module.setByConfig();
-				module.initialize();
-			};
-			var sliderbar:Sliderbar = new Sliderbar(dModule.x + dModule.width / 2, dModule.y + dModule.height / 2,
-													module.getConfiguration().valueRange, setValue, module.getConfiguration().value);
-			sliderbar.setDieOnClickOutside(true, function onDie():void {
-				var newValue:int = module.getConfiguration().value;
-				if (newValue != oldValue)
-					new CustomAction(function setByConfig(newValue:int, oldValue:int):Boolean {
-						module.getConfiguration().value = newValue;
-						module.setByConfig();
-						module.initialize();
-						return true;
-					}, function setOldConfig(newValue:int, oldValue:int):Boolean {
-						module.getConfiguration().value = oldValue;
-						module.setByConfig();
-						module.initialize();
-						return true;
-					}, newValue, oldValue).execute();
-			});
-			upperLayer.add(sliderbar);*/
+			for each (var displayModule:DModule in displayModules)
+				if (displayModule.module == module) {
+					upperLayer.add(new InPlaceSlider(displayModule));
+					break
+				}
 		}
 		
 		protected function placeModule():void {
@@ -1177,7 +1158,6 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/remove.png")] private const _remove_sprite:Class;
 		[Embed(source = "../../lib/art/ui/delay.png")] private const _delay_sprite:Class;
 		private const MODE_SPRITES:Array = [_module_sprite, _connect_sprite, _remove_sprite, _delay_sprite];
-		private const HOTKEYS:Array = [new Key("THREE"), new Key("ONE"), new Key("TWO"), new Key("FOUR")];
 		private const MODE_NAMES:Array = ["module", "wire", "delete", "delay"];
 		private const MODE_DESCRIPTIONS:Array = ["Select modules to place from the drop-down menu; click to move or press DELETE to delete.",
 												 "Click and drag to place wires; place DELETE to delete them.",

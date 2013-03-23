@@ -51,7 +51,7 @@ package Levels {
 		}
 		
 		public static function init():void {
-			ALL.push(CORE, JUMP, DELAY, ADV);
+			ALL.push(CORE, JUMP, DELAY, ADV, SPD);
 		}
 		
 		public static const CORE:LevelShard = new LevelShard("Core", [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV],
@@ -59,6 +59,7 @@ package Levels {
 		public static const DELAY:LevelShard = new LevelShard("Delay", [], [SysDelayClock, Delay], 50, true);
 		public static const JUMP:LevelShard = new LevelShard("Jump", [OpcodeValue.OP_JMP], [], 1.5);
 		public static const ADV:LevelShard = new LevelShard("Adv.", [OpcodeValue.OP_SUB, OpcodeValue.OP_MUL, OpcodeValue.OP_DIV], [ASU, MDU], 1.1);
+		public static const SPD:LevelShard = new LevelShard("Speed", [], [], 0.2);
 		public static const ALL:Vector.<LevelShard> = new Vector.<LevelShard>;
 		
 	}

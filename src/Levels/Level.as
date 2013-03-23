@@ -101,13 +101,15 @@ package Levels {
 			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
 			var cpuADV:Level = new ShardLevel("Advanced Ops", "Make a CPU that does arithmetic!", LevelShard.CORE.compositWith(LevelShard.ADV));
 			var grabBag:Level = new ShardLevel("Grab Bag!", "Make a CPU with stuff!", LevelShard.CORE.compositWith(LevelShard.JUMP, LevelShard.ADV, LevelShard.DELAY));
+			var pipe:Level = new ShardLevel("Efficiency!", "Make a CPU that runs fast!", LevelShard.CORE.compositWith(LevelShard.DELAY, LevelShard.SPD));
 			
 			addCPU_D.predecessors.push(addCPU);
 			cpuJMP.predecessors.push(addCPU);
 			cpuADV.predecessors.push(addCPU);
 			grabBag.predecessors.push(addCPU_D, cpuJMP, cpuADV);
+			pipe.predecessors.push(addCPU_D);
 			
-			levels.push(addCPU, addCPU_D, cpuJMP, cpuADV, grabBag);
+			levels.push(addCPU, addCPU_D, cpuJMP, cpuADV, grabBag, pipe);
 			
 			return levels;
 		}

@@ -96,7 +96,7 @@ package LevelStates {
 			zoom = 1;
 			elapsed = 0;
 			
-			initialMemory = level.goal.genMem(0.5);
+			initialMemory = level.goal.genMem();
 			
 			load();
 			recentModules = new Vector.<Class>;
@@ -1018,7 +1018,7 @@ package LevelStates {
 			grid = new Grid;
 			
 			time = new Time;
-			
+			FlxG.globalSeed = 0.49;
 			
 			if (saveString == null)
 				saveString = U.save.data[level.name];

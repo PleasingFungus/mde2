@@ -16,6 +16,7 @@ package Testing.Tests {
 	public class Test {
 		
 		public var seed:Number;
+		public var minInstructions:int;
 		
 		public var initialMemory:Vector.<Value>;
 		public var expectedMemory:Vector.<Value>;
@@ -26,11 +27,12 @@ package Testing.Tests {
 		protected var expectedOps:Vector.<OpcodeValue>;
 		protected var instructionTypes:Vector.<InstructionType>;
 		
-		public function Test(ExpectedOps:Vector.<OpcodeValue>, seed:Number = NaN) {
+		public function Test(ExpectedOps:Vector.<OpcodeValue>, MinInstructions:int = 10, seed:Number = NaN) {
 			expectedOps = ExpectedOps;
 			if (isNaN(seed))
 				seed = FlxG.random();
 			FlxG.globalSeed = this.seed = seed;
+			minInstructions = MinInstructions;
 			
 			generate();
 			initialMemory = genInitialMemory();
@@ -49,8 +51,6 @@ package Testing.Tests {
 			
 			var abstractions:Vector.<InstructionAbstraction> = new Vector.<InstructionAbstraction>;
 			abstractions.push(new SaveAbstraction( -1, memValueToSet, memAddressToSet));
-			
-			var minInstructions:int = 10;
 			
 			for (var depth:int = 0; abstractions.length + values.length < minInstructions; depth++)
 				genAbstractions(abstractions, values, depth);

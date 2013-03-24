@@ -19,7 +19,7 @@ package Testing.Goals {
 			description = Description;
 		}
 		
-		public function genMem(Seed:Number = NaN):Vector.<Value> {
+		public function genMem():Vector.<Value> {
 			return generateBlankMemory();
 		}
 		

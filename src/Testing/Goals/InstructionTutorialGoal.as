@@ -23,7 +23,7 @@ package Testing.Goals {
 			
 		}
 		
-		override public function genMem(Seed:Number = NaN):Vector.<Value> {
+		override public function genMem():Vector.<Value> {
 			var mem:Vector.<Value> = generateBlankMemory();
 			for (var i:int = 0; i < initialInstructions.length; i++)
 				mem[i * 4] = initialInstructions[i];

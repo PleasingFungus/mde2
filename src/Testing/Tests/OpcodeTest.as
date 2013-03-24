@@ -10,7 +10,7 @@ package Testing.Tests {
 		
 		public var saves:Vector.<InstructionValue>;
 		public function OpcodeTest(_:Vector.<OpcodeValue>, Seed:Number = NaN) {
-			super(_, Seed); 
+			super(_, -1, Seed); 
 		}
 		
 		override protected function generate():void {

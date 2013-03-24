@@ -7,6 +7,7 @@ package Testing.Goals {
 	import Values.Value;
 	import LevelStates.LevelState;
 	import Testing.Tests.Test;
+	import org.flixel.FlxG;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -30,13 +31,14 @@ package Testing.Goals {
 			randomizedMemory = true;
 		}
 		
-		override public function genMem(Seed:Number = NaN):Vector.<Value> {
-			currentTest = new testClass(expectedOps, Seed);
+		override public function genMem():Vector.<Value> {
+			currentTest = new testClass(expectedOps);
 			return currentTest.initialMemory;
 		}
 		
 		override public function startRun():void {
 			super.startRun();
+			FlxG.globalSeed = 0.5;
 			currentRun = 0;
 		}
 		
@@ -44,7 +46,7 @@ package Testing.Goals {
 			C.log("Run " + currentRun + " start");
 			
 			currentRun += 1;
-			currentTest = new testClass(expectedOps, 1 / (currentRun + 1));
+			currentTest = new testClass(expectedOps);
 			var mem:Vector.<Value> = currentTest.initialMemory;
 			C.log("Memory generated");
 			

@@ -23,6 +23,7 @@ package Modules {
 
 			setByConfig();
 			delay = 1;
+			configurableInPlace = false; //TODO: FIXME
 		}
 		
 		override public function getConfiguration():Configuration {

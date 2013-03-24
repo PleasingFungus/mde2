@@ -251,7 +251,7 @@ package LevelStates {
 				return;
 			
 			var memoryButton:MenuButton = new GraphicButton(50, 90, _data_sprite, function _():void {
-				upperLayer.add(new DMemory(memory));
+				upperLayer.add(new DMemory(memory, level.goal.genExpectedMem()));
 			}, "View contents of memory", new Key("M"));
 			upperLayer.add(memoryButton);
 		}

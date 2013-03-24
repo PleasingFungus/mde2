@@ -36,6 +36,11 @@ package Testing.Goals {
 			return currentTest.initialMemory;
 		}
 		
+		override public function genExpectedMem():Vector.<Value> {
+			if (!currentTest) return null;
+			return currentTest.expectedMemory;
+		}
+		
 		override public function startRun():void {
 			super.startRun();
 			FlxG.globalSeed = 0.5;

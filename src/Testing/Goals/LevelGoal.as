@@ -30,6 +30,10 @@ package Testing.Goals {
 			return memory;
 		}
 		
+		public function genExpectedMem():Vector.<Value> {
+			return null;
+		}
+		
 		public function startRun():void {
 			running = true;
 			succeeded = false;

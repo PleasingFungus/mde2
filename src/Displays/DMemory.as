@@ -4,6 +4,7 @@ package Displays {
 	import UI.MenuButton;
 	import Values.FixedValue;
 	import Values.Value;
+	import UI.GraphicButton;
 	
 	/**
 	 * ...
@@ -13,9 +14,17 @@ package Displays {
 		
 		private var bg:FlxSprite;
 		private var moment:int;
+		
 		public var memory:Vector.<Value>;
-		public function DMemory(Memory:Vector.<Value>) {
+		public var expectedMemory:Vector.<Value>;
+		
+		private var pages:Vector.<FlxGroup>;
+		private var page:int;
+		private var forwardButton:GraphicButton;
+		private var backButton:GraphicButton;
+		public function DMemory(Memory:Vector.<Value>, ExpectedMemory:Vector.<Value> = null) {
 			memory = Memory;
+			expectedMemory = ExpectedMemory;
 			super();
 			init();
 		}
@@ -24,6 +33,7 @@ package Displays {
 			moment = U.state.time.moment;
 			makeBG();
 			makePages();
+			makeButtons();
 		}
 		
 		protected function makeBG():void {
@@ -47,12 +57,21 @@ package Displays {
 		}
 		
 		protected function makePages():void {
+			pages = new Vector.<FlxGroup>;
+			pages.push(add(makeMemoryPage(memory)));
+			if (expectedMemory)
+				pages.push(add(makeMemoryPage(expectedMemory)));
+		}
+		
+		protected function makeMemoryPage(memory:Vector.<Value>):FlxGroup {
 			var BORDER:int = 10;
 			var COL_WIDTH:int = 225;
 			var COL_HEIGHT:int = bg.height - BORDER * 2;
 			var ROW_HEIGHT:int = 20;
 			var ROWS:int = COL_HEIGHT / (ROW_HEIGHT + BORDER / 2);
 			var COLS:int = (bg.width - BORDER * 2) / (COL_WIDTH + BORDER);
+			
+			var memoryPage:FlxGroup = new FlxGroup;
 			
 			var row:int, col:int, skipped:Boolean;
 			for (var memLine:int = 0; memLine < memory.length; memLine++) {
@@ -61,7 +80,7 @@ package Displays {
 					var memText:FlxText = new FlxText(bg.x + BORDER + col * (COL_WIDTH + BORDER),
 													  bg.y + BORDER + row * (ROW_HEIGHT + BORDER / 2),
 													  COL_WIDTH, memLine + " : " + memValue.toString())
-					add(U.BODY_FONT.configureFlxText(memText));
+					memoryPage.add(U.BODY_FONT.configureFlxText(memText));
 					
 					row += 1;
 					if (row >= ROWS) {
@@ -78,31 +97,40 @@ package Displays {
 					skipped = true;
 				}
 			}
-			//TODO
+			//TODO: multiple pages of actual memory
+			
+			return memoryPage;
+		}
+		
+		protected function makeButtons():void {
+			var kludge:DMemory = this;
+			add(new GraphicButton(bg.x + bg.width / 2 - 16, bg.y + bg.height - 48, _close_sprite, function close():void { kludge.exists = false } ))
+			add(forwardButton = new GraphicButton(bg.x + bg.width - 48, bg.y + bg.height - 48, _forward_sprite, function forward():void { kludge.page++; } ));
+			add(backButton = new GraphicButton(bg.x + 16, bg.y + bg.height - 48, _back_sprite, function back():void { kludge.page--; } ));
 		}
 		
 		private var tick:int;
 		
 		override public function update():void {
 			super.update();
+			U.buttonManager.moused = true;
 			checkTime();
+			checkPages();
 			checkClick();
 			checkControls();
 			tick++;
 		}
 		
-		protected function checkTime():void {
-			if (moment != U.state.time.moment)
-				init(); //NOTE: interacts poorly with anything that resets memory
+		protected function checkPages():void {
+			for (var page:int = 0; page < pages.length; page++)
+				pages[page].exists = page == this.page;
+			forwardButton.exists = this.page < pages.length - 1;
+			backButton.exists = this.page > 0;
 		}
 		
 		protected function checkClick():void {
-			if (!tick)
-				return;
-			
-			if (FlxG.mouse.justPressed())
+			if (tick && FlxG.mouse.justPressed() && !bg.overlapsPoint(FlxG.mouse, true))
 				exists = false;
-			
 		}
 		
 		protected function checkControls():void {
@@ -110,8 +138,17 @@ package Displays {
 				exists = false;
 		}
 		
+		protected function checkTime():void {
+			if (moment != U.state.time.moment)
+				init(); //NOTE: interacts poorly with anything that resets memory
+		}
+		
 		private const WIDTH_FRACTION:Number = 3 / 4;
 		private const HEIGHT_FRACTION:Number = 3 / 4;
+		
+		[Embed(source = "../../lib/art/ui/close.png")] private const _close_sprite:Class;
+		[Embed(source = "../../lib/art/ui/forward.png")] private const _forward_sprite:Class;
+		[Embed(source = "../../lib/art/ui/back_w.png")] private const _back_sprite:Class;
 		
 	}
 

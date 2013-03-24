@@ -588,6 +588,8 @@ package LevelStates {
 		
 		protected function checkControls():void {
 			checkBuildControls();
+			if (U.DEBUG && UIEnableKey.justPressed())
+				upperLayer.visible = !upperLayer.visible
 		}
 		
 		protected function checkBuildControls():void {

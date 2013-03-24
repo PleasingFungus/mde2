@@ -18,21 +18,23 @@ package Testing.Goals {
 		protected var currentTest:Test;
 		protected var expectedOps:Vector.<OpcodeValue>;
 		public var testRuns:int;
+		public var minInstructions:int;
 		
 		protected var currentRun:int;
-		public function GeneratedGoal(Description:String, TestClass:Class, ExpectedOps:Vector.<OpcodeValue>, TestRuns:int = 12, Timeout:int=100) {
+		public function GeneratedGoal(Description:String, TestClass:Class, ExpectedOps:Vector.<OpcodeValue>, TestRuns:int = 12, Timeout:int=100, MinInstructions:int = 10) {
 			super(Description);
 			
 			testClass = TestClass;
 			expectedOps = ExpectedOps;
 			testRuns = TestRuns;
+			minInstructions = MinInstructions;
 			timeLimit = Timeout;
 			dynamicallyTested = true;
 			randomizedMemory = true;
 		}
 		
 		override public function genMem():Vector.<Value> {
-			currentTest = new testClass(expectedOps);
+			currentTest = new testClass(expectedOps, minInstructions);
 			return currentTest.initialMemory;
 		}
 		
@@ -51,7 +53,7 @@ package Testing.Goals {
 			C.log("Run " + currentRun + " start");
 			
 			currentRun += 1;
-			currentTest = new testClass(expectedOps);
+			currentTest = new testClass(expectedOps, minInstructions);
 			var mem:Vector.<Value> = currentTest.initialMemory;
 			C.log("Memory generated");
 			

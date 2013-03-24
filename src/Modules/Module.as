@@ -260,7 +260,7 @@ package Modules {
 		
 		public static function init():void {
 			for each (var moduleClass:Class in [Adder, ASU, Clock, ConstIn, Latch,
-												Edge, Regfile, Comparator,
+												Equals, Regfile, Comparator,
 												InstructionMemory, DataMemory,
 												Mux, Demux, InstructionMux, InstructionDemux,
 												Or, ProgramCounter, And, Not, Delay, DataWriter,

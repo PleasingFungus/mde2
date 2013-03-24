@@ -28,6 +28,7 @@ package Testing.Tests {
 		protected var instructionTypes:Vector.<InstructionType>;
 		
 		public function Test(ExpectedOps:Vector.<OpcodeValue>, MinInstructions:int = 10, seed:Number = NaN) {
+			C.log("Min instructions: "+MinInstructions);
 			expectedOps = ExpectedOps;
 			if (isNaN(seed))
 				seed = FlxG.random();

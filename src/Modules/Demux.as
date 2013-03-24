@@ -38,7 +38,7 @@ package Modules {
 			for (var i:int = 0; i < inputs.length; i++) {
 				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2, layout.ports[i].offset.y);
 				nodes.push(new WideNode(this, loc, [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
-											inputs[i].getValue, i+"", true), "Input value "+i);
+											inputs[i].getValue, "Input value "+i, true));
 				controlLines.push(new NodeTuple(layout.ports[layout.ports.length - 1], nodes[i], function (i:int):Boolean {
 					var control:Value = controls[0].getValue();
 					return !control.unknown && !control.unpowered && control.toNumber() == i;

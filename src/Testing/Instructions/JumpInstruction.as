@@ -13,7 +13,7 @@ package Testing.Instructions {
 		public function JumpInstruction(address:int, noop:Boolean = false) {
 			var args:Vector.<int> = new Vector.<int>;
 			args.push(address);
-			super(args, new InstructionAbstraction(new JumpType, -1, args, C.INT_NULL), noop);
+			super(args, new InstructionAbstraction(new JumpType, args, C.INT_NULL), noop);
 		}
 		
 		override protected function findArgs(registers:Vector.<int>, _:InstructionAbstraction):Vector.<InstructionArg> {

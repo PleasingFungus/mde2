@@ -33,16 +33,16 @@ package Testing.Types {
 		}
 		
 		
-		override public function produce_unrestrained(value:int, depth:int):InstructionAbstraction {
+		override public function produce_unrestrained(value:int):InstructionAbstraction {
 			if (!value) {
 				var order:int = int(FlxG.random() * 2);
-				return new MulAbstraction(depth, order ? C.randomRange(U.MIN_INT, U.MAX_INT + 1) : 0, order ? 0 : C.randomRange(U.MIN_INT, U.MAX_INT + 1));
+				return new MulAbstraction(order ? C.randomRange(U.MIN_INT, U.MAX_INT + 1) : 0, order ? 0 : C.randomRange(U.MIN_INT, U.MAX_INT + 1));
 			}
 			
 			var factors:Array = C.factorsOf(Math.abs(value));
             var a1:int = C.randomChoice(factors);
             var a2:int = value / a1;
-			return new MulAbstraction(depth, a1, a2);
+			return new MulAbstraction(a1, a2);
 		}
 		
 	}

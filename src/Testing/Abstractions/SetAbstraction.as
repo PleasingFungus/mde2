@@ -6,8 +6,8 @@ package Testing.Abstractions {
 	 */
 	public class SetAbstraction extends InstructionAbstraction {
 		
-		public function SetAbstraction(depth:int, value:int) {
-			super(InstructionType.SET, depth, new Vector.<int>, value);
+		public function SetAbstraction(value:int) {
+			super(InstructionType.SET, new Vector.<int>, value);
 		}
 		
 		override public function toString():String {

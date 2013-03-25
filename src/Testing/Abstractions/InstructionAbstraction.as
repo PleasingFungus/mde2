@@ -7,12 +7,10 @@ package Testing.Abstractions {
 	public class InstructionAbstraction {
 		
 		public var type:InstructionType;
-		public var depth:int;
 		public var args:Vector.<int>;
 		public var value:int;
-		public function InstructionAbstraction(type:InstructionType, depth:int, args:Vector.<int>, value:int) {
+		public function InstructionAbstraction(type:InstructionType, args:Vector.<int>, value:int) {
 			this.type = type;
-			this.depth = depth;
 			this.args = args ? args : new Vector.<int>;
 			this.value = value; 
 		}

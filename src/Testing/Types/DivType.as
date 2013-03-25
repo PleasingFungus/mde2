@@ -35,12 +35,12 @@ package Testing.Types {
 		}
 		
 		
-		override public function produce_unrestrained(value:int, depth:int):InstructionAbstraction {
+		override public function produce_unrestrained(value:int):InstructionAbstraction {
 			var divisor:int = FlxG.random() > 0.5 ? C.randomRange(U.MIN_INT, 0) : C.randomRange(1, U.MAX_INT + 1);
 			if (value == 0)
-				return new DivAbstraction(depth, 0, divisor);
+				return new DivAbstraction(0, divisor);
             var a1:int = value * divisor;
-			return new DivAbstraction(depth, a1, divisor);
+			return new DivAbstraction(a1, divisor);
 		}
 		
 	}

@@ -7,6 +7,7 @@ package Testing.Tests {
 	import Testing.Abstractions.SetAbstraction;
 	import Testing.Instructions.Instruction;
 	import Testing.Instructions.JumpInstruction;
+	import Testing.Instructions.SetInstruction;
 	import Testing.Types.InstructionType;
 	import Values.*;
 	/**
@@ -16,7 +17,7 @@ package Testing.Tests {
 	public class Test {
 		
 		public var seed:Number;
-		public var minInstructions:int;
+		public var expectedInstructions:int;
 		
 		public var initialMemory:Vector.<Value>;
 		public var expectedMemory:Vector.<Value>;
@@ -25,15 +26,13 @@ package Testing.Tests {
 		protected var memValueToSet:int
 		protected var instructions:Vector.<Instruction>;
 		protected var expectedOps:Vector.<OpcodeValue>;
-		protected var instructionTypes:Vector.<InstructionType>;
 		
-		public function Test(ExpectedOps:Vector.<OpcodeValue>, MinInstructions:int = 10, seed:Number = NaN) {
-			C.log("Min instructions: "+MinInstructions);
+		public function Test(ExpectedOps:Vector.<OpcodeValue>, ExpectedInstructions:int = 12, seed:Number = NaN) {
 			expectedOps = ExpectedOps;
 			if (isNaN(seed))
 				seed = FlxG.random();
 			FlxG.globalSeed = this.seed = seed;
-			minInstructions = MinInstructions;
+			expectedInstructions = ExpectedInstructions;
 			
 			generate();
 			initialMemory = genInitialMemory();
@@ -41,41 +40,53 @@ package Testing.Tests {
 		}
 		
 		protected function generate():void {
-			instructionTypes = new Vector.<InstructionType>;
-			for each (var instructionType:InstructionType in [InstructionType.ADD, InstructionType.SUB, InstructionType.MUL, InstructionType.DIV])
-				if (expectedOps.indexOf(instructionType.mapToOp()) != -1)
-					instructionTypes.push(instructionType);
+			var instructionTypes:Vector.<InstructionType> = getInstructionTypes();
 			
 			memAddressToSet = C.randomRange(U.MAX_INT, U.MAX_INT - U.MIN_INT);
 			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT+1);
-			var values:Vector.<int> = C.buildIntVector(memAddressToSet, memValueToSet);
-			
-			var abstractions:Vector.<InstructionAbstraction> = new Vector.<InstructionAbstraction>;
-			abstractions.push(new SaveAbstraction( -1, memValueToSet, memAddressToSet));
-			
-			for (var depth:int = 0; abstractions.length + values.length < minInstructions; depth++)
-				genAbstractions(abstractions, values, depth);
-			
-			genInitializationAbstractions(abstractions, values, depth);
-			
-			var orderedAbstractions:Vector.<InstructionAbstraction> = new Vector.<InstructionAbstraction>;
-			while (abstractions.length)
-				orderedAbstractions.push(abstractions.pop());
+			var values:Vector.<int> = new Vector.<int>;
+			values.push(memAddressToSet, memValueToSet);
+			var registers:Vector.<int> = new Vector.<int>;
+			for (var register:int = 0; i < NUM_REGISTERS; i++)
+				registers.push(C.INT_NULL);
 			
 			log("\n\nSEED: " + seed);
 			log("PROGRAM START");
-			for (var i:int = 0; i < orderedAbstractions.length; i++)
-				log(i + ": " + orderedAbstractions[i]);
+			
+			instructions = new Vector.<Instruction>;
+			instructions.push(makeInstruction(new SaveAbstraction(memValueToSet, memAddressToSet), registers));
+			
+			for (var abstractionsMade:int = 1; abstractionsMade + values.length < expectedInstructions; abstractionsMade++) {
+				var value:int = values[0];
+				values.splice(0, 1); //values.shift()?
+				var abstraction:InstructionAbstraction = genAbstraction(value, values, instructionTypes);
+				if (abstraction.value != value)
+					throw new Error("!!!");
+				
+				for each (var arg:int in abstraction.args)
+					if (values.indexOf(arg) == -1)
+						values.push(arg);
+				
+				if (values.length > NUM_REGISTERS) {
+					values.pop();
+					values.pop(); //assuming max 2 args, error condition can only occur if both are added, not prev. present; so safe to pop
+					values.push(value);
+					log("Early termination due to register overflow");
+					break;
+				}
+				
+				instructions.push(makeInstruction(abstraction, registers));
+			}
+			
+			for each (value in values)
+				instructions.push(makeInstruction(new SetAbstraction(value), registers));
+			
 			log("PROGRAM END\n\n");
 			
-			var virtualRegisters:Vector.<int> = new Vector.<int>;
-			instructions = new Vector.<Instruction>;
-			for (var line:int = 0; line < orderedAbstractions.length; line++) {
-				var abstraction:InstructionAbstraction = orderedAbstractions[line];
-				log(line, abstraction);
-				instructions.push(genInstruction(line, abstraction, virtualRegisters, orderedAbstractions));
-				log("Virtual registers: " + virtualRegisters);
-			}
+			var orderedInstructions:Vector.<Instruction> = new Vector.<Instruction>;
+			while (instructions.length)
+				orderedInstructions.push(instructions.pop());
+			instructions = orderedInstructions;
 			
 			instructions = postProcess(instructions);
 			
@@ -83,11 +94,14 @@ package Testing.Tests {
 			
 			log("\n\nSEED: " + seed);
 			log("PROGRAM START");
-			for (i = 0; i < instructions.length; i++)
+			for (var i:int = 0; i < instructions.length; i++)
 				log(i + ": " + instructions[i]);
 			log("PROGRAM END\n\n");
 			
-			var regCount:int = 8;
+			testRun();
+		}
+		
+		protected function testRun():void {
 			var memory:Dictionary = new Dictionary;
 			var registers:Dictionary = new Dictionary;
 			executeInEnvironment(memory, registers, instructions);
@@ -100,6 +114,103 @@ package Testing.Tests {
 				throw new Error("Memory at " + memAddressToSet + " is " + memory[memAddressToSet+""] + " at end of run, not " + memValueToSet + " as expected!");
 			else
 				log("Mem test success");
+		}
+		
+		protected function makeInstruction(abstraction:InstructionAbstraction, registers:Vector.<int>):Instruction {
+			log(instructions.length + ": " + abstraction);
+			
+			var argRegisters:Vector.<int> = new Vector.<int>;
+			var noop:Boolean = false;
+			
+			if (abstraction.value != C.INT_NULL) {
+				var destination:int = registers.indexOf(abstraction.value);
+				if (destination == -1)
+					throw new Error("!!!");
+				
+				argRegisters.push(destination);
+				if (abstraction.args.indexOf(abstraction.value) == -1) //not a noop
+					registers[destination] = C.INT_NULL;
+				else
+					noop = true;
+			}
+			
+			for each (var arg:int in abstraction.args) {
+				var register:int = registers.indexOf(arg);
+				if (register != -1) {
+					argRegisters.push(register);
+					continue;
+				}
+				
+				register = registers.indexOf(C.INT_NULL)
+				if (register == -1)
+					throw new Error("!!!");
+				registers[register] = arg;
+				argRegisters.push(register);
+			}
+			
+			var instructionClass:Class = Instruction.mapByType(abstraction.type);
+			return new instructionClass(argRegisters, abstraction, noop);
+		}
+		
+		
+		
+		protected function getInstructionTypes():Vector.<InstructionType> {
+			var instructionTypes:Vector.<InstructionType> = new Vector.<InstructionType>;
+			for each (var instructionType:InstructionType in [InstructionType.ADD, InstructionType.SUB, InstructionType.MUL, InstructionType.DIV])
+				if (expectedOps.indexOf(instructionType.mapToOp()) != -1)
+					instructionTypes.push(instructionType);
+			return instructionTypes;
+		}
+		
+		
+		
+		protected function genAbstraction(value:int, values:Vector.<int>, instructionTypes:Vector.<InstructionType>):InstructionAbstraction {
+			var type:InstructionType;
+			var abstraction:InstructionAbstraction;
+			var arg:int;
+			
+			log("Attempting to produce " +value);
+			var fullReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
+			for each (type in instructionTypes)
+				if (type.can_produce_with(value, values))
+					fullReuseInstrs.push(type);
+			if (fullReuseInstrs.length) {
+				log("Full re-use instrs: " + fullReuseInstrs);
+				abstraction = randomTypeChoice(fullReuseInstrs).produce_with(value, values);
+				log("Added " + abstraction + " with full re-use");
+				return abstraction;
+			}
+			log("No full re-use instrs")
+			
+			var partialReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
+			for each (type in instructionTypes)
+				if (type.can_produce_with_one_of(value, values))
+					partialReuseInstrs.push(type);
+			if (partialReuseInstrs.length) {
+				log("Partial re-use instrs: " + partialReuseInstrs);
+				
+				type = randomTypeChoice(partialReuseInstrs);
+				var validArgs:Vector.<int> = new Vector.<int>;
+				for each (arg in values)
+					if (type.can_produce_with_one(value, arg))
+						validArgs.push(arg);
+				log("Valid args for " + type.name + ": " + validArgs);
+				
+				arg = C.randomIntChoice(validArgs);
+				abstraction = type.produce_with_one(value, arg);
+				log("Added " + abstraction + ", re-using " + arg);
+				return abstraction;
+			}
+			log("No partial re-use instrs")
+			
+			type = instructionTypes[C.randomRange(0, instructionTypes.length)];
+			abstraction = type.produce_unrestrained(value);
+			log("Added " + abstraction);
+			return abstraction;
+		}
+		
+		protected function randomTypeChoice(options:Vector.<InstructionType>):InstructionType {
+			return options[int(FlxG.random() * options.length)];
 		}
 		
 		protected function postProcess(instructions:Vector.<Instruction>):Vector.<Instruction> {
@@ -153,164 +264,7 @@ package Testing.Tests {
 			}
 		}
 		
-		protected function genAbstractions(abstractions:Vector.<InstructionAbstraction>, values:Vector.<int>, depth:int):void {
-			log("Instructions: " + abstractions);
-			log("Values: " + values);
-			var abstraction:InstructionAbstraction;
-			
-			while (values.length) {
-				var value:int = values.pop();
-				abstraction = genAbstraction(value, depth, getArgs(abstractions, depth));
-				if (abstraction.value != value)
-					throw new Error("!!!");
-				abstractions.push(abstraction);
-			}
-			
-			//prepare to SET args of last layer of instructions
-			for each (abstraction in abstractions)
-				if (abstraction.depth == depth)
-					for each (var arg:int in abstraction.args)
-						if (values.indexOf(arg) == -1)
-							values.push(arg);
-		}
 		
-		protected function genAbstraction(value:int, depth:int, args:Vector.<int>):InstructionAbstraction {
-			var type:InstructionType;
-			var abstraction:InstructionAbstraction;
-			var arg:int;
-			
-			log("Attempting to produce " +value);
-			log("Args: " + args);
-			var fullReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
-			for each (type in instructionTypes)
-				if (type.can_produce_with(value, args))
-					fullReuseInstrs.push(type);
-			if (fullReuseInstrs.length) {
-				log("Full re-use instrs: " + fullReuseInstrs);
-				abstraction = randomTypeChoice(fullReuseInstrs).produce_with(value, depth, args);
-				log("Added " + abstraction + " with full re-use");
-				return abstraction;
-			}
-			log("No full re-use instrs")
-			
-			var partialReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
-			for each (type in instructionTypes)
-				if (type.can_produce_with_one_of(value, args))
-					partialReuseInstrs.push(type);
-			if (partialReuseInstrs.length) {
-				log("Partial re-use instrs: " + partialReuseInstrs);
-				
-				type = randomTypeChoice(partialReuseInstrs);
-				var validArgs:Vector.<int> = new Vector.<int>;
-				for each (arg in args)
-					if (type.can_produce_with_one(value, arg))
-						validArgs.push(arg);
-				log("Valid args for " + type.name + ": " + validArgs);
-				
-				arg = C.randomIntChoice(validArgs);
-				abstraction = type.produce_with_one(value, depth, arg);
-				log("Added " + abstraction + ", re-using " + arg);
-				return abstraction;
-			}
-			log("No partial re-use instrs")
-			
-			type = instructionTypes[C.randomRange(0, instructionTypes.length)];
-			abstraction = type.produce_unrestrained(value, depth);
-			log("Added " + abstraction);
-			return abstraction;
-		}
-		
-		protected function genInitializationAbstractions(abstractions:Vector.<InstructionAbstraction>, values:Vector.<int>, depth:int):void {
-			for each (var value:int in values)
-				abstractions.push(new SetAbstraction(depth, value));
-		}
-		
-		protected function genInstruction(line:int, abstraction:InstructionAbstraction, virtualRegisters:Vector.<int>,
-										   abstractions:Vector.<InstructionAbstraction>):Instruction {
-			var registers:Vector.<int> = new Vector.<int>;
-			for each (var arg:int in abstraction.args) {
-				var vrIndex:int = virtualRegisters.indexOf(arg);
-				if (vrIndex == -1)
-					throw new Error("!!!");
-				registers.push(vrIndex);
-			}
-			
-			if (abstraction.value != C.INT_NULL) {
-				var destination:int = findRegisterFor(abstraction.depth, line, abstraction.value, virtualRegisters, abstractions);
-				var noop:Boolean = destination < virtualRegisters.length && virtualRegisters[destination] == abstraction.value;
-				registers.splice(0, 0, destination);
-				if (destination < virtualRegisters.length)
-					virtualRegisters[destination] = abstraction.value;
-				else
-					virtualRegisters.push(abstraction.value);
-			}
-			
-			var instructionClass:Class = Instruction.mapByType(abstraction.type);
-			return new instructionClass(registers, abstraction, noop);
-		}
-		
-		protected function findRegisterFor(depth:int, line:int, value:int,
-										   virtualRegisters:Vector.<int>,
-										   abstractions:Vector.<InstructionAbstraction>):int {
-			if (virtualRegisters.indexOf(value) != -1) {
-				log("Storing " + value + " is a no-op");
-				return virtualRegisters.indexOf(value);
-			}
-			
-			
-			var abstraction:InstructionAbstraction;
-			
-			var successors:Vector.<InstructionAbstraction> = abstractions.slice(line + 1);
-			var predependents:Vector.<InstructionAbstraction> = abstractions.slice(0, line + 1);
-			
-			var blockingInstructions:Vector.<InstructionAbstraction> = new Vector.<InstructionAbstraction>;
-			for each (abstraction in successors)
-				if (abstraction.depth <= depth + 1)
-					blockingInstructions.push(abstraction);
-			
-			var freeRegValues:Vector.<int> = new Vector.<int>;
-			for each (var rv:int in virtualRegisters) {
-				var blocked:Boolean = false;
-				for each (abstraction in blockingInstructions)
-					if (abstraction.args.indexOf(rv) != -1) {
-						blocked = true;
-						break;
-					}
-				
-				if (!blocked)
-					freeRegValues.push(rv);
-			}
-			
-			//var allArgs:Vector.<int> = getArgs(predependents, C.INT_NULL);
-			//free_reg_values.sort(key=lambda rv: -all_args.index(rv)) #TODO
-			log("Free register values: " + freeRegValues);
-			
-			if (freeRegValues.length) {
-				log("Storing " + value + " in existing slot " + virtualRegisters.indexOf(freeRegValues[0]) + " currently holding " + freeRegValues[0]);
-				var regIndex:int = virtualRegisters.indexOf(freeRegValues[0]);
-				if (regIndex == -1)
-					throw new Error("!!!");
-				return regIndex;
-			}
-			log("Storing " + value + " in previously unallocated register " + virtualRegisters.length);
-			return virtualRegisters.length;
-		}
-		
-		protected function getArgs(abstractions:Vector.<InstructionAbstraction>, depth:int):Vector.<int> {
-			var args:Vector.<int> = new Vector.<int>;
-			
-			for each (var abstraction:InstructionAbstraction in abstractions)
-				if (abstraction.depth == depth || depth == C.INT_NULL)
-					for each (var arg:int in abstraction.args)
-						if (args.indexOf(arg) == -1)
-							args.push(arg);
-			
-			return args;
-		}
-		
-		protected function randomTypeChoice(options:Vector.<InstructionType>):InstructionType {
-			return options[int(FlxG.random() * options.length)];
-		}
 		
 		protected function log(...args):void {
 			if (U.DEBUG && U.DEBUG_PRINT_TESTS)
@@ -339,6 +293,8 @@ package Testing.Tests {
 				memory.push(FixedValue.NULL);
 			return memory;
 		}
+		
+		protected const NUM_REGISTERS:int = 8;
 	}
 
 }

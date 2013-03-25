@@ -6,8 +6,8 @@ package Testing.Abstractions {
 	 */
 	public class NotAnAbstraction extends InstructionAbstraction {
 		
-		public function NotAnAbstraction(depth:int, a:int) {
-			super(InstructionType.NOT, depth, C.buildIntVector(a), int(!a));
+		public function NotAnAbstraction(a:int) {
+			super(InstructionType.NOT, C.buildIntVector(a), int(!a));
 		}
 		
 	}

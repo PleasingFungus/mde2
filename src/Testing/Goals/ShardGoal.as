@@ -8,7 +8,7 @@ package Testing.Goals {
 	public class ShardGoal extends GeneratedGoal {
 		
 		public function ShardGoal(Description:String, Shard:LevelShard) {
-			super(Description, Test, Shard.expectedOps, 50 / Shard.instructionFactor, int(100 * Shard.timeFactor), 10 * Shard.instructionFactor);
+			super(Description, Test, Shard.expectedOps, 50 / Shard.instructionFactor, int(100 * Shard.timeFactor), 12 * Shard.instructionFactor);
 		}
 		
 		

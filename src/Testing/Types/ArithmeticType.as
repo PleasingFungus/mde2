@@ -60,21 +60,20 @@ package Testing.Types {
 		}
 		
 		
-		override public function produce_with_one(value:int, depth:int, arg:int):InstructionAbstraction {
+		override public function produce_with_one(value:int, arg:int):InstructionAbstraction {
 			if (symmetric) {
 				var order:int = int(FlxG.random() * 2); //0 or 1
-				return new abstraction(depth,
-									   order ? arg : produceArgB(arg, value),
+				return new abstraction(order ? arg : produceArgB(arg, value),
 									   order ?  produceArgB(arg, value) : arg);
 			}
 			
 			var b:int = produceArgB(arg, value);
 			if (b <= U.MAX_INT && b >= U.MIN_INT && produceValue(arg, b) == value)
-				return new abstraction(depth, arg, b);
-			return new abstraction(depth, arg, produceValue(arg, value));
+				return new abstraction(arg, b);
+			return new abstraction(arg, produceValue(arg, value));
 		}
 		
-		override public function produce_with(value:int, depth:int, args:Vector.<int>):InstructionAbstraction {
+		override public function produce_with(value:int, args:Vector.<int>):InstructionAbstraction {
             var pairs:Array = [];
 			for (var i:int = 0; i < args.length; i++) {
 				var a:int = args[i];
@@ -88,10 +87,10 @@ package Testing.Types {
 			}
             var pair:Array = C.randomChoice(pairs);
 			if (!symmetric)
-				return new abstraction(depth, pair[0], pair[1]);
+				return new abstraction(pair[0], pair[1]);
 			
 			var order:int = int(FlxG.random() * 2); //0 or 1
-			return new abstraction(depth, pair[order], pair[1 - order]);
+			return new abstraction(pair[order], pair[1 - order]);
 		}
 		
 		

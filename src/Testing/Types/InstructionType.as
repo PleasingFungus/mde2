@@ -36,15 +36,15 @@ package Testing.Types {
 			return false;
 		}
 		
-		public function produce_unrestrained(value:int, depth:int):InstructionAbstraction {
+		public function produce_unrestrained(value:int):InstructionAbstraction {
 			return null;
 		}
 		
-		public function produce_with(value:int, depth:int, args:Vector.<int>):InstructionAbstraction {
+		public function produce_with(value:int, args:Vector.<int>):InstructionAbstraction {
 			return null;
 		}
 		
-		public function produce_with_one(value:int, depth:int, arg:int):InstructionAbstraction {
+		public function produce_with_one(value:int, arg:int):InstructionAbstraction {
 			return null;
 		}
 		

@@ -27,13 +27,13 @@ package Testing.Types {
 		}
 		
 		
-		override public function produce_unrestrained(value:int, depth:int):InstructionAbstraction {
+		override public function produce_unrestrained(value:int):InstructionAbstraction {
 			var minAddend:int = Math.max(U.MIN_INT, value - U.MAX_INT);
 			var maxAddend:int = Math.min(U.MAX_INT, value - U.MIN_INT);
         
             var a1:int = C.randomRange(minAddend, maxAddend+1);
             var a2:int = value - a1;
-			return new AddAbstraction(depth, a1, a2);
+			return new AddAbstraction(a1, a2);
 		}
 		
 	}

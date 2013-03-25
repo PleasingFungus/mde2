@@ -6,8 +6,8 @@ package Testing.Abstractions {
 	 */
 	public class SaveAbstraction extends InstructionAbstraction {
 		
-		public function SaveAbstraction(depth:int, a1:int, a2:int) {
-			super(InstructionType.SAVE, depth, C.buildIntVector(a1, a2), C.INT_NULL);
+		public function SaveAbstraction(a1:int, a2:int) {
+			super(InstructionType.SAVE, C.buildIntVector(a1, a2), C.INT_NULL);
 		}
 		
 		override public function toString():String {

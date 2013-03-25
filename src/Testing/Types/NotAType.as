@@ -30,20 +30,20 @@ package Testing.Types {
 			return can_produce_with_one_of(value, args);
 		}
 		
-		override public function produce_unrestrained(value:int, depth:int):InstructionAbstraction {
+		override public function produce_unrestrained(value:int):InstructionAbstraction {
 			if (value == 1)
-				return new NotAnAbstraction(depth, 0);
-			return new NotAnAbstraction(depth, C.randomRange(U.MIN_INT, U.MAX_INT+1));
+				return new NotAnAbstraction(0);
+			return new NotAnAbstraction(C.randomRange(U.MIN_INT, U.MAX_INT+1));
 		}
 		
-		override public function produce_with_one(value:int, depth:int, arg:int):InstructionAbstraction {
-			return new NotAnAbstraction(depth, arg);
+		override public function produce_with_one(value:int, arg:int):InstructionAbstraction {
+			return new NotAnAbstraction(arg);
 		}
 		
-		override public function produce_with(value:int, depth:int, args:Vector.<int>):InstructionAbstraction {
+		override public function produce_with(value:int, args:Vector.<int>):InstructionAbstraction {
 			for each (var arg:int in args)
 				if (value == !arg)
-					return new NotAnAbstraction(depth, arg);
+					return new NotAnAbstraction(arg);
 			throw new Error("Can't generate Not!");
 		}
 		

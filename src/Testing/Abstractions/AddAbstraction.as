@@ -6,8 +6,8 @@ package Testing.Abstractions {
 	 */
 	public class AddAbstraction extends InstructionAbstraction {
 		
-		public function AddAbstraction(depth:int, a1:int, a2:int) {
-			super(InstructionType.ADD, depth, C.buildIntVector(a1, a2), a1 + a2);
+		public function AddAbstraction(a1:int, a2:int) {
+			super(InstructionType.ADD, C.buildIntVector(a1, a2), a1 + a2);
 		}
 		
 	}

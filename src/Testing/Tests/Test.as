@@ -141,9 +141,13 @@ package Testing.Tests {
 					continue;
 				}
 				
-				register = registers.indexOf(C.INT_NULL)
-				if (register == -1)
+				var potentialRegisters:Vector.<int> = new Vector.<int>;
+				for (register = 0; register < registers.length; register++)
+					if (registers[register] === C.INT_NULL)
+						potentialRegisters.push(register);
+				if (potentialRegisters.length == 0)
 					throw new Error("!!!");
+				register = C.randomIntChoice(potentialRegisters);
 				registers[register] = arg;
 				argRegisters.push(register);
 			}

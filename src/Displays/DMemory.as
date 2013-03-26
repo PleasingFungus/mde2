@@ -58,12 +58,12 @@ package Displays {
 		
 		protected function makePages():void {
 			pages = new Vector.<FlxGroup>;
-			pages.push(add(makeMemoryPage(memory)));
+			pages.push(add(makeMemoryPage(memory, "Current Memory")));
 			if (expectedMemory)
-				pages.push(add(makeMemoryPage(expectedMemory)));
+				pages.push(add(makeMemoryPage(expectedMemory, "Expected Memory")));
 		}
 		
-		protected function makeMemoryPage(memory:Vector.<Value>):FlxGroup {
+		protected function makeMemoryPage(memory:Vector.<Value>, pageName:String):FlxGroup {
 			var BORDER:int = 10;
 			var COL_WIDTH:int = 225;
 			var COL_HEIGHT:int = bg.height - BORDER * 2;
@@ -98,6 +98,8 @@ package Displays {
 				}
 			}
 			//TODO: multiple pages of actual memory
+			
+			memoryPage.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + bg.width / 2, bg.y + bg.height - 40, bg.width / 2, pageName), 0xffffff, 'center'));
 			
 			return memoryPage;
 		}

@@ -9,7 +9,7 @@ package Testing.Tests {
 	public class OpcodeTest extends Test {
 		
 		public var saves:Vector.<InstructionValue>;
-		public function OpcodeTest(_:Vector.<OpcodeValue>, Seed:Number = NaN) {
+		public function OpcodeTest(_:Vector.<OpcodeValue>, __:int = -1, Seed:Number = NaN) {
 			super(_, -1, Seed); 
 		}
 		

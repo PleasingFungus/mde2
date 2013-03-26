@@ -29,9 +29,9 @@ package Testing.Tests {
 		
 		public function Test(ExpectedOps:Vector.<OpcodeValue>, ExpectedInstructions:int = 12, seed:Number = NaN) {
 			expectedOps = ExpectedOps;
-			if (isNaN(seed))
-				seed = FlxG.random();
-			FlxG.globalSeed = this.seed = seed;
+			if (!isNaN(seed))
+				FlxG.globalSeed = seed;
+			this.seed = FlxG.globalSeed;
 			expectedInstructions = ExpectedInstructions;
 			
 			generate();

@@ -68,7 +68,6 @@ package Levels {
 								  new OpcodeTutorialGoal,
 								  false,
 								  [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], [OpcodeValue.OP_SAVI]));
-			levels[3].predecessors.push(levels[2]);
 			levels[4].predecessors.push(levels[2]);
 			
 			return levels;

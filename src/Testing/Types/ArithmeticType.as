@@ -29,11 +29,11 @@ package Testing.Types {
 		}
 		
 		override public function can_produce_with_one(value:int, arg:int):Boolean {
-			var b:int = produceArgB(value, arg);
+			var b:int = produceArgB(arg, value);
 			if (b <= U.MAX_INT && b >= U.MIN_INT && produceValue(arg, b) == value)
 				return true;
 			
-			if (!symmetric)
+			if (symmetric)
 				return false;
 			
 			b = produceValue(arg, value);

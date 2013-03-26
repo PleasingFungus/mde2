@@ -46,8 +46,10 @@ package  {
 		public static var tuts:Vector.<Level>;
 		public static var delayTuts:Vector.<Level>;
 		public static var levels:Vector.<Level>;
+		
 		public static var state:LevelState;
 		public static var buttonManager:ButtonManager;
+		public static var zoom:Number;
 		
 		public static const GRID_DIM:int = 16;
 		
@@ -92,6 +94,8 @@ package  {
 			delayTuts = Level.delayTutorials();
 			levels = Level.list();
 			
+			zoom = 1;
+			
 			C.warmupFactors(MAX_INT);
 		}
 		
@@ -101,13 +105,13 @@ package  {
 		
 		
 		public static function get mouseLoc():Point {
-			return new Point(FlxG.mouse.x / state.zoom - FlxG.camera.scroll.x * (1 / state.zoom - 1),
-							 FlxG.mouse.y / state.zoom - FlxG.camera.scroll.y * (1 / state.zoom - 1));
+			return new Point(FlxG.mouse.x / zoom - FlxG.camera.scroll.x * (1 / zoom - 1),
+							 FlxG.mouse.y / zoom - FlxG.camera.scroll.y * (1 / zoom - 1));
 		}
 		
 		public static function get mouseFlxLoc():FlxPoint {
-			return new FlxPoint(FlxG.mouse.x / state.zoom - FlxG.camera.scroll.x * (1 / state.zoom - 1),
-								FlxG.mouse.y / state.zoom - FlxG.camera.scroll.y * (1 / state.zoom - 1));
+			return new FlxPoint(FlxG.mouse.x / zoom - FlxG.camera.scroll.x * (1 / zoom - 1),
+								FlxG.mouse.y / zoom - FlxG.camera.scroll.y * (1 / zoom - 1));
 		}
 		
 		public static function pointOnGrid(p:Point):Point {

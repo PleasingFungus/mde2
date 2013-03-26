@@ -52,7 +52,7 @@ package Displays {
 		}
 		
 		private function get MAX_SPEED():int {
-			return 65 / U.state.zoom;
+			return 65 / U.zoom;
 		}
 		private const ACCEL:Number = MAX_SPEED / 2;
 	}

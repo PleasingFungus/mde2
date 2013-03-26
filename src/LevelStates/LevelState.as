@@ -35,7 +35,6 @@ package LevelStates {
 		public var lowerLayer:FlxGroup;
 		public var midLayer:FlxGroup;
 		public var upperLayer:FlxGroup;
-		public var zoom:Number;
 		public var elapsed:Number;
 		
 		protected var displayWires:Vector.<DWire>;
@@ -93,7 +92,6 @@ package LevelStates {
 			
 			actionStack = new Vector.<Action>;
 			reactionStack = new Vector.<Action>;
-			zoom = 1;
 			elapsed = 0;
 			
 			initialMemory = level.goal.genMem();
@@ -279,19 +277,19 @@ package LevelStates {
 			var zoomButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
 			for (var zoomLevel:int = 0; zoomLevel < ZOOMS.length; zoomLevel++)
 				zoomButtons.push(new GraphicButton( -1, -1, ZOOMS[zoomLevel], function selectZoom(zoomLevel:int):void {
-					FlxG.camera.scroll.x += (FlxG.width / 2) / zoom;
-					FlxG.camera.scroll.y += (FlxG.height / 2) / zoom;
+					FlxG.camera.scroll.x += (FlxG.width / 2) / U.zoom;
+					FlxG.camera.scroll.y += (FlxG.height / 2) / U.zoom;
 					
-					zoom = Math.pow(2, -zoomLevel);
+					U.zoom = Math.pow(2, -zoomLevel);
 					
-					FlxG.camera.scroll.x -= (FlxG.width / 2) / zoom;
-					FlxG.camera.scroll.y -= (FlxG.height / 2) / zoom;
+					FlxG.camera.scroll.x -= (FlxG.width / 2) / U.zoom;
+					FlxG.camera.scroll.y -= (FlxG.height / 2) / U.zoom;
 					
 					if (listOpen == LIST_ZOOM) {
 						listOpen = LIST_NONE;
 						makeUI();
 					}
-				}, "Set zoom to "+Math.pow(2, -zoomLevel), ControlSet.NUMBER_HOTKEYS[zoomLevel+1]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == zoom));
+				}, "Set zoom to "+Math.pow(2, -zoomLevel), ControlSet.NUMBER_HOTKEYS[zoomLevel+1]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == U.zoom));
 			
 			var zoomList:ButtonList = new ButtonList(45, 5, zoomButtons, function onListClose():void {
 				if (listOpen == LIST_ZOOM)
@@ -872,7 +870,7 @@ package LevelStates {
 		private var matrix:Matrix;
 		private var boundRect:Rectangle;
 		override public function draw():void {
-			if (buf && buf.width != FlxG.width / zoom) {
+			if (buf && buf.width != FlxG.width / U.zoom) {
 				buf.dispose();
 				buf = null;
 				matrix = null;
@@ -880,9 +878,9 @@ package LevelStates {
 			}
 			
 			if (!buf) {
-				var w:int = FlxG.width / zoom;
-				var h:int = FlxG.height / zoom;
-				buf = new BitmapData(FlxG.width / zoom, FlxG.height / zoom, true, FlxG.bgColor);
+				var w:int = FlxG.width / U.zoom;
+				var h:int = FlxG.height / U.zoom;
+				buf = new BitmapData(FlxG.width / U.zoom, FlxG.height / U.zoom, true, FlxG.bgColor);
 			}
 			if (!boundRect)
 				boundRect = new Rectangle(0, 0, buf.width, buf.height);
@@ -900,7 +898,7 @@ package LevelStates {
 			
 			if (!matrix) {
 				matrix = new Matrix;
-				matrix.scale(zoom, zoom);
+				matrix.scale(U.zoom, U.zoom);
 			}
 			realBuf.draw(buf, matrix);
 			FlxG.camera.buffer = realBuf;

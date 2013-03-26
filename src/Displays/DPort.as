@@ -25,7 +25,7 @@ package Displays {
 		}
 		
 		protected function init():void {
-			if (U.state.zoom >= 0.5)
+			if (U.zoom >= 0.5)
 				loadGraphic(_sprite);
 			else
 				makeGraphic(U.GRID_DIM, U.GRID_DIM);
@@ -37,7 +37,7 @@ package Displays {
 				offset.y = height / 2;
 			}
 			
-			lastZoom = U.state.zoom;
+			lastZoom = U.zoom;
 		}
 		
 		public function updatePosition(baseX:int, baseY:int):void {
@@ -52,7 +52,7 @@ package Displays {
 		}
 		
 		override public function draw():void {
-			if (U.state.zoom != lastZoom)
+			if (U.zoom != lastZoom)
 				init();
 			color = getColor();
 			super.draw();

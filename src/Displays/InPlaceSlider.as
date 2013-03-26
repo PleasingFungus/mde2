@@ -50,7 +50,7 @@ package Displays {
 		override public function update():void {
 			super.update();
 			
-			var z:Number = U.state.zoom;
+			var z:Number = U.zoom;
 			x = (displayModule.x + displayModule.width / 2 - FlxG.camera.scroll.x) * z - width / 2;
 			y = (displayModule.y + displayModule.height / 2 - FlxG.camera.scroll.y) * z - height / 2;
 			positionElements();

@@ -37,11 +37,11 @@ package Displays {
 			if (U.BLIT_ENABLED)
 				animationBlit = new FlxSprite().makeGraphic(w, w);
 			
-			lastZoom = U.state.zoom;
+			lastZoom = U.zoom;
 		}
 		
 		protected function getWidth():int {
-			return 2 / U.state.zoom;
+			return 2 / U.zoom;
 		}
 		
 		override public function update():void {
@@ -137,7 +137,7 @@ package Displays {
 		}
 		
 		protected function checkZoom():void {
-			if (U.state.zoom != lastZoom)
+			if (U.zoom != lastZoom)
 				buildSegs();
 		}
 		

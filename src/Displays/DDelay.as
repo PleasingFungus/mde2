@@ -165,7 +165,7 @@ package Displays {
 		protected function renderDistances(moduleDistances:Dictionary):void {
 			var node:Object;
 			
-			var font:FontTuple = U.state.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
+			var font:FontTuple = U.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
 			
 			var maxDelay:int = int.MIN_VALUE;
 			for each (node in moduleDistances)
@@ -191,7 +191,7 @@ package Displays {
 		}
 		
 		protected function generateGeneric():void {
-			var font:FontTuple = U.state.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
+			var font:FontTuple = U.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
 			
 			var maxDelay:int;
 			for each (var module:Module in modules)

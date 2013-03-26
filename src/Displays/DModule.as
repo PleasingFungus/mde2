@@ -136,7 +136,7 @@ package Displays {
 		override public function draw():void {
 			super.draw();
 			
-			if (module.internalLayout && U.state.zoom >= 0.5) {	
+			if (module.internalLayout && U.zoom >= 0.5) {	
 				for each (var displayConnection:DWire in displayConnections)
 					if (displayConnection.visible)
 						displayConnection.draw();
@@ -144,7 +144,7 @@ package Displays {
 					displayNode.draw();
 				nameText.draw();
 			}
-			else if (U.state.zoom >= 0.25) {
+			else if (U.zoom >= 0.25) {
 				detailsText.text = getDetails();
 				detailsText.draw();
 			}
@@ -154,7 +154,7 @@ package Displays {
 		}
 		
 		protected function get font():FontTuple {
-			return U.state.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
+			return U.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
 		}
 	}
 

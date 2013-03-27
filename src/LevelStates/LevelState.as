@@ -39,7 +39,6 @@ package LevelStates {
 		
 		protected var displayWires:Vector.<DWire>;
 		protected var displayModules:Vector.<DModule>;
-		protected var mode:int = MODE_CONNECT;
 		public var viewMode:int = VIEW_MODE_NORMAL;
 		protected var listOpen:int;
 		protected var UIChanged:Boolean;
@@ -166,7 +165,7 @@ package LevelStates {
 			if (level.delay) {
 				if (!displayDelay)
 					midLayer.add(displayDelay = new DDelay(modules, displayModules));
-				displayDelay.interactive = MODE_DELAY == mode;
+				displayDelay.interactive = false; //TODO
 			}
 		}
 		
@@ -198,8 +197,7 @@ package LevelStates {
 		}
 		
 		protected function makeEditLists():void {
-			LIST_MODES == listOpen ? makeModeMenu() : makeModeButton();
-			if (mode == MODE_MODULE)
+			if (level.allowedModules.length)
 				switch (listOpen) {
 					case LIST_MODULES: makeModuleList(); break;
 					case LIST_CATEGORIES: makeModuleCatList(); break;
@@ -325,48 +323,6 @@ package LevelStates {
 			upperLayer.add(testButton);
 		}
 		
-		protected function makeModeButton():void {
-			var modeButton:MenuButton = new GraphicButton(10, 10, MODE_SPRITES[mode], function openList():void {
-				listOpen = LIST_MODES;
-				makeUI();
-			}, "Display list of edit modes", new Key("TAB"));
-			upperLayer.add(modeButton);
-		}
-		
-		protected function makeModeMenu():void {
-			if (currentModule) {
-				currentModule.exists = false;
-				currentModule = null;
-			}
-			
-			var modes:Array = [MODE_CONNECT, MODE_REMOVE];
-			if (level.allowedModules.length)
-				modes.push(MODE_MODULE);
-			if (level.delay)
-				modes.push(MODE_DELAY);
-			
-			var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-			for each (var newMode:int in modes) {
-				modeSelectButtons.push(new GraphicButton( -1, -1, MODE_SPRITES[newMode], function selectMode(newMode:int):void {
-					mode = newMode;
-					if (MODE_DELAY == mode)
-						viewMode = VIEW_MODE_DELAY;
-					if (listOpen == LIST_MODES) {
-						listOpen = LIST_NONE;
-						makeUI();
-					}
-				}, "Enter "+MODE_NAMES[newMode]+" mode. "+MODE_DESCRIPTIONS[newMode], ControlSet.NUMBER_HOTKEYS[modes.indexOf(newMode)+1]).setParam(newMode).setSelected(newMode == mode));
-			}
-			
-			var modeList:ButtonList = new ButtonList(5, 5, modeSelectButtons, function onListClose():void {
-				if (listOpen == LIST_MODES)
-					listOpen = LIST_NONE;
-				makeUI();
-			});
-			modeList.setSpacing(4);
-			upperLayer.add(modeList);
-		}
-		
 		protected function makeViewModeButton():void {
 			var modeButton:MenuButton = new GraphicButton(90, 10, VIEW_MODE_SPRITES[viewMode], function openList():void {
 				listOpen = LIST_VIEW_MODES;
@@ -385,8 +341,6 @@ package LevelStates {
 			for each (var newMode:int in [VIEW_MODE_NORMAL, VIEW_MODE_DELAY]) {
 				modeSelectButtons.push(new GraphicButton( -1, -1, VIEW_MODE_SPRITES[newMode], function selectMode(newMode:int):void {
 					viewMode = newMode;
-					if (MODE_DELAY == mode)
-						mode = MODE_CONNECT;
 					if (LIST_VIEW_MODES == listOpen ) {
 						listOpen = LIST_NONE;
 						makeUI();
@@ -404,7 +358,7 @@ package LevelStates {
 		}
 		
 		protected function makeModuleCatButton():void {
-			var listButton:GraphicButton = new GraphicButton(130, 10, _list_sprite, function openList():void {
+			var listButton:GraphicButton = new GraphicButton(10, 10, _list_sprite, function openList():void {
 				if (currentModule) {
 					currentModule.exists = false;
 					currentModule = null;
@@ -461,7 +415,7 @@ package LevelStates {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(125, 5, moduleButtons, function onListClose():void {
+			moduleList = new ButtonList(5, 5, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_CATEGORIES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -518,7 +472,7 @@ package LevelStates {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(125, 5, moduleButtons, function onListClose():void {
+			moduleList = new ButtonList(5, 5, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_MODULES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -594,16 +548,20 @@ package LevelStates {
 			if (time.moment)
 				return; //no fucking around when shit is running!
 			
-			switch (mode) {
-				case MODE_CONNECT:
-					checkConnectControls();
-					break;
-				case MODE_MODULE:
-					checkModuleControls();
-					break;
-				case MODE_REMOVE:
-					checkRemoveControls();
-					break;
+			if (currentModule)
+				checkModuleControls();
+			else if (currentWire)
+				checkWireControls();
+			else if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
+				if (findMousedModule()) {
+					if (ControlSet.MODIFIER_KEY.pressed())
+						addEditSliderbar();
+					else
+						pickUpModule();
+				} else {
+					currentWire = new Wire(U.pointToGrid(U.mouseLoc))
+					displayWires.push(midLayer.add(new DWire(currentWire)));
+				}
 			}
 			
 			if (ControlSet.DELETE_KEY.pressed() && !currentWire && !currentModule) {
@@ -612,46 +570,35 @@ package LevelStates {
 			}
 		}
 		
-		protected function checkConnectControls():void {
-			if (currentWire) {
-				if (FlxG.mouse.pressed())
-					currentWire.attemptPathTo(U.pointToGrid(U.mouseLoc), true)
-				else {
-					new CustomAction(Wire.place, Wire.remove, currentWire).execute();
-					currentWire = null;
-				}
-			} else if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
-				currentWire = new Wire(U.pointToGrid(U.mouseLoc))
-				displayWires.push(midLayer.add(new DWire(currentWire)));
+		protected function checkModuleControls():void {
+			if (ControlSet.CANCEL_KEY.justPressed()) {
+				currentModule.exists = false;
+				currentModule = null;
+				return;
 			}
 			
+			var mousePoint:Point = U.pointToGrid(U.mouseLoc);
+			currentModule.x = mousePoint.x;
+			currentModule.y = mousePoint.y;
 			
-			if (currentWire && ControlSet.CANCEL_KEY.justPressed()) {
-				currentWire.exists = false;
-				currentWire = null;
+			if (FlxG.mouse.justPressed() && !preserveModule) {
+				if (U.buttonManager.moused) {
+					currentModule.exists = false;
+					currentModule = null;
+				} else if (currentModule.validPosition)
+					placeModule();
 			}
 		}
 		
-		protected function checkModuleControls():void {
-			if (currentModule) {
-				var mousePoint:Point = U.pointToGrid(U.mouseLoc);
-				currentModule.x = mousePoint.x;
-				currentModule.y = mousePoint.y;
-				
-				if (FlxG.mouse.justPressed() && !preserveModule) {
-					if (U.buttonManager.moused) {
-						currentModule.exists = false;
-						currentModule = null;
-					} else if (currentModule.validPosition)
-						placeModule();
-				}
-			} else {
-				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
-					if (ControlSet.MODIFIER_KEY.pressed())
-						addEditSliderbar();
-					else
-						pickUpModule();
-				}
+		protected function checkWireControls():void {
+			if (ControlSet.CANCEL_KEY.justPressed()) {
+				currentWire.exists = false;
+				currentWire = null;
+			} else if (FlxG.mouse.pressed())
+				currentWire.attemptPathTo(U.pointToGrid(U.mouseLoc), true)
+			else {
+				new CustomAction(Wire.place, Wire.remove, currentWire).execute();
+				currentWire = null;
 			}
 		}
 		
@@ -697,12 +644,7 @@ package LevelStates {
 			return null;
 		}
 		
-		protected function checkRemoveControls():void {
-			if (FlxG.mouse.pressed()) {
-				destroyModules();
-				destroyWires();
-			}
-		}
+		
 		
 		protected function checkMenuState():void {
 			undoButton.setExists(canUndo());
@@ -715,8 +657,7 @@ package LevelStates {
 			
 			checkCursorState();
 			
-			if (mode == MODE_MODULE)
-				checkModuleState();
+			checkModuleListState();
 		}
 		
 		protected var cursorGraphic:Class;
@@ -727,45 +668,25 @@ package LevelStates {
 			var offsetY:int = 0;
 			var hide:Boolean;
 			
-			if (listOpen == LIST_NONE && !time.moment)
-				switch (mode) {
-					case MODE_CONNECT:
-						if (!U.buttonManager.moused && !findMousedModule())
-							newGraphic = _pen_cursor;
-						break;
-					case MODE_REMOVE:
-						if (!U.buttonManager.moused) {
-							newGraphic = _remove_cursor;
-							offsetX = offsetY = -14;
+			if (listOpen == LIST_NONE && !time.moment && !U.buttonManager.moused) {
+				if (currentModule)
+					hide = true;
+				else {
+					var mousedModule:Module = findMousedModule();
+					if (!mousedModule)
+						newGraphic = _pen_cursor;
+					else if (!mousedModule.FIXED) {
+						if (ControlSet.MODIFIER_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration()) {
+							newGraphic = _wrench_cursor;
+							offsetX = offsetY = -3;
+						} else {
+							newGraphic = _grab_cursor;
+							offsetX = -4;
+							offsetY = -3;
 						}
-						break;
-					case MODE_MODULE:
-						if (currentModule) {
-							hide = true;
-							break;
-						}
-						
-						var mousedModule:Module = findMousedModule();
-						if (mousedModule && !mousedModule.FIXED) {
-							if (ControlSet.MODIFIER_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration()) {
-								newGraphic = _wrench_cursor;
-								offsetX = offsetY = -3;
-							} else {
-								newGraphic = _grab_cursor;
-								offsetX = -4;
-								offsetY = -3;
-							}
-						}
-						
-						break;
-					case MODE_DELAY:
-						if (findMousedModule()) {
-							newGraphic = _delay_cursor
-							offsetX = -9;
-							offsetY = -14;
-						}
-						break;
+					}
 				}
+			}
 			
 			if (hide || !upperLayer.visible) {
 				FlxG.mouse.hide();
@@ -780,12 +701,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function checkModuleState():void {
-			if (currentModule && ControlSet.CANCEL_KEY.justPressed()) {
-				currentModule.exists = false;
-				currentModule = null;
-			}
-			
+		protected function checkModuleListState():void {
 			var moduleSlider:ModuleSlider;
 			if (moduleList && !moduleList.exists) {
 				moduleList = null;
@@ -1138,16 +1054,10 @@ package LevelStates {
 			U.buttonManager.destroy();
 		}
 		
-		protected const MODE_MODULE:int = 0;
-		protected const MODE_CONNECT:int = 1;
-		protected const MODE_REMOVE:int = 2;
-		protected const MODE_DELAY:int = 3;
-		
 		public const VIEW_MODE_NORMAL:int = 0;
 		public const VIEW_MODE_DELAY:int = 1;
 		
 		protected const LIST_NONE:int = 0;
-		protected const LIST_MODES:int = 1;
 		protected const LIST_CATEGORIES:int = 2;
 		protected const LIST_MODULES:int = 3;
 		protected const LIST_ZOOM:int = 4;
@@ -1155,17 +1065,6 @@ package LevelStates {
 		
 		protected const SUCCESS_SUFFIX:String = '-succ';
 		protected const RESET_SAVE:String = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
-
-		[Embed(source = "../../lib/art/ui/module.png")] private const _module_sprite:Class;
-		[Embed(source = "../../lib/art/ui/wire.png")] private const _connect_sprite:Class;
-		[Embed(source = "../../lib/art/ui/remove.png")] private const _remove_sprite:Class;
-		[Embed(source = "../../lib/art/ui/delay.png")] private const _delay_sprite:Class;
-		private const MODE_SPRITES:Array = [_module_sprite, _connect_sprite, _remove_sprite, _delay_sprite];
-		private const MODE_NAMES:Array = ["module", "wire", "delete", "delay"];
-		private const MODE_DESCRIPTIONS:Array = ["Select modules to place from the drop-down menu; click to move or press DELETE to delete.",
-												 "Click and drag to place wires; place DELETE to delete them.",
-												 "Click to delete modules and wires.",
-												 "Mouse to see delay starting from modules; click to see delays along paths."];
 		
 		[Embed(source = "../../lib/art/ui/eye.png")] private const _view_normal_sprite:Class;
 		[Embed(source = "../../lib/art/ui/eye_delayb.png")] private const _view_delay_sprite:Class;

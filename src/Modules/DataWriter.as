@@ -26,16 +26,18 @@ package Modules {
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = super.generateLayout();
 			layout.ports[0].offset.y += 1;
-			layout.ports[1].offset.x += 1;
+			layout.ports[1].offset.x += 2;
 			return layout;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			var writeNode:WideNode = new WideNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [layout.ports[0]], [],
+			var writeNode:StandardNode = new StandardNode(this, new Point(layout.ports[0].offset.x + 2, layout.ports[0].offset.y), [layout.ports[0]], [],
+															inputs[0].getValue, "Input");
+			var dataNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [writeNode], [],
 															getData, "Memory at line");
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]], [],
 															controls[0].getValue, "Line no.");
-			return new InternalLayout([controlNode, writeNode]);
+			return new InternalLayout([controlNode, writeNode, dataNode]);
 		}
 		
 		override public function renderDetails():String {

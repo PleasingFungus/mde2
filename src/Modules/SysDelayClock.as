@@ -8,7 +8,7 @@ package Modules {
 	 */
 	public class SysDelayClock extends Module {
 		
-		public var edgeLength:int;
+		public var edgeLength:int = 1;
 		protected var clockPeriod:int;
 		public function SysDelayClock(X:int, Y:int, EdgeLength:int = 1) {
 			super(X, Y, "SysClock", Module.CAT_TIME, 0, 1, 0);
@@ -23,7 +23,8 @@ package Modules {
 				return configuration = new Configuration(new Range(1, 63, edgeLength));
 			if (U.state.time.clockPeriod != clockPeriod) {
 				clockPeriod = U.state.time.clockPeriod;
-				configuration = new Configuration(new Range(1, clockPeriod - 1, Math.max(Math.min(edgeLength, clockPeriod - 1), 1)));
+				var initial:int = Math.max(Math.min(edgeLength, clockPeriod - 1), 1);
+				configuration = new Configuration(new Range(1, clockPeriod - 1, initial));
 			}
 			return configuration;
 		}
@@ -33,11 +34,15 @@ package Modules {
 		}
 		
 		override public function renderDetails():String {
-			return "SYSCLK" + "\n"+U.state.time.clockPeriod+"\n"+edgeLength+"-"+(U.state.time.clockPeriod - edgeLength)+"\n\n" + drive(null);
+			return "SYSCLK" + "\n"+U.state.time.clockPeriod+"\n"+edgeLength+"-"+delayLength+"\n\n" + drive(null);
 		}
 		
 		override public function getDescription():String {
-			return "Outputs "+EDGE+" for "+edgeLength+" ticks every "+configuration.value+" ticks, and "+NO_EDGE+" the rest of the time."
+			return "Outputs "+EDGE+" for "+edgeLength+" ticks every "+delayLength+" ticks, and "+NO_EDGE+" the rest of the time."
+		}
+		
+		protected function get delayLength():int {
+			return Math.max(1, U.state.time.clockPeriod - edgeLength);
 		}
 		
 		override public function drive(port:Port):Value {

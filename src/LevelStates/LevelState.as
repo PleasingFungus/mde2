@@ -30,46 +30,46 @@ package LevelStates {
 	 */
 	public class LevelState extends FlxState {
 		
-		protected var savedString:String;
+		private var savedString:String;
 		
 		public var lowerLayer:FlxGroup;
 		public var midLayer:FlxGroup;
 		public var upperLayer:FlxGroup;
 		public var elapsed:Number;
 		
-		protected var displayWires:Vector.<DWire>;
-		protected var displayModules:Vector.<DModule>;
+		private var displayWires:Vector.<DWire>;
+		private var displayModules:Vector.<DModule>;
 		public var viewMode:int = VIEW_MODE_NORMAL;
-		protected var listOpen:int;
-		protected var UIChanged:Boolean;
-		protected var editEnabled:Boolean = true;
+		private var listOpen:int;
+		private var UIChanged:Boolean;
+		private var editEnabled:Boolean = true;
 		public var goalPage:int; //for dgoal; to persist between instances
 		
-		protected var UIEnableKey:Key = new Key("U");
+		private var UIEnableKey:Key = new Key("U");
 		
-		protected var undoButton:MenuButton;
-		protected var redoButton:MenuButton;
-		protected var loadButton:MenuButton;
-		protected var resetButton:MenuButton;
+		private var undoButton:MenuButton;
+		private var redoButton:MenuButton;
+		private var loadButton:MenuButton;
+		private var resetButton:MenuButton;
 		
 		
-		protected var displayTime:DTime;
-		protected var displayDelay:DDelay;
-		protected var preserveModule:Boolean;
-		protected var testText:FlxText;
-		protected var testBG:FlxSprite;
-		protected var lastRunTime:Number;
-		protected var runningDisplayTest:Boolean;
+		private var displayTime:DTime;
+		private var displayDelay:DDelay;
+		private var preserveModule:Boolean;
+		private var testText:FlxText;
+		private var testBG:FlxSprite;
+		private var lastRunTime:Number;
+		private var runningDisplayTest:Boolean;
 		
-		protected var recentModules:Vector.<Class>;
-		protected var moduleCategory:String;
-		protected var moduleList:ButtonList;
-		protected var moduleSliders:Vector.<ModuleSlider>;
+		private var recentModules:Vector.<Class>;
+		private var moduleCategory:String;
+		private var moduleList:ButtonList;
+		private var moduleSliders:Vector.<ModuleSlider>;
 		
 		public var actionStack:Vector.<Action>;
 		public var reactionStack:Vector.<Action>;
-		protected var currentWire:Wire;
-		protected var currentModule:Module;
+		private var currentWire:Wire;
+		private var currentModule:Module;
 		
 		public var time:Time;
 		public var grid:Grid;
@@ -104,7 +104,7 @@ package LevelStates {
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
 		
-		protected function initLayers():void {
+		private function initLayers():void {
 			members = [];
 			add(lowerLayer = new FlxGroup());
 			add(midLayer = new FlxGroup());
@@ -136,7 +136,7 @@ package LevelStates {
 			displayModules.push(displayModule);
 		}
 		
-		protected function makeUI():void {
+		private function makeUI():void {
 			upperLayer = new FlxGroup;
 			new ButtonManager;
 			UIChanged = true;
@@ -158,7 +158,7 @@ package LevelStates {
 			makeEditLists();
 		}
 		
-		protected function addUIActives():void {
+		private function addUIActives():void {
 			upperLayer.add(new Scroller);
 			upperLayer.add(new DCurrent(displayWires, displayModules));
 			upperLayer.add(new DModuleInfo(displayModules));
@@ -169,7 +169,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function makeViewButtons():void {
+		private function makeViewButtons():void {
 			makeDataButton();
 			makeInfoButton();
 			makeBackButton();
@@ -182,13 +182,13 @@ package LevelStates {
 			}
 		}
 		
-		protected function makeViewLists():void {
+		private function makeViewLists():void {
 			LIST_ZOOM == listOpen ? makeZoomList() : makeZoomButton();
 			if (level.delay)
 				LIST_VIEW_MODES == listOpen ? makeViewModeMenu() : makeViewModeButton()
 		}
 		
-		protected function makeEditButtons():void {
+		private function makeEditButtons():void {
 			makeSaveButtons();
 			makeUndoButtons();
 			makeTestButtons();
@@ -196,7 +196,7 @@ package LevelStates {
 				makeClockButton();
 		}
 		
-		protected function makeEditLists():void {
+		private function makeEditLists():void {
 			if (level.allowedModules.length)
 				switch (listOpen) {
 					case LIST_MODULES: makeModuleList(); break;
@@ -206,7 +206,7 @@ package LevelStates {
 		}
 		
 		
-		protected function makeBackButton():void {
+		private function makeBackButton():void {
 			var backButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _back_sprite, function back():void {
 				if (U.tuts.indexOf(level) != -1)
 					FlxG.switchState(new TutorialMenu);
@@ -219,7 +219,7 @@ package LevelStates {
 			upperLayer.add(backButton);
 		}
 		
-		protected function makeSaveButtons():void {
+		private function makeSaveButtons():void {
 			loadButton = new GraphicButton(90, 50, _success_load_sprite, loadFromSuccess, "Load last successful", new Key("S"));
 			upperLayer.add(loadButton);
 			
@@ -227,7 +227,7 @@ package LevelStates {
 			upperLayer.add(resetButton);
 		}
 		
-		protected function makeUndoButtons():void {
+		private function makeUndoButtons():void {
 			undoButton = new GraphicButton(10, 50, _undo_sprite, undo, "Undo", new Key("Z"));
 			upperLayer.add(undoButton);
 			
@@ -235,25 +235,25 @@ package LevelStates {
 			upperLayer.add(redoButton);
 		}
 		
-		protected function makeDataButton():void {			
+		private function makeDataButton():void {			
 			var memoryButton:MenuButton = new GraphicButton(50, 90, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory, level.goal.genExpectedMem()));
 			}, "View contents of memory", new Key("M"));
 			upperLayer.add(memoryButton);
 		}
 		
-		protected function makeInfoButton():void {
+		private function makeInfoButton():void {
 			var infoButton:MenuButton = new GraphicButton(10, 90, _info_sprite, function _():void {
 				upperLayer.add(new DGoal(level));
 			}, "Level info", new Key("I"));
 			upperLayer.add(infoButton);
 		}
 		
-		protected function makeClockButton():void {
+		private function makeClockButton():void {
 			upperLayer.add(new DClock(130, 90));
 		}
 		
-		protected function makeZoomButton():void {
+		private function makeZoomButton():void {
 			var zoomButton:MenuButton = new GraphicButton(50, 10, _zoom_sprite, function openList():void {
 				listOpen = LIST_ZOOM;
 				makeUI();
@@ -261,7 +261,7 @@ package LevelStates {
 			upperLayer.add(zoomButton);
 		}
 		
-		protected function makeZoomList():void {
+		private function makeZoomList():void {
 			var zoomButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
 			for (var zoomLevel:int = 0; zoomLevel < ZOOMS.length; zoomLevel++)
 				zoomButtons.push(new GraphicButton( -1, -1, ZOOMS[zoomLevel], function selectZoom(zoomLevel:int):void {
@@ -288,7 +288,7 @@ package LevelStates {
 			upperLayer.add(zoomList);
 		}
 		
-		protected function makeTestButtons():void {
+		private function makeTestButtons():void {
 			if (level.goal.randomizedMemory) {
 				var randomButton:MenuButton = new GraphicButton(90, 90, _random_sprite, function _():void {
 					initialMemory = level.goal.genMem();
@@ -307,13 +307,13 @@ package LevelStates {
 			}
 		}
 		
-		protected function makeEndTestButton():void {
+		private function makeEndTestButton():void {
 			var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 40, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite,
 														  finishDisplayTest, "Finish the test!", new Key("T"));
 			upperLayer.add(testButton);
 		}
 		
-		protected function makeViewModeButton():void {
+		private function makeViewModeButton():void {
 			var modeButton:MenuButton = new GraphicButton(90, 10, VIEW_MODE_SPRITES[viewMode], function openList():void {
 				listOpen = LIST_VIEW_MODES;
 				makeUI();
@@ -321,7 +321,7 @@ package LevelStates {
 			upperLayer.add(modeButton);
 		}
 		
-		protected function makeViewModeMenu():void {
+		private function makeViewModeMenu():void {
 			if (currentModule) {
 				currentModule.exists = false;
 				currentModule = null;
@@ -347,7 +347,7 @@ package LevelStates {
 			upperLayer.add(modeList);
 		}
 		
-		protected function makeModuleCatButton():void {
+		private function makeModuleCatButton():void {
 			var listButton:GraphicButton = new GraphicButton(10, 10, _list_sprite, function openList():void {
 				if (currentModule) {
 					currentModule.exists = false;
@@ -361,7 +361,7 @@ package LevelStates {
 			upperLayer.add(listButton);
 		}
 		
-		protected function makeModuleCatList():void {
+		private function makeModuleCatList():void {
 			//build a list of buttons for allowed modules/names
 			var moduleButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
 			for each (var category:String in Module.ALL_CATEGORIES) {
@@ -422,7 +422,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function makeModuleList():void {
+		private function makeModuleList():void {
 			var moduleType:Class, archetype:Module;
 			
 			var moduleTypes:Vector.<Class>  = new Vector.<Class>;
@@ -480,7 +480,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function addRecentModule(moduleType:Class):void {
+		private function addRecentModule(moduleType:Class):void {
 			if (recentModules.indexOf(moduleType) >= 0)
 				recentModules.splice(recentModules.indexOf(moduleType), 1);
 			else if (recentModules.length >= 3)
@@ -511,10 +511,11 @@ package LevelStates {
 			checkControls();
 			checkMenuState();
 			checkTime();
+			checkDDelay();
 			forceScroll();
 		}
 		
-		protected function updateUI():void {
+		private function updateUI():void {
 			U.buttonManager.update();
 			UIChanged = false;
 			preserveModule = false;
@@ -528,13 +529,13 @@ package LevelStates {
 			}
 		}
 		
-		protected function checkControls():void {
+		private function checkControls():void {
 			checkBuildControls();
 			if (U.DEBUG && UIEnableKey.justPressed())
 				upperLayer.visible = !upperLayer.visible
 		}
 		
-		protected function checkBuildControls():void {
+		private function checkBuildControls():void {
 			if (time.moment)
 				return; //no fucking around when shit is running!
 			
@@ -560,7 +561,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function checkModuleControls():void {
+		private function checkModuleControls():void {
 			if (ControlSet.CANCEL_KEY.justPressed()) {
 				currentModule.exists = false;
 				currentModule = null;
@@ -580,7 +581,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function checkWireControls():void {
+		private function checkWireControls():void {
 			if (ControlSet.CANCEL_KEY.justPressed()) {
 				currentWire.exists = false;
 				currentWire = null;
@@ -592,7 +593,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function pickUpModule():void {
+		private function pickUpModule():void {
 			var mousedModule:Module = findMousedModule();
 			if (mousedModule && !mousedModule.FIXED) {
 				currentModule = mousedModule;
@@ -601,7 +602,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function addEditSliderbar():void {
+		private function addEditSliderbar():void {
 			var module:Module = findMousedModule();
 			if (!module || module.FIXED || !module.getConfiguration() || !module.configurableInPlace)
 				return;
@@ -613,7 +614,7 @@ package LevelStates {
 				}
 		}
 		
-		protected function placeModule():void {
+		private function placeModule():void {
 			new CustomAction(Module.place, Module.remove, currentModule, new Point(currentModule.x, currentModule.y)).execute();
 			currentModule = null;
 		}
@@ -636,7 +637,7 @@ package LevelStates {
 		
 		
 		
-		protected function checkMenuState():void {
+		private function checkMenuState():void {
 			undoButton.setExists(canUndo());
 			redoButton.setExists(canRedo());
 			if (loadButton) {
@@ -650,9 +651,9 @@ package LevelStates {
 			checkModuleListState();
 		}
 		
-		protected var cursorGraphic:Class;
-		protected var wasHidden:Boolean;
-		protected function checkCursorState():void {
+		private var cursorGraphic:Class;
+		private var wasHidden:Boolean;
+		private function checkCursorState():void {
 			var newGraphic:Class = null;
 			var offsetX:int = 0;
 			var offsetY:int = 0;
@@ -691,7 +692,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function checkModuleListState():void {
+		private function checkModuleListState():void {
 			var moduleSlider:ModuleSlider;
 			if (moduleList && !moduleList.exists) {
 				moduleList = null;
@@ -707,7 +708,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function checkTime():void {
+		private function checkTime():void {
 			var editShouldBeEnabled:Boolean = time.moment == 0 && !runningDisplayTest;
 			if (editShouldBeEnabled != editEnabled) {
 				editEnabled = editShouldBeEnabled;
@@ -718,7 +719,12 @@ package LevelStates {
 				finishDisplayTest();
 		}
 		
-		protected function finishDisplayTest():void {
+		private function checkDDelay():void {
+			if (!displayDelay.exists)
+				midLayer.add(displayDelay = new DDelay(modules, displayModules));
+		}
+		
+		private function finishDisplayTest():void {
 			runningDisplayTest = false;
 			
 			if (!level.goal.succeeded) {
@@ -740,7 +746,7 @@ package LevelStates {
 			});
 		}
 		
-		//protected function get buttonMoused():MenuButton {
+		//private function get buttonMoused():MenuButton {
 			//for each (var button:MenuButton in buttons)
 				//if (button.exists && button.moused)
 					//return button;
@@ -760,7 +766,7 @@ package LevelStates {
 		}
 		
 		
-		protected function forceScroll(group:FlxGroup = null):void {
+		private function forceScroll(group:FlxGroup = null):void {
 			group = group ? group : upperLayer;
 			for each (var basic:FlxBasic in group.members)
 				if (basic is FlxObject) {
@@ -881,7 +887,7 @@ package LevelStates {
 			U.save.data[level.name] = savedString;
 		}
 		
-		protected function genSaveString():String {
+		private function genSaveString():String {
 			var saveString:String = "";
 			
 			//save modules
@@ -914,7 +920,7 @@ package LevelStates {
 		}
 		
 		
-		protected function load(saveString:String = null):void {
+		private function load(saveString:String = null):void {
 			initLayers();
 			displayWires = new Vector.<DWire>;
 			displayModules = new Vector.<DModule>;
@@ -963,7 +969,7 @@ package LevelStates {
 			}
 		}
 		
-		protected function loadFromSuccess():void {
+		private function loadFromSuccess():void {
 			var successSave:String = findSuccessSave();
 			if (successSave == savedString || successSave == null)
 				return;
@@ -973,7 +979,7 @@ package LevelStates {
 							 successSave, savedString).execute();
 		}
 		
-		protected function findSuccessSave():String {
+		private function findSuccessSave():String {
 			var personalSuccess:String = U.save.data[level.name + SUCCESS_SUFFIX];
 			if (personalSuccess)
 				return personalSuccess;
@@ -985,7 +991,7 @@ package LevelStates {
 			return null;
 		}
 		
-		protected function reset():void {
+		private function reset():void {
 			if (RESET_SAVE == savedString || savedString == null)
 				return;
 			
@@ -995,7 +1001,7 @@ package LevelStates {
 		}
 		
 		
-		protected function runTest():void {
+		private function runTest():void {
 			level.goal.runTestStep(this);
 			lastRunTime = elapsed;
 			if (!level.goal.running) {
@@ -1007,14 +1013,14 @@ package LevelStates {
 			}
 		}
 		
-		protected function checkTestControls():void {
+		private function checkTestControls():void {
 			if (FlxG.mouse.justPressed() || ControlSet.CANCEL_KEY.justPressed()) {
 				level.goal.endRun();
 				time.reset();
 			}
 		}
 		
-		protected function drawTestText():void {
+		private function drawTestText():void {
 			if (!testText) {
 				testText = U.LABEL_FONT.configureFlxText(new FlxText(0, FlxG.height / 2, FlxG.width, " "), 0x000000, 'center');
 				testText.scrollFactor.x = testText.scrollFactor.y = 0;
@@ -1028,7 +1034,7 @@ package LevelStates {
 		}
 		
 		
-		protected function runDisplayTest():void {
+		private function runDisplayTest():void {
 			time.reset();
 			displayTime.startPlaying();
 			runningDisplayTest = true;
@@ -1047,14 +1053,14 @@ package LevelStates {
 		public const VIEW_MODE_NORMAL:int = 0;
 		public const VIEW_MODE_DELAY:int = 1;
 		
-		protected const LIST_NONE:int = 0;
-		protected const LIST_CATEGORIES:int = 2;
-		protected const LIST_MODULES:int = 3;
-		protected const LIST_ZOOM:int = 4;
-		protected const LIST_VIEW_MODES:int = 5;
+		private const LIST_NONE:int = 0;
+		private const LIST_CATEGORIES:int = 2;
+		private const LIST_MODULES:int = 3;
+		private const LIST_ZOOM:int = 4;
+		private const LIST_VIEW_MODES:int = 5;
 		
-		protected const SUCCESS_SUFFIX:String = '-succ';
-		protected const RESET_SAVE:String = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
+		private const SUCCESS_SUFFIX:String = '-succ';
+		private const RESET_SAVE:String = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
 		
 		[Embed(source = "../../lib/art/ui/eye.png")] private const _view_normal_sprite:Class;
 		[Embed(source = "../../lib/art/ui/eye_delayb.png")] private const _view_delay_sprite:Class;

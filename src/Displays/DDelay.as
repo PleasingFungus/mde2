@@ -42,8 +42,12 @@ package Displays {
 		}
 		
 		protected function findExtMatch():Boolean {
-			if (modules.length != lastModulesExt.length ||
-				U.state.wires.length != lastWiresExt.length)
+			if (modules.length != lastModulesExt.length) {
+				exists = false;
+				return false;
+			}
+			
+			if (U.state.wires.length != lastWiresExt.length)
 				return false;
 			
 			for (var i:int = 0; i < modules.length; i++)
@@ -62,8 +66,10 @@ package Displays {
 			if (visible) {
 				checkMouse();
 				if (!findExtMatch()) {
-					generate();
-					makeExtLists();
+					if (exists) {
+						generate();
+						makeExtLists();
+					}
 				} else if (U.state.time.moment != lastTime) {
 					generate();
 				}

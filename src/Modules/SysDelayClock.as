@@ -9,7 +9,6 @@ package Modules {
 	public class SysDelayClock extends Module {
 		
 		public var edgeLength:int = 1;
-		protected var clockPeriod:int;
 		public function SysDelayClock(X:int, Y:int, EdgeLength:int = 1) {
 			super(X, Y, "SysClock", Module.CAT_TIME, 0, 1, 0);
 			configuration = getConfiguration();
@@ -19,12 +18,13 @@ package Modules {
 		}
 		
 		override public function getConfiguration():Configuration {
-			if (!U.state)
-				return configuration = new Configuration(new Range(1, 63, edgeLength));
-			if (U.state.time.clockPeriod != clockPeriod) {
-				clockPeriod = U.state.time.clockPeriod;
-				var initial:int = Math.max(Math.min(edgeLength, clockPeriod - 1), 1);
-				configuration = new Configuration(new Range(1, clockPeriod - 1, initial));
+			var maxEdge:int = U.state ? U.state.time.clockPeriod - 1 : 64;
+			if (!configuration)
+				configuration = new Configuration(new Range(1, maxEdge, edgeLength));
+			if (U.state && configuration.valueRange.max != maxEdge) {
+				var initial:int = Math.max(Math.min(edgeLength, maxEdge), 1);
+				configuration.valueRange.max = maxEdge;
+				configuration.value = initial;
 			}
 			return configuration;
 		}
@@ -38,7 +38,8 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Outputs "+EDGE+" for "+edgeLength+" ticks every "+delayLength+" ticks, and "+NO_EDGE+" the rest of the time."
+			var edgeLength:int = configuration.value;
+			return "Outputs "+EDGE+" for "+edgeLength+" ticks every "+(U.state.time.clockPeriod - edgeLength)+" ticks, and "+NO_EDGE+" the rest of the time."
 		}
 		
 		protected function get delayLength():int {

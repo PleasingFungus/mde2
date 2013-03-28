@@ -457,7 +457,7 @@ package LevelStates {
 						makeUI();
 					}
 				}, "").setParam(moduleType));
-				if (Module.getArchetype(moduleType).getDescription() != null)
+				if (Module.getArchetype(moduleType).getFullDescription() != null)
 					moduleButtons[moduleButtons.length - 1].setTooltipCallback(Module.getArchetype(moduleType).getFullDescription);
 			}
 			

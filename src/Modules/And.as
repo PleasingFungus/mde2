@@ -45,6 +45,8 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
+			if (2 == width)
+				return "Outputs " + BooleanValue.TRUE + " if both inputs are " + BooleanValue.TRUE + ", else outputs " + BooleanValue.FALSE + ".";
 			return "Outputs "+BooleanValue.FALSE+" if any input is "+BooleanValue.FALSE+", else "+BooleanValue.TRUE+"."
 		}
 		

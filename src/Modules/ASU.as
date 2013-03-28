@@ -16,7 +16,7 @@ package Modules {
 		
 		public function ASU(X:int, Y:int) {
 			super(X, Y, "Add/Sub", Module.CAT_ARITH, 2, 1, 1);
-			delay = 4;
+			delay = 3;
 		}
 		
 		override protected function generateLayout():ModuleLayout {

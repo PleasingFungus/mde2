@@ -15,7 +15,7 @@ package Modules {
 		
 		public function MDU(X:int, Y:int) {
 			super(X, Y, "Mul/Div", Module.CAT_ARITH, 2, 1, 1);
-			delay = 4;
+			delay = 6;
 		}
 		
 		override protected function generateLayout():ModuleLayout {

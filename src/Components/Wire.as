@@ -199,17 +199,25 @@ package Components {
 				return false;
 			
 			var source:Port = null;
-			for each (var carriers:Vector.<Carrier> in [U.state.grid.carriersAtPoint(path[0]), U.state.grid.carriersAtPoint(path[path.length - 1])])
-				if (carriers)
-					for each (var carrier:Carrier in carriers) {
-						var carrierSource:Port = carrier.getSource();
-						if (carrierSource) {
-							if (!source)
-								source = carrierSource;
-							else if (source != carrierSource)
-								return false;
-						}
+			for each (var p:Point in path) {
+				var carriers:Vector.<Carrier> = U.state.grid.carriersAtPoint(p);
+				if (!carriers)
+					continue;
+					
+				var pointIsEndpoint:Boolean = isEndpoint(p);
+				for each (var carrier:Carrier in carriers) {
+					if (!pointIsEndpoint && !carrier.isEndpoint(p))
+						continue;
+					
+					var carrierSource:Port = carrier.getSource();
+					if (carrierSource) {
+						if (!source)
+							source = carrierSource;
+						else if (source != carrierSource)
+							return false;
 					}
+				}
+			}
 			return true;
 		}
 		

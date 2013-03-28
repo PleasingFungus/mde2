@@ -18,6 +18,7 @@ package Displays {
 		
 		private var lastModulesExt:Vector.<Boolean>;
 		private var lastWiresExt:Vector.<Boolean>;
+		private var lastTime:int;
 		
 		private var sourceModule:Module;
 		private var moduleDistances:Dictionary;
@@ -63,6 +64,8 @@ package Displays {
 				if (!findExtMatch()) {
 					generate();
 					makeExtLists();
+				} else if (U.state.time.moment != lastTime) {
+					generate();
 				}
 			}
 			super.update();
@@ -96,13 +99,18 @@ package Displays {
 		
 		protected function generate():void {
 			members = [];
-			if (sourceModule) {
+			
+			if (U.state.time.moment)
+				generateTime();
+			else if (sourceModule) {
 				for (var i:int = 0; i < clickedModules.length; i++)
 					if (!clickedModules[i].module.deployed)
 						clickedModules = i ? clickedModules.slice(i - 1) : []; //breaks implicitly!
 				generateFromSource();
 			} else
 				generateGeneric();
+			
+			lastTime = U.state.time.moment;
 		}
 		
 		protected function generateFromSource():void {
@@ -208,6 +216,28 @@ package Displays {
 				var color:uint = 0xcc000040 | (red << 16) | (green << 8)
 				add(new FlxSprite(displayModule.x, displayModule.y).makeGraphic(displayModule.width, displayModule.height, color));
 				add(new FlxText(displayModule.x - U.GRID_DIM, displayModule.y + displayModule.height / 2 - 8, displayModule.width + U.GRID_DIM * 2, "" + displayModule.module.delay).setFormat(font.id, font.size, 0x0, 'center'));
+			}
+		}
+		
+		protected function generateTime():void {
+			var font:FontTuple = U.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
+			
+			var maxDelay:int;
+			for each (var module:Module in modules)
+				if (module.deployed)
+					maxDelay = Math.max(module.aggregateDelay, maxDelay);
+			
+			for each (var displayModule:DModule in displayModules) {
+				if (!displayModule.module.deployed)	
+					continue;
+				
+				var aggDelay:int = displayModule.module.aggregateDelay;
+				var distFraction:Number = aggDelay / maxDelay;
+				var red:uint = 0xff * distFraction;
+				var green:uint = 0xff - red;
+				var color:uint = 0xcc000040 | (red << 16) | (green << 8)
+				add(new FlxSprite(displayModule.x, displayModule.y).makeGraphic(displayModule.width, displayModule.height, color));
+				add(new FlxText(displayModule.x - U.GRID_DIM, displayModule.y + displayModule.height / 2 - 8, displayModule.width + U.GRID_DIM * 2, "" + aggDelay).setFormat(font.id, font.size, 0x0, 'center'));
 			}
 		}
 		

@@ -127,6 +127,7 @@ package Components {
 		}
 		
 		public function remainingDelay():int {
+			if (!source) return 0;
 			var moment:int = U.state.time.moment;
 			var timeSince:int = moment - source.lastChanged;
 			var timeRemaining:int = parent.delay - timeSince;

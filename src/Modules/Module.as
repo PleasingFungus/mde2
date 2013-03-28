@@ -93,6 +93,17 @@ package Modules {
 			return U.V_UNPOWERED;
 		}
 		
+		public function get aggregateDelay():int {
+			if (!U.state.level.delay)
+				return 0;
+			
+			var maxDelay:int = 0;
+			for each (var portLayout:PortLayout in layout.ports)
+				if (!portLayout.port.isOutput)
+					maxDelay = Math.max(maxDelay, portLayout.port.remainingDelay());
+			return maxDelay;
+		}
+		
 		public function saveString():String {
 			return getSaveValues().join(DELIM) + U.SAVE_DELIM;
 		}

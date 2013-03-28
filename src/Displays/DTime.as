@@ -71,6 +71,7 @@ package Displays {
 				startPlaying();
 				derock = 0;
 			}, "Play at 10x speed", new Key("N"));
+			fastButton.X -= fastButton.fullWidth;
 			add(fastButton);
 			
 			pauseButton = new GraphicButton(playButton.X, playButton.Y, _pause_sprite, function pause():void {
@@ -79,7 +80,6 @@ package Displays {
 				playing = 0;
 				derock = 0;
 			}, "Pause", new Key("SPACE"));
-			pauseButton.X -= playButton.fullWidth;
 			pauseButton.exists = false;
 			add(pauseButton);
 			
@@ -103,7 +103,7 @@ package Displays {
 			add(rewindButton);
 			rewindButton.exists = false;
 			
-			rFastButton = new GraphicButton(rewindButton.X, rewindButton.Y, _reverse_fast_sprite, function reverseFast():void {
+			rFastButton = new GraphicButton(rewindButton.X + rewindButton.fullWidth, rewindButton.Y, _reverse_fast_sprite, function reverseFast():void {
 				if (!derock) return;
 				
 				ticksPerSec = 20;
@@ -122,13 +122,17 @@ package Displays {
 			stopButton.setExists(U.state.time.moment > 0);
 			backstepButton.setExists(U.state.time.moment > 0);
 			
-			playButton.setExists((playing != 1) != (ticksPerSec != 2));
+			
+			playButton.setExists(playing != 1);
+			playButton.X = stepButton.X - playButton.fullWidth * (playing == 1 ? 2 : 1);
 			fastButton.setExists(!playButton.exists);
 			
-			rewindButton.setExists(((playing != -1) != (ticksPerSec != 2)) && U.state.time.moment > 0);
+			rewindButton.setExists(playing != -1 && U.state.time.moment > 0);
+			rewindButton.X = backstepButton.X + backstepButton.fullWidth + (playing == -1 ? rewindButton.fullWidth : 0);
 			rFastButton.setExists(!rewindButton.exists && U.state.time.moment > 0);
 			
 			pauseButton.setExists(playing != 0);
+			pauseButton.X = playing == 1 ? playButton.X + playButton.fullWidth : rewindButton.X - pauseButton.fullWidth;
 			
 			derock++;
 		}

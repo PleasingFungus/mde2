@@ -76,25 +76,22 @@ package Displays {
 			var row:int, col:int, skipped:Boolean;
 			for (var memLine:int = 0; memLine < memory.length; memLine++) {
 				var memValue:Value = memory[memLine];
-				if (memValue && memValue != FixedValue.NULL) {
-					var memText:FlxText = new FlxText(bg.x + BORDER + col * (COL_WIDTH + BORDER),
-													  bg.y + BORDER + row * (ROW_HEIGHT + BORDER / 2),
-													  COL_WIDTH, memLine + " : " + memValue.toString())
-					memoryPage.add(U.BODY_FONT.configureFlxText(memText));
-					
-					row += 1;
-					if (row >= ROWS) {
-						row = 0;
-						col += 1;
-					}
-					skipped = false;
-				} else if (!skipped) {
-					row += 1;
-					if (row >= ROWS) {
-						row = 0;
-						col += 1;
-					}
-					skipped = true;
+				
+				var hadSkipped:Boolean = skipped;
+				skipped = !memValue || memValue == FixedValue.NULL;
+				if (skipped && hadSkipped)
+					continue;
+				
+				var text:String = skipped ? "<empty memory>" : memLine + " : " + memValue;
+				var memText:FlxText = new FlxText(bg.x + BORDER + col * (COL_WIDTH + BORDER),
+												  bg.y + BORDER + row * (ROW_HEIGHT + BORDER / 2),
+												  COL_WIDTH, text)
+				memoryPage.add(U.BODY_FONT.configureFlxText(memText));
+				
+				row += 1;
+				if (row >= ROWS) {
+					row = 0;
+					col += 1;
 				}
 			}
 			//TODO: multiple pages of actual memory

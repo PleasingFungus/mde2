@@ -1,5 +1,7 @@
 package Testing.Goals {
 	import LevelStates.LevelState;
+	import Values.Value;
+	import Values.NumericValue;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -10,13 +12,10 @@ package Testing.Goals {
 			super("Set memory lines 1-5 to 1-5!");
 			dynamicallyTested = true;
 			timeLimit = 10;
-		}
-		
-		override public function stateValid(levelState:LevelState, print:Boolean = false):Boolean {
+			
+			expectedMemory = generateBlankMemory();
 			for (var i:int = 1; i <= 5; i++)
-				if (levelState.memory[i].toNumber() != i)
-					return false;
-			return true;
+				expectedMemory[i] = new NumericValue(i);
 		}
 		
 	}

@@ -21,6 +21,14 @@ package Testing.Goals {
 			initialInstructions.push( new InstructionValue(OpcodeValue.OP_MUL, 3, 2, 6));
 			initialInstructions.push( new InstructionValue(OpcodeValue.OP_DIV, 4, 5, 4));
 			
+			expectedMemory = generateBlankMemory();
+			for (var i:int = 0; i < initialInstructions.length; i++) {
+				var instruction:InstructionValue = initialInstructions[i];
+				expectedMemory[i*4] = instruction.operation;
+				expectedMemory[i*4+1] = instruction.sourceArg;
+				expectedMemory[i*4+2] = instruction.targetArg;
+				expectedMemory[i*4+3] = instruction.destArg;
+			}
 		}
 		
 		override public function genMem():Vector.<Value> {
@@ -28,23 +36,6 @@ package Testing.Goals {
 			for (var i:int = 0; i < initialInstructions.length; i++)
 				mem[i * 4] = initialInstructions[i];
 			return mem;
-		}
-		
-		override public function stateValid(levelState:LevelState, print:Boolean = false):Boolean {
-			for (var i:int = 0; i < initialInstructions.length; i++) {
-				var instruction:InstructionValue = initialInstructions[i];
-				var line:int = i * 4;
-				if (levelState.memory[line + 0] != instruction.operation || 
-					levelState.memory[line + 1] != instruction.sourceArg ||
-					levelState.memory[line + 2] != instruction.targetArg || 
-					levelState.memory[line + 3] != instruction.destArg)
-					return false;
-			}
-				
-			for (i = initialInstructions.length * 4; i < levelState.memory.length; i++)
-				if (levelState.memory[i] != FixedValue.NULL)
-					return false;
-			return true;
 		}
 		
 	}

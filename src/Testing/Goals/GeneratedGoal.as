@@ -61,13 +61,6 @@ package Testing.Goals {
 			super.runTestStep(levelState);
 		}
 		
-		override public function stateValid(levelState:LevelState, print:Boolean = false):Boolean {
-			for (var line:int = 0; line < levelState.memory.length; line++)
-				if (!levelState.memory[line].eq(currentTest.expectedMemory[line]))
-					return false;
-			return true;
-		}
-		
 		override public function getProgress():String {
 			return currentRun+"/"+testRuns;
 		}

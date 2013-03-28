@@ -14,6 +14,8 @@ package Testing.Goals {
 		public var succeeded:Boolean;
 		public var timeLimit:int = int.MAX_VALUE;
 		
+		protected var expectedMemory:Vector.<Value>;
+		
 		public var running:Boolean;
 		public function LevelGoal(Description:String) {
 			description = Description;
@@ -31,7 +33,7 @@ package Testing.Goals {
 		}
 		
 		public function genExpectedMem():Vector.<Value> {
-			return null;
+			return expectedMemory;
 		}
 		
 		public function startRun():void {
@@ -61,8 +63,20 @@ package Testing.Goals {
 			return true;
 		}
 		
-		public function stateValid(levelState:LevelState, print:Boolean=false):Boolean {
-			return false;
+		
+		public function stateValid(levelState:LevelState, print:Boolean = false):Boolean {
+			var expectedMemory:Vector.<Value> = genExpectedMem();
+			if (!expectedMemory)
+				return false;
+			
+			return memoryMatches(levelState.memory, expectedMemory);
+		}
+		
+		protected function memoryMatches(memory:Vector.<Value>, expectedMemory:Vector.<Value>):Boolean {
+			for (var line:int = 0; line < memory.length; line++)
+				if (!memory[line].eq(expectedMemory[line]))
+					return false;
+			return true;
 		}
 	}
 

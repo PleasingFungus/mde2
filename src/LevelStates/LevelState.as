@@ -235,17 +235,7 @@ package LevelStates {
 			upperLayer.add(redoButton);
 		}
 		
-		protected function makeDataButton():void {
-			if (!memory || !memory.length) return;
-			var nonNull:Boolean = false;
-			for each (var value:Value in memory)
-				if (value != FixedValue.NULL) {
-					nonNull = true;
-					break;
-				}
-			if (!nonNull)
-				return;
-			
+		protected function makeDataButton():void {			
 			var memoryButton:MenuButton = new GraphicButton(50, 90, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory, level.goal.genExpectedMem()));
 			}, "View contents of memory", new Key("M"));

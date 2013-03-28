@@ -1,4 +1,5 @@
 package Testing.Goals {
+	import Values.NumericValue;
 	import Values.Value;
 	import LevelStates.LevelState;
 	/**
@@ -11,10 +12,9 @@ package Testing.Goals {
 			super("Set memory line 1 to 2!");
 			dynamicallyTested = true;
 			timeLimit = timeLimit = TimeLimit;
-		}
-		
-		override public function stateValid(levelState:LevelState, print:Boolean=false):Boolean {
-			return levelState.memory[1].toNumber() == 2;
+			
+			expectedMemory = generateBlankMemory();
+			expectedMemory[1] = new NumericValue(2);
 		}
 		
 	}

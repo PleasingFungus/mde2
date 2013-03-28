@@ -82,7 +82,7 @@ package Displays {
 				if (skipped && hadSkipped)
 					continue;
 				
-				var text:String = skipped ? "<empty memory>" : memLine + " : " + memValue;
+				var text:String = skipped ? "<empty memory...>" : memLine + " : " + memValue;
 				var memText:FlxText = new FlxText(bg.x + BORDER + col * (COL_WIDTH + BORDER),
 												  bg.y + BORDER + row * (ROW_HEIGHT + BORDER / 2),
 												  COL_WIDTH, text)

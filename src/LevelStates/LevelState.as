@@ -720,7 +720,7 @@ package LevelStates {
 		}
 		
 		private function checkDDelay():void {
-			if (!displayDelay.exists)
+			if (displayDelay && !displayDelay.exists)
 				midLayer.add(displayDelay = new DDelay(modules, displayModules));
 		}
 		

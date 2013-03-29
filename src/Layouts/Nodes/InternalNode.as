@@ -105,6 +105,12 @@ package Layouts.Nodes {
 		
 		private function _true():Boolean { return true; }
 		
+		
+		public static const DIM_STANDARD:Point = new Point(2, 2);
+		public static const DIM_WIDE:Point = new Point(4, 2);
+		public static const DIM_TALL:Point = new Point(2, 4);
+		public static const DIM_BIG:Point = new Point(6, 4);
+		public static const DIM_BIG_AND_TALL:Point = new Point(4, 6);
 	}
 
 }

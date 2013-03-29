@@ -14,6 +14,7 @@ package Displays {
 		public var node:InternalNode;
 		private var label:FlxText;
 		private var lastValueString:String;
+		private var delayFiller:FlxSprite;
 		public function DNode(node:InternalNode) {
 			this.node = node;
 			super();
@@ -27,6 +28,11 @@ package Displays {
 			var borderWidth:int = 2;
 			pixels.fillRect(new Rectangle(borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2), 0xffffffff);
 			
+			//if (U.state.level.delay) {
+				//delayFiller = new FlxSprite( -1, -1).makeGraphic(width - borderWidth * 2, height - borderWidth * 2);
+				//delayFiller.color = U.UNKNOWN_COLOR;
+			//}
+			
 			offset.x = width / 2;
 			offset.y = height / 2;
 		}
@@ -35,7 +41,7 @@ package Displays {
 			var l:Point = node.Loc;
 			x = l.x * U.GRID_DIM;
 			y = l.y * U.GRID_DIM;
-			color = (node.parent.deployed && U.state.viewMode == U.state.VIEW_MODE_NORMAL && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? 0xfff03c : 0x8b8bdb;
+			color = (node.parent.deployed && U.state.viewMode == U.state.VIEW_MODE_NORMAL && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? U.HIGHLIGHTED_COLOR : 0x8b8bdb;
 			super.draw();
 			
 			label.x = x - 1 - offset.x;

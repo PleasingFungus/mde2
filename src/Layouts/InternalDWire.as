@@ -91,14 +91,14 @@ package Layouts {
 			var iWire:InternalWire = wire as InternalWire;
 			
 			if (!iWire.getConnected())
-				return 0xff0000;
+				return U.UNCONNECTED_COLOR;
 			
 			var value:Value = iWire.getValue();
 			if (value.unknown)
-				return 0xc219d9;
+				return U.UNKNOWN_COLOR;
 			if (value.unpowered)
-				return 0x1d19d9;
-			return 0x0;
+				return U.UNPOWERED_COLOR;
+			return U.DEFAULT_COLOR;
 		}
 		
 		override protected function getBlitActive(c:uint):Boolean {

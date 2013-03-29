@@ -119,17 +119,17 @@ package Displays {
 		
 		protected function getColor():uint {
 			if (!U.buttonManager.moused && U.state.viewMode == U.state.VIEW_MODE_NORMAL && overlapsPoint(U.mouseFlxLoc))
-				return 0xfff03c;
+				return U.HIGHLIGHTED_COLOR;
 			
 			if (wire.getSource() == null || wire.connections.length < 2)
-				return 0xff0000;
+				return U.UNCONNECTED_COLOR;
 			
 			var value:Value = wire.getSource().getValue();
 			if (value.unknown)
-				return 0xc219d9;
+				return U.UNKNOWN_COLOR;
 			if (value.unpowered)
-				return 0x1d19d9;
-			return 0x0;
+				return U.UNPOWERED_COLOR;
+			return U.DEFAULT_COLOR;
 		}
 		
 		protected function getBlitActive(c:uint):Boolean {

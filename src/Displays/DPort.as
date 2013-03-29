@@ -60,18 +60,18 @@ package Displays {
 		
 		protected function getColor():uint {
 			if (!U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc))
-				return 0xfff03c;
+				return U.HIGHLIGHTED_COLOR;
 			
 			if (!port.getSource())
-				return 0xff0000;
+				return U.UNCONNECTED_COLOR;
 			
 			var value:Value = port.getValue();
 			if (value.unknown)
-				return 0xc219d9;
+				return U.UNKNOWN_COLOR;
 			else if (value.unpowered)
-				return 0x1d19d9;
+				return U.UNPOWERED_COLOR;
 			else
-				return 0x0;
+				return U.DEFAULT_COLOR;
 		}
 		
 		public function nearPoint(p:FlxPoint, radius:int = 0):Boolean {

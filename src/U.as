@@ -125,6 +125,11 @@ package  {
 		}
 		
 		
+		public static const UNCONNECTED_COLOR:uint = 0xff0000;
+		public static const UNPOWERED_COLOR:uint = 0x1d19d9;
+		public static const UNKNOWN_COLOR:uint = 0xc219d9
+		public static const HIGHLIGHTED_COLOR:uint = 0xfff03c;
+		public static const DEFAULT_COLOR:uint = 0x0;
 		
 		
 		public static const MAX_INT:int = 127;

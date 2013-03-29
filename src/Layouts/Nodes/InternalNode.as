@@ -103,6 +103,18 @@ package Layouts.Nodes {
 			return GetValue();
 		}
 		
+		public function remainingDelay():int {
+			return 0; //eh
+		}
+		
+		public function inputDelay():int {
+			var delay:int = 0;
+			if (U.state.level.delay)
+				for each (var node:Node in connections)
+					delay = Math.max(node.remainingDelay(), delay)
+			return delay;
+		}
+		
 		private function _true():Boolean { return true; }
 		
 		

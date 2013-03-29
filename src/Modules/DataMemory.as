@@ -31,11 +31,13 @@ package Modules {
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			var writeNode:InternalNode = new WideNode(this, new Point(layout.ports[0].offset.x + 3, layout.ports[0].offset.y), [layout.ports[0]], [], inputs[0].getValue, "Input");
-			var dataNode:InternalNode = new BigNode(this, new Point(layout.ports[3].offset.x - 4, layout.ports[3].offset.y), [writeNode, layout.ports[3]], [],
+			layout.ports[0].port.name = "Input";
+			var writeNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[0].offset.x + 3, layout.ports[0].offset.y), layout.ports[0]);
+			controls[1].name = "Line no.";
+			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), layout.ports[2]);
+			
+			var dataNode:InternalNode = new BigNode(this, new Point(layout.ports[3].offset.x - 4, layout.ports[3].offset.y), [writeNode, lineNode, layout.ports[3]], [],
 														  getData, "Memory at line");
-			var lineNode:InternalNode = new WideNode(this, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), [layout.ports[2], dataNode], [],
-													 controls[1].getValue, "Line no.");
 			var controlNode:InternalNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 															[new NodeTuple(dataNode, writeNode, writeOK)],
 															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; }, "Memory at line will be set to input value" );

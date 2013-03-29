@@ -25,16 +25,17 @@ package Displays {
 		
 		protected function makeSprite():void {
 			makeGraphic(U.GRID_DIM * node.dim.x, U.GRID_DIM * node.dim.y, 0xff202020, false, "node"+node.dim.x+','+node.dim.y);
-			var borderWidth:int = 2;
-			pixels.fillRect(new Rectangle(borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2), 0xffffffff);
-			
-			//if (U.state.level.delay) {
-				//delayFiller = new FlxSprite( -1, -1).makeGraphic(width - borderWidth * 2, height - borderWidth * 2);
-				//delayFiller.color = U.UNKNOWN_COLOR;
-			//}
+			pixels.fillRect(new Rectangle(BORDER_WIDTH, BORDER_WIDTH, width - BORDER_WIDTH * 2, height - BORDER_WIDTH * 2), 0xffffffff);
 			
 			offset.x = width / 2;
 			offset.y = height / 2;
+			
+			if (U.state.level.delay) {
+				delayFiller = new FlxSprite( -1, -1).makeGraphic(width - BORDER_WIDTH * 2, height - BORDER_WIDTH * 2);
+				delayFiller.color = U.UNKNOWN_COLOR;
+				delayFiller.offset.x = offset.x - BORDER_WIDTH;
+				delayFiller.offset.y = offset.y - BORDER_WIDTH;
+			}
 		}
 		
 		override public function draw():void {
@@ -43,6 +44,15 @@ package Displays {
 			y = l.y * U.GRID_DIM;
 			color = (node.parent.deployed && U.state.viewMode == U.state.VIEW_MODE_NORMAL && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? U.HIGHLIGHTED_COLOR : 0x8b8bdb;
 			super.draw();
+			
+			var delay:int = node.inputDelay();
+			if (delay) {
+				var delayFraction:Number = delay / node.parent.delay;
+				delayFiller.x = x;
+				delayFiller.y = y + delayFiller.height * (1 - delayFraction) / 2;
+				delayFiller.scale.y = delayFraction
+				delayFiller.draw();
+			}
 			
 			label.x = x - 1 - offset.x;
 			label.y = y + 1 - offset.y;
@@ -64,6 +74,7 @@ package Displays {
 			return fp.x >= x - offset.x && fp.y >= y - offset.y && fp.x < x - offset.x + width && fp.y < y - offset.y + height;
 		}
 		
+		protected const BORDER_WIDTH:int = 2;
 	}
 
 }

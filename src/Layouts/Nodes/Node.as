@@ -7,6 +7,7 @@ package Layouts.Nodes {
 	 */
 	public interface Node {
 		function get Loc():Point;
+		function remainingDelay():int;
 	}
 	
 }

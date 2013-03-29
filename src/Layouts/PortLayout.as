@@ -84,6 +84,10 @@ package Layouts {
 		public function get Loc():Point {
 			return parent.add(offset);
 		}
+		
+		public function remainingDelay():int {
+			return port.stable ? 0 : port.remainingDelay();
+		}
 	}
 
 }

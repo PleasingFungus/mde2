@@ -3,6 +3,8 @@ package Modules {
 	import Layouts.*;
 	import Layouts.Nodes.StandardNode;
 	import Layouts.Nodes.WideNode;
+	import Layouts.Nodes.PortNode;
+	import Layouts.Nodes.InternalNode;
 	import Components.Port;
 	
 	import flash.geom.Point;
@@ -31,13 +33,13 @@ package Modules {
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			var writeNode:StandardNode = new StandardNode(this, new Point(layout.ports[0].offset.x + 2, layout.ports[0].offset.y), [layout.ports[0]], [],
-															inputs[0].getValue, "Input");
-			var dataNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [writeNode], [],
+			layout.ports[0].port.name = "Input";
+			var writeNode:InternalNode = new PortNode(this, InternalNode.DIM_STANDARD, new Point(layout.ports[0].offset.x + 2, layout.ports[0].offset.y), layout.ports[0]);
+			controls[0].name = "Line no.";
+			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), layout.ports[1]);
+			var dataNode:InternalNode = new WideNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [writeNode], [],
 															getData, "Memory at line");
-			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]], [],
-															controls[0].getValue, "Line no.");
-			return new InternalLayout([controlNode, writeNode, dataNode]);
+			return new InternalLayout([lineNode, writeNode, dataNode]);
 		}
 		
 		override public function renderDetails():String {

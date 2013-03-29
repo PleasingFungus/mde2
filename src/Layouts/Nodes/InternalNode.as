@@ -60,6 +60,12 @@ package Layouts.Nodes {
 				out += getValue();
 			}
 			
+			if (U.state.level.delay) {
+				var delay:int = inputDelay();
+				if (delay)
+					out += " (D" + delay + ")";
+			}
+			
 			return out;
 		}
 		

@@ -72,28 +72,34 @@ package Displays {
 				var port:Port = carrier as Port;
 				
 				if (port.name)
-					displayText += " "+port.name
-				displayText += ": " + port.getValue();
+					displayText += " " + port.name
+				displayText += ": "
+				
+				if (port.isOutput)
+					displayText += port.getValue();
 				
 				if (port.isSource()) {
 					if (port.getLastChanged() > -1)
 						displayText += " since " + port.getLastChanged();
 					return displayText;
 				}
-				
-				if (port.source && !port.source.getValue().unknown && !port.stable)
-					displayText += " D" + port.remainingDelay();
-				displayText += " <- ";
 			} else
 				displayText += "Wire: ";
 			
 			var source:Port = carrier.getSource();
 			if (source) {
-				displayText += source.getValue();
-				if (source != carrier && source.name)
-					displayText += " from " + source.name;
+				if (!port || !port.isOutput)
+					displayText += source.getValue();
+				if (source != carrier) {
+					displayText += " from " + source.parent.name;
+					if (source.name)
+						displayText += " " +source.name;
+				}
 			} else
 				displayText += "No source";
+				
+			if (port && port.source && !port.source.getValue().unknown && !port.stable)
+				displayText += " (D" + port.remainingDelay()+")";
 			
 			return displayText;
 		}

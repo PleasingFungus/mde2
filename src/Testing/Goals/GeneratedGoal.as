@@ -19,6 +19,7 @@ package Testing.Goals {
 		protected var expectedOps:Vector.<OpcodeValue>;
 		public var testRuns:int;
 		public var minInstructions:int;
+		public var timePerRun:Vector.<int>;
 		
 		protected var currentRun:int;
 		public function GeneratedGoal(Description:String, TestClass:Class, ExpectedOps:Vector.<OpcodeValue>, TestRuns:int = 12, Timeout:int=100, MinInstructions:int = 10) {
@@ -47,6 +48,7 @@ package Testing.Goals {
 			super.startRun();
 			FlxG.globalSeed = 0.5;
 			currentRun = 0;
+			timePerRun = new Vector.<int>;
 		}
 		
 		override public function runTestStep(levelState:LevelState):void {
@@ -59,14 +61,29 @@ package Testing.Goals {
 			
 			levelState.initialMemory = mem;
 			super.runTestStep(levelState);
+			if (succeeded)
+				timePerRun.push(U.state.time.moment);
 		}
 		
 		override public function getProgress():String {
-			return currentRun+"/"+testRuns;
+			return currentRun + "/" + testRuns + '\n' + getTime();
+		}
+		
+		override public function getTime():String {
+			return 'Average ticks per test: '+averageTimePerRun();
 		}
 		
 		override protected function done():Boolean {
 			return currentRun >= testRuns;
+		}
+		
+		public function averageTimePerRun():int {
+			if (!timePerRun.length) return 0;
+			
+			var avg:int = 0;
+			for each (var timeTaken:int in timePerRun)
+				avg += timeTaken;
+			return avg / timePerRun.length;
 		}
 		
 	}

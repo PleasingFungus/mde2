@@ -22,6 +22,7 @@ package LevelStates {
 		
 		override public function create():void {
 			add(U.TITLE_FONT.configureFlxText(new FlxText(20, 20, FlxG.width - 40, "Timeout...")));
+			add(U.BODY_FONT.configureFlxText(new FlxText(20, 100, FlxG.width - 40, level.goal.getTime())));
 		}
 		
 		override public function update():void {

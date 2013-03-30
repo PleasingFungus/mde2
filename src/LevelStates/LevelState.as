@@ -728,9 +728,9 @@ package LevelStates {
 			runningDisplayTest = false;
 			
 			if (!level.goal.succeeded) {
-				FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
-					FlxG.switchState(new FailureState(level));
-				});
+				U.state.time.reset();
+				runningDisplayTest = false;
+				makeUI();
 				return;
 			}
 			

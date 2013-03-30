@@ -55,9 +55,8 @@ package Testing.Goals {
 				endRun();
 		}
 		
-		public function getProgress():String {
-			return "";
-		}
+		public function getProgress():String { return ""; }
+		public function getTime():String { return ""; }
 		
 		protected function done():Boolean {
 			return true;

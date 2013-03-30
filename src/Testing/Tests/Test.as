@@ -6,6 +6,7 @@ package Testing.Tests {
 	import Testing.Instructions.*;
 	import Testing.Types.InstructionType;
 	import Testing.Types.AbstractArg;
+	import Testing.Types.OrderableInstructionType;
 	import Values.*;
 	/**
 	 * ...
@@ -39,7 +40,7 @@ package Testing.Tests {
 		}
 		
 		protected function generate():void {
-			var instructionTypes:Vector.<InstructionType> = getInstructionTypes();
+			var instructionTypes:Vector.<OrderableInstructionType> = getInstructionTypes();
 			
 			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT + 1);
 			memAddressToSet = C.randomRange(U.MAX_INT, U.MAX_INT - U.MIN_INT);
@@ -167,66 +168,49 @@ package Testing.Tests {
 		
 		
 		
-		protected function getInstructionTypes():Vector.<InstructionType> {
-			var instructionTypes:Vector.<InstructionType> = new Vector.<InstructionType>;
+		protected function getInstructionTypes():Vector.<OrderableInstructionType> {
+			var instructionTypes:Vector.<OrderableInstructionType> = new Vector.<OrderableInstructionType>;
 			for each (var instructionType:InstructionType in [InstructionType.SAVE, InstructionType.ADD, InstructionType.SUB, 
 															  InstructionType.MUL, InstructionType.DIV])
 				if (expectedOps.indexOf(instructionType.mapToOp()) != -1)
-					instructionTypes.push(instructionType);
+					instructionTypes.push(new OrderableInstructionType(instructionType, C.INT_NULL, 0));
 			return instructionTypes;
 		}
 		
 		
 		
-		protected function genAbstraction(value:AbstractArg, values:Vector.<AbstractArg>, instructionTypes:Vector.<InstructionType>):InstructionAbstraction {
-			var type:InstructionType;
-			var abstraction:InstructionAbstraction;
-			var arg:AbstractArg;
-			
-			var potentiallyValidTypes:Vector.<InstructionType> = new Vector.<InstructionType>;
-			for each (type in instructionTypes)
-				if (type.can_produce(value))
-					potentiallyValidTypes.push(type);
-			instructionTypes = potentiallyValidTypes;
-			
-			log("Attempting to produce " +value);
-			var fullReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
-			for each (type in instructionTypes)
-				if (type.can_produce_with(value, values))
-					fullReuseInstrs.push(type);
-			if (fullReuseInstrs.length) {
-				log("Full re-use instrs: " + fullReuseInstrs);
-				abstraction = randomTypeChoice(fullReuseInstrs).produce_with(value, values);
-				log("Added " + abstraction + " with full re-use");
-				return abstraction;
-			}
-			log("No full re-use instrs")
-			
-			var partialReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
-			for each (type in instructionTypes)
-				if (type.can_produce_with_one_of(value, values))
-					partialReuseInstrs.push(type);
-			if (partialReuseInstrs.length) {
-				log("Partial re-use instrs: " + partialReuseInstrs);
+		protected function genAbstraction(value:AbstractArg, values:Vector.<AbstractArg>, instructionTypes:Vector.<OrderableInstructionType>):InstructionAbstraction {
+			var optimalInstructionTypes:Vector.<OrderableInstructionType> = new Vector.<OrderableInstructionType>;
+			for each (var orderableInstructionType:OrderableInstructionType in instructionTypes) {
+				if (!orderableInstructionType.type.can_produce(value))
+					continue;
 				
-				type = randomTypeChoice(partialReuseInstrs);
-				var validArgs:Vector.<AbstractArg> = new Vector.<AbstractArg>;
-				for each (arg in values)
-					if (type.can_produce_with_one(value, arg))
-						validArgs.push(arg);
-				log("Valid args for " + type.name + ": " + validArgs);
+				var produced:int = orderableInstructionType.numAlreadyProduced;
+				var toProduce:int = orderableInstructionType.type.requiredArgsToProduce(value, values);
+				var weightedValue:int = toProduce * 2 + produced;
 				
-				arg = validArgs[int(FlxG.random() * validArgs.length)];
-				abstraction = type.produce_with_one(value, arg);
-				log("Added " + abstraction + ", re-using " + arg);
-				return abstraction;
+				if (optimalInstructionTypes.length == 0) {
+					optimalInstructionTypes.push(new OrderableInstructionType(orderableInstructionType.type, toProduce, produced));
+					continue;
+				}
+				
+				var currentValue:int = optimalInstructionTypes[0].argsNeeded * 2 + optimalInstructionTypes[0].numAlreadyProduced;
+				if (weightedValue > currentValue)
+					continue;
+				
+				if (weightedValue < currentValue)
+					optimalInstructionTypes = new Vector.<OrderableInstructionType>;
+				optimalInstructionTypes.push(new OrderableInstructionType(orderableInstructionType.type, toProduce, produced));
 			}
-			log("No partial re-use instrs")
 			
-			type = instructionTypes[C.randomRange(0, instructionTypes.length)];
-			abstraction = type.produce_unrestrained(value);
-			log("Added " + abstraction);
-			return abstraction;
+			var typeIndex:int = FlxG.random() * optimalInstructionTypes.length;
+			var type:InstructionType = optimalInstructionTypes[typeIndex].type;
+			for each (orderableInstructionType in instructionTypes)
+				if (orderableInstructionType.type == type) {
+					orderableInstructionType.numAlreadyProduced += 1;
+					break;
+				}
+			return type.produceMinimally(value, values);
 		}
 		
 		protected function randomTypeChoice(options:Vector.<InstructionType>):InstructionType {

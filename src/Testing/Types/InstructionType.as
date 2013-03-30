@@ -24,6 +24,15 @@ package Testing.Types {
 			return false;
 		}
 		
+		
+		public function requiredArgsToProduce(value:AbstractArg, args:Vector.<AbstractArg>):int {
+			if (can_produce_with(value, args))
+				return 0;
+			if (can_produce_with_one_of(value, args))
+				return 1;
+			return 2;
+		}
+		
 		public function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			return false;
 		}
@@ -33,7 +42,23 @@ package Testing.Types {
 		}
 		
 		public function can_produce_with_one_of(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
-			return false;
+			return false; //TODO: implement here, kill all overrides
+		}
+		
+		
+		public function produceMinimally(value:AbstractArg, args:Vector.<AbstractArg>, argsToUse:int = C.INT_NULL):InstructionAbstraction {
+			if (argsToUse == C.INT_NULL)
+				argsToUse = requiredArgsToProduce(value, args);
+			switch (argsToUse) {
+				case 0: return produce_with(value, args);
+				case 1: 
+					for each (var arg:AbstractArg in args)
+						if (can_produce_with_one(value, arg))
+							return produce_with_one(value, arg);
+					throw new Error("!!");
+				case 2: default: return produce_unrestrained(value);
+			}
+			
 		}
 		
 		public function produce_unrestrained(value:AbstractArg):InstructionAbstraction {

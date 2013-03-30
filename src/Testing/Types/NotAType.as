@@ -11,6 +11,12 @@ package Testing.Types {
 			super("Not");
 		}
 		
+		override public function requiredArgsToProduce(value:AbstractArg, args:Vector.<AbstractArg>):int {
+			if (can_produce_with_one_of(value, args))
+				return 0;
+			return 1;
+		}
+		
 		override public function can_produce(value:AbstractArg):Boolean {
 			return value.inRegisters && (value.value == 0 || value.value == 1);
 		}

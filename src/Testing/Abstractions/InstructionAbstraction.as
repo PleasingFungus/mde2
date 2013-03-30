@@ -1,4 +1,5 @@
 package Testing.Abstractions {
+	import Testing.Types.AbstractArg;
 	import Testing.Types.InstructionType;
 	/**
 	 * ...
@@ -23,6 +24,13 @@ package Testing.Abstractions {
 			if (value != C.INT_NULL)
 				out += "= " + value;
 			return out;
+		}
+		
+		public function getAbstractArgs():Vector.<AbstractArg> {
+			var abstractArgs:Vector.<AbstractArg> = new Vector.<AbstractArg>;
+			for each (var arg:int in args)
+				abstractArgs.push(new AbstractArg(arg));
+			return abstractArgs;
 		}
 	}
 

@@ -27,9 +27,9 @@ package Testing.Types {
 		}
 		
 		
-		override public function produce_unrestrained(value:int):InstructionAbstraction {
-            var a1:int = C.randomRange(U.MIN_INT, U.MAX_INT + 1);
-            var a2:int = a1 - value;
+		override public function produce_unrestrained(valueAbstr:AbstractArg):InstructionAbstraction {
+			var a1:int = C.randomRange(U.MIN_INT, U.MAX_INT + 1);
+            var a2:int = a1 - valueAbstr.value;
 			return new SubAbstraction(a1, a2);
 		}
 		

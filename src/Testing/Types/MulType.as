@@ -28,12 +28,13 @@ package Testing.Types {
 			return NaN;
 		}
 		
-		override public function can_produce_with_one(value:int, arg:int):Boolean {
-			return C.factorsOf(Math.abs(value)).indexOf(arg) != -1;
+		override public function can_produce_with_one(valueAbstr:AbstractArg, argAbstr:AbstractArg):Boolean {
+			return C.factorsOf(Math.abs(valueAbstr.value)).indexOf(argAbstr.value) != -1;
 		}
 		
 		
-		override public function produce_unrestrained(value:int):InstructionAbstraction {
+		override public function produce_unrestrained(valueAbstr:AbstractArg):InstructionAbstraction {
+			var value:int = valueAbstr.value;
 			if (!value) {
 				var order:int = int(FlxG.random() * 2);
 				return new MulAbstraction(order ? C.randomRange(U.MIN_INT, U.MAX_INT + 1) : 0, order ? 0 : C.randomRange(U.MIN_INT, U.MAX_INT + 1));

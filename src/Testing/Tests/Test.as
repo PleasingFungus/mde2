@@ -2,13 +2,10 @@ package Testing.Tests {
 	import flash.utils.Dictionary;
 	import Modules.Module;
 	import org.flixel.FlxG;
-	import Testing.Abstractions.InstructionAbstraction;
-	import Testing.Abstractions.SaveAbstraction;
-	import Testing.Abstractions.SetAbstraction;
-	import Testing.Instructions.Instruction;
-	import Testing.Instructions.JumpInstruction;
-	import Testing.Instructions.SetInstruction;
+	import Testing.Abstractions.*;
+	import Testing.Instructions.*;
 	import Testing.Types.InstructionType;
+	import Testing.Types.AbstractArg;
 	import Values.*;
 	/**
 	 * ...
@@ -23,8 +20,10 @@ package Testing.Tests {
 		public var expectedMemory:Vector.<Value>;
 		
 		protected var memAddressToSet:int;
-		protected var memValueToSet:int
+		protected var memValueToSet:int;
+		
 		protected var instructions:Vector.<Instruction>;
+		protected var dataMemory:Vector.<AbstractArg>;
 		protected var expectedOps:Vector.<OpcodeValue>;
 		
 		public function Test(ExpectedOps:Vector.<OpcodeValue>, ExpectedInstructions:int = 12, seed:Number = NaN) {
@@ -42,10 +41,12 @@ package Testing.Tests {
 		protected function generate():void {
 			var instructionTypes:Vector.<InstructionType> = getInstructionTypes();
 			
+			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT + 1);
 			memAddressToSet = C.randomRange(U.MAX_INT, U.MAX_INT - U.MIN_INT);
-			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT+1);
-			var values:Vector.<int> = new Vector.<int>;
-			values.push(memAddressToSet, memValueToSet);
+			
+			var values:Vector.<AbstractArg> = new Vector.<AbstractArg>;
+			values.push(new AbstractArg(memValueToSet, memAddressToSet));
+			
 			var registers:Vector.<int> = new Vector.<int>;
 			for (var register:int = 0; i < NUM_REGISTERS; i++)
 				registers.push(C.INT_NULL);
@@ -54,17 +55,17 @@ package Testing.Tests {
 			log("PROGRAM START");
 			
 			instructions = new Vector.<Instruction>;
-			instructions.push(makeInstruction(new SaveAbstraction(memValueToSet, memAddressToSet), registers));
 			
-			for (var abstractionsMade:int = 1; abstractionsMade + values.length < expectedInstructions; abstractionsMade++) {
-				var value:int = values[0];
+			for (var abstractionsMade:int = 0; abstractionsMade + AbstractArg.instructionsToSet(values) < expectedInstructions; abstractionsMade++) {
+				var value:AbstractArg = values[0];
 				values.splice(0, 1); //values.shift()?
 				var abstraction:InstructionAbstraction = genAbstraction(value, values, instructionTypes);
-				if (abstraction.value != value)
+				if (abstraction.value != value.value && !(
+					value.inMemory && abstraction is SaveAbstraction && value.value == abstraction.args[0] && value.address == abstraction.args[1]))
 					throw new Error("!!!");
 				
-				for each (var arg:int in abstraction.args)
-					if (values.indexOf(arg) == -1)
+				for each (var arg:AbstractArg in abstraction.getAbstractArgs())
+					if (!AbstractArg.argInVec(arg, values))
 						values.push(arg);
 				
 				if (values.length > NUM_REGISTERS) {
@@ -78,8 +79,13 @@ package Testing.Tests {
 				instructions.push(makeInstruction(abstraction, registers));
 			}
 			
-			for each (value in values)
-				instructions.push(makeInstruction(new SetAbstraction(value), registers));
+			dataMemory = new Vector.<AbstractArg>;
+			for each (value in values) {
+				if (value.inMemory)
+					dataMemory.push(value);
+				else
+					instructions.push(makeInstruction(new SetAbstraction(value.value), registers));
+			}
 			
 			log("PROGRAM END\n\n");
 			
@@ -103,6 +109,9 @@ package Testing.Tests {
 		
 		protected function testRun():void {
 			var memory:Dictionary = new Dictionary;
+			for each (var memorandum:AbstractArg in dataMemory)
+				memory[memorandum.address] = memorandum.value;
+			
 			var registers:Dictionary = new Dictionary;
 			executeInEnvironment(memory, registers, instructions);
 			
@@ -160,7 +169,8 @@ package Testing.Tests {
 		
 		protected function getInstructionTypes():Vector.<InstructionType> {
 			var instructionTypes:Vector.<InstructionType> = new Vector.<InstructionType>;
-			for each (var instructionType:InstructionType in [InstructionType.ADD, InstructionType.SUB, InstructionType.MUL, InstructionType.DIV])
+			for each (var instructionType:InstructionType in [InstructionType.SAVE, InstructionType.ADD, InstructionType.SUB, 
+															  InstructionType.MUL, InstructionType.DIV])
 				if (expectedOps.indexOf(instructionType.mapToOp()) != -1)
 					instructionTypes.push(instructionType);
 			return instructionTypes;
@@ -168,10 +178,16 @@ package Testing.Tests {
 		
 		
 		
-		protected function genAbstraction(value:int, values:Vector.<int>, instructionTypes:Vector.<InstructionType>):InstructionAbstraction {
+		protected function genAbstraction(value:AbstractArg, values:Vector.<AbstractArg>, instructionTypes:Vector.<InstructionType>):InstructionAbstraction {
 			var type:InstructionType;
 			var abstraction:InstructionAbstraction;
-			var arg:int;
+			var arg:AbstractArg;
+			
+			var potentiallyValidTypes:Vector.<InstructionType> = new Vector.<InstructionType>;
+			for each (type in instructionTypes)
+				if (type.can_produce(value))
+					potentiallyValidTypes.push(type);
+			instructionTypes = potentiallyValidTypes;
 			
 			log("Attempting to produce " +value);
 			var fullReuseInstrs:Vector.<InstructionType> = new Vector.<InstructionType>;
@@ -194,13 +210,13 @@ package Testing.Tests {
 				log("Partial re-use instrs: " + partialReuseInstrs);
 				
 				type = randomTypeChoice(partialReuseInstrs);
-				var validArgs:Vector.<int> = new Vector.<int>;
+				var validArgs:Vector.<AbstractArg> = new Vector.<AbstractArg>;
 				for each (arg in values)
 					if (type.can_produce_with_one(value, arg))
 						validArgs.push(arg);
 				log("Valid args for " + type.name + ": " + validArgs);
 				
-				arg = C.randomIntChoice(validArgs);
+				arg = validArgs[int(FlxG.random() * validArgs.length)];
 				abstraction = type.produce_with_one(value, arg);
 				log("Added " + abstraction + ", re-using " + arg);
 				return abstraction;
@@ -280,8 +296,13 @@ package Testing.Tests {
 		
 		protected function genInitialMemory():Vector.<Value> {
 			var memory:Vector.<Value> = generateBlankMemory();
+			
 			for (var i:int = 0; i < instructions.length; i++)
 				memory[i] = instructions[i].toMemValue();
+			
+			for each (var memorandum:AbstractArg in dataMemory)
+				memory[memorandum.address] = new NumericValue(memorandum.value);
+			
 			return memory;
 		}
 		

@@ -27,7 +27,9 @@ package Testing.Types {
 		}
 		
 		
-		override public function produce_unrestrained(value:int):InstructionAbstraction {
+		override public function produce_unrestrained(valueAbstr:AbstractArg):InstructionAbstraction {
+			var value:int = valueAbstr.value;
+			
 			var minAddend:int = Math.max(U.MIN_INT, value - U.MAX_INT);
 			var maxAddend:int = Math.min(U.MAX_INT, value - U.MIN_INT);
         

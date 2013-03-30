@@ -20,31 +20,31 @@ package Testing.Types {
 			return OpcodeValue.OP_NOOP;
 		}
 		
-		public function can_produce(value:int):Boolean {
+		public function can_produce(value:AbstractArg):Boolean {
 			return false;
 		}
 		
-		public function can_produce_with(value:int, args:Vector.<int>):Boolean {
+		public function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			return false;
 		}
 		
-		public function can_produce_with_one(value:int, arg:int):Boolean {
+		public function can_produce_with_one(value:AbstractArg, arg:AbstractArg):Boolean {
 			return false;
 		}
 		
-		public function can_produce_with_one_of(value:int, args:Vector.<int>):Boolean {
+		public function can_produce_with_one_of(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			return false;
 		}
 		
-		public function produce_unrestrained(value:int):InstructionAbstraction {
+		public function produce_unrestrained(value:AbstractArg):InstructionAbstraction {
 			return null;
 		}
 		
-		public function produce_with(value:int, args:Vector.<int>):InstructionAbstraction {
+		public function produce_with(value:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {
 			return null;
 		}
 		
-		public function produce_with_one(value:int, arg:int):InstructionAbstraction {
+		public function produce_with_one(value:AbstractArg, arg:AbstractArg):InstructionAbstraction {
 			return null;
 		}
 		

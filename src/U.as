@@ -132,8 +132,10 @@ package  {
 		public static const DEFAULT_COLOR:uint = 0x0;
 		
 		
-		public static const MAX_INT:int = 127;
 		public static const MIN_INT:int = -128;
+		public static const MAX_INT:int = 127;
+		public static const MIN_MEM:int = MAX_INT;
+		public static const MAX_MEM:int = MIN_MEM - MIN_INT;
 	}
 
 }

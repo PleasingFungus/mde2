@@ -20,7 +20,13 @@ package Testing.Types {
 			return value.inRegisters;
 		}
 		
+		//override public function requiredArgsToProduce(value:AbstractArg, args:Vector.<AbstractArg>):int {
+			//return Math.max(super.requiredArgsToProduce(value, args) - 1, 0);
+		//} //breaks produceMinimally
+		
 		override public function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
+			return false;
+			
 			var memArg:AbstractArg = null;
 			for each (var arg:AbstractArg in args)
 				if (arg.inMemory && arg.value == value.value) {
@@ -37,20 +43,22 @@ package Testing.Types {
 		}
 		
 		override public function can_produce_with_one(value:AbstractArg, arg:AbstractArg):Boolean {
-			return (arg.inMemory && arg.value == value.value) || (arg.inRegisters && arg.value > int.MAX_VALUE && arg.value < (int.MAX_VALUE - int.MIN_VALUE));
+			return (arg.inMemory && arg.value == value.value) || (arg.inRegisters && arg.value >= U.MIN_INT && arg.value <= U.MAX_MEM);
 		}
 		
 		
 		override public function produce_unrestrained(value:AbstractArg):InstructionAbstraction {
-			return new LoadAbstraction(value.address, value.value);
-		}
-		
-		override public function produce_with(value:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {
-			return new LoadAbstraction(value.address, value.value);
+			return new LoadAbstraction(C.randomRange(U.MIN_MEM, U.MAX_MEM), value.value);
 		}
 		
 		override public function produce_with_one(value:AbstractArg, arg:AbstractArg):InstructionAbstraction {
-			return new LoadAbstraction(value.address, value.value);
+			if (arg.inMemory)
+				return new LoadAbstraction(arg.address, value.value);
+			return new LoadAbstraction(C.randomRange(U.MIN_MEM, U.MAX_MEM), value.value);
+		}
+		
+		override public function produce_with(value:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {
+			throw new Error("Not implemented!");
 		}
 	}
 

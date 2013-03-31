@@ -17,7 +17,7 @@ package Testing.Tests {
 			var savesToGenerate:int = C.randomRange(3, 6);
 			saves = new Vector.<InstructionValue>;
 			for (var i:int = 0; i < savesToGenerate; i++) {
-				var line:int = C.randomRange(8, U.MAX_INT - U.MIN_INT + 1);
+				var line:int = C.randomRange(8, U.MAX_MEM);
 				if (line < 8)
 					throw Error("!!!");
 				var value:int = C.randomRange(U.MIN_INT, U.MAX_INT + 1);

@@ -27,7 +27,7 @@ package Testing.Goals {
 		
 		protected function generateBlankMemory():Vector.<Value> {
 			var memory:Vector.<Value> = new Vector.<Value>;
-			for (var i:int = memory.length; i < U.MAX_INT - U.MIN_INT; i++)
+			for (var i:int = memory.length; i < U.MAX_MEM; i++)
 				memory.push(FixedValue.NULL);
 			return memory;
 		}

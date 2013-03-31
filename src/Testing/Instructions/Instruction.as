@@ -59,6 +59,8 @@ package Testing.Instructions {
 					return NotAnInstruction;
 				case InstructionType.SAVE:
 					return SaveInstruction;
+				case InstructionType.LOAD:
+					return LoadInstruction;
 				case InstructionType.SET:
 					return SetInstruction;
 			}

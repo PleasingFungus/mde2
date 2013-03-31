@@ -61,7 +61,6 @@ package Testing.Types {
 					throw new Error("!!");
 				case 2: default: return produce_unrestrained(value);
 			}
-			
 		}
 		
 		public function produce_unrestrained(value:AbstractArg):InstructionAbstraction {

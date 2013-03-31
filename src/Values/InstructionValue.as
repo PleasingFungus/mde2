@@ -19,23 +19,23 @@ package Values {
 		override public function toString():String {
 			switch (operation) {
 				case OpcodeValue.OP_SET:
-					return operation.getName()+" R" + destArg + "=" + sourceArg;
+					return operation.getName()+" R" + destArg + " = " + sourceArg;
 				case OpcodeValue.OP_ADD:
-					return operation.getName()+" R" + destArg + "=R" + sourceArg + "+R" + targetArg;
+					return operation.getName()+" R" + destArg + " = R" + sourceArg + "+R" + targetArg;
 				case OpcodeValue.OP_SUB:
-					return operation.getName()+" R" + destArg + "=R" + sourceArg + "-R" + targetArg;
+					return operation.getName()+" R" + destArg + " = R" + sourceArg + "-R" + targetArg;
 				case OpcodeValue.OP_MUL:
-					return operation.getName()+" R" + destArg + "=R" + sourceArg + "*R" + targetArg;
+					return operation.getName()+" R" + destArg + " = R" + sourceArg + "*R" + targetArg;
 				case OpcodeValue.OP_DIV:
-					return operation.getName()+" R" + destArg + "=R" + sourceArg + "/R" + targetArg;
+					return operation.getName()+" R" + destArg + " = R" + sourceArg + "/R" + targetArg;
 				case OpcodeValue.OP_AND:
-					return operation.getName()+" R" + destArg + "=R" + sourceArg + "&R" + targetArg;
+					return operation.getName()+" R" + destArg + " = R" + sourceArg + "&R" + targetArg;
 				case OpcodeValue.OP_NOT:
-					return operation.getName()+" R" + destArg + "=!R" + sourceArg;
+					return operation.getName()+" R" + destArg + " = !R" + sourceArg;
 				case OpcodeValue.OP_SAV:
-					return operation.getName()+" M[R" + targetArg + "]=R" + sourceArg;
+					return operation.getName()+" M[R" + targetArg + "] = R" + sourceArg;
 				case OpcodeValue.OP_LD:
-					return operation.getName()+ "R" + targetArg +"=M[R" + sourceArg + "]";
+					return operation.getName()+ " R" + destArg +" = M[R" + sourceArg + "]";
 				case OpcodeValue.OP_JMP:
 					return operation.getName() + " OVER " + sourceArg;
 				

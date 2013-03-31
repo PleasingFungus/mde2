@@ -42,8 +42,8 @@ package Testing.Tests {
 		protected function generate():void {
 			var instructionTypes:Vector.<OrderableInstructionType> = getInstructionTypes();
 			
-			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT + 1);
-			memAddressToSet = C.randomRange(U.MAX_INT, U.MAX_INT - U.MIN_INT);
+			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT);
+			memAddressToSet = C.randomRange(U.MIN_MEM, U.MAX_MEM);
 			
 			var values:Vector.<AbstractArg> = new Vector.<AbstractArg>;
 			values.push(new AbstractArg(memValueToSet, memAddressToSet));
@@ -61,15 +61,18 @@ package Testing.Tests {
 				var value:AbstractArg = values[0];
 				values.splice(0, 1); //values.shift()?
 				var abstraction:InstructionAbstraction = genAbstraction(value, values, instructionTypes);
-				if (abstraction.value != value.value && !(
-					value.inMemory && abstraction is SaveAbstraction && value.value == abstraction.args[0] && value.address == abstraction.args[1]))
+				
+				if (abstraction is SaveAbstraction) {
+					if (!value.inMemory || value.value != abstraction.args[0] || value.address != abstraction.args[1])
+						throw new Error("!!");
+				} else if (abstraction.value != value.value)
 					throw new Error("!!!");
 				
 				for each (var arg:AbstractArg in abstraction.getAbstractArgs())
 					if (!AbstractArg.argInVec(arg, values))
 						values.push(arg);
 				
-				if (values.length > NUM_REGISTERS) {
+				if (AbstractArg.instructionsToSet(values) > NUM_REGISTERS) {
 					values.pop();
 					values.pop(); //assuming max 2 args, error condition can only occur if both are added, not prev. present; so safe to pop
 					values.push(value);
@@ -96,8 +99,6 @@ package Testing.Tests {
 			instructions = orderedInstructions;
 			
 			instructions = postProcess(instructions);
-			
-			//TODO: scramble registers
 			
 			log("\n\nSEED: " + seed);
 			log("PROGRAM START");
@@ -171,7 +172,7 @@ package Testing.Tests {
 		protected function getInstructionTypes():Vector.<OrderableInstructionType> {
 			var instructionTypes:Vector.<OrderableInstructionType> = new Vector.<OrderableInstructionType>;
 			for each (var instructionType:InstructionType in [InstructionType.SAVE, InstructionType.ADD, InstructionType.SUB, 
-															  InstructionType.MUL, InstructionType.DIV])
+															  InstructionType.MUL, InstructionType.DIV, InstructionType.LOAD])
 				if (expectedOps.indexOf(instructionType.mapToOp()) != -1)
 					instructionTypes.push(new OrderableInstructionType(instructionType, C.INT_NULL, 0));
 			return instructionTypes;

@@ -1,6 +1,9 @@
 package Menu {
+	import Displays.Scroller;
+	import Levels.Level;
 	import org.flixel.*;
 	import UI.*;
+	import LevelStates.LevelState
 	
 	/**
 	 * ...
@@ -12,23 +15,46 @@ package Menu {
 			C.setPrintReady();
 			U.init();
 			
-			var title:FlxText = new FlxText(0, 20, FlxG.width, "MULTIDUCK\nEXTRAVAGANZA");
+			var title:FlxText = new FlxText(FlxG.width / 2, 20, FlxG.width * 2/4 - 10, "MULTIDUCK\nEXTRAVAGANZA");
 			U.TITLE_FONT.configureFlxText(title, 0xffffff, 'center');
 			add(title);
 			
-			var options:Vector.<MenuButton> = new Vector.<MenuButton>;
+			var X:int = 10;
+			var Y:int = 10;
 			
-			options.push(new TextStateButton(HowToPlayState, U.tutorialState >= U.TUT_READ_HTP ? "How To Play" : "Start"));
-			if (U.tutorialState >= U.TUT_READ_HTP)
-				options.push(new TextStateButton(TutorialMenu, "Tutorials"));
-			if (U.tutorialState >= U.TUT_BEAT_TUT_2) {
-				options.push(new TextStateButton(LevelMenu, "Play"));
-				options.push(new TextStateButton(DelayTutMenu, "Delay Tutorials"));
+			var howToPlayButton:MenuButton = new TextStateButton(HowToPlayState, U.tutorialState > U.TUT_READ_HTP ? "How To Play" : "Play");
+			howToPlayButton.X = X;
+			howToPlayButton.Y = Y;
+			add(howToPlayButton);
+			Y += howToPlayButton.fullHeight + 10;
+			
+			for each (var levelCol:Vector.<Level> in Level.columns) {
+				X = 10;
+				var colButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+				for each (var level:Level in levelCol) {
+					var button:TextButton = new TextButton(X, Y, level.name, function switchTo(level:Level):void { 
+						FlxG.switchState(new LevelState(level));
+					});
+					button.setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xffffff);
+					button.fades = true;
+					button.setParam(level);
+					add(button);
+					colButtons.push(button);
+					X += button.fullWidth + 10;
+					
+					if (level == Level.last) {
+						FlxG.camera.scroll.x = button.X + button.fullWidth / 2 - FlxG.width / 2;
+						FlxG.camera.scroll.y = button.Y + button.fullHeight / 2 - FlxG.height / 2;
+					}
+				}
+				
+				var colHeight:int = 0;
+				for each (button in colButtons)
+					colHeight = Math.max(colHeight, button.fullHeight);
+				Y += colHeight + 10;
 			}
 			
-			var optionList:ButtonList = new ButtonList(FlxG.width / 2 - 100, FlxG.height / 4 + 20, options);
-			optionList.closesOnClickOutside = optionList.closesOnEsc = false;
-			add(optionList);
+			add(new Scroller);
 			
 			FlxG.bgColor = 0xff000000;
 			FlxG.mouse.show();

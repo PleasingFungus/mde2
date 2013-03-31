@@ -96,6 +96,7 @@ package LevelStates {
 			initialMemory = level.goal.genMem();
 			
 			load();
+			level.setLast();
 			recentModules = new Vector.<Class>;
 			
 			makeUI();
@@ -208,12 +209,7 @@ package LevelStates {
 		
 		private function makeBackButton():void {
 			var backButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _back_sprite, function back():void {
-				if (U.tuts.indexOf(level) != -1)
-					FlxG.switchState(new TutorialMenu);
-				else if (U.delayTuts.indexOf(level) != -1)
-					FlxG.switchState(new DelayTutMenu);
-				else
-					FlxG.switchState(new LevelMenu);
+				FlxG.switchState(new MenuState);
 			}, "Exit to menu");
 			backButton.fades = true;
 			upperLayer.add(backButton);
@@ -736,9 +732,9 @@ package LevelStates {
 			
 			U.save.data[level.name + SUCCESS_SUFFIX] = genSaveString();
 			
-			if (level == U.tuts[0])
+			if (level == U.levels[0])
 				U.updateTutState(U.TUT_BEAT_TUT_1);
-			else if (level == U.tuts[1])
+			else if (level == U.levels[1])
 				U.updateTutState(U.TUT_BEAT_TUT_2);
 			
 			FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
@@ -983,11 +979,6 @@ package LevelStates {
 			var personalSuccess:String = U.save.data[level.name + SUCCESS_SUFFIX];
 			if (personalSuccess)
 				return personalSuccess;
-			for each (var predecessor:Level in level.predecessors) {
-				var predecessorSuccess:String = U.save.data[predecessor.name + SUCCESS_SUFFIX];
-				if (predecessorSuccess)
-					return predecessorSuccess;
-			}
 			return null;
 		}
 		

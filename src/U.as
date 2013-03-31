@@ -43,8 +43,6 @@ package  {
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
 		
 		public static var save:FlxSave;
-		public static var tuts:Vector.<Level>;
-		public static var delayTuts:Vector.<Level>;
 		public static var levels:Vector.<Level>;
 		
 		public static var state:LevelState;
@@ -90,8 +88,6 @@ package  {
 			Module.init();
 			LevelShard.init();
 			
-			tuts = Level.tutorials();
-			delayTuts = Level.delayTutorials();
 			levels = Level.list();
 			
 			zoom = 1;
@@ -101,6 +97,7 @@ package  {
 		
 		public static function load():void {
 			ControlSet.load();
+			Level.load();
 		}
 		
 		

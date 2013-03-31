@@ -1,9 +1,7 @@
 package LevelStates {
 	import Levels.Level;
-	import Menu.DelayTutMenu;
-	import Menu.TutorialMenu;
+	import Menu.MenuState;
 	import org.flixel.*;
-	import Menu.LevelMenu;
 	import UI.MenuButton;
 	
 	/**
@@ -33,13 +31,9 @@ package LevelStates {
 			if (FlxG.mouse.justPressed() || FlxG.keys.any())
 				FlxG.fade(0xff000000, MenuButton.FADE_TIME, function switchStates():void {
 					if (U.tutorialState == U.TUT_BEAT_TUT_1)
-						FlxG.switchState(new LevelState(U.tuts[1]));
-					else if (U.tuts.indexOf(level) != -1)
-						FlxG.switchState(new TutorialMenu);
-					else if (U.delayTuts.indexOf(level) != -1)
-						FlxG.switchState(new DelayTutMenu);
-					else
-						FlxG.switchState(new LevelMenu);
+						FlxG.switchState(new LevelState(U.levels[1]));
+					else 
+						FlxG.switchState(new MenuState);
 				});
 		}
 		

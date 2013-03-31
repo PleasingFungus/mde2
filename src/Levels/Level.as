@@ -43,75 +43,88 @@ package Levels {
 			predecessors = new Vector.<Level>;
 		}
 		
-		public static function tutorials():Vector.<Level> {
-			var levels:Vector.<Level> = new Vector.<Level>;
-			
-			levels.push(new Level("Tutorial 1A: Wires",
-								  new WireTutorialGoal,
-								  false,
-								  [], [],
-								  [new ConstIn(12, 12, 1), new ConstIn(12, 20, 2), new DataWriter(22, 16)]),
-						new Level("Tutorial 1B: Modules",
-								  new WireTutorialGoal,
-								  false,
-								  [Adder, DataWriter], [],
-								  [new ConstIn(12, 16, 1)]),
-						new Level("Tutorial 2: Acc.",
-								  new AccumulatorTutorialGoal,
-								  false,
-								  [ConstIn, Adder, BabyLatch, DataWriter], []),
-						new Level("Tutorial 3A: Instructions",
-								  new InstructionTutorialGoal,
-								  false,
-								  [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], []),
-						new Level("Tutorial 3B: Opcodes",
-								  new OpcodeTutorialGoal,
-								  false,
-								  [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], [OpcodeValue.OP_SAVI]));
-			levels[4].predecessors.push(levels[2]);
-			
-			return levels;
-		}
-		
-		public static function delayTutorials():Vector.<Level> {
-			var levels:Vector.<Level> = new Vector.<Level>;
-			
-			levels.push(/*new Level("Delay 1: Adder",
-								  new WireTutorialGoal(20),
-								  true,
-								  [Adder, DataWriter], [],
-								  [new ConstIn(12, 16, 1)]),*/
-						new Level("Delay 2A: Basic Acc.",
-								  new MagicAccumDelayTutGoal,
-								  true,
-								  [ConstIn, Adder, Latch, MagicWriter, SysDelayClock], []),
-						new Level("Delay 2B: Full Acc.",
-								  new AccumDelayTutGoal,
-								  true,
-								  [ConstIn, Adder, Latch, DataMemory, SysDelayClock], []));
-			return levels;
+		public function setLast():void {
+			last = this;
+			U.save.data['lastLevel'] = name;
 		}
 		
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			
-			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
-			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", "Make a basic CPU... with propagation delay!", LevelShard.CORE.compositWith(LevelShard.DELAY));
-			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
-			var cpuADV:Level = new ShardLevel("Advanced Ops", "Make a CPU that does arithmetic!", LevelShard.CORE.compositWith(LevelShard.ADV));
-			var cpuLD:Level = new ShardLevel("Load", "Make a CPU that can load from memory!", LevelShard.CORE.compositWith(LevelShard.LOAD));
-			var pipe:Level = new ShardLevel("Efficiency!", "Make a CPU that runs fast!", LevelShard.CORE.compositWith(LevelShard.DELAY, LevelShard.SPD));
+			columns = new Vector.<Vector.<Level>>;
 			
-			addCPU_D.predecessors.push(addCPU);
+			var WIRE_TUT:Level = new Level("Tutorial 1A: Wires", new WireTutorialGoal, false,
+										   [], [], [new ConstIn(12, 12, 1), new ConstIn(12, 20, 2), new DataWriter(22, 16)]);
+			var MOD_TUT:Level = new Level("Tutorial 1B: Modules", new WireTutorialGoal, false,
+										  [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
+			MOD_TUT.predecessors.push(WIRE_TUT);
+			var ACC_TUT:Level = new Level("Tutorial 2: Acc.", new AccumulatorTutorialGoal, false,
+										  [ConstIn, Adder, BabyLatch, DataWriter]);
+			ACC_TUT.predecessors.push(MOD_TUT);
+			var INSTR_TUT:Level = new Level("Tutorial 3A: Instructions", new InstructionTutorialGoal, false,
+											[ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory]);
+			INSTR_TUT.predecessors.push(ACC_TUT);
+			var OP_TUT:Level = new Level("Tutorial 3B: Opcodes", new OpcodeTutorialGoal, false,
+										 [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], [OpcodeValue.OP_SAVI]);
+			OP_TUT.predecessors.push(ACC_TUT);
+			
+			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT);
+			
+			var D1_TUT:Level = new Level("Delay 2A: Basic Acc.", new MagicAccumDelayTutGoal, true,
+										 [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);
+			D1_TUT.predecessors.push(ACC_TUT);
+			var D2_TUT:Level = new Level("Delay 2B: Full Acc.", new AccumDelayTutGoal, true,
+										 [ConstIn, Adder, Latch, DataMemory, SysDelayClock]);
+			D2_TUT.predecessors.push(D1_TUT);
+			
+			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
+			addCPU.predecessors.push(INSTR_TUT, OP_TUT);
+			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", "Make a basic CPU... with propagation delay!", LevelShard.CORE.compositWith(LevelShard.DELAY));
+			addCPU_D.predecessors.push(addCPU, D2_TUT);
+			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
 			cpuJMP.predecessors.push(addCPU);
+			var cpuADV:Level = new ShardLevel("Advanced Ops", "Make a CPU that does arithmetic!", LevelShard.CORE.compositWith(LevelShard.ADV));
 			cpuADV.predecessors.push(addCPU);
+			var cpuLD:Level = new ShardLevel("Load", "Make a CPU that can load from memory!", LevelShard.CORE.compositWith(LevelShard.LOAD));
 			cpuLD.predecessors.push(addCPU);
-			pipe.predecessors.push(addCPU_D);
+			var pipe:Level = new ShardLevel("Efficiency!", "Make a CPU that runs fast!", LevelShard.CORE.compositWith(LevelShard.DELAY, LevelShard.SPD));
+			pipe.predecessors.push(addCPU_D); //dubious
 			
 			levels.push(addCPU, addCPU_D, cpuJMP, cpuADV, cpuLD, pipe);
 			
+			columns.push(makeVec([WIRE_TUT]));
+			columns.push(makeVec([MOD_TUT]));
+			columns.push(makeVec([ACC_TUT]));
+			columns.push(makeVec([INSTR_TUT, OP_TUT]));
+			columns.push(makeVec([addCPU, cpuJMP, cpuADV, cpuLD]));
+			columns.push(makeVec([D1_TUT]));
+			columns.push(makeVec([D2_TUT]));
+			columns.push(makeVec([addCPU_D]));
+			columns.push(makeVec([pipe]));
+			
 			return levels;
 		}
+		
+		private static function makeVec(levels:Array):Vector.<Level> {
+			var vec:Vector.<Level> = new Vector.<Level>;
+			for each (var level:Level in levels)
+				vec.push(level);
+			return vec;
+		}
+		
+		public static function load():void {
+			var lastLevelName:String = U.save.data['lastLevel'];
+			C.log("Loading last level " + lastLevelName);
+			for each (var level:Level in U.levels)
+				if (level.name == lastLevelName) {
+					last = level;
+					C.log("Last level: " + level);
+					break;
+				}
+		}
+		
+		public static var columns:Vector.<Vector.<Level>>;
+		public static var last:Level;
 	}
 
 }

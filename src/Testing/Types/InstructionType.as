@@ -41,8 +41,11 @@ package Testing.Types {
 			return false;
 		}
 		
-		public function can_produce_with_one_of(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
-			return false; //TODO: implement here, kill all overrides
+		public function can_produce_with_one_of(valueAbstr:AbstractArg, args:Vector.<AbstractArg>):Boolean {
+			for each (var arg:AbstractArg in args)
+				if (can_produce_with_one(valueAbstr, arg))
+					return true;
+			return false;
 		}
 		
 		

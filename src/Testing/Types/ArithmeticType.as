@@ -43,13 +43,6 @@ package Testing.Types {
 			return b <= U.MAX_INT && b >= U.MIN_INT && produceValue(arg, b) == value;
 		}
 		
-		override public function can_produce_with_one_of(valueAbstr:AbstractArg, args:Vector.<AbstractArg>):Boolean {
-			for each (var arg:AbstractArg in args)
-				if (can_produce_with_one(valueAbstr, arg))
-					return true;
-			return false;
-		}
-		
 		override public function can_produce_with(valueAbstr:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			var value:int = valueAbstr.value;
 			

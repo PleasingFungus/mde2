@@ -26,9 +26,6 @@ package Testing.Types {
 		}
 		
 		override public function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
-			if (!value.inMemory)
-				return false;
-			
 			var valueArg:AbstractArg, memArg:AbstractArg;
 			for each (var arg:AbstractArg in args) {
 				if (arg.inMemory)
@@ -43,13 +40,6 @@ package Testing.Types {
 		
 		override public function can_produce_with_one(value:AbstractArg, arg:AbstractArg):Boolean {
 			return arg.inRegisters && arg.value == value.value;
-		}
-		
-		override public function can_produce_with_one_of(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
-			for each (var arg:AbstractArg in args)
-				if (can_produce_with_one(value, arg))
-					return true;
-			return false;
 		}
 		
 		

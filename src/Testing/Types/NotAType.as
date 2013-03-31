@@ -25,13 +25,6 @@ package Testing.Types {
 			return value.value == !arg.value;
 		}
 		
-		override public function can_produce_with_one_of(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
-			for each (var arg:AbstractArg in args)
-				if (value.value == !arg.value)
-					return true;
-			return false;
-		}
-		
 		override public function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			return can_produce_with_one_of(value, args);
 		}

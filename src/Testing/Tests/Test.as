@@ -25,6 +25,7 @@ package Testing.Tests {
 		
 		protected var instructions:Vector.<Instruction>;
 		protected var dataMemory:Vector.<AbstractArg>;
+		protected var saveTargets:Vector.<AbstractArg>
 		protected var expectedOps:Vector.<OpcodeValue>;
 		
 		public function Test(ExpectedOps:Vector.<OpcodeValue>, ExpectedInstructions:int = 12, seed:Number = NaN) {
@@ -56,6 +57,7 @@ package Testing.Tests {
 			log("PROGRAM START");
 			
 			instructions = new Vector.<Instruction>;
+			saveTargets = new Vector.<AbstractArg>;
 			
 			for (var abstractionsMade:int = 0; abstractionsMade + AbstractArg.instructionsToSet(values) < expectedInstructions; abstractionsMade++) {
 				var value:AbstractArg = values[0];
@@ -79,6 +81,9 @@ package Testing.Tests {
 					log("Early termination due to register overflow");
 					break;
 				}
+				
+				if (abstraction is SaveAbstraction)
+					saveTargets.push(new AbstractArg(abstraction.args[0], abstraction.args[1]));
 				
 				instructions.push(makeInstruction(abstraction, registers));
 			}
@@ -293,7 +298,8 @@ package Testing.Tests {
 		
 		protected function genExpectedMemory():Vector.<Value> {
 			var memory:Vector.<Value> = initialMemory.slice();
-			memory[memAddressToSet] = new NumericValue(memValueToSet);
+			for each (var saveTarget:AbstractArg in saveTargets)
+				memory[saveTarget.address] = new NumericValue(saveTarget.value);
 			return memory;
 		}
 		

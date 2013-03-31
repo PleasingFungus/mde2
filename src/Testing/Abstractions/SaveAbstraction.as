@@ -11,7 +11,7 @@ package Testing.Abstractions {
 		}
 		
 		override public function toString():String {
-			return type.name + " " + args[0] + " -> " + args[1];
+			return type.name + " M[" + args[1] + "]=" + args[0];
 		}
 	}
 

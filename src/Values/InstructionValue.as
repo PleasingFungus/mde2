@@ -35,7 +35,7 @@ package Values {
 				case OpcodeValue.OP_SAV:
 					return operation.getName()+" M[R" + targetArg + "] = R" + sourceArg;
 				case OpcodeValue.OP_LD:
-					return operation.getName()+ " R" + destArg +" = M[R" + sourceArg + "]";
+					return operation.getName()+ " R" + destArg +" = M[R" + targetArg + "]";
 				case OpcodeValue.OP_JMP:
 					return operation.getName() + " OVER " + sourceArg;
 				

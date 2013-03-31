@@ -9,11 +9,13 @@ package Testing.Instructions {
 	 */
 	public class Instruction {
 		
+		public var abstract:InstructionAbstraction;
 		public var args:Vector.<InstructionArg>;
 		public var type:InstructionType;
 		public var noop:Boolean;
 		public var comment:String;
 		public function Instruction(registers:Vector.<int>, abstract:InstructionAbstraction, noop:Boolean) {
+			this.abstract = abstract;
 			this.type = abstract.type;
 			this.args = findArgs(registers, abstract);
 			this.noop = noop;

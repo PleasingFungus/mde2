@@ -11,6 +11,10 @@ package Testing.Abstractions {
 			super(InstructionType.LOAD, C.buildIntVector(address), value);
 		}
 		
+		override public function toString():String {
+			return type.name + " M[" + args[0] + "] ("+value+")";
+		}
+		
 		override public function getAbstractArgs():Vector.<AbstractArg> {
 			var abstractArgs:Vector.<AbstractArg> = new Vector.<AbstractArg>;
 			abstractArgs.push(new AbstractArg(value, args[0]),

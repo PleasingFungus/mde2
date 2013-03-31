@@ -44,6 +44,13 @@ package Testing.Types {
 					return true;
 			return false;
 		}
+		
+		public static function addrInVec(addr:int, vec:Vector.<AbstractArg>):Boolean {
+			for each (var arg:AbstractArg in vec)
+				if (arg.address == addr)
+					return true;
+			return false;
+		}
 	}
 
 }

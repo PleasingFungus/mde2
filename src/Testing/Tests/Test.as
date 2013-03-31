@@ -298,8 +298,8 @@ package Testing.Tests {
 		
 		protected function genExpectedMemory():Vector.<Value> {
 			var memory:Vector.<Value> = initialMemory.slice();
-			for each (var saveTarget:AbstractArg in saveTargets)
-				memory[saveTarget.address] = new NumericValue(saveTarget.value);
+			for (var i:int = saveTargets.length - 1; i >= 0; i--)
+				memory[saveTargets[i].address] = new NumericValue(saveTargets[i].value);
 			return memory;
 		}
 		

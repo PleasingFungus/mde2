@@ -730,7 +730,7 @@ package LevelStates {
 				return;
 			}
 			
-			U.save.data[level.name + SUCCESS_SUFFIX] = genSaveString();
+			level.successSave = genSaveString();
 			
 			if (level == U.levels[0])
 				U.updateTutState(U.TUT_BEAT_TUT_1);
@@ -976,7 +976,7 @@ package LevelStates {
 		}
 		
 		private function findSuccessSave():String {
-			var personalSuccess:String = U.save.data[level.name + SUCCESS_SUFFIX];
+			var personalSuccess:String = level.successSave;
 			if (personalSuccess)
 				return personalSuccess;
 			return null;
@@ -1050,7 +1050,6 @@ package LevelStates {
 		private const LIST_ZOOM:int = 4;
 		private const LIST_VIEW_MODES:int = 5;
 		
-		private const SUCCESS_SUFFIX:String = '-succ';
 		private const RESET_SAVE:String = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
 		
 		[Embed(source = "../../lib/art/ui/eye.png")] private const _view_normal_sprite:Class;

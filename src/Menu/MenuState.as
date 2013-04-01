@@ -35,7 +35,7 @@ package Menu {
 					var button:TextButton = new TextButton(X, Y, level.name, function switchTo(level:Level):void { 
 						FlxG.switchState(new LevelState(level));
 					});
-					button.setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xffffff);
+					button.setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, level.successSave ? U.HIGHLIGHTED_COLOR : 0xffffff);
 					button.fades = true;
 					button.setParam(level);
 					add(button);

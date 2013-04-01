@@ -48,6 +48,16 @@ package Levels {
 			U.save.data['lastLevel'] = name;
 		}
 		
+		public function get successSave():String {
+			return U.save.data[name + SUCCESS_SUFFIX];
+		}
+		
+		public function set successSave(save:String):void {
+			U.save.data[name + SUCCESS_SUFFIX] = save;
+		}
+		
+		private const SUCCESS_SUFFIX:String = '-succ';
+		
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			

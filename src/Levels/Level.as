@@ -79,18 +79,36 @@ package Levels {
 			
 			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
 			addCPU.predecessors.push(INSTR_TUT, OP_TUT);
-			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", "Make a basic CPU... with propagation delay!", LevelShard.CORE.compositWith(LevelShard.DELAY));
-			addCPU_D.predecessors.push(addCPU, D2_TUT);
 			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
 			cpuJMP.predecessors.push(addCPU);
 			var cpuADV:Level = new ShardLevel("Advanced Ops", "Make a CPU that does arithmetic!", LevelShard.CORE.compositWith(LevelShard.ADV));
 			cpuADV.predecessors.push(addCPU);
 			var cpuLD:Level = new ShardLevel("Load", "Make a CPU that can load from memory!", LevelShard.CORE.compositWith(LevelShard.LOAD));
 			cpuLD.predecessors.push(addCPU);
-			var pipe:Level = new ShardLevel("Efficiency!", "Make a CPU that runs fast!", LevelShard.CORE.compositWith(LevelShard.DELAY, LevelShard.SPD));
-			pipe.predecessors.push(addCPU_D); //dubious
 			
-			levels.push(addCPU, addCPU_D, cpuJMP, cpuADV, cpuLD, pipe);
+			levels.push(addCPU, cpuJMP, cpuADV, cpuLD);
+			
+			var delayShard:LevelShard = LevelShard.CORE.compositWith(LevelShard.DELAY);
+			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", "Make a basic CPU... with propagation delay!", delayShard);
+			addCPU_D.predecessors.push(addCPU, D2_TUT);
+			var cpuADVLDD:Level = new ShardLevel("Adv/Load Delay", " ", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
+			cpuADVLDD.predecessors.push(addCPU_D, cpuADV, cpuLD);
+			
+			levels.push(addCPU_D, cpuADVLDD);
+			
+			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);
+			var pipe:Level = new ShardLevel("Efficiency!", "Make a CPU that runs fast!", pipeShard);
+			pipe.predecessors.push(addCPU_D); //dubious
+			var pipeJMP:Level = new ShardLevel("Efficient Jump", " ", pipeShard.compositWith( LevelShard.JUMP));
+			pipeJMP.predecessors.push(pipe, cpuJMP);
+			var pipeADV:Level = new ShardLevel("Efficient Adv Op", " ", pipeShard.compositWith(LevelShard.ADV));
+			pipeADV.predecessors.push(pipe, cpuADVLDD);
+			var pipeLD:Level = new ShardLevel("Efficient Load", " ", pipeShard.compositWith(LevelShard.LOAD));
+			pipeLD.predecessors.push(pipe, cpuADVLDD);
+			var pipeADVLDD:Level = new ShardLevel("Eff. Adv/Load", " ", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
+			pipeADVLDD.predecessors.push(pipeLD, pipeADV);
+			
+			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD);
 			
 			columns.push(makeVec([WIRE_TUT]));
 			columns.push(makeVec([MOD_TUT]));
@@ -99,8 +117,8 @@ package Levels {
 			columns.push(makeVec([addCPU, cpuJMP, cpuADV, cpuLD]));
 			columns.push(makeVec([D1_TUT]));
 			columns.push(makeVec([D2_TUT]));
-			columns.push(makeVec([addCPU_D]));
-			columns.push(makeVec([pipe]));
+			columns.push(makeVec([addCPU_D, cpuADVLDD]));
+			columns.push(makeVec([pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD]));
 			
 			return levels;
 		}

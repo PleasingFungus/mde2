@@ -26,7 +26,7 @@ package Menu {
 			howToPlayButton.X = X;
 			howToPlayButton.Y = Y;
 			add(howToPlayButton);
-			Y += howToPlayButton.fullHeight + 10;
+			Y += howToPlayButton.fullHeight + 20;
 			
 			for each (var levelCol:Vector.<Level> in Level.columns) {
 				X = 10;
@@ -40,7 +40,7 @@ package Menu {
 					button.setParam(level);
 					add(button);
 					colButtons.push(button);
-					X += button.fullWidth + 10;
+					X += button.fullWidth + 20;
 					
 					if (level == Level.last) {
 						FlxG.camera.scroll.x = button.X + button.fullWidth / 2 - FlxG.width / 2;
@@ -51,7 +51,7 @@ package Menu {
 				var colHeight:int = 0;
 				for each (button in colButtons)
 					colHeight = Math.max(colHeight, button.fullHeight);
-				Y += colHeight + 10;
+				Y += colHeight + 20;
 			}
 			
 			add(new Scroller);

@@ -70,6 +70,7 @@ package LevelStates {
 		public var reactionStack:Vector.<Action>;
 		private var currentWire:Wire;
 		private var currentModule:Module;
+		private var selectionArea:SelectionBox;
 		
 		public var time:Time;
 		public var grid:Grid;
@@ -535,13 +536,20 @@ package LevelStates {
 			if (time.moment)
 				return; //no fucking around when shit is running!
 			
-			if (currentModule)
+			if (selectionArea) {
+				if (!selectionArea.exists) {
+					//TODO
+					selectionArea = null;
+				}
+			} else if (currentModule)
 				checkModuleControls();
 			else if (currentWire)
 				checkWireControls();
 			else if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
-				if (findMousedModule()) {
-					if (ControlSet.MODIFIER_KEY.pressed())
+				if (ControlSet.DRAG_MODIFY_KEY.pressed())
+					midLayer.add(selectionArea = new SelectionBox);
+				else if (findMousedModule()) {
+					if (ControlSet.CLICK_MODIFY_KEY.pressed())
 						addEditSliderbar();
 					else
 						pickUpModule();
@@ -663,7 +671,7 @@ package LevelStates {
 					if (!mousedModule)
 						newGraphic = _pen_cursor;
 					else if (!mousedModule.FIXED) {
-						if (ControlSet.MODIFIER_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration()) {
+						if (ControlSet.CLICK_MODIFY_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration()) {
 							newGraphic = _wrench_cursor;
 							offsetX = offsetY = -3;
 						} else {

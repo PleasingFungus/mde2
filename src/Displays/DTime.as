@@ -123,16 +123,21 @@ package Displays {
 			backstepButton.setExists(U.state.time.moment > 0);
 			
 			
-			playButton.setExists(playing != 1);
-			playButton.X = stepButton.X - playButton.fullWidth * (playing == 1 ? 2 : 1);
-			fastButton.setExists(!playButton.exists);
+			playButton.setExists(playing != 1 || ticksPerSec != 2);
+			fastButton.setExists(playing != 1 || ticksPerSec != 20);
 			
-			rewindButton.setExists(playing != -1 && U.state.time.moment > 0);
-			rewindButton.X = backstepButton.X + backstepButton.fullWidth + (playing == -1 ? rewindButton.fullWidth : 0);
-			rFastButton.setExists(!rewindButton.exists && U.state.time.moment > 0);
+			rewindButton.setExists((playing != -1 || ticksPerSec != 2) && U.state.time.moment > 0);
+			rFastButton.setExists((playing != -1 || ticksPerSec != 20) && U.state.time.moment > 0);
 			
 			pauseButton.setExists(playing != 0);
-			pauseButton.X = playing == 1 ? playButton.X + playButton.fullWidth : rewindButton.X - pauseButton.fullWidth;
+			if (!playButton.exists)
+				pauseButton.X = playButton.X;
+			else if (!fastButton.exists)
+				pauseButton.X = fastButton.X;
+			else if (!rewindButton.exists)
+				pauseButton.X = rewindButton.X;
+			else
+				pauseButton.X = rFastButton.X;
 			
 			derock++;
 		}

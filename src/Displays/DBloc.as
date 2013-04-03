@@ -38,11 +38,40 @@ package Displays {
 		
 		override public function update():void {
 			super.update();
+			
+			if (!bloc.exists)
+				return;
+			
+			if (bloc.rooted)
+				checkRootedState();
+			else
+				checkUnrootedState();
+		}
+		
+		protected function checkRootedState():void {
 			if (FlxG.mouse.justPressed()) {
-				//clicked on a module?
-				//clicked on a wire?
-				//else...
-				setSelect(false);
+				var mouseLoc:FlxPoint = U.mouseFlxLoc;
+				var moused:Boolean = false;
+				
+				if (!U.buttonManager.moused) {
+					for each (var dmodule:DModule in displayModules)
+						if (dmodule.overlapsPoint(mouseLoc)) {
+							moused = true;
+							break;
+						}
+					if (!moused)
+						for each (var dwire:DWire in displayWires)
+							if (dwire.overlapsPoint(mouseLoc)) {
+								moused = true;
+								break;
+							}
+				}
+				
+				if (moused) {
+					new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
+					bloc.mobilize();
+				} else
+					setSelect(false);
 			}
 			
 			if (ControlSet.CANCEL_KEY.justPressed())
@@ -54,12 +83,32 @@ package Displays {
 			}
 		}
 		
+		protected function checkUnrootedState():void {
+			if (!FlxG.mouse.justPressed())
+				bloc.moveTo(U.pointToGrid(U.mouseLoc));
+			else {
+				if (U.buttonManager.moused || bloc.validPosition(U.pointToGrid(U.mouseLoc)))
+					new CustomAction(bloc.place, bloc.remove, U.pointToGrid(U.mouseLoc)).execute();
+				else {
+					bloc.destroy();
+					setSelect(false);
+				}
+			}
+			
+			if (ControlSet.CANCEL_KEY.justPressed()) {
+				bloc.destroy();
+				setSelect(false);
+			}
+			
+			U.buttonManager.moused = true;
+		}
+		
 		private function setSelect(selected:Boolean = true):void {
 			for each (var dmodule:DModule in displayModules)
 				dmodule.selected = selected;
 			for each (var dwire:DWire in displayWires)
 				dwire.selected = selected;
-			exists = selected;
+			bloc.exists = selected;
 		}
 		
 	}

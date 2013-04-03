@@ -545,23 +545,25 @@ package LevelStates {
 				checkModuleControls();
 			else if (currentWire)
 				checkWireControls();
-			else if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
-				if (ControlSet.DRAG_MODIFY_KEY.pressed())
-					midLayer.add(selectionArea = new SelectionBox);
-				else if (findMousedModule()) {
-					if (ControlSet.CLICK_MODIFY_KEY.pressed())
-						addEditSliderbar();
-					else
-						pickUpModule();
-				} else {
-					currentWire = new Wire(U.pointToGrid(U.mouseLoc))
-					displayWires.push(midLayer.add(new DWire(currentWire)));
+			else {
+				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
+					if (ControlSet.DRAG_MODIFY_KEY.pressed())
+						midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
+					else if (findMousedModule()) {
+						if (ControlSet.CLICK_MODIFY_KEY.pressed())
+							addEditSliderbar();
+						else
+							pickUpModule();
+					} else {
+						currentWire = new Wire(U.pointToGrid(U.mouseLoc))
+						displayWires.push(midLayer.add(new DWire(currentWire)));
+					}
 				}
-			}
-			
-			if (ControlSet.DELETE_KEY.pressed() && !currentWire && !currentModule) {
-				destroyModules();
-				destroyWires();
+				
+				if (ControlSet.DELETE_KEY.pressed()) {
+					destroyModules();
+					destroyWires();
+				}
 			}
 		}
 		

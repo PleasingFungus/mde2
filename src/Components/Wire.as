@@ -194,7 +194,7 @@ package Components {
 			return true;
 		}
 		
-		protected function validPosition():Boolean {
+		public function validPosition():Boolean {
 			if (U.state.grid.objTypeAtPoint(path[0]) == Module || U.state.grid.objTypeAtPoint(path[path.length -1]) == Module)
 				return false;
 			

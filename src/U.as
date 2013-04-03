@@ -126,6 +126,7 @@ package  {
 		public static const UNPOWERED_COLOR:uint = 0x1d19d9;
 		public static const UNKNOWN_COLOR:uint = 0xc219d9
 		public static const HIGHLIGHTED_COLOR:uint = 0xfff03c;
+		public static const SELECTION_COLOR:uint = 0x519dcf;
 		public static const DEFAULT_COLOR:uint = 0x0;
 		
 		

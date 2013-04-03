@@ -19,10 +19,12 @@ package Displays {
 		public var displayPorts:Vector.<DPort>;
 		public var displayNodes:Vector.<DNode>;
 		public var displayConnections:Vector.<InternalDWire>;
+		public var selected:Boolean;
 		private var nameText:FlxText;
 		private var detailsText:FlxText;
 		private var locked:Boolean;
 		private var wasValid:Boolean;
+		private var wasSelected:Boolean;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
@@ -30,18 +32,9 @@ package Displays {
 		}
 		
 		public function refresh():void {
-			wasValid = module.validPosition;
-			var moduleColor:uint;
-			if (module.FIXED)
-				moduleColor = 0xff808080;
-			else if (wasValid)
-				moduleColor = 0xff7070a0;
-			else
-				moduleColor = 0xffa07070;
-			
 			makeGraphic(module.layout.dim.x * U.GRID_DIM,
 						module.layout.dim.y * U.GRID_DIM,
-						moduleColor, true);
+						0xffffffff, true);
 			
 			detailsText = new FlxText( -1, -1, width + U.GRID_DIM / 2, getDetails());
 			font.configureFlxText(detailsText, 0x0, 'center');
@@ -82,8 +75,9 @@ package Displays {
 		override public function update():void {
 			super.update();
 			
-			if (module.dirty || (wasValid != module.validPosition))
+			if (module.dirty)
 				refresh();
+			getColor();
 			
 			var font:FontTuple = this.font;
 			if (detailsText.font != font.id || detailsText.size != font.size)
@@ -98,6 +92,20 @@ package Displays {
 				dWire.update();
 			
 			visible = solid = module.exists;
+		}
+		
+		private function getColor():void {
+			wasValid = module.validPosition;
+			var moduleColor:uint;
+			
+			if (selected)
+				color = U.SELECTION_COLOR;
+			else if (module.FIXED)
+				color = 0xff808080;
+			else if (wasValid)
+				color = 0xff7070a0;
+			else
+				color = 0xffa07070;
 		}
 		
 		protected function updatePosition():void {

@@ -17,6 +17,8 @@ package Displays {
 		protected var sourcePoint:int = -1;
 		protected var lastZoom:Number;
 		
+		public var selected:Boolean;
+		
 		protected var hSeg:FlxSprite;
 		protected var vSeg:FlxSprite;
 		protected var join:FlxSprite;
@@ -121,6 +123,9 @@ package Displays {
 			if (!U.buttonManager.moused && U.state.viewMode == U.state.VIEW_MODE_NORMAL && overlapsPoint(U.mouseFlxLoc))
 				return U.HIGHLIGHTED_COLOR;
 			
+			if (selected)
+				return U.SELECTION_COLOR;
+			
 			if (wire.getSource() == null || wire.connections.length < 2)
 				return U.UNCONNECTED_COLOR;
 			
@@ -162,6 +167,16 @@ package Displays {
 			willOverlap = false;
 			iterWire(function checkOverlap(seg:FlxSprite):void {
 				willOverlap = willOverlap || seg.overlapsPoint(p);
+			});
+			return willOverlap;
+		}
+		
+		override public function overlaps(o:FlxBasic, _:Boolean=false, __:FlxCamera=null):Boolean {
+			if (!wire.exists) return false;
+			
+			willOverlap = false;
+			iterWire(function checkOverlap(seg:FlxSprite):void {
+				willOverlap = willOverlap || seg.overlaps(o);
 			});
 			return willOverlap;
 		}

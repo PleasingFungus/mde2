@@ -14,7 +14,6 @@ package Components {
 		public var connections:Vector.<Carrier>;
 		
 		private var lastPathEnd:Point; //microoptimization in attemptPathTo
-		private var oldConnections:Vector.<Carrier>;
 		protected var constrained:Boolean = true;
 		
 		public function Wire(Start:Point) {
@@ -235,10 +234,7 @@ package Components {
 			}
 			
 			exists = true;
-			if (!oldConnections)
-				checkForConnections();
-			else
-				restoreOldConnections();
+			checkForConnections();
 			if (source)
 				propagateSource();
 			
@@ -266,13 +262,6 @@ package Components {
 					addConnection(connection);
 					joinConnection(connection);
 				}
-		}
-		
-		protected function restoreOldConnections():void {
-			connections = oldConnections;
-			for each (var connection:Carrier in connections)
-				joinConnection(connection);
-			oldConnections = null; //un-needed, but aesthetically pleasing
 		}
 		
 		public function addConnections(carriers:Vector.<Carrier>):void {
@@ -338,7 +327,6 @@ package Components {
 				source.propagateSource(); //re-propagate
 			}
 			
-			oldConnections = connections;
 			connections = new Vector.<Carrier>; //un-needed, but aesthetically pleasing
 			source = null;
 			

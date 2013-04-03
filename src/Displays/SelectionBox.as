@@ -54,7 +54,7 @@ package Displays {
 				if (module.module.exists && !module.module.FIXED && module.overlaps(area))
 					modules.push(module);
 			
-			U.state.midLayer.add(new DBloc(wires, modules));
+			U.state.midLayer.add(DBloc.fromDisplays(wires, modules));
 		}
 	}
 

@@ -95,17 +95,44 @@ package LevelStates {
 			return true;
 		}
 		
-		//public function copy():Bloc {
-			//var modules:Vector.<Module> = new Vector.<Module>;
-			//for each (var module:Module in this.modules)
-				//modules.push(module.copy());
-			//
-			//var wires:Vector.<Wire> = new Vector.<Wire>;
-			//for each (var wire:Wire in this.wires)
-				//wires.push(wire.copy());
-			//
-			//return new Bloc(modules, wires, false);
-		//}
+		
+		public function toString():String {
+			var str:String = "";
+			for each (var module:Module in modules)
+				str += module.saveString();
+			str += U.SAVE_DELIM;
+			for each (var wire:Wire in wires)
+				str += wire.saveString();
+			return str;
+		}
+		
+		
+		public static function fromString(str:String, allowableTypes:Vector.<Class> = null, Rooted:Boolean = false):Bloc {
+			var stringSegments:Array = str.split(U.SAVE_DELIM + U.SAVE_DELIM);
+			var moduleStrings:Array = stringSegments[0].split(U.SAVE_DELIM);
+			var wireStrings:Array = stringSegments[1].split(U.SAVE_DELIM);
+			
+			var modules:Vector.<Module> = new Vector.<Module>;
+			var averageLoc:Point = new Point;
+			for each (var moduleString:String in moduleStrings) {
+				var module:Module = Module.fromString(moduleString, allowableTypes);
+				modules.push(module);
+				averageLoc = averageLoc.add(module);
+			}
+			if (modules.length) {
+				averageLoc.x = Math.round(averageLoc.x / modules.length);
+				averageLoc.y = Math.round(averageLoc.y / modules.length);
+			}
+			
+			var wires:Vector.<Wire> = new Vector.<Wire>;
+			for each (var wireString:String in wireStrings)
+				wires.push(Wire.fromString(wireString));
+			
+			var bloc:Bloc = new Bloc(modules, wires, Rooted);
+			bloc.origin = averageLoc;
+			return bloc;
+		}
+		
 		
 		public static function make(moduleArray:Array, wireArray:Array):Bloc {
 			var modules:Vector.<Module> = new Vector.<Module>;

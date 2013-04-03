@@ -256,10 +256,10 @@ package Modules {
 		}
 		
 		
-		public static function fromString(str:String):Module {
+		public static function fromString(str:String, allowableTypes:Vector.<Class> = null):Module {
 			var args:Array = str.split(DELIM);
 			var type:Class = ALL_MODULES[int(args[0])];
-			if (!type) return null;
+			if (!type || (allowableTypes && allowableTypes.indexOf(type) == -1)) return null;
 			var x:int = int(args[1]);
 			var y:int = int(args[2]);
 			if (args.length > 3)

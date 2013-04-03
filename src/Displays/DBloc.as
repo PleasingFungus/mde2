@@ -16,24 +16,8 @@ package Displays {
 		private var displayWires:Vector.<DWire>;
 		private var displayModules:Vector.<DModule>;
 		public var bloc:Bloc;
-		public function DBloc(DisplayWires:Vector.<DWire>, DisplayModules:Vector.<DModule>, Rooted:Boolean = true) {
-			displayWires = DisplayWires;
-			displayModules = DisplayModules;
-			
+		public function DBloc() {
 			super();
-			
-			var wires:Vector.<Wire> = new Vector.<Wire>;
-			for each (var dwire:DWire in displayWires) {
-				dwire.selected = true;
-				wires.push(dwire.wire);
-			}
-			var modules:Vector.<Module> = new Vector.<Module>;
-			for each (var dmodule:DModule in displayModules) {
-				dmodule.selected = true;
-				modules.push(dmodule.module);
-			}
-			
-			bloc = new Bloc(modules, wires, Rooted);
 		}
 		
 		override public function update():void {
@@ -46,6 +30,9 @@ package Displays {
 				checkRootedState();
 			else
 				checkUnrootedState();
+			
+			if (ControlSet.COPY_KEY.justPressed())
+				U.clipboard = bloc.toString();
 		}
 		
 		protected function checkRootedState():void {
@@ -70,14 +57,22 @@ package Displays {
 				if (moused) {
 					new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
 					bloc.mobilize();
+					setSelect(false);
+					bloc.exists = true;
 				} else
 					setSelect(false);
 			}
 			
-			if (ControlSet.CANCEL_KEY.justPressed())
+			if (ControlSet.CANCEL_KEY.justPressed() || ControlSet.PASTE_KEY.justPressed())
 				setSelect(false);
 			
 			if (ControlSet.DELETE_KEY.justPressed()) {
+				new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
+				setSelect(false);
+			}
+			
+			if (ControlSet.CUT_KEY.justPressed()) {
+				U.clipboard = bloc.toString();
 				new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
 				setSelect(false);
 			}
@@ -87,15 +82,20 @@ package Displays {
 			if (!FlxG.mouse.justPressed())
 				bloc.moveTo(U.pointToGrid(U.mouseLoc));
 			else {
-				if (U.buttonManager.moused || bloc.validPosition(U.pointToGrid(U.mouseLoc)))
+				if (bloc.validPosition(U.pointToGrid(U.mouseLoc))) {
 					new CustomAction(bloc.place, bloc.remove, U.pointToGrid(U.mouseLoc)).execute();
-				else {
+					setSelect(true);
+				} else if (U.buttonManager.moused) { //FIXME: doesn't work
 					bloc.destroy();
 					setSelect(false);
 				}
 			}
 			
-			if (ControlSet.CANCEL_KEY.justPressed()) {
+			if (ControlSet.CUT_KEY.justPressed())
+				U.clipboard = bloc.toString();
+			
+			if (ControlSet.CANCEL_KEY.justPressed() || ControlSet.DELETE_KEY.justPressed() ||
+				ControlSet.PASTE_KEY.justPressed() || ControlSet.CUT_KEY.justPressed()) {
 				bloc.destroy();
 				setSelect(false);
 			}
@@ -109,6 +109,50 @@ package Displays {
 			for each (var dwire:DWire in displayWires)
 				dwire.selected = selected;
 			bloc.exists = selected;
+		}
+		
+		public static function fromDisplays(DisplayWires:Vector.<DWire>, DisplayModules:Vector.<DModule>, Rooted:Boolean = true):DBloc {
+			var dBloc:DBloc = new DBloc;
+			dBloc.displayWires = DisplayWires;
+			dBloc.displayModules = DisplayModules;
+			
+			var wires:Vector.<Wire> = new Vector.<Wire>;
+			for each (var dwire:DWire in dBloc.displayWires) {
+				dwire.selected = true;
+				wires.push(dwire.wire);
+			}
+			var modules:Vector.<Module> = new Vector.<Module>;
+			for each (var dmodule:DModule in dBloc.displayModules) {
+				dmodule.selected = true;
+				modules.push(dmodule.module);
+			}
+			
+			dBloc.bloc = new Bloc(modules, wires, Rooted);
+			return dBloc;
+		}
+		
+		public static function fromString(string:String, allowableTypes:Vector.<Class> = null, Rooted:Boolean = false):DBloc {
+			var bloc:Bloc = Bloc.fromString(string, allowableTypes);
+			
+			var dBloc:DBloc = new DBloc;
+			dBloc.bloc = bloc;
+			
+			dBloc.displayWires = new Vector.<DWire>;
+			for each (var wire:Wire in bloc.wires)
+				dBloc.displayWires.push(U.state.midLayer.add(new DWire(wire)));
+			
+			dBloc.displayModules = new Vector.<DModule>;
+			for each (var module:Module in bloc.modules)
+				dBloc.displayModules.push(U.state.midLayer.add(module.generateDisplay()));
+			
+			return dBloc;
+		}
+		
+		public function extendDisplays(displayWires:Vector.<DWire>, displayModules:Vector.<DModule>):void {
+			for each (var dWire:DWire in this.displayWires)
+				displayWires.push(dWire);
+			for each (var dModule:DModule in this.displayModules)
+				displayModules.push(dModule);
 		}
 		
 	}

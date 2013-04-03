@@ -235,7 +235,7 @@ package LevelStates {
 		private function makeDataButton():void {			
 			var memoryButton:MenuButton = new GraphicButton(50, 90, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory, level.goal.genExpectedMem()));
-			}, "View contents of memory", new Key("M"));
+			}, "View contents of memory", new Key("E"));
 			upperLayer.add(memoryButton);
 		}
 		
@@ -314,7 +314,7 @@ package LevelStates {
 			var modeButton:MenuButton = new GraphicButton(90, 10, VIEW_MODE_SPRITES[viewMode], function openList():void {
 				listOpen = LIST_VIEW_MODES;
 				makeUI();
-			}, "Display list of view modes", new Key("V"));
+			}, "Display list of view modes", new Key("Q"));
 			upperLayer.add(modeButton);
 		}
 		
@@ -563,6 +563,12 @@ package LevelStates {
 				if (ControlSet.DELETE_KEY.pressed()) {
 					destroyModules();
 					destroyWires();
+				}
+				
+				if (ControlSet.PASTE_KEY.justPressed() && !U.buttonManager.moused && U.clipboard) {
+					var pastedBloc:DBloc = DBloc.fromString(U.clipboard, level.allowedModules);
+					pastedBloc.extendDisplays(displayWires, displayModules);
+					midLayer.add(pastedBloc);
 				}
 			}
 		}

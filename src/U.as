@@ -48,6 +48,7 @@ package  {
 		public static var state:LevelState;
 		public static var buttonManager:ButtonManager;
 		public static var zoom:Number;
+		public static var clipboard:String;
 		
 		public static const GRID_DIM:int = 16;
 		

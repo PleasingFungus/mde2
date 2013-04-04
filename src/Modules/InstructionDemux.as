@@ -14,12 +14,23 @@ package Modules {
 	public class InstructionDemux extends Module {
 		
 		public var width:int;
-		public function InstructionDemux(X:int, Y:int) {
-			width = U.state ? U.state.level.expectedOps.length : 1;
+		private var expectedOps:Vector.<OpcodeValue>;
+		public function InstructionDemux(X:int, Y:int, opIntValues:* = null) {
+			if (opIntValues is int)
+				opIntValues = [opIntValues];
+			
+			expectedOps = new Vector.<OpcodeValue>;
+			if (opIntValues && opIntValues.length)
+				for each (var opIntValue:int in opIntValues)
+					expectedOps.push(OpcodeValue.fromValue(new NumericValue(opIntValue)));
+			else if (U.state)
+				expectedOps = U.state.level.expectedOps.slice();
+			
+			width = expectedOps.length ? expectedOps.length : 1;
 			super(X, Y, "I-Demux", Module.CAT_LOGIC, width, 1, 1);
 			if (U.state)
 				for (var i:int = 0; i < width; i++)
-					inputs[i].name = U.state.level.expectedOps[i].toString();
+					inputs[i].name = expectedOps[i].toString();
 			delay = Math.ceil(Math.log(width) / Math.log(2));
 		}
 		
@@ -39,7 +50,7 @@ package Modules {
 			for (var i:int = 0; i < inputs.length; i++) {
 				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2, layout.ports[i].offset.y);
 				nodes.push(new WideNode(this, loc, [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
-											inputs[i].getValue, "Input value for "+U.state.level.expectedOps[i], true));
+											inputs[i].getValue, "Input value for "+expectedOps[i], true));
 				controlLines.push(new NodeTuple(layout.ports[layout.ports.length - 1], nodes[i], function (i:int):Boolean { 
 					return getIndex() == i;
 				}, i));
@@ -66,13 +77,20 @@ package Modules {
 			return "Outputs the value of the input corresponding to the control value."
 		}
 		
+		override protected function getSaveValues():Array {
+			var values:Array = super.getSaveValues();
+			for each (var op:OpcodeValue in expectedOps)
+				values.push(op.toNumber());
+			return values;
+		}
+		
 		override public function drive(port:Port):Value {
 			var control:Value = controls[0].getValue();
 			if (control.unknown || control.unpowered)
 				return control;
 			
 			var op:OpcodeValue = OpcodeValue.fromValue(control);
-			var index:int = U.state.level.expectedOps.indexOf(op);
+			var index:int = expectedOps.indexOf(op);
 			if (index < 0 || index >= width)
 				return U.V_UNKNOWN;
 			
@@ -85,7 +103,7 @@ package Modules {
 				return C.INT_NULL;
 			
 			var op:OpcodeValue = OpcodeValue.fromValue(control);
-			var index:int = U.state.level.expectedOps.indexOf(op);
+			var index:int = expectedOps.indexOf(op);
 			if (index < 0 || index >= width)
 				return C.INT_NULL;
 			

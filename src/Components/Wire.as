@@ -222,7 +222,7 @@ package Components {
 		}
 		
 		public function collides():Boolean {			
-			for (var i:int = 0; i < path.length - i; i++) {
+			for (var i:int = 0; i < path.length - 1; i++) {
 				var p:Point = path[i];
 				var next:Point = path[i + 1];
 				var delta:Point = next.subtract(p);

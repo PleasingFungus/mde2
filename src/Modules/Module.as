@@ -262,7 +262,13 @@ package Modules {
 			if (!type || (allowableTypes && allowableTypes.indexOf(type) == -1)) return null;
 			var x:int = int(args[1]);
 			var y:int = int(args[2]);
-			if (args.length > 3)
+			if (args.length > 4) {
+				var furtherArgs:Array = [];
+				for each (var furtherArg:String in args.slice(3))
+					furtherArgs.push(int(furtherArg))
+				return new type(x, y, furtherArgs)
+			}
+			if (args.length >= 4)
 				return new type(x, y, int(args[3]))
 			return new type(x, y);
 		}

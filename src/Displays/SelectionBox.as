@@ -46,7 +46,7 @@ package Displays {
 			
 			var wires:Vector.<DWire> = new Vector.<DWire>;
 			for each (var wire:DWire in displayWires)
-				if (wire.wire.exists && wire.wire.deployed && !wire.wire.FIXED && wire.overlaps(area))
+				if (wire.wire.exists && wire.wire.deployed && wire.wire.path.length > 1 && !wire.wire.FIXED && wire.overlaps(area))
 					wires.push(wire);
 			
 			var modules:Vector.<DModule> = new Vector.<DModule>;

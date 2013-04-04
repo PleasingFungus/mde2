@@ -69,6 +69,7 @@ package Displays {
 			if (ControlSet.DELETE_KEY.justPressed()) {
 				new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
 				setSelect(false);
+				U.buttonManager.moused = true;
 			}
 			
 			if (ControlSet.CUT_KEY.justPressed()) {

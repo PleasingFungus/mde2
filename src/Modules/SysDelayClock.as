@@ -8,7 +8,7 @@ package Modules {
 	 */
 	public class SysDelayClock extends Module {
 		
-		public var edgeLength:int = 1;
+		private var _edgeLength:int = 1;
 		public function SysDelayClock(X:int, Y:int, EdgeLength:int = 1) {
 			super(X, Y, "SysClock", Module.CAT_TIME, 0, 1, 0);
 			configuration = getConfiguration();
@@ -30,7 +30,7 @@ package Modules {
 		}
 		
 		override public function setByConfig():void {
-			edgeLength = configuration.value;
+			_edgeLength = configuration.value;
 		}
 		
 		override public function renderDetails():String {
@@ -50,6 +50,10 @@ package Modules {
 			if (U.state.time.clockPeriod - (U.state.time.moment % U.state.time.clockPeriod) <= edgeLength) //within e ticks of the end of the clock period
 				return EDGE;
 			return NO_EDGE;
+		}
+		
+		public function get edgeLength():int {
+			return U.state ? Math.min(_edgeLength, U.state.time.clockPeriod - 1) : _edgeLength;
 		}
 		
 		override protected function getSaveValues():Array {

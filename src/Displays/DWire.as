@@ -120,6 +120,9 @@ package Displays {
 		}
 		
 		protected function getColor():uint {
+			if (!wire.deployed)
+				return U.DEFAULT_COLOR;
+			
 			if (!U.buttonManager.moused && U.state.viewMode == U.state.VIEW_MODE_NORMAL && overlapsPoint(U.mouseFlxLoc))
 				return U.HIGHLIGHTED_COLOR;
 			

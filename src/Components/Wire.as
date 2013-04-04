@@ -8,6 +8,7 @@ package Components {
 	public class Wire implements Carrier {
 		
 		public var path:Vector.<Point>;
+		public var deployed:Boolean;
 		public var exists:Boolean;
 		public var FIXED:Boolean;
 		public var source:Port;
@@ -246,6 +247,7 @@ package Components {
 			}
 			
 			exists = true;
+			deployed = true;
 			checkForConnections();
 			if (source)
 				propagateSource();
@@ -329,6 +331,7 @@ package Components {
 				U.state.grid.setLineContents(path[i], path[i + 1], null);
 			U.state.wires.splice(U.state.wires.indexOf(this), 1);
 			exists = false;
+			deployed = false;
 			
 			var connection:Carrier;
 			for each (connection in connections)

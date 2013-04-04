@@ -28,7 +28,7 @@ package LevelStates {
 				if (!module.validPosition)
 					return wasValid = false;
 			for each (var wire:Wire in wires)
-				if (!wire.validPosition())
+				if (wire.collides())
 					return wasValid = false;
 			return wasValid = true;
 		}
@@ -117,6 +117,7 @@ package LevelStates {
 			for each (var moduleString:String in moduleStrings) {
 				var module:Module = Module.fromString(moduleString, allowableTypes);
 				modules.push(module);
+				U.state.modules.push(module);
 				averageLoc = averageLoc.add(module);
 			}
 			if (modules.length) {

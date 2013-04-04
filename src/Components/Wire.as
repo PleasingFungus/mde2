@@ -220,6 +220,18 @@ package Components {
 			return true;
 		}
 		
+		public function collides():Boolean {			
+			for (var i:int = 0; i < path.length - i; i++) {
+				var p:Point = path[i];
+				var next:Point = path[i + 1];
+				var delta:Point = next.subtract(p);
+				if (!mayMoveThrough(next, delta))
+					return true;
+			}
+			
+			return !validPosition();
+		}
+		
 		
 		
 		
@@ -308,7 +320,7 @@ package Components {
 		}
 		
 		protected function deregister():Boolean {
-			if (FIXED)
+			if (FIXED || path.length < 2)
 				return false;
 			
 			for each (var p:Point in path)

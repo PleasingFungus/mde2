@@ -488,6 +488,8 @@ package LevelStates {
 		override public function update():void {
 			elapsed += FlxG.elapsed;
 			
+			if (FlxG.camera.fading)
+				return;
 			if (level.goal.running) {
 				checkTestControls();
 				if (level.goal.running) {

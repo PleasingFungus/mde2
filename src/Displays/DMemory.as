@@ -31,6 +31,7 @@ package Displays {
 		
 		public function init():void {
 			moment = U.state.time.moment;
+			members = [];
 			makeBG();
 			makePages();
 			makeButtons();

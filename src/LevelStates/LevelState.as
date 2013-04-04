@@ -535,7 +535,7 @@ package LevelStates {
 		}
 		
 		private function checkBuildControls():void {
-			if (time.moment)
+			if (time.moment || runningDisplayTest)
 				return; //no fucking around when shit is running!
 			
 			if (selectionArea) {

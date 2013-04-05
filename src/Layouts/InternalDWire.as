@@ -104,6 +104,23 @@ package Layouts {
 		override protected function getBlitActive(c:uint):Boolean {
 			return !lastDashed && c == 0x0 && (wire as InternalWire).getValue().toNumber() != 0; 
 		}
+		
+		override protected function drawBlit():void {
+			return;
+			//var blitFraction:Number = (Math.floor(U.state.elapsed * BLIT_PERIOD * U.GRID_DIM) % U.GRID_DIM) / U.GRID_DIM;
+			//for (var i:int = 0; i < wire.path.length - 1; i++) {
+				//var p1:Point = wire.path[i];
+				//var p2:Point = wire.path[i + 1];
+				//if (i < sourcePoint) {
+					//p1 = wire.path[i + 1];
+					//p2 = wire.path[i];
+				//}
+				//
+				//animationBlit.x = (p1.x + (p2.x - p1.x) * blitFraction) * U.GRID_DIM -1;
+				//animationBlit.y = (p1.y + (p2.y - p1.y) * blitFraction) * U.GRID_DIM -1;
+				//animationBlit.draw();
+			//}
+		}
 	}
 
 }

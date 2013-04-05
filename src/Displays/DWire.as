@@ -1,6 +1,7 @@
 package Displays {
 	import Components.Port;
 	import flash.geom.Point;
+	import Modules.BabyLatch;
 	import org.flixel.*;
 	import Components.Wire;
 	import Components.Carrier;
@@ -106,15 +107,20 @@ package Displays {
 		protected function drawBlit():void {
 			var blitFraction:Number = (Math.floor(U.state.elapsed * BLIT_PERIOD * U.GRID_DIM) % U.GRID_DIM) / U.GRID_DIM;
 			for (var i:int = 0; i < wire.path.length - 1; i++) {
-				var p1:Point = wire.path[i];
-				var p2:Point = wire.path[i + 1];
-				if (i < sourcePoint) {
-					p1 = wire.path[i + 1];
-					p2 = wire.path[i];
-				}
+				var p:Point = wire.path[i];
+				var np:Point = wire.path[i + 1];
+				var delta:Point = new Point(Math.abs(p.x - np.x), Math.abs(p.y - np.y));
+				var dir:int = U.state.currentGrid.lineDirection(p, np);
+				if (!dir)
+					continue;
 				
-				animationBlit.x = (p1.x + (p2.x - p1.x) * blitFraction) * U.GRID_DIM -1;
-				animationBlit.y = (p1.y + (p2.y - p1.y) * blitFraction) * U.GRID_DIM -1;
+				if (dir > 0) {
+					animationBlit.x = (Math.min(p.x, np.x) + delta.x * blitFraction) * U.GRID_DIM - 1/U.zoom;
+					animationBlit.y = (Math.min(p.y, np.y) + delta.y * blitFraction) * U.GRID_DIM - 1/U.zoom;
+				} else {
+					animationBlit.x = (Math.max(p.x, np.x) - delta.x * blitFraction) * U.GRID_DIM - 1/U.zoom;
+					animationBlit.y = (Math.max(p.y, np.y) - delta.y * blitFraction) * U.GRID_DIM - 1/U.zoom;
+				}
 				animationBlit.draw();
 			}
 		}
@@ -141,7 +147,7 @@ package Displays {
 		}
 		
 		protected function getBlitActive(c:uint):Boolean {
-			return c == 0x0 && wire.getSource().getValue().toNumber() != 0; 
+			return U.zoom > 1/4 && U.DEFAULT_COLOR == c && wire.source && wire.source.getValue().toNumber() != 0; 
 		}
 		
 		protected function checkZoom():void {

@@ -74,6 +74,7 @@ package LevelStates {
 		
 		public var time:Time;
 		public var grid:Grid;
+		public var currentGrid:CurrentGrid;
 		public var wires:Vector.<Wire>;
 		public var modules:Vector.<Module>;
 		public var memory:Vector.<Value>;
@@ -512,6 +513,10 @@ package LevelStates {
 			checkTime();
 			checkDDelay();
 			forceScroll();
+			
+			if (currentGrid.saveString != savedString) {
+				currentGrid.init(savedString);
+			}
 		}
 		
 		private function updateUI():void {
@@ -942,6 +947,7 @@ package LevelStates {
 			wires = new Vector.<Wire>;
 			modules = new Vector.<Module>;
 			grid = new Grid;
+			currentGrid = new CurrentGrid;
 			
 			time = new Time;
 			FlxG.globalSeed = 0.49;

@@ -23,7 +23,7 @@ package  {
 		public static const DEBUG_PRINT_TESTS:Boolean = false;
 		public static const DEBUG_PRINT_CONNECTIONS:Boolean = false;
 		
-		public static const BLIT_ENABLED:Boolean = false;
+		public static const BLIT_ENABLED:Boolean = true;
 		
 		[Embed(source = "../lib/fonts/munro.ttf", fontFamily = "MUNRO")] private const _1:String;
 		public static const MUNRO:String = "MUNRO";

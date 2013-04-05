@@ -14,6 +14,8 @@ package Displays {
 		private var scrollbar:Scrollbar;
 		private var scroll:int;
 		protected var page:FlxGroup;
+		protected var pageTop:int;
+		protected var pageBottom:int;
 		public function Infobox() {
 			super();
 			init();
@@ -25,9 +27,10 @@ package Displays {
 			makeBG();
 			makeCloseButton();
 			add(page = new FlxGroup);
+			pageTop = bg.y + RAISED_BORDER_WIDTH * 2;
+			pageBottom = bg.y + bg.height - RAISED_BORDER_WIDTH * 2;
 			add(scrollbar = new Scrollbar(bg.x + bg.width - 48/2 - RAISED_BORDER_WIDTH * 3,
-										  bg.y + RAISED_BORDER_WIDTH * 2 + 6,
-										  bg.height - RAISED_BORDER_WIDTH * 4 - 12));
+										  pageTop + INNER_BORDER, pageBottom - pageTop - INNER_BORDER*2));
 			scroll = 0;
 		}
 		
@@ -52,7 +55,7 @@ package Displays {
 		
 		protected function makeCloseButton():void {
 			var kludge:Infobox = this;
-			add(new GraphicButton(bg.x + RAISED_BORDER_WIDTH * 3 + 4, bg.y + RAISED_BORDER_WIDTH * 3 + 4,
+			add(new GraphicButton(bg.x + INNER_BORDER, bg.y + INNER_BORDER,
 								  _close_sprite, function close():void { kludge.exists = false } ))
 		}
 		
@@ -66,7 +69,7 @@ package Displays {
 		
 		private function checkScroll():void {
 			var pageHeight:int = getPageHeight();
-			var scrollDistance:int = pageHeight - (bg.height - RAISED_BORDER_WIDTH * 6);
+			var scrollDistance:int = pageHeight - (pageBottom - pageTop);
 			scrollbar.exists = scrollDistance > 0;
 			if (!scrollbar.exists)
 				return;
@@ -83,13 +86,13 @@ package Displays {
 		}
 		
 		protected function setVisible(o:FlxObject):void {
-			o.visible = o.y > bg.y + RAISED_BORDER_WIDTH * 3 && o.y + o.height < bg.y + bg.height - RAISED_BORDER_WIDTH * 3;
+			o.visible = o.y >= pageTop && o.y + o.height <= pageBottom;
 		}
 		
 		protected function getPageHeight():int {
 			var height:int = 0;
 			for each (var o:FlxObject in page.members)
-				height = Math.max(o.y - bg.y - scroll + o.height, height);
+				height = Math.max(o.y - pageTop - scroll + o.height, height);
 			return height;
 		}
 		
@@ -103,6 +106,7 @@ package Displays {
 		[Embed(source = "../../lib/art/ui/close.png")] private const _close_sprite:Class;
 		
 		protected const RAISED_BORDER_WIDTH:int = 2;
+		protected const INNER_BORDER:int = RAISED_BORDER_WIDTH * 2 + 6;
 		protected const WIDTH_FRACTION:Number = 3 / 4;
 		protected const HEIGHT_FRACTION:Number = 3 / 4;
 	}

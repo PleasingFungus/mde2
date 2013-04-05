@@ -23,13 +23,15 @@ package Displays {
 		override protected function init():void {
 			super.init();
 			
-			var X:int = bg.x + RAISED_BORDER_WIDTH * 3 + 6;
+			var X:int = bg.x + INNER_BORDER;
 			var Y:int = bg.y + RAISED_BORDER_WIDTH * 3;
-			var Width:int = bg.width - RAISED_BORDER_WIDTH * 6 - 12 - 24;
+			var Width:int = bg.width - INNER_BORDER * 2 - 48/2;
 			title = new FlxText(X, Y, Width, level.name);
 			U.TITLE_FONT.configureFlxText(title, 0xffffff, 'center');
 			Y += title.height + 8;
 			add(title);
+			
+			pageTop = Y;
 			
 			var addBodyText:Function = function addBodyText(text:String):void {
 				var bodyText:FlxText = new FlxText(X, Y, Width, text);
@@ -57,10 +59,6 @@ package Displays {
 				addBodyText("\nPropagation delay enabled.");
 			if (level.goal is GeneratedGoal)
 				addBodyText("\nTesting: " + (level.goal as GeneratedGoal).testRuns + " random programs, time limit of " + level.goal.timeLimit + " cycles per test");
-		}
-		
-		override protected function setVisible(o:FlxObject):void {
-			o.visible = o.y > title.y + title.height + 2 && o.y + o.height < bg.y + bg.height - RAISED_BORDER_WIDTH * 3;
 		}
 	}
 

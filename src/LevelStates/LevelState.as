@@ -362,6 +362,7 @@ package LevelStates {
 		private function makeModuleCatList():void {
 			//build a list of buttons for allowed modules/names
 			var moduleButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+			var i:int = 1;
 			for each (var category:String in Module.ALL_CATEGORIES) {
 				var allowed:Boolean = false;
 				for each (var moduleType:Class in level.allowedModules)
@@ -374,7 +375,7 @@ package LevelStates {
 					listOpen = LIST_MODULES;
 					moduleCategory = category;
 					makeUI();
-				}, "Choose "+category+" modules" /*TODO: replace with category description?*/).setParam(category).setDisabled(!allowed));
+				}, "Choose "+category+" modules" /*TODO: replace with category description?*/, ControlSet.NUMBER_HOTKEYS[i++]).setParam(category).setDisabled(!allowed));
 			}
 			
 			if (recentModules.length) {
@@ -398,7 +399,7 @@ package LevelStates {
 							listOpen = LIST_NONE;
 							makeUI();
 						}
-					}, "").setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getFullDescription));
+					}, "", ControlSet.NUMBER_HOTKEYS[i++]).setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getFullDescription));
 				}
 			}
 			
@@ -412,7 +413,7 @@ package LevelStates {
 			upperLayer.add(moduleList);
 			
 			moduleSliders = new Vector.<ModuleSlider>;
-			for (var i:int = 0; i < recentModules.length; i++ ) {
+			for (i = 0; i < recentModules.length; i++ ) {
 				moduleType = recentModules[i];
 				var archetype:Module = Module.getArchetype(moduleType);
 				if (archetype.getConfiguration())
@@ -435,6 +436,7 @@ package LevelStates {
 				makeUI();
 			}));
 			
+			var i:int = 1;
 			for each (moduleType in moduleTypes) {
 				moduleButtons.push(new TextButton( -1, -1, Module.getArchetype(moduleType).name, function chooseModule(moduleType:Class):void {
 					archetype = Module.getArchetype(moduleType);
@@ -454,7 +456,7 @@ package LevelStates {
 						listOpen = LIST_NONE;
 						makeUI();
 					}
-				}, "").setParam(moduleType));
+				}, "", ControlSet.NUMBER_HOTKEYS[i++]).setParam(moduleType));
 				if (Module.getArchetype(moduleType).getFullDescription() != null)
 					moduleButtons[moduleButtons.length - 1].setTooltipCallback(Module.getArchetype(moduleType).getFullDescription);
 			}
@@ -470,7 +472,7 @@ package LevelStates {
 			
 			//make some sliders
 			moduleSliders = new Vector.<ModuleSlider>;
-			for (var i:int = 0; i < moduleTypes.length; i++ ) {
+			for (i = 0; i < moduleTypes.length; i++ ) {
 				moduleType = moduleTypes[i];
 				archetype = Module.getArchetype(moduleType);
 				if (archetype.getConfiguration())
@@ -535,7 +537,7 @@ package LevelStates {
 		
 		private function checkControls():void {
 			checkBuildControls();
-			if (U.DEBUG && UIEnableKey.justPressed())
+			if (UIEnableKey.justPressed())
 				upperLayer.visible = !upperLayer.visible
 		}
 		
@@ -824,7 +826,7 @@ package LevelStates {
 			FlxG.camera.height = buf.height;
 			
 			super.draw();
-			if (U.DEBUG && U.DEBUG_RENDER_COLLIDE)
+			if (U.DEBUG_RENDER_COLLIDE)
 				debugRenderCollision();
 			
 			if (!matrix) {

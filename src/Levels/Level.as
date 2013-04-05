@@ -56,6 +56,13 @@ package Levels {
 			U.save.data[name + SUCCESS_SUFFIX] = save;
 		}
 		
+		public function unlocked():Boolean {
+			for each (var predecessor:Level in predecessors)
+				if (!predecessor.successSave)
+					return false;
+			return true;
+		}
+		
 		private const SUCCESS_SUFFIX:String = '-succ';
 		
 		public static function list():Vector.<Level> {

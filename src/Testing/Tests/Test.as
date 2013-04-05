@@ -277,7 +277,7 @@ package Testing.Tests {
 		
 		
 		protected function log(...args):void {
-			if (U.DEBUG && U.DEBUG_PRINT_TESTS)
+			if (U.DEBUG_PRINT_TESTS)
 				C.log(args);
 		}
 		

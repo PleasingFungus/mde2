@@ -15,6 +15,10 @@ package Menu {
 			C.setPrintReady();
 			U.init();
 			
+			if (!U.tutorialState) {
+				FlxG.switchState(new HowToPlayState); return;
+			}
+			
 			var title:FlxText = new FlxText(FlxG.width / 2, 20, FlxG.width * 2/4 - 10, "MULTIDUCK\nEXTRAVAGANZA");
 			U.TITLE_FONT.configureFlxText(title, 0xffffff, 'center');
 			add(title);
@@ -32,6 +36,9 @@ package Menu {
 				X = 10;
 				var colButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
 				for each (var level:Level in levelCol) {
+					if (!U.DEBUG_UNLOCK_ALL && !level.unlocked())
+						continue;
+					
 					var button:TextButton = new TextButton(X, Y, level.name, function switchTo(level:Level):void { 
 						FlxG.switchState(new LevelState(level));
 					});

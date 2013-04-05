@@ -17,11 +17,13 @@ package  {
 	 */
 	public class U {
 		public static const VERSION:String = "0.01";
-		public static const DEBUG:Boolean = true;
+		private static const DEBUG:Boolean = true;
 		
-		public static const DEBUG_RENDER_COLLIDE:Boolean = false;
-		public static const DEBUG_PRINT_TESTS:Boolean = false;
-		public static const DEBUG_PRINT_CONNECTIONS:Boolean = false;
+		public static const DEBUG_RENDER_COLLIDE:Boolean = DEBUG && false;
+		public static const DEBUG_PRINT_TESTS:Boolean = DEBUG && false;
+		public static const DEBUG_PRINT_CONNECTIONS:Boolean = DEBUG && false;
+		public static const DEBUG_SKIP_TUT:Boolean = DEBUG && false;
+		public static const DEBUG_UNLOCK_ALL:Boolean = DEBUG && false;
 		
 		public static const BLIT_ENABLED:Boolean = true;
 		

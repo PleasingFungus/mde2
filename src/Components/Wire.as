@@ -392,7 +392,7 @@ package Components {
 		}
 		
 		protected function log(...args):void {
-			if (U.DEBUG && U.DEBUG_PRINT_CONNECTIONS)
+			if (U.DEBUG_PRINT_CONNECTIONS)
 				C.log(args);
 		}
 		

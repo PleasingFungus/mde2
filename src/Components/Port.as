@@ -17,7 +17,7 @@ package Components {
 		
 		private var cachedValue:Value;
 		private var lastValue:Value;
-		private var lastChanged:int = -1;
+		private var lastChanged:int = 0;
 		
 		public function Port(IsOutput:Boolean, Parent:Module, Connections:Vector.<Carrier> = null) {
 			isOutput = IsOutput;
@@ -85,7 +85,7 @@ package Components {
 		
 		
 		protected function log(...args):void {
-			if (U.DEBUG && U.DEBUG_PRINT_CONNECTIONS)
+			if (U.DEBUG_PRINT_CONNECTIONS)
 				C.log(args);
 		}
 		
@@ -141,7 +141,7 @@ package Components {
 		
 		public function lastMinuteInit():void {
 			lastValue = findValue();
-			lastChanged = -1;
+			lastChanged = 0;
 		}
 		
 		public function cacheValue():void {
@@ -169,7 +169,7 @@ package Components {
 		
 		public function clearDelay():void {
 			lastValue = null;
-			lastChanged = -1;
+			lastChanged = 0;
 		}
 		
 		

@@ -87,12 +87,17 @@ package Levels {
 			
 			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT);
 			
+			var D0_TUT:Level = new Level("Delay 1", new WireTutorialGoal(15), true,
+										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
+			D0_TUT.predecessors.push(ACC_TUT);
 			var D1_TUT:Level = new Level("Delay 2A: Basic Acc.", new MagicAccumDelayTutGoal, true,
 										 [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);
-			D1_TUT.predecessors.push(ACC_TUT);
+			D1_TUT.predecessors.push(D0_TUT);
 			var D2_TUT:Level = new Level("Delay 2B: Full Acc.", new AccumDelayTutGoal, true,
 										 [ConstIn, Adder, Latch, DataMemory, SysDelayClock]);
 			D2_TUT.predecessors.push(D1_TUT);
+			
+			levels.push(D0_TUT, D1_TUT, D2_TUT);
 			
 			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
 			addCPU.predecessors.push(INSTR_TUT, OP_TUT);
@@ -132,6 +137,7 @@ package Levels {
 			columns.push(makeVec([ACC_TUT]));
 			columns.push(makeVec([INSTR_TUT, OP_TUT]));
 			columns.push(makeVec([addCPU, cpuJMP, cpuADV, cpuLD]));
+			columns.push(makeVec([D0_TUT]));
 			columns.push(makeVec([D1_TUT]));
 			columns.push(makeVec([D2_TUT]));
 			columns.push(makeVec([addCPU_D, cpuADVLDD]));

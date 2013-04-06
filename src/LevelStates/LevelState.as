@@ -1,6 +1,7 @@
 package LevelStates {
 	import flash.utils.Dictionary;
 	import flash.geom.Point;
+	import Modules.SysDelayClock;
 	import org.flixel.*;
 	import Actions.*;
 	import Controls.*;
@@ -195,7 +196,7 @@ package LevelStates {
 			makeSaveButtons();
 			makeUndoButtons();
 			makeTestButtons();
-			if (level.delay)
+			if (level.delay && level.allowedModules.indexOf(SysDelayClock) != -1)
 				makeClockButton();
 		}
 		

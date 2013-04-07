@@ -45,17 +45,25 @@ package Displays {
 				
 				if (memValue != FixedValue.NULL || expValue != FixedValue.NULL) {
 					if (skip)
-						Y += ROW_HEIGHT;
+						Y += ROW_HEIGHT * 1.5;
 					skip = false;
 					
-					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER, Y, COL_WIDTH, memLine+".")));
-					if (memValue != FixedValue.NULL)
-						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 2, Y, COL_WIDTH, memValue.toString()), 0xffffff, 'right' ));
-					if (expValue != FixedValue.NULL)
-						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, expValue.toString())));
+					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER, Y, COL_WIDTH, memLine + ".")));
+					
+					var memValText:String = memValue != FixedValue.NULL ? memValue.toString() : "---";
+					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 2, Y, COL_WIDTH, memValText), 0xffffff, 'right' ));
+					
+					var expValText:String = expValue != FixedValue.NULL ? expValue.toString() : "---";
+					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, expValText)));
 					Y += ROW_HEIGHT * 1.5;
-				} else
+				} else {
+					if (!skip) {
+						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 2, Y, COL_WIDTH, "---"), 0xffffff, 'right' ));
+						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, "---")));
+					}
+						
 					skip = true;
+				}
 			}
 		}
 		

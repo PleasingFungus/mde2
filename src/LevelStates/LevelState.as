@@ -584,7 +584,7 @@ package LevelStates {
 		}
 		
 		private function checkModuleControls():void {
-			if (ControlSet.CANCEL_KEY.justPressed()) {
+			if (ControlSet.CANCEL_KEY.justPressed() || ControlSet.DELETE_KEY.justPressed()) {
 				currentModule.exists = false;
 				currentModule = null;
 				return;

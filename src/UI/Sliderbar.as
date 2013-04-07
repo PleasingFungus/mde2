@@ -46,7 +46,7 @@ package UI {
 			members = [];
 			
 			//slider bit
-			slider = new FlxSprite(-1, y).makeGraphic(8, 20, 0xffa0a0a0, true, "sliderBar");
+			slider = new FlxSprite(-1, y).makeGraphic(8, 20, 0xffa0a0a0, true, "scrollbar");
 			slider.framePixels.fillRect(new Rectangle(1, 1, slider.width - 2, slider.height - 2), 0xff202020);
 			
 			//TODO: arrows

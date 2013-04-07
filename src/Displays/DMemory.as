@@ -48,7 +48,7 @@ package Displays {
 						Y += ROW_HEIGHT;
 					skip = false;
 					
-					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER, Y, COL_WIDTH, memLine.toString())));
+					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER, Y, COL_WIDTH, memLine+".")));
 					if (memValue != FixedValue.NULL)
 						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 2, Y, COL_WIDTH, memValue.toString()), 0xffffff, 'right' ));
 					if (expValue != FixedValue.NULL)

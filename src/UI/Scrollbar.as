@@ -54,23 +54,35 @@ package UI {
 		}
 		
 		protected function checkClick():void {
-			var adjMouse:FlxPoint = new FlxPoint(FlxG.mouse.x + FlxG.camera.scroll.x * (slider.scrollFactor.x - 1), 
-												 FlxG.mouse.y + FlxG.camera.scroll.y * (slider.scrollFactor.y - 1));
-			var barMoused:Boolean = adjMouse.x >= rail.x && adjMouse.x <= rail.x + rail.width && adjMouse.y >= slider.y && adjMouse.y <= slider.y + slider.height && (!U.buttonManager || !U.buttonManager.moused);
+			var adjMouse:FlxPoint = getAdjMouse();
+			var barMoused:Boolean = ((adjMouse.y >= rail.y && adjMouse.y <= rail.y + rail.height) &&
+									 (adjMouse.x >= slider.x && adjMouse.x <= slider.x + slider.height) &&
+									 (!U.buttonManager || !U.buttonManager.moused));
 			if (barMoused && U.buttonManager)
 				U.buttonManager.moused = true
 			
-			if (FlxG.mouse.justPressed() && barMoused)
+			if (FlxG.mouse.justPressed() && barMoused) {
 				barClicked = true;
+				moveSlider();
+			}
 			
 			if (barClicked) {
 				if (FlxG.mouse.pressed())
-					slider.y = Math.max(rail.y,
-										Math.min(rail.y + rail.height - slider.height,
-												 adjMouse.y - slider.height / 2));
+					moveSlider();
 				else
 					barClicked = false;
 			}
+		}
+		
+		private function getAdjMouse():FlxPoint {
+			return new FlxPoint(FlxG.mouse.x + FlxG.camera.scroll.x * (slider.scrollFactor.x - 1), 
+								FlxG.mouse.y + FlxG.camera.scroll.y * (slider.scrollFactor.y - 1));
+		}
+		
+		private function moveSlider():void {
+			slider.y = Math.max(rail.y,
+								Math.min(rail.y + rail.height - slider.height,
+										 getAdjMouse().y - slider.height / 2));
 		}
 		
 		public function get scrollFraction():Number {

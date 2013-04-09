@@ -282,7 +282,7 @@ package Modules {
 												Mux, Demux, InstructionMux, InstructionDemux,
 												Or, ProgramCounter, And, Not, Delay, DataWriter,
 												InstructionComparator, MDU, BabyLatch, SysDelayClock,
-												MagicWriter, DataReader, DataWriterT]) {
+												MagicWriter, DataReader, DataWriterT, InstructionDecoder]) {
 				ALL_MODULES.push(moduleClass);
 				ARCHETYPES.push(new moduleClass( -1, -1));
 			}

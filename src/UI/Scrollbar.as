@@ -50,6 +50,7 @@ package UI {
 		override public function update():void {
 			super.update();
 			checkClick();
+			checkScroll();
 			tick++;
 		}
 		
@@ -63,15 +64,20 @@ package UI {
 			
 			if (FlxG.mouse.justPressed() && barMoused) {
 				barClicked = true;
-				moveSlider();
+				moveSlider(adjMouse.y);
 			}
 			
 			if (barClicked) {
 				if (FlxG.mouse.pressed())
-					moveSlider();
+					moveSlider(adjMouse.y);
 				else
 					barClicked = false;
 			}
+		}
+		
+		private function checkScroll():void {
+			if (Math.abs(FlxG.mouse.wheelChange()) > 1)
+				moveSlider(FlxG.mouse.wheelChange() * (rail.height - slider.height) / 20 + slider.y);
 		}
 		
 		private function getAdjMouse():FlxPoint {
@@ -79,10 +85,10 @@ package UI {
 								FlxG.mouse.y + FlxG.camera.scroll.y * (slider.scrollFactor.y - 1));
 		}
 		
-		private function moveSlider():void {
+		private function moveSlider(targetY:int):void {
 			slider.y = Math.max(rail.y,
 								Math.min(rail.y + rail.height - slider.height,
-										 getAdjMouse().y - slider.height / 2));
+										 targetY - slider.height / 2));
 		}
 		
 		public function get scrollFraction():Number {

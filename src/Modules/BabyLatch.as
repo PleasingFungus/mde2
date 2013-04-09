@@ -11,7 +11,7 @@ package Modules {
 	public class BabyLatch extends StatefulModule {
 		
 		public function BabyLatch(X:int, Y:int, InitialValue:int = 0) {
-			super(X, Y, "BLatch", Module.CAT_STORAGE, 1, 1, 0, InitialValue);
+			super(X, Y, "Simple Latch", Module.CAT_STORAGE, 1, 1, 0, InitialValue);
 			delay = 1;
 		}
 		

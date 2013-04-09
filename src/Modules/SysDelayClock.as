@@ -10,7 +10,7 @@ package Modules {
 		
 		private var _edgeLength:int = 1;
 		public function SysDelayClock(X:int, Y:int, EdgeLength:int = 1) {
-			super(X, Y, "SysClock", Module.CAT_TIME, 0, 1, 0);
+			super(X, Y, "System Clock", Module.CAT_TIME, 0, 1, 0);
 			configuration = getConfiguration();
 			if (U.state)
 				configuration.setValue(EdgeLength);

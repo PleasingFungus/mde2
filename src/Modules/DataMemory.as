@@ -13,7 +13,7 @@ package Modules {
 		
 		protected var lastMomentStored:int = -1;
 		public function DataMemory(X:int, Y:int) {
-			super(X, Y, "D-Mem", Module.CAT_STORAGE, 1, 1, 2);
+			super(X, Y, "Data Memory", Module.CAT_STORAGE, 1, 1, 2);
 			delay = 10;
 		}
 		
@@ -37,7 +37,7 @@ package Modules {
 			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), layout.ports[2]);
 			
 			var dataNode:InternalNode = new BigNode(this, new Point(layout.ports[3].offset.x - 4, layout.ports[3].offset.y), [writeNode, lineNode, layout.ports[3]], [],
-														  getData, "Memory at line");
+														  outputs[0].getValue, "Memory at line");
 			var controlNode:InternalNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 															[new NodeTuple(dataNode, writeNode, writeOK)],
 															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; }, "Memory at line will be set to input value" );
@@ -45,12 +45,7 @@ package Modules {
 		}
 		
 		override public function renderDetails():String {
-			var out:String = "DMEM\n\n" + controls[0].getValue()+": ";
-			
-			var dataValue:Value = getData();
-			out += dataValue;
-			
-			return out;
+			return "DMEM\n\n" + controls[0].getValue()+": "+outputs[0].getValue();
 		}
 		
 		override public function getDescription():String {
@@ -68,21 +63,6 @@ package Modules {
 			var memoryValue:Value = U.state.memory[index];
 			if (!memoryValue)
 				return U.V_UNKNOWN;
-			
-			return memoryValue;
-		}
-		
-		protected function getData():Value { 
-			var line:Value = controls[1].getValue();
-			if (line.unpowered || line.unknown) return line;
-			
-			var index:int = line.toNumber();
-			if (index < 0 || index >= U.state.memory.length)
-				return U.V_UNPOWERED;
-			
-			var memoryValue:Value = U.state.memory[index];
-			if (!memoryValue)
-				return FixedValue.NULL;
 			
 			return memoryValue;
 		}

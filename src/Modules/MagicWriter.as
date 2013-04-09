@@ -7,7 +7,7 @@ package Modules {
 		
 		public function MagicWriter(X:int, Y:int) {
 			super(X, Y);
-			name = "DWriteM";
+			name = "Magic Data Writer";
 			delay = 0;
 		}
 		

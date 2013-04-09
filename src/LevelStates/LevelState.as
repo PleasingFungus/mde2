@@ -292,7 +292,7 @@ package LevelStates {
 				var randomButton:MenuButton = new GraphicButton(90, 90, _random_sprite, function _():void {
 					initialMemory = level.goal.genMem();
 					memory = initialMemory.slice();
-					upperLayer.add(new DMemory(memory));
+					upperLayer.add(new DMemory(memory, level.goal.genExpectedMem()));
 				}, "Generate new memory", new Key("R"));
 				upperLayer.add(randomButton);
 			}

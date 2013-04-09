@@ -63,7 +63,7 @@ package Displays {
 			super.update();
 			checkScroll();
 			checkControls();
-			if (bg.overlapsPoint(FlxG.mouse))
+			if (bg.overlapsPoint(FlxG.mouse, true))
 				U.buttonManager.moused = true;
 		}
 		
@@ -97,7 +97,7 @@ package Displays {
 		}
 		
 		protected function checkControls():void {
-			if (FlxG.mouse.justPressed() && !bg.overlapsPoint(FlxG.mouse)) // && tick?
+			if (FlxG.mouse.justPressed() && !bg.overlapsPoint(FlxG.mouse, true)) // && tick?
 				exists = false;
 			if (ControlSet.CANCEL_KEY.justPressed())
 				exists = false;

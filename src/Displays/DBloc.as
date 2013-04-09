@@ -1,9 +1,9 @@
 package Displays {
 	import Actions.CustomAction;
 	import Components.Wire;
+	import Components.Bloc;
 	import Controls.ControlSet;
 	import flash.geom.Point;
-	import LevelStates.Bloc;
 	import Modules.Module;
 	import org.flixel.*;
 	

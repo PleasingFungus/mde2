@@ -1,6 +1,6 @@
 package Displays {
 	import flash.geom.Point;
-	import LevelStates.Bloc;
+	import Components.Bloc;
 	import org.flixel.*;
 	
 	/**
@@ -12,6 +12,7 @@ package Displays {
 		private var clickPoint:Point;
 		private var displayWires:Vector.<DWire>;
 		private var displayModules:Vector.<DModule>;
+		public var displayBloc:DBloc;
 		public function SelectionBox(DisplayWires:Vector.<DWire>, DisplayModules:Vector.<DModule>) {
 			clickPoint = U.mouseLoc;
 			displayWires = DisplayWires;
@@ -54,7 +55,8 @@ package Displays {
 				if (module.module.exists && !module.module.FIXED && module.overlaps(area))
 					modules.push(module);
 			
-			U.state.midLayer.add(DBloc.fromDisplays(wires, modules));
+			if (modules.length || wires.length)
+				displayBloc = DBloc.fromDisplays(wires, modules);
 		}
 	}
 

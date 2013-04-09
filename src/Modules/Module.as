@@ -1,10 +1,8 @@
 package Modules {
-	//import Displays.DModule;
 	import Displays.DModule;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	import Layouts.*;
-	//import Components.Wire;
 	import Components.Port;
 	import Values.Value;
 	/**
@@ -257,6 +255,7 @@ package Modules {
 		
 		
 		public static function fromString(str:String, allowableTypes:Vector.<Class> = null):Module {
+			if (!str.length) return null;
 			var args:Array = str.split(DELIM);
 			var type:Class = ALL_MODULES[int(args[0])];
 			if (!type || (allowableTypes && allowableTypes.indexOf(type) == -1)) return null;

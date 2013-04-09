@@ -404,6 +404,7 @@ package Components {
 		}
 		
 		public static function fromString(str:String):Wire {
+			if (!str.length) return null;
 			var path:Vector.<Point> = new Vector.<Point>;
 			for each (var strPoint:String in str.split(U.POINT_DELIM)) {
 				var strCoords:Array = strPoint.split(U.COORD_DELIM);

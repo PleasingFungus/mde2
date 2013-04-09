@@ -1,4 +1,5 @@
 package LevelStates {
+	import Components.Bloc;
 	import flash.utils.Dictionary;
 	import flash.geom.Point;
 	import Modules.SysDelayClock;
@@ -72,6 +73,7 @@ package LevelStates {
 		private var currentWire:Wire;
 		private var currentModule:Module;
 		private var selectionArea:SelectionBox;
+		private var currentBloc:Bloc;
 		
 		public var time:Time;
 		public var grid:Grid;
@@ -148,11 +150,7 @@ package LevelStates {
 			makeViewButtons();
 			
 			if (!editEnabled) {
-				if (currentModule) {
-					currentModule.exists = false;
-					currentModule = null;
-				}
-				
+				ensureNothingHeld();
 				makeViewLists();
 				return;
 			}
@@ -321,10 +319,7 @@ package LevelStates {
 		}
 		
 		private function makeViewModeMenu():void {
-			if (currentModule) {
-				currentModule.exists = false;
-				currentModule = null;
-			}
+			ensureNothingHeld();
 			
 			var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
 			for each (var newMode:int in [VIEW_MODE_NORMAL, VIEW_MODE_DELAY]) {
@@ -348,11 +343,7 @@ package LevelStates {
 		
 		private function makeModuleCatButton():void {
 			var listButton:GraphicButton = new GraphicButton(10, 10, _list_sprite, function openList():void {
-				if (currentModule) {
-					currentModule.exists = false;
-					currentModule = null;
-				}
-				
+				ensureNothingHeld();
 				listOpen = LIST_CATEGORIES;
 				makeUI();
 			}, "Choose modules", new Key("FIVE"));
@@ -548,13 +539,18 @@ package LevelStates {
 			
 			if (selectionArea) {
 				if (!selectionArea.exists) {
-					//TODO
+					if (selectionArea.displayBloc) {
+						midLayer.add(selectionArea.displayBloc);
+						currentBloc = selectionArea.displayBloc.bloc;
+					}
 					selectionArea = null;
 				}
 			} else if (currentModule)
 				checkModuleControls();
 			else if (currentWire)
 				checkWireControls();
+			else if (currentBloc)
+				checkBlocControls();
 			else {
 				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
 					if (ControlSet.DRAG_MODIFY_KEY.pressed())
@@ -613,6 +609,12 @@ package LevelStates {
 				new CustomAction(Wire.place, Wire.remove, currentWire).execute();
 				currentWire = null;
 			}
+		}
+		
+		private function checkBlocControls():void {
+			//mostly delegated to DBloc
+			if (!currentBloc.exists)
+				currentBloc = null;
 		}
 		
 		private function pickUpModule():void {
@@ -682,7 +684,7 @@ package LevelStates {
 			var hide:Boolean;
 			
 			if (listOpen == LIST_NONE && !time.moment && !U.buttonManager.moused) {
-				if (currentModule)
+				if (currentModule || (currentBloc && !currentBloc.rooted))
 					hide = true;
 				else {
 					var mousedModule:Module = findMousedModule();
@@ -787,6 +789,16 @@ package LevelStates {
 				}
 		}
 		
+		private function ensureNothingHeld():void {
+			if (currentModule) {
+				currentModule.exists = false;
+				currentModule = null;
+			} else if (currentBloc) {
+				currentBloc.exists = false;
+				currentBloc = null;
+			}
+		}
+		
 		
 		private function forceScroll(group:FlxGroup = null):void {
 			group = group ? group : upperLayer;
@@ -884,11 +896,11 @@ package LevelStates {
 		}
 		
 		private function canUndo():Boolean {
-			return actionStack.length > 0 && !currentWire && !currentModule;
+			return actionStack.length > 0 && !currentWire && !currentModule && !currentBloc;
 		}
 		
 		private function canRedo():Boolean {
-			return reactionStack.length > 0 && !currentWire && !currentModule;
+			return reactionStack.length > 0 && !currentWire && !currentModule && !currentBloc;
 		}
 		
 		

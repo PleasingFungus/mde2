@@ -373,25 +373,28 @@ package LevelStates {
 			if (recentModules.length) {
 				moduleButtons.push(new TextButton( -1, -1, "<Recent>").setDisabled(true));
 				for each (moduleType in recentModules) {
-					moduleButtons.push(new TextButton( -1, -1, Module.getArchetype(moduleType).name, function chooseModule(moduleType:Class):void {
+					archetype = Module.getArchetype(moduleType);
+					moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
 						archetype = Module.getArchetype(moduleType);
-						if (archetype.getConfiguration())
-							currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
-						else
-							currentModule = new moduleType( -1, -1);
-						currentModule.initialize();
-						
-						modules.push(currentModule);
-						displayModules.push(midLayer.add(new DModule(currentModule)));
-						addRecentModule(moduleType);
-						
-						preserveModule = true;
+						if (!archetype.writesToMemory || numMemoryWriters() < level.writerLimit) {
+							if (archetype.getConfiguration())
+								currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
+							else
+								currentModule = new moduleType( -1, -1);
+							currentModule.initialize();
+							
+							modules.push(currentModule);
+							displayModules.push(midLayer.add(new DModule(currentModule)));
+							addRecentModule(moduleType);
+							
+							preserveModule = true;
+						}
 						
 						if (listOpen == LIST_CATEGORIES) {
 							listOpen = LIST_NONE;
 							makeUI();
 						}
-					}, "", ControlSet.NUMBER_HOTKEYS[i++]).setParam(moduleType).setTooltipCallback(Module.getArchetype(moduleType).getFullDescription));
+					}, "", ControlSet.NUMBER_HOTKEYS[i++]).setParam(moduleType).setTooltipCallback(archetype.getFullDescription).setDisabled(archetype.writesToMemory && numMemoryWriters() >= level.writerLimit));
 				}
 			}
 			
@@ -430,27 +433,30 @@ package LevelStates {
 			
 			var i:int = 1;
 			for each (moduleType in moduleTypes) {
-				moduleButtons.push(new TextButton( -1, -1, Module.getArchetype(moduleType).name, function chooseModule(moduleType:Class):void {
+				archetype = Module.getArchetype(moduleType);
+				moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
 					archetype = Module.getArchetype(moduleType);
-					if (archetype.getConfiguration())
-						currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
-					else
-						currentModule = new moduleType( -1, -1);
-					currentModule.initialize();
-					
-					modules.push(currentModule);
-					displayModules.push(midLayer.add(new DModule(currentModule)));
-					addRecentModule(moduleType);
-					
-					preserveModule = true;
+					if (!archetype.writesToMemory || numMemoryWriters() < level.writerLimit) {
+						if (archetype.getConfiguration())
+							currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
+						else
+							currentModule = new moduleType( -1, -1);
+						currentModule.initialize();
+						
+						modules.push(currentModule);
+						displayModules.push(midLayer.add(new DModule(currentModule)));
+						addRecentModule(moduleType);
+						
+						preserveModule = true;
+					}
 						
 					if (listOpen == LIST_MODULES) {
 						listOpen = LIST_NONE;
 						makeUI();
 					}
-				}, "", ControlSet.NUMBER_HOTKEYS[i++]).setParam(moduleType));
-				if (Module.getArchetype(moduleType).getFullDescription() != null)
-					moduleButtons[moduleButtons.length - 1].setTooltipCallback(Module.getArchetype(moduleType).getFullDescription);
+				}, "", ControlSet.NUMBER_HOTKEYS[i++]).setParam(moduleType).setDisabled(archetype.writesToMemory && numMemoryWriters() >= level.writerLimit));
+				if (archetype.getFullDescription() != null)
+					moduleButtons[moduleButtons.length - 1].setTooltipCallback(archetype.getFullDescription);
 			}
 			
 			//put 'em in a list
@@ -575,7 +581,14 @@ package LevelStates {
 				}
 				
 				if (ControlSet.PASTE_KEY.justPressed() && U.clipboard) {
-					var pastedBloc:DBloc = DBloc.fromString(U.clipboard, level.allowedModules);
+					var allowedModules:Vector.<Class> = level.allowedModules;
+					if (numMemoryWriters() >= level.writerLimit) {
+						allowedModules = new Vector.<Class>;
+						for each (var moduleType:Class in level.allowedModules)
+							if (!Module.getArchetype(moduleType).writesToMemory)
+								allowedModules.push(moduleType);
+					}
+					var pastedBloc:DBloc = DBloc.fromString(U.clipboard, allowedModules);
 					pastedBloc.extendDisplays(displayWires, displayModules);
 					
 					if (currentBloc)
@@ -791,6 +804,14 @@ package LevelStates {
 			//return null;
 		//}
 		
+		
+		private function numMemoryWriters():int {
+			var num:int = 0;
+			for each (var module:Module in modules)
+				if (module.exists && module.writesToMemory)
+					num += 1;
+			return num;
+		}
 		
 		private function destroyWires():void {
 			if (U.buttonManager.moused)

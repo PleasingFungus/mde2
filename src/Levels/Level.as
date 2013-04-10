@@ -16,6 +16,7 @@ package Levels {
 		public var allowedModules:Vector.<Class>
 		public var predecessors:Vector.<Level>;
 		public var delay:Boolean;
+		public var writerLimit:int = 1;
 		
 		public function Level(Name:String, Goal:LevelGoal, delay:Boolean = false, AllowedModules:Array = null, ExpectedOps:Array = null, Modules:Array = null) {
 			name = Name;
@@ -81,6 +82,7 @@ package Levels {
 			var INSTR_TUT:Level = new Level("Tutorial 3A: Instructions", new InstructionTutorialGoal, false,
 											[ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory]);
 			INSTR_TUT.predecessors.push(ACC_TUT);
+			INSTR_TUT.writerLimit = 4;
 			var OP_TUT:Level = new Level("Tutorial 3B: Opcodes", new OpcodeTutorialGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], [OpcodeValue.OP_SAVI]);
 			OP_TUT.predecessors.push(ACC_TUT);

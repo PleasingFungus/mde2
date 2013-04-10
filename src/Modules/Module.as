@@ -17,6 +17,7 @@ package Modules {
 		public var configurableInPlace:Boolean;
 		public var layout:ModuleLayout;
 		public var internalLayout:InternalLayout;
+		public var writesToMemory:Boolean = false;
 		
 		public var inputs:Vector.<Port>;
 		public var outputs:Vector.<Port>;

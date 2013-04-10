@@ -104,6 +104,14 @@ package
 			return s ? s.replace(/^\s+|\s+$/gs, '') : s;
 		}
 		
+		public static function replaceAll(string:String, pattern:String, replacement:String):String {
+			do {
+				var oldString:String = string;
+				string = string.replace(pattern, replacement);
+			} while (string != oldString);
+			return string;
+		}
+		
 		
 		public static function interpolateColors(a:uint, b:uint, aFraction:Number):uint {
 			var alpha:int = ((a >> 24) & 0xff) * aFraction + ((b >> 24) & 0xff) * (1 - aFraction);

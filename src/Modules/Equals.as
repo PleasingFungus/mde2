@@ -48,7 +48,7 @@ package Modules {
 			return "Outputs "+BooleanValue.TRUE+" if all inputs are equal, else "+BooleanValue.FALSE+"."
 		}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(width);
 			return values;

@@ -34,7 +34,7 @@ package Modules {
 			return NO_EDGE;
 		}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(period);
 			return values;

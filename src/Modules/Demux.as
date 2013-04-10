@@ -67,7 +67,7 @@ package Modules {
 			return "Outputs the value of the input corresponding to the control value.";
 		}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(width);
 			return values;

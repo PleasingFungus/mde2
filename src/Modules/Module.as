@@ -104,10 +104,10 @@ package Modules {
 		}
 		
 		public function saveString():String {
-			return getSaveValues().join(DELIM) + U.SAVE_DELIM;
+			return getSaveValues().join(U.ARG_DELIM) + U.SAVE_DELIM;
 		}
 		
-		protected function getSaveValues():Array {
+		public function getSaveValues():Array {
 			return [ALL_MODULES.indexOf(Object(this).constructor), x, y];
 		}
 		
@@ -257,8 +257,9 @@ package Modules {
 		
 		public static function fromString(str:String, allowableTypes:Vector.<Class> = null):Module {
 			if (!str.length) return null;
-			var args:Array = str.split(DELIM);
+			var args:Array = str.split(U.ARG_DELIM);
 			var type:Class = ALL_MODULES[int(args[0])];
+			if (type == CustomModule) return CustomModule.fromArgs(args.slice(1));
 			if (!type || (allowableTypes && allowableTypes.indexOf(type) == -1)) return null;
 			var x:int = int(args[1]);
 			var y:int = int(args[2]);
@@ -273,8 +274,6 @@ package Modules {
 			return new type(x, y);
 		}
 		
-		private static const DELIM:String = ',';
-		
 		public static function init():void {
 			for each (var moduleClass:Class in [Adder, ASU, Clock, ConstIn, Latch,
 												Equals, Regfile, Comparator,
@@ -282,9 +281,11 @@ package Modules {
 												Mux, Demux, InstructionMux, InstructionDemux,
 												Or, ProgramCounter, And, Not, Delay, DataWriter,
 												InstructionComparator, MDU, BabyLatch, SysDelayClock,
-												MagicWriter, DataReader, DataWriterT, InstructionDecoder]) {
+												MagicWriter, DataReader, DataWriterT, InstructionDecoder,
+												CustomModule]) {
 				ALL_MODULES.push(moduleClass);
-				ARCHETYPES.push(new moduleClass( -1, -1));
+				if (moduleClass != CustomModule)
+					ARCHETYPES.push(new moduleClass( -1, -1));
 			}
 			
 			for each (var category:String in [CAT_ARITH, CAT_LOGIC, CAT_STORAGE, CAT_TIME, CAT_MISC])

@@ -56,7 +56,7 @@ package Modules {
 			return U.state ? Math.min(_edgeLength, U.state.time.clockPeriod - 1) : _edgeLength;
 		}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(edgeLength);
 			return values;

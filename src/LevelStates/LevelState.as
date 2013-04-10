@@ -2,6 +2,7 @@ package LevelStates {
 	import Components.Bloc;
 	import flash.utils.Dictionary;
 	import flash.geom.Point;
+	import Modules.CustomModule;
 	import Modules.SysDelayClock;
 	import org.flixel.*;
 	import Actions.*;
@@ -596,6 +597,13 @@ package LevelStates {
 					currentBloc = pastedBloc.bloc;
 					
 					midLayer.add(pastedBloc);
+				}
+				
+				if (ControlSet.CUSTOM_KEY.justPressed() && currentBloc) { //implies currentBloc.rooted, currentBloc.exists
+					var customModule:CustomModule = CustomModule.fromSelection(currentBloc.modules);
+					currentBloc.exists = false;
+					currentModule = customModule;
+					midLayer.add(currentModule.generateDisplay());
 				}
 			}
 		}

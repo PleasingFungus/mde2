@@ -177,7 +177,7 @@ package Modules {
 			lastMomentStored = -1;
 		}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(width);
 			return values;

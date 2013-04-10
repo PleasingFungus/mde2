@@ -45,7 +45,7 @@ package Modules {
 			return value;
 		}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(initialValue);
 			return values;

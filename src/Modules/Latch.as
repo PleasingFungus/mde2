@@ -41,7 +41,7 @@ package Modules {
 			width = configuration.value;
 		}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(width);
 			return values;

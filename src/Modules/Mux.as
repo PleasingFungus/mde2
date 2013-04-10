@@ -39,7 +39,7 @@ package Modules {
 			//return "Outputs the input to the output port indicated by the control value.";
 		//}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(width);
 			return values;

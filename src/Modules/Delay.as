@@ -29,7 +29,7 @@ package Modules {
 			return "Outputs the input value. (Has a propagation delay of " + configuration.value + " ticks.)";
 		}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(delay);
 			return values;

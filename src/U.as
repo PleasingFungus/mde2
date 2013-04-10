@@ -60,6 +60,7 @@ package  {
 		public static const SAVE_DELIM:String = '~';
 		public static const COORD_DELIM:String = ',';
 		public static const POINT_DELIM:String = ',,';
+		public static const ARG_DELIM:String = ',';
 		
 		public static var tutorialState:int;
 		public static const TUT_NEW:int = 0;

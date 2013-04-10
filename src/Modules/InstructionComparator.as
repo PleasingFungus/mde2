@@ -71,7 +71,7 @@ package Modules {
 			return input.eq(compareValue) ? BooleanValue.TRUE : BooleanValue.FALSE;
 		}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(compareValue.toNumber());
 			return values;

@@ -33,7 +33,7 @@ package Modules {
 			return "Outputs "+BooleanValue.TRUE+" if any input is "+BooleanValue.TRUE+", else "+BooleanValue.FALSE+"."
 		}
 		
-		override protected function getSaveValues():Array {
+		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();
 			values.push(width);
 			return values;

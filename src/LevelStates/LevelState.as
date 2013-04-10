@@ -574,7 +574,7 @@ package LevelStates {
 					destroyWires();
 				}
 				
-				if (ControlSet.PASTE_KEY.justPressed() && !U.buttonManager.moused && U.clipboard) {
+				if (ControlSet.PASTE_KEY.justPressed() && U.clipboard) {
 					var pastedBloc:DBloc = DBloc.fromString(U.clipboard, level.allowedModules);
 					pastedBloc.extendDisplays(displayWires, displayModules);
 					

@@ -17,9 +17,9 @@ package Modules {
 		public var initialValue:int;
 		public var value:NumericValue;
 		public function ConstIn(X:int, Y:int, InitialValue:int = 0) {
-			super(X, Y, "In", Module.CAT_MISC, 0, 1, 0);
 			configuration = new Configuration(new Range( -16, 15, InitialValue));
 			setByConfig();
+			super(X, Y, "In", Module.CAT_MISC, 0, 1, 0);
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {

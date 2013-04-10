@@ -15,16 +15,21 @@ package Displays {
 		
 		private var displayWires:Vector.<DWire>;
 		private var displayModules:Vector.<DModule>;
+		private var selected:Boolean;
 		public var bloc:Bloc;
 		public function DBloc() {
 			super();
+			selected = true;
 		}
 		
 		override public function update():void {
 			super.update();
 			
-			if (!bloc.exists)
+			if (!bloc.exists) {
+				if (selected)
+					setSelect(false);
 				return;
+			}
 			
 			if (bloc.rooted)
 				checkRootedState();
@@ -63,7 +68,7 @@ package Displays {
 					setSelect(false);
 			}
 			
-			if (ControlSet.CANCEL_KEY.justPressed() || ControlSet.PASTE_KEY.justPressed())
+			if (ControlSet.CANCEL_KEY.justPressed())
 				setSelect(false);
 			
 			if (ControlSet.DELETE_KEY.justPressed()) {
@@ -109,7 +114,7 @@ package Displays {
 				dmodule.selected = selected;
 			for each (var dwire:DWire in displayWires)
 				dwire.selected = selected;
-			bloc.exists = selected;
+			bloc.exists = this.selected = selected;
 		}
 		
 		public static function fromDisplays(DisplayWires:Vector.<DWire>, DisplayModules:Vector.<DModule>, Rooted:Boolean = true):DBloc {

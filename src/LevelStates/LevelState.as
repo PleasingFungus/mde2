@@ -49,8 +49,8 @@ package LevelStates {
 		
 		private var UIEnableKey:Key = new Key("U");
 		
-		private var undoButton:MenuButton;
-		private var redoButton:MenuButton;
+		private var undoButton:GraphicButton;
+		private var redoButton:GraphicButton;
 		private var loadButton:MenuButton;
 		private var resetButton:MenuButton;
 		
@@ -537,6 +537,9 @@ package LevelStates {
 			if (time.moment || runningDisplayTest)
 				return; //no fucking around when shit is running!
 			
+			if (currentBloc && !currentBloc.exists)
+				currentBloc = null;
+			
 			if (selectionArea) {
 				if (!selectionArea.exists) {
 					if (selectionArea.displayBloc) {
@@ -549,9 +552,9 @@ package LevelStates {
 				checkModuleControls();
 			else if (currentWire)
 				checkWireControls();
-			else if (currentBloc)
-				checkBlocControls();
-			else {
+			else if (currentBloc && !currentBloc.rooted) {
+				//currently delegated
+			} else {
 				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
 					if (ControlSet.DRAG_MODIFY_KEY.pressed())
 						midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
@@ -566,7 +569,7 @@ package LevelStates {
 					}
 				}
 				
-				if (ControlSet.DELETE_KEY.justPressed()) {
+				if (ControlSet.DELETE_KEY.justPressed() && !currentBloc) {
 					destroyModules();
 					destroyWires();
 				}
@@ -574,6 +577,11 @@ package LevelStates {
 				if (ControlSet.PASTE_KEY.justPressed() && !U.buttonManager.moused && U.clipboard) {
 					var pastedBloc:DBloc = DBloc.fromString(U.clipboard, level.allowedModules);
 					pastedBloc.extendDisplays(displayWires, displayModules);
+					
+					if (currentBloc)
+						currentBloc.exists = false;
+					currentBloc = pastedBloc.bloc;
+					
 					midLayer.add(pastedBloc);
 				}
 			}
@@ -662,8 +670,14 @@ package LevelStates {
 		
 		
 		private function checkMenuState():void {
-			undoButton.setExists(canUndo());
-			redoButton.setExists(canRedo());
+			undoButton.setExists(actionStack.length > 0);
+			undoButton.active = canUndo(); 
+			redoButton.setExists(reactionStack.length > 0);
+			redoButton.active = canRedo();
+			var undoAlpha:Number = currentWire || currentBloc || currentModule ? 0.3 : 1;
+			undoButton.setAlpha(undoAlpha);
+			redoButton.setAlpha(undoAlpha);
+			
 			if (loadButton) {
 				var successSave:String = findSuccessSave();
 				loadButton.setExists(successSave != savedString && successSave != null);

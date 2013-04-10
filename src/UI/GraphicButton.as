@@ -35,6 +35,10 @@ package UI {
 			rawGraphic = RawGraphic;
 			graphic.loadGraphic(rawGraphic);
 		}
+		
+		public function setAlpha(a:Number):void {
+			graphic.alpha = a;
+		}
 	}
 
 }

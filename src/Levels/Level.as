@@ -35,7 +35,10 @@ package Levels {
 			allowedModules = new Vector.<Class>;
 			if (AllowedModules)
 				for each (var allowedModule:Class in AllowedModules)
-					allowedModules.push(allowedModule);
+					if (Module.ALL_MODULES.indexOf(allowedModule) != -1)
+						allowedModules.push(allowedModule);
+					else if (U.DEBUG)
+						throw new Error("Level " + name + " has unlisted module "+allowedModule+" in allowed list!");
 			else
 				allowedModules = Module.ALL_MODULES;
 			

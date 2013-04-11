@@ -17,7 +17,7 @@ package  {
 	 */
 	public class U {
 		public static const VERSION:String = "0.01";
-		private static const DEBUG:Boolean = true;
+		public static const DEBUG:Boolean = true;
 		
 		public static const DEBUG_RENDER_COLLIDE:Boolean = DEBUG && false;
 		public static const DEBUG_RENDER_CURRENT:Boolean = DEBUG && false;

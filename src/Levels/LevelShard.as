@@ -22,7 +22,7 @@ package Levels {
 			var AllowedModules:Vector.<Class> = new Vector.<Class>;
 			for each (var moduleType:Class in Modules ? Modules : [])
 				AllowedModules.push(moduleType);
-				
+			
 			init(Name, ExpectedOps, AllowedModules, TimeFactor, InstructionFactor, delay);
 		}
 		

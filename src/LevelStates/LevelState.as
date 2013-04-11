@@ -599,12 +599,8 @@ package LevelStates {
 					midLayer.add(pastedBloc);
 				}
 				
-				if (ControlSet.CUSTOM_KEY.justPressed() && currentBloc) { //implies currentBloc.rooted, currentBloc.exists
-					var customModule:CustomModule = CustomModule.fromSelection(currentBloc.modules);
-					currentBloc.exists = false;
-					currentModule = customModule;
-					midLayer.add(currentModule.generateDisplay());
-				}
+				if (ControlSet.CUSTOM_KEY.justPressed() && currentBloc) //implies currentBloc.rooted, currentBloc.exists
+					makeCustomModule();
 			}
 		}
 		
@@ -640,10 +636,16 @@ package LevelStates {
 			}
 		}
 		
-		private function checkBlocControls():void {
-			//mostly delegated to DBloc
-			if (!currentBloc.exists)
-				currentBloc = null;
+		private function makeCustomModule():void {
+			var customModule:CustomModule = CustomModule.fromSelection(currentBloc.modules);
+			if (!customModule)
+				return;
+			
+			currentBloc.exists = false;
+			
+			currentModule = customModule;
+			modules.push(customModule);
+			midLayer.add(currentModule.generateDisplay());
 		}
 		
 		private function pickUpModule():void {
@@ -884,6 +886,8 @@ package LevelStates {
 			super.draw();
 			if (U.DEBUG_RENDER_COLLIDE)
 				debugRenderCollision();
+			if (U.DEBUG_RENDER_CURRENT)
+				debugRenderCurrent();
 			
 			if (!matrix) {
 				matrix = new Matrix;
@@ -903,13 +907,14 @@ package LevelStates {
 		private var debugPoint:FlxSprite;
 		private function debugRenderCollision():void {
 			if (!debugLineH) {
-				debugLineH = new FlxSprite().makeGraphic(U.GRID_DIM, 3, 0xffff00ff);
+				debugLineH = new FlxSprite().makeGraphic(U.GRID_DIM, 3, 0xffffffff);
 				debugLineH.offset.y = 1;
-				debugLineV = new FlxSprite().makeGraphic(3, U.GRID_DIM, 0xffff00ff);
+				debugLineV = new FlxSprite().makeGraphic(3, U.GRID_DIM, 0xffffffff);
 				debugLineV.offset.x = 1;
-				debugPoint = new FlxSprite().makeGraphic(5, 5, 0xffff00ff);
+				debugPoint = new FlxSprite().makeGraphic(5, 5, 0xffffffff);
 				debugPoint.offset.x = debugPoint.offset.y = 2;
 			}
+			debugLineH.color = debugLineV.color = debugPoint.color = 0x80ff00ff;
 			
 			var s:String, coords:Array;
 			
@@ -931,6 +936,43 @@ package LevelStates {
 			
 			for (s in grid.carriersAtPoints) {
 				if (!(grid.carriersAtPoints[s] is Module)) continue;
+				coords = s.split(U.COORD_DELIM);
+				debugPoint.x = int(coords[0]) * U.GRID_DIM;
+				debugPoint.y = int(coords[1]) * U.GRID_DIM;
+				debugPoint.draw();
+			}
+		}
+		private function debugRenderCurrent():void {
+			if (!debugLineH) {
+				debugLineH = new FlxSprite().makeGraphic(U.GRID_DIM, 3, 0xffffffff);
+				debugLineH.offset.y = 1;
+				debugLineV = new FlxSprite().makeGraphic(3, U.GRID_DIM, 0xffffffff);
+				debugLineV.offset.x = 1;
+				debugPoint = new FlxSprite().makeGraphic(5, 5, 0xffffffff);
+				debugPoint.offset.x = debugPoint.offset.y = 2;
+			}
+			debugLineH.color = debugLineV.color = debugPoint.color = 0x8000eeff;
+			
+			var s:String, coords:Array;
+			
+			for (s in currentGrid.horizontalLines) {
+				if (!currentGrid.horizontalLines[s]) continue;
+				coords = s.split(U.COORD_DELIM);
+				debugLineH.x = int(coords[0]) * U.GRID_DIM;
+				debugLineH.y = int(coords[1]) * U.GRID_DIM;
+				debugLineH.draw();
+			}
+			
+			for (s in currentGrid.verticalLines) {
+				if (!currentGrid.verticalLines[s]) continue;
+				coords = s.split(U.COORD_DELIM);
+				debugLineV.x = int(coords[0]) * U.GRID_DIM;
+				debugLineV.y = int(coords[1]) * U.GRID_DIM;
+				debugLineV.draw();
+			}
+			
+			for (s in grid.carriersAtPoints) {
+				if (!(grid.carriersAtPoints[s] is Vector)) continue;
 				coords = s.split(U.COORD_DELIM);
 				debugPoint.x = int(coords[0]) * U.GRID_DIM;
 				debugPoint.y = int(coords[1]) * U.GRID_DIM;

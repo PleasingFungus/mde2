@@ -11,7 +11,7 @@ package Modules {
 	public class CustomModule extends Module {
 		
 		public var modules:Vector.<Module>;
-		public function CustomModule(Modules:Vector.<Module>) {
+		public function CustomModule(Modules:Vector.<Module>, X:int=C.INT_NULL, Y:int=C.INT_NULL) {
 			modules = Modules;
 			
 			var averageLoc:Point = new Point;
@@ -35,10 +35,12 @@ package Modules {
 			averageLoc.x = Math.round(averageLoc.x / modules.length);
 			averageLoc.y = Math.round(averageLoc.y / modules.length);
 			
-			super(averageLoc.x, averageLoc.y, "Custom", CAT_MISC,
-				  inputs.length, outputs.length, controls.length);
+			if (X == C.INT_NULL)
+				X = averageLoc.x;
+			if (Y == C.INT_NULL)
+				Y = averageLoc.y;
 			
-				  
+			super(X, Y, "Custom", CAT_MISC,  inputs.length, outputs.length, controls.length);
 			
 			//TODO: calculate delay
 		}
@@ -61,7 +63,7 @@ package Modules {
 		}
 		
 		override public function getSaveValues():Array {
-			var saveValues:Array = [ALL_MODULES.indexOf(Object(this).constructor)];
+			var saveValues:Array = super.getSaveValues();
 			
 			for each (var module:Module in modules) {
 				var moduleConnections:Vector.<String> = new Vector.<String>;
@@ -89,6 +91,10 @@ package Modules {
 		}
 		
 		public static function fromArgs(args:Array):CustomModule {
+			var x:int = C.safeInt(args[0]);
+			var y:int = C.safeInt(args[1]);
+			args = args.slice(2);
+			
 			var modules:Vector.<Module> = new Vector.<Module>;
 			for each (var argSet:String in args) {
 				var moduleArgs:Array = argSet.split(SECTION_DELIM);
@@ -97,15 +103,15 @@ package Modules {
 				modules.push(module);
 			}
 			
-			for (var j:int = 0; j < modules.length; j++) {
-				module = modules[j];
-				moduleArgs = args[j].split(SECTION_DELIM).slice(1);
-				for (var i:int = 0; i < moduleArgs.length; i++) {
-					var port:Port = module.layout.ports[i].port;
-					var connectionArgs:Array = moduleArgs[i].split(INTERNAL_DELIM);
-					var moduleIndex:int = C.safeInt(connectionArgs[0]);
-					var portIndex:int = C.safeInt(connectionArgs[1]);
-					var source:Port = modules[moduleIndex].outputs[portIndex];
+			for (var moduleIndex:int = 0; moduleIndex < modules.length; moduleIndex++) {
+				module = modules[moduleIndex];
+				moduleArgs = args[moduleIndex].split(SECTION_DELIM).slice(1);
+				for (var portIndex:int = 0; portIndex < moduleArgs.length; portIndex++) {
+					var port:Port = module.layout.ports[portIndex].port;
+					var connectionArgs:Array = moduleArgs[portIndex].split(INTERNAL_DELIM);
+					var sourceModuleIndex:int = C.safeInt(connectionArgs[0]);
+					var sourcePortIndex:int = C.safeInt(connectionArgs[1]);
+					var source:Port = modules[sourceModuleIndex].outputs[sourcePortIndex];
 					
 					source.connections.push(port);
 					port.connections.push(source);
@@ -113,34 +119,41 @@ package Modules {
 				}
 			}
 			
-			return new CustomModule(modules);
+			return new CustomModule(modules, x, y);
 		}
 		
 		public static function fromSelection(selection:Vector.<Module>):CustomModule {
+			var module:Module, moduleIndex:int;
+			for (moduleIndex = 0; moduleIndex < selection.length; moduleIndex++)
+				if (selection[moduleIndex] is CustomModule) {
+					selection.splice(moduleIndex, 1);
+					moduleIndex--;
+				}
+				
 			if (!selection.length)
 				return null;
 			
 			var clones:Vector.<Module> = new Vector.<Module>;
-			for each (var module:Module in selection) {
+			for each (module in selection) {
 				var moduleString:String = module.saveString();
 				var clone:Module = Module.fromString(moduleString.substr(0, moduleString.length - 1));
 				clones.push(clone);
 			}
 			
-			for (var j:int = 0; j < clones.length; j++) {
-				clone = clones[j];
-				module = selection[j];
-				for (var i:int = 0; i < clone.layout.ports.length; i++) {
-					var oldPortLayout:PortLayout = module.layout.ports[i];
+			for (moduleIndex = 0; moduleIndex < clones.length; moduleIndex++) {
+				clone = clones[moduleIndex];
+				module = selection[moduleIndex];
+				for (var portIndex:int = 0; portIndex < clone.layout.ports.length; portIndex++) {
+					var oldPortLayout:PortLayout = module.layout.ports[portIndex];
 					if (oldPortLayout.port.isOutput || !oldPortLayout.port.source)
 						continue;
 					
-					var moduleIndex:int = selection.indexOf(oldPortLayout.port.source.parent);
-					if (moduleIndex != -1) {
-						var portIndex:int = oldPortLayout.port.source.parent.outputs.indexOf(oldPortLayout.port.source);
+					var sourceModuleIndex:int = selection.indexOf(oldPortLayout.port.source.parent);
+					if (sourceModuleIndex != -1) {
+						var sourcePortIndex:int = oldPortLayout.port.source.parent.outputs.indexOf(oldPortLayout.port.source);
 						
-						var cloneSource:Port = clones[moduleIndex].outputs[portIndex];
-						var newPort:Port = clone.layout.ports[i].port;
+						var cloneSource:Port = clones[sourceModuleIndex].outputs[sourcePortIndex];
+						var newPort:Port = clone.layout.ports[portIndex].port;
 						
 						newPort.source = cloneSource;
 						cloneSource.connections.push(newPort);

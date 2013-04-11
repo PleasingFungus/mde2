@@ -261,10 +261,14 @@ package Modules {
 		
 		public static function fromString(str:String, allowableTypes:Vector.<Class> = null):Module {
 			if (!str.length) return null;
+			
 			var args:Array = str.split(U.ARG_DELIM);
 			var type:Class = ALL_MODULES[C.safeInt(args[0])];
-			if (type == CustomModule) return CustomModule.fromArgs(args.slice(1));
-			if (!type || (allowableTypes && allowableTypes.indexOf(type) == -1)) return null;
+			if (type == CustomModule)
+				return CustomModule.fromArgs(args.slice(1));
+			if (!type || (allowableTypes && allowableTypes.indexOf(type) == -1))
+				return null;
+			
 			var x:int = C.safeInt(args[1]);
 			var y:int = C.safeInt(args[2]);
 			if (args.length > 4) {

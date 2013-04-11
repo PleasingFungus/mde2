@@ -128,9 +128,7 @@ package LevelStates {
 		}
 		
 		private function addModule(m:Module, fixed:Boolean = true):void {
-			if (!m) return;
-			
-			if (!m.validPosition)
+			if (!m || !m.validPosition)
 				return;
 			
 			m.FIXED = fixed;
@@ -645,7 +643,10 @@ package LevelStates {
 			
 			currentModule = customModule;
 			modules.push(customModule);
-			midLayer.add(currentModule.generateDisplay());
+			
+			var displayModule:DModule = currentModule.generateDisplay();
+			midLayer.add(displayModule);
+			displayModules.push(displayModule);
 		}
 		
 		private function pickUpModule():void {

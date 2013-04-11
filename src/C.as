@@ -199,6 +199,13 @@ package
 			return vec;
 		}
 		
+		public static function safeInt(s:String):int {
+			var i:int = int(s);
+			if (i.toString() != s)
+				throw new Error("Invalid string for conversion to int!");
+			return i;
+		}
+		
 		public static function eratosthenes(lim:int):Array {
 			// Create a list of consecutive integers from 2 to n: (2, 3, 4, ..., n).
 			var primeList:Array = [];

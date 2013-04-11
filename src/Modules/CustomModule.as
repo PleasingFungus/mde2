@@ -2,6 +2,7 @@ package Modules {
 	import Components.Port;
 	import flash.geom.Point;
 	import Layouts.PortLayout;
+	import Layouts.ModuleLayout;
 	import Values.Value;
 	/**
 	 * ...
@@ -14,42 +15,49 @@ package Modules {
 			modules = Modules;
 			
 			var averageLoc:Point = new Point;
-			var unusedInputs:Vector.<Port> = new Vector.<Port>;
-			var unusedOutputs:Vector.<Port> = new Vector.<Port>;
-			var unusedControls:Vector.<Port> = new Vector.<Port>;
 			var port:Port;
+			inputs = new Vector.<Port>;
+			outputs = new Vector.<Port>;
+			controls = new Vector.<Port>;
 			for each (var module:Module in modules) {
 				averageLoc = averageLoc.add(module);
 				for each (port in module.inputs)
 					if (!port.source)
-						unusedInputs.push(port);
+						inputs.push(port);
 				for each (port in module.outputs)
 					if (!port.connections.length)
-						unusedOutputs.push(port);
+						outputs.push(port);
 				for each (port in module.controls)
 					if (!port.source)
-						unusedControls.push(port);
+						controls.push(port);
 			}
 			
 			averageLoc.x = Math.round(averageLoc.x / modules.length);
 			averageLoc.y = Math.round(averageLoc.y / modules.length);
 			
 			super(averageLoc.x, averageLoc.y, "Custom", CAT_MISC,
-				  unusedInputs.length, unusedOutputs.length, unusedControls.length);
+				  inputs.length, outputs.length, controls.length);
 			
-			var i:int = 0;
-			for (i = 0; i < inputs.length; i++)
-				inputs[i] = unusedInputs[i];
-			for (i = 0; i < outputs.length; i++)
-				outputs[i] = unusedOutputs[i];
-			for (i = 0; i < controls.length; i++)
-				controls[i] = unusedControls[i];
+				  
 			
 			//TODO: calculate delay
 		}
 		
+		override protected function makePorts(numInputs:int, numOutputs:int, numControls:int):void {
+			
+		}
+		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = super.generateLayout();
+			for each (var portLayout:PortLayout in layout.ports)
+				portLayout.parent = this;
+			return layout;
+		}
+		
 		override public function drive(port:Port):Value {
-			return port.parent.drive(port);
+			if (port.parent != this)
+				return port.parent.drive(port);
+			return U.V_UNPOWERED;
 		}
 		
 		override public function getSaveValues():Array {
@@ -95,12 +103,13 @@ package Modules {
 				for (var i:int = 0; i < moduleArgs.length; i++) {
 					var port:Port = module.layout.ports[i].port;
 					var connectionArgs:Array = moduleArgs[i].split(INTERNAL_DELIM);
-					var moduleIndex:int = int(connectionArgs[0]);
-					var portIndex:int = int(connectionArgs[1]);
+					var moduleIndex:int = C.safeInt(connectionArgs[0]);
+					var portIndex:int = C.safeInt(connectionArgs[1]);
 					var source:Port = modules[moduleIndex].outputs[portIndex];
 					
-					port.source = source;
 					source.connections.push(port);
+					port.connections.push(source);
+					port.source = source;
 				}
 			}
 			
@@ -113,7 +122,8 @@ package Modules {
 			
 			var clones:Vector.<Module> = new Vector.<Module>;
 			for each (var module:Module in selection) {
-				var clone:Module = Module.fromString(module.saveString());
+				var moduleString:String = module.saveString();
+				var clone:Module = Module.fromString(moduleString.substr(0, moduleString.length - 1));
 				clones.push(clone);
 			}
 			

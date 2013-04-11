@@ -35,15 +35,19 @@ package Modules {
 			
 			name = Name;
 			category = Category;
-			inputs = new Vector.<Port>; populatePorts(inputs, numInputs, false);
-			outputs = new Vector.<Port>; populatePorts(outputs, numOutputs, true);
-			controls = new Vector.<Port>; populatePorts(controls, numControls, false);
+			makePorts(numInputs, numOutputs, numControls);
 			
 			layout = generateLayout();
 			internalLayout = generateInternalLayout();
 			
 			configurableInPlace = true;
 			initialize();
+		}
+		
+		protected function makePorts(numInputs:int, numOutputs:int, numControls:int):void {
+			inputs = new Vector.<Port>; populatePorts(inputs, numInputs, false);
+			outputs = new Vector.<Port>; populatePorts(outputs, numOutputs, true);
+			controls = new Vector.<Port>; populatePorts(controls, numControls, false);
 		}
 		
 		public function getConfiguration():Configuration {
@@ -258,19 +262,19 @@ package Modules {
 		public static function fromString(str:String, allowableTypes:Vector.<Class> = null):Module {
 			if (!str.length) return null;
 			var args:Array = str.split(U.ARG_DELIM);
-			var type:Class = ALL_MODULES[int(args[0])];
+			var type:Class = ALL_MODULES[C.safeInt(args[0])];
 			if (type == CustomModule) return CustomModule.fromArgs(args.slice(1));
 			if (!type || (allowableTypes && allowableTypes.indexOf(type) == -1)) return null;
-			var x:int = int(args[1]);
-			var y:int = int(args[2]);
+			var x:int = C.safeInt(args[1]);
+			var y:int = C.safeInt(args[2]);
 			if (args.length > 4) {
 				var furtherArgs:Array = [];
 				for each (var furtherArg:String in args.slice(3))
-					furtherArgs.push(int(furtherArg))
+					furtherArgs.push(C.safeInt(furtherArg))
 				return new type(x, y, furtherArgs)
 			}
 			if (args.length >= 4)
-				return new type(x, y, int(args[3]))
+				return new type(x, y, C.safeInt(args[3]))
 			return new type(x, y);
 		}
 		

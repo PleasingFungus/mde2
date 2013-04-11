@@ -972,7 +972,7 @@ package LevelStates {
 			}
 			
 			for (s in grid.carriersAtPoints) {
-				if (!(grid.carriersAtPoints[s] is Vector)) continue;
+				if (!(grid.carriersAtPoints[s] is Vector.<Carrier>)) continue;
 				coords = s.split(U.COORD_DELIM);
 				debugPoint.x = int(coords[0]) * U.GRID_DIM;
 				debugPoint.y = int(coords[1]) * U.GRID_DIM;

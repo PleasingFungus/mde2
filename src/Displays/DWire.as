@@ -96,6 +96,9 @@ package Displays {
 			hSeg.color = vSeg.color = join.color = segColor;
 			hSeg.alpha = vSeg.alpha = join.alpha = wire.FIXED ? 0.5 : 1;
 			
+			drawJoin(wire.path[0]);
+			drawJoin(wire.path[wire.path.length - 1]);
+			
 			iterWire(function drawWire(seg:FlxSprite):void {
 				seg.draw();
 			});

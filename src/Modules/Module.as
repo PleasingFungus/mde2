@@ -287,7 +287,7 @@ package Modules {
 												Equals, Regfile, Comparator,
 												InstructionMemory, DataMemory,
 												Mux, Demux, InstructionMux, InstructionDemux,
-												Or, ProgramCounter, And, Not, Delay, DataWriter,
+												Or, Output, And, Not, Delay, DataWriter,
 												InstructionComparator, MDU, BabyLatch, SysDelayClock,
 												MagicWriter, DataReader, DataWriterT, InstructionDecoder,
 												CustomModule]) {

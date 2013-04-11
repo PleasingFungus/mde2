@@ -59,7 +59,8 @@ package Levels {
 		}
 		
 		public static const CORE:LevelShard = new LevelShard("Core", [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV],
-															 [ConstIn, And, Adder, Latch, InstructionDecoder, DataWriterT, Regfile, InstructionDemux, InstructionComparator, Not, DataReader]);
+															 [ConstIn, And, Adder, Latch, InstructionDecoder, DataWriterT, Regfile,
+															 InstructionDemux, InstructionComparator, Not, DataReader, Output]);
 		public static const DELAY:LevelShard = new LevelShard("Delay", [], [SysDelayClock], 40, 1, true);
 		public static const SPD:LevelShard = new LevelShard("Speed", [], [Demux, Equals], 0.1, 2);
 		public static const JUMP:LevelShard = new LevelShard("Jump", [OpcodeValue.OP_JMP], [], 1.1);

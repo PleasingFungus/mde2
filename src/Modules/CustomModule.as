@@ -56,11 +56,26 @@ package Modules {
 			return layout;
 		}
 		
+		override public function initialize():void {
+			super.initialize();
+			for each (var module:Module in modules)
+				module.initialize();
+		}
+		
+		override public function updateState():Boolean {
+			var changed:Boolean = false;
+			for each (var module:Module in modules)
+				changed = changed || module.updateState();
+			return changed;
+		}
+		
 		override public function drive(port:Port):Value {
 			if (port.parent != this)
 				return port.parent.drive(port);
 			return U.V_UNPOWERED;
 		}
+		
+		
 		
 		override public function getSaveValues():Array {
 			var saveValues:Array = super.getSaveValues();

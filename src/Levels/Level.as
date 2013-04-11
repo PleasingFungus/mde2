@@ -74,31 +74,35 @@ package Levels {
 			
 			columns = new Vector.<Vector.<Level>>;
 			
-			var WIRE_TUT:Level = new Level("Tutorial 1A: Wires", new WireTutorialGoal, false,
+			var WIRE_TUT:Level = new Level("Wire Tutorial", new WireTutorialGoal, false,
 										   [], [], [new ConstIn(12, 12, 1), new ConstIn(12, 20, 2), new DataWriter(22, 16)]);
-			var MOD_TUT:Level = new Level("Tutorial 1B: Modules", new WireTutorialGoal, false,
+			var MOD_TUT:Level = new Level("Module Tutorial", new WireTutorialGoal, false,
 										  [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
 			MOD_TUT.predecessors.push(WIRE_TUT);
-			var ACC_TUT:Level = new Level("Tutorial 2: Acc.", new AccumulatorTutorialGoal, false,
+			var ACC_TUT:Level = new Level("Accumulation", new AccumulatorTutorialGoal, false,
 										  [ConstIn, Adder, BabyLatch, DataWriter]);
 			ACC_TUT.predecessors.push(MOD_TUT);
-			var INSTR_TUT:Level = new Level("Tutorial 3A: Instructions", new InstructionTutorialGoal, false,
-											[ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory]);
+			var INSTR_TUT:Level = new Level("Instructions", new InstructionTutorialGoal, false,
+											[ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder]);
 			INSTR_TUT.predecessors.push(ACC_TUT);
 			INSTR_TUT.writerLimit = 4;
-			var OP_TUT:Level = new Level("Tutorial 3B: Opcodes", new OpcodeTutorialGoal, false,
-										 [ConstIn, Adder, BabyLatch, DataWriter, InstructionMemory], [OpcodeValue.OP_SAVI]);
+			var OP_TUT:Level = new Level("Opcodes", new OpcodeTutorialGoal, false,
+										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			OP_TUT.predecessors.push(ACC_TUT);
+			//var REG_TUT:Level = new Level("Registers", new RegfileGoal, false,
+										 //[ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, Mux, Demux, Latch], [OpcodeValue.OP_SET, OpcodeValue.OP_SAV]);
+			//REG_TUT.predecessors.push(INSTR_TUT, OP_TUT);
+			//REG_TUT.writerLimit = 8;
 			
 			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT);
 			
-			var D0_TUT:Level = new Level("Delay 1", new WireTutorialGoal(15), true,
+			var D0_TUT:Level = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
 										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
 			D0_TUT.predecessors.push(ACC_TUT);
-			var D1_TUT:Level = new Level("Delay 2A: Basic Acc.", new MagicAccumDelayTutGoal, true,
+			var D1_TUT:Level = new Level("Delay Accum. 1", new MagicAccumDelayTutGoal, true,
 										 [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);
 			D1_TUT.predecessors.push(D0_TUT);
-			var D2_TUT:Level = new Level("Delay 2B: Full Acc.", new AccumDelayTutGoal, true,
+			var D2_TUT:Level = new Level("Delay Accum. 2", new AccumDelayTutGoal, true,
 										 [ConstIn, Adder, Latch, DataMemory, SysDelayClock]);
 			D2_TUT.predecessors.push(D1_TUT);
 			
@@ -106,6 +110,7 @@ package Levels {
 			
 			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
 			addCPU.predecessors.push(INSTR_TUT, OP_TUT);
+			//addCPU.predecessors.push(REG_TUT);
 			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
 			cpuJMP.predecessors.push(addCPU);
 			var cpuADV:Level = new ShardLevel("Advanced Ops", "Make a CPU that does arithmetic!", LevelShard.CORE.compositWith(LevelShard.ADV));
@@ -141,6 +146,7 @@ package Levels {
 			columns.push(makeVec([MOD_TUT]));
 			columns.push(makeVec([ACC_TUT]));
 			columns.push(makeVec([INSTR_TUT, OP_TUT]));
+			//columns.push(makeVec([REG_TUT]));
 			columns.push(makeVec([addCPU, cpuJMP, cpuADV, cpuLD]));
 			columns.push(makeVec([D0_TUT]));
 			columns.push(makeVec([D1_TUT]));

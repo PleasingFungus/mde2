@@ -124,6 +124,10 @@ package Modules {
 				for (var portIndex:int = 0; portIndex < moduleArgs.length; portIndex++) {
 					var port:Port = module.layout.ports[portIndex].port;
 					var connectionArgs:Array = moduleArgs[portIndex].split(INTERNAL_DELIM);
+					
+					if (connectionArgs[0] == NIL_CONNECT)
+						continue;
+					
 					var sourceModuleIndex:int = C.safeInt(connectionArgs[0]);
 					var sourcePortIndex:int = C.safeInt(connectionArgs[1]);
 					var source:Port = modules[sourceModuleIndex].outputs[sourcePortIndex];

@@ -43,15 +43,10 @@ package Testing.Tests {
 		protected function generate():void {
 			var instructionTypes:Vector.<OrderableInstructionType> = getInstructionTypes();
 			
-			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT);
-			memAddressToSet = C.randomRange(U.MIN_MEM, U.MAX_MEM);
-			
 			var values:Vector.<AbstractArg> = new Vector.<AbstractArg>;
-			values.push(new AbstractArg(memValueToSet, memAddressToSet));
+			values.push(genFirstValue());
 			
-			var registers:Vector.<int> = new Vector.<int>;
-			for (var register:int = 0; i < NUM_REGISTERS; i++)
-				registers.push(C.INT_NULL);
+			var registers:Vector.<int> = initializeRegisters();
 			
 			log("\n\nSEED: " + seed);
 			log("PROGRAM START");
@@ -112,6 +107,19 @@ package Testing.Tests {
 			log("PROGRAM END\n\n");
 			
 			testRun();
+		}
+		
+		protected function genFirstValue():AbstractArg {
+			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT);
+			memAddressToSet = C.randomRange(U.MIN_MEM, U.MAX_MEM);
+			return new AbstractArg(memValueToSet, memAddressToSet);
+		}
+		
+		protected function initializeRegisters():Vector.<int> {
+			var registers:Vector.<int> = new Vector.<int>;
+			for (var register:int = 0; register < NUM_REGISTERS; register++)
+				registers.push(C.INT_NULL);
+			return registers;
 		}
 		
 		protected function testRun():void {

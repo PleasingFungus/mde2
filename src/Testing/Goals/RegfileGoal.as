@@ -1,6 +1,8 @@
 package Testing.Goals {
 	import Testing.Tests.RegfileTest;
+	import Values.NumericValue;
 	import Values.OpcodeValue;
+	import Values.Value;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -11,9 +13,8 @@ package Testing.Goals {
 			var expectedOps:Vector.<OpcodeValue> = new Vector.<OpcodeValue>;
 			expectedOps.push(OpcodeValue.OP_SET);
 			expectedOps.push(OpcodeValue.OP_ADD);
-			super("Execute all instructions and store all register values in memory! TODO", RegfileTest, expectedOps, 6, 100);
+			super("Execute all instructions and store all register values in memory! TODO", RegfileTest, expectedOps, 6, 50);
 		}
-		
 	}
 
 }

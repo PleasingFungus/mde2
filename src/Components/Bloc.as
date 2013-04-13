@@ -97,20 +97,18 @@ package Components {
 		
 		
 		public function toString():String {
-			var str:String = "";
+			var moduleStrings:Vector.<String> = new Vector.<String>;
 			for each (var module:Module in modules)
-				str += module.saveString();
-			str += U.SAVE_DELIM;
-			if (!modules.length)
-				str += U.SAVE_DELIM;
+				moduleStrings.push(module.saveString());
+			var wireStrings:Vector.<String> = new Vector.<String>;
 			for each (var wire:Wire in wires)
-				str += wire.saveString();
-			return str;
+				wireStrings.push(wire.saveString());
+			return [moduleStrings.join(U.SAVE_DELIM), wireStrings.join(U.SAVE_DELIM)].join(U.MAJOR_SAVE_DELIM);
 		}
 		
 		
 		public static function fromString(str:String, allowableTypes:Vector.<Class> = null, Rooted:Boolean = false):Bloc {
-			var stringSegments:Array = str.split(U.SAVE_DELIM + U.SAVE_DELIM);
+			var stringSegments:Array = str.split(U.MAJOR_SAVE_DELIM);
 			var moduleStrings:Array = stringSegments[0].split(U.SAVE_DELIM);
 			var wireStrings:Array = stringSegments[1].split(U.SAVE_DELIM);
 			

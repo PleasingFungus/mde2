@@ -90,7 +90,7 @@ package Levels {
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			OP_TUT.predecessors.push(ACC_TUT);
 			//var REG_TUT:Level = new Level("Registers", new RegfileGoal, false,
-										 //[ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, Mux, Demux, Latch], [OpcodeValue.OP_SET, OpcodeValue.OP_SAV]);
+										 //[ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, Mux, Demux, InstructionDemux, Latch], [OpcodeValue.OP_SET, OpcodeValue.OP_SAV]);
 			//REG_TUT.predecessors.push(INSTR_TUT, OP_TUT);
 			//REG_TUT.writerLimit = 8;
 			

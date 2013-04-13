@@ -165,11 +165,6 @@ package Modules {
 		
 		public static function fromSelection(selection:Vector.<Module>):CustomModule {
 			var module:Module, moduleIndex:int;
-			for (moduleIndex = 0; moduleIndex < selection.length; moduleIndex++)
-				if (selection[moduleIndex] is CustomModule) {
-					selection.splice(moduleIndex, 1);
-					moduleIndex--;
-				}
 				
 			if (!selection.length)
 				return null;
@@ -188,10 +183,16 @@ package Modules {
 					var oldPortLayout:PortLayout = module.layout.ports[portIndex];
 					if (oldPortLayout.port.isOutput || !oldPortLayout.port.source)
 						continue;
+					var oldSource:Port = oldPortLayout.port.source;
 					
-					var sourceModuleIndex:int = selection.indexOf(oldPortLayout.port.source.parent);
-					if (sourceModuleIndex != -1) {
-						var sourcePortIndex:int = oldPortLayout.port.source.parent.outputs.indexOf(oldPortLayout.port.source);
+					var sourceModuleIndex:int = selection.indexOf(oldSource.parent);
+					if (sourceModuleIndex == -1)
+						for (sourceModuleIndex = 0; sourceModuleIndex < selection.length; sourceModuleIndex++) //try to look for custom modules containing the port
+							if (selection[sourceModuleIndex].outputs.indexOf(oldSource) != -1)
+								break;
+					if (sourceModuleIndex != -1 && sourceModuleIndex < selection.length) {
+						var sourceModule:Module = selection[sourceModuleIndex];
+						var sourcePortIndex:int = sourceModule.outputs.indexOf(oldSource);
 						
 						var cloneSource:Port = clones[sourceModuleIndex].outputs[sourcePortIndex];
 						var newPort:Port = clone.layout.ports[portIndex].port;

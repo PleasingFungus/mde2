@@ -96,14 +96,16 @@ package Displays {
 			hSeg.color = vSeg.color = join.color = segColor;
 			hSeg.alpha = vSeg.alpha = join.alpha = wire.FIXED ? 0.5 : 1;
 			
-			drawJoin(wire.path[0]);
-			drawJoin(wire.path[wire.path.length - 1]);
+			if (wire.deployed) {
+				drawJoin(wire.path[0]);
+				drawJoin(wire.path[wire.path.length - 1]);
+			}
 			
 			iterWire(function drawWire(seg:FlxSprite):void {
 				seg.draw();
 			});
 			
-			if (U.BLIT_ENABLED && getBlitActive(segColor))
+			if (U.BLIT_ENABLED && wire.deployed && getBlitActive(segColor))
 				drawBlit();
 		}
 		

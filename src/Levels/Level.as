@@ -89,10 +89,10 @@ package Levels {
 			var OP_TUT:Level = new Level("Opcodes", new OpcodeTutorialGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			OP_TUT.predecessors.push(ACC_TUT);
-			//var REG_TUT:Level = new Level("Registers", new RegfileGoal, false,
-										 //[ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, Mux, Demux, InstructionDemux, Latch], [OpcodeValue.OP_SET, OpcodeValue.OP_SAV]);
-			//REG_TUT.predecessors.push(INSTR_TUT, OP_TUT);
-			//REG_TUT.writerLimit = 8;
+			var REG_TUT:Level = new Level("Registers", new RegfileGoal, false,
+										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, Mux, Demux, InstructionDemux, Latch], [OpcodeValue.OP_SET, OpcodeValue.OP_SAV]);
+			REG_TUT.predecessors.push(INSTR_TUT, OP_TUT);
+			REG_TUT.writerLimit = 8;
 			
 			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT);
 			
@@ -109,8 +109,7 @@ package Levels {
 			levels.push(D0_TUT, D1_TUT, D2_TUT);
 			
 			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
-			addCPU.predecessors.push(INSTR_TUT, OP_TUT);
-			//addCPU.predecessors.push(REG_TUT);
+			addCPU.predecessors.push(ACC_TUT);
 			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
 			cpuJMP.predecessors.push(addCPU);
 			var cpuADV:Level = new ShardLevel("Advanced Ops", "Make a CPU that does arithmetic!", LevelShard.CORE.compositWith(LevelShard.ADV));
@@ -146,7 +145,7 @@ package Levels {
 			columns.push(makeVec([MOD_TUT]));
 			columns.push(makeVec([ACC_TUT]));
 			columns.push(makeVec([INSTR_TUT, OP_TUT]));
-			//columns.push(makeVec([REG_TUT]));
+			columns.push(makeVec([REG_TUT]));
 			columns.push(makeVec([addCPU, cpuJMP, cpuADV, cpuLD]));
 			columns.push(makeVec([D0_TUT]));
 			columns.push(makeVec([D1_TUT]));

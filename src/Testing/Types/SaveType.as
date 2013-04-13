@@ -25,7 +25,7 @@ package Testing.Types {
 			return value.inMemory;
 		}
 		
-		override public function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
+		override protected function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			var valueArg:AbstractArg, memArg:AbstractArg;
 			for each (var arg:AbstractArg in args) {
 				if (arg.inMemory)
@@ -38,20 +38,20 @@ package Testing.Types {
 			return valueArg && memArg;
 		}
 		
-		override public function can_produce_with_one(value:AbstractArg, arg:AbstractArg):Boolean {
+		override protected function can_produce_with_one(value:AbstractArg, arg:AbstractArg):Boolean {
 			return arg.inRegisters && arg.value == value.value;
 		}
 		
 		
-		override public function produce_unrestrained(value:AbstractArg):InstructionAbstraction {
+		override protected function produce_unrestrained(value:AbstractArg):InstructionAbstraction {
 			return new SaveAbstraction(value.value, value.address);
 		}
 		
-		override public function produce_with(value:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {
+		override protected function produce_with(value:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {
 			return new SaveAbstraction(value.value, value.address);
 		}
 		
-		override public function produce_with_one(value:AbstractArg, arg:AbstractArg):InstructionAbstraction {
+		override protected function produce_with_one(value:AbstractArg, arg:AbstractArg):InstructionAbstraction {
 			return new SaveAbstraction(value.value, value.address);
 		}
 		

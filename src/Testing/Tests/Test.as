@@ -43,9 +43,7 @@ package Testing.Tests {
 		protected function generate():void {
 			var instructionTypes:Vector.<OrderableInstructionType> = getInstructionTypes();
 			
-			var values:Vector.<AbstractArg> = new Vector.<AbstractArg>;
-			values.push(genFirstValue());
-			
+			var values:Vector.<AbstractArg> = genFirstValues()
 			var registers:Vector.<int> = initializeRegisters();
 			
 			log("\n\nSEED: " + seed);
@@ -54,19 +52,19 @@ package Testing.Tests {
 			instructions = new Vector.<Instruction>;
 			saveTargets = new Vector.<AbstractArg>;
 			
-			for (var abstractionsMade:int = 0; abstractionsMade + AbstractArg.instructionsToSet(values) < expectedInstructions; abstractionsMade++) {
+			for (var abstractionsMade:int = 0; remainingAbstractions(abstractionsMade, values) > 0; abstractionsMade++) {
 				var value:AbstractArg = values[0];
 				values.splice(0, 1); //values.shift()?
 				var abstraction:InstructionAbstraction = genAbstraction(value, values, instructionTypes);
 				
-				if (abstraction is SaveAbstraction) {
-					if (!value.inMemory || value.value != abstraction.args[0] || value.address != abstraction.args[1])
+				if (abstraction.writesToMemory) {
+					if (!value.inMemory || value.value != abstraction.memoryValue || value.address != abstraction.memoryAddress)
 						throw new Error("!!");
 				} else if (abstraction.value != value.value)
 					throw new Error("!!!");
 				
 				for each (var arg:AbstractArg in abstraction.getAbstractArgs())
-					if (!AbstractArg.argInVec(arg, values))
+					if (!arg.immediate && !AbstractArg.argInVec(arg, values))
 						values.push(arg);
 				
 				if (AbstractArg.instructionsToSet(values) > NUM_REGISTERS) {
@@ -77,19 +75,14 @@ package Testing.Tests {
 					break;
 				}
 				
-				if (abstraction is SaveAbstraction)
-					saveTargets.push(new AbstractArg(abstraction.args[0], abstraction.args[1]));
+				if (abstraction.writesToMemory)
+					saveTargets.push(new AbstractArg(abstraction.memoryValue, abstraction.memoryAddress));
 				
 				instructions.push(makeInstruction(abstraction, registers));
 			}
 			
 			dataMemory = new Vector.<AbstractArg>;
-			for each (value in values) {
-				if (value.inMemory)
-					dataMemory.push(value);
-				else
-					instructions.push(makeInstruction(new SetAbstraction(value.value), registers));
-			}
+			provideInitialValues(values, instructions, registers);
 			
 			log("PROGRAM END\n\n");
 			
@@ -109,6 +102,12 @@ package Testing.Tests {
 			testRun();
 		}
 		
+		protected function genFirstValues():Vector.<AbstractArg> {
+			var values:Vector.<AbstractArg> = new Vector.<AbstractArg>;
+			values.push(genFirstValue());
+			return values;
+		}
+		
 		protected function genFirstValue():AbstractArg {
 			memValueToSet = C.randomRange(U.MIN_INT, U.MAX_INT);
 			memAddressToSet = C.randomRange(U.MIN_MEM, U.MAX_MEM);
@@ -120,6 +119,10 @@ package Testing.Tests {
 			for (var register:int = 0; register < NUM_REGISTERS; register++)
 				registers.push(C.INT_NULL);
 			return registers;
+		}
+		
+		protected function remainingAbstractions(abstractionsMade:int, values:Vector.<AbstractArg>):int {
+			return expectedInstructions - (abstractionsMade + AbstractArg.instructionsToSet(values));
 		}
 		
 		protected function testRun():void {
@@ -158,7 +161,11 @@ package Testing.Tests {
 					noop = true;
 			}
 			
-			for each (var arg:int in abstraction.args) {
+			for each (var abstractArg:AbstractArg in abstraction.getAbstractArgs()) {
+				if (abstractArg.immediate)
+					continue;
+				var arg:int = abstractArg.value;
+				
 				var register:int = registers.indexOf(arg);
 				if (register != -1) {
 					argRegisters.push(register);
@@ -185,7 +192,8 @@ package Testing.Tests {
 		protected function getInstructionTypes():Vector.<OrderableInstructionType> {
 			var instructionTypes:Vector.<OrderableInstructionType> = new Vector.<OrderableInstructionType>;
 			for each (var instructionType:InstructionType in [InstructionType.SAVE, InstructionType.ADD, InstructionType.SUB, 
-															  InstructionType.MUL, InstructionType.DIV, InstructionType.LOAD])
+															  InstructionType.MUL, InstructionType.DIV, InstructionType.LOAD,
+															  InstructionType.SAVI, InstructionType.ADDM])
 				if (expectedOps.indexOf(instructionType.mapToOp()) != -1)
 					instructionTypes.push(new OrderableInstructionType(instructionType, C.INT_NULL, 0));
 			return instructionTypes;
@@ -230,6 +238,17 @@ package Testing.Tests {
 		protected function randomTypeChoice(options:Vector.<InstructionType>):InstructionType {
 			return options[int(FlxG.random() * options.length)];
 		}
+		
+		
+		protected function provideInitialValues(values:Vector.<AbstractArg>, instructions:Vector.<Instruction>, registers:Vector.<int>):void {
+			for each (var value:AbstractArg in values) {
+				if (value.inMemory)
+					dataMemory.push(value);
+				else
+					instructions.push(makeInstruction(new SetAbstraction(value.value), registers));
+			}
+		}
+		
 		
 		protected function postProcess(instructions:Vector.<Instruction>):Vector.<Instruction> {
 			if (expectedOps.indexOf(OpcodeValue.OP_JMP) == -1)

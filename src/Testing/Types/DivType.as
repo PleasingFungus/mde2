@@ -35,7 +35,7 @@ package Testing.Types {
 		}
 		
 		
-		override public function produce_unrestrained(valueAbstr:AbstractArg):InstructionAbstraction {
+		override protected function produce_unrestrained(valueAbstr:AbstractArg):InstructionAbstraction {
 			var value:int = valueAbstr.value;
 			
 			var divisor:int = FlxG.random() > 0.5 ? C.randomRange(U.MIN_INT, 0) : C.randomRange(1, U.MAX_INT + 1);

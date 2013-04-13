@@ -65,6 +65,11 @@ package Testing.Instructions {
 					return LoadInstruction;
 				case InstructionType.SET:
 					return SetInstruction;
+				
+				case InstructionType.SAVI:
+					return SaveImmediateInstruction;
+				case InstructionType.ADDM:
+					return AddMemoryInstruction;
 			}
 			return null;
 		}

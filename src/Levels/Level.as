@@ -89,8 +89,11 @@ package Levels {
 			var OP_TUT:Level = new Level("Opcodes", new OpcodeTutorialGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			OP_TUT.predecessors.push(ACC_TUT);
+			var SEL_TUT:Level = new Level("Selection", new InstructionSelectGoal, false,
+										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
+			SEL_TUT.predecessors.push(OP_TUT);
 			
-			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT);
+			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT, OP_TUT, SEL_TUT);
 			
 			var D0_TUT:Level = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
 										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
@@ -137,10 +140,9 @@ package Levels {
 			
 			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD);
 			
-			columns.push(makeVec([WIRE_TUT]));
-			columns.push(makeVec([MOD_TUT]));
+			columns.push(makeVec([WIRE_TUT, MOD_TUT]));
 			columns.push(makeVec([ACC_TUT]));
-			columns.push(makeVec([INSTR_TUT, OP_TUT]));
+			columns.push(makeVec([INSTR_TUT, OP_TUT, SEL_TUT]));
 			columns.push(makeVec([addCPU, cpuJMP, cpuADV, cpuLD]));
 			columns.push(makeVec([D0_TUT]));
 			columns.push(makeVec([D1_TUT]));

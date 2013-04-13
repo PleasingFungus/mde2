@@ -28,7 +28,7 @@ package Testing.Types {
 			return value.inRegisters;
 		}
 		
-		override public function can_produce_with_one(valueAbstr:AbstractArg, argAbstr:AbstractArg):Boolean {
+		override protected function can_produce_with_one(valueAbstr:AbstractArg, argAbstr:AbstractArg):Boolean {
 			var arg:int = argAbstr.value;
 			var value:int = valueAbstr.value;
 			
@@ -43,7 +43,7 @@ package Testing.Types {
 			return b <= U.MAX_INT && b >= U.MIN_INT && produceValue(arg, b) == value;
 		}
 		
-		override public function can_produce_with(valueAbstr:AbstractArg, args:Vector.<AbstractArg>):Boolean {
+		override protected function can_produce_with(valueAbstr:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			var value:int = valueAbstr.value;
 			
 			for (var i:int = 0; i < args.length; i++) {
@@ -58,7 +58,7 @@ package Testing.Types {
 		}
 		
 		
-		override public function produce_with_one(valueAbstr:AbstractArg, argAbstr:AbstractArg):InstructionAbstraction {
+		override protected function produce_with_one(valueAbstr:AbstractArg, argAbstr:AbstractArg):InstructionAbstraction {
 			var arg:int = argAbstr.value;
 			var value:int = valueAbstr.value;
 			
@@ -74,7 +74,7 @@ package Testing.Types {
 			return new abstraction(arg, produceValue(arg, value));
 		}
 		
-		override public function produce_with(valueAbstr:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {
+		override protected function produce_with(valueAbstr:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {
 			var value:int = valueAbstr.value;
 			
             var pairs:Array = [];

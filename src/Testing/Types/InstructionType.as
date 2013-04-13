@@ -33,15 +33,15 @@ package Testing.Types {
 			return 2;
 		}
 		
-		public function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
+		protected function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			return false;
 		}
 		
-		public function can_produce_with_one(value:AbstractArg, arg:AbstractArg):Boolean {
+		protected function can_produce_with_one(value:AbstractArg, arg:AbstractArg):Boolean {
 			return false;
 		}
 		
-		public function can_produce_with_one_of(valueAbstr:AbstractArg, args:Vector.<AbstractArg>):Boolean {
+		protected function can_produce_with_one_of(valueAbstr:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			for each (var arg:AbstractArg in args)
 				if (can_produce_with_one(valueAbstr, arg))
 					return true;
@@ -63,15 +63,15 @@ package Testing.Types {
 			}
 		}
 		
-		public function produce_unrestrained(value:AbstractArg):InstructionAbstraction {
+		protected function produce_unrestrained(value:AbstractArg):InstructionAbstraction {
 			return null;
 		}
 		
-		public function produce_with(value:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {
+		protected function produce_with(value:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {
 			return null;
 		}
 		
-		public function produce_with_one(value:AbstractArg, arg:AbstractArg):InstructionAbstraction {
+		protected function produce_with_one(value:AbstractArg, arg:AbstractArg):InstructionAbstraction {
 			return null;
 		}
 		
@@ -85,6 +85,9 @@ package Testing.Types {
 		public static var NOT:NotAType;
 		public static var SAVE:SaveType;
 		
+		public static var SAVI:SaveImmediateType;
+		public static var ADDM:AddMemoryType;
+		
 		public static function init():void {
 			SET = new SetType();
 			LOAD = new LoadType();
@@ -95,6 +98,9 @@ package Testing.Types {
 			//AND = new AndType();
 			NOT = new NotAType();
 			SAVE = new SaveType();
+			
+			SAVI = new SaveImmediateType();
+			ADDM = new AddMemoryType();
 		}
 	}
 

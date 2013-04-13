@@ -7,9 +7,11 @@ package Testing.Types {
 		
 		public var value:int;
 		public var address:int;
-		public function AbstractArg(Value:int, Address:int = C.INT_NULL) {
+		public var immediate:Boolean;
+		public function AbstractArg(Value:int, Address:int = C.INT_NULL, Immediate:Boolean = false) {
 			value = Value;
 			address = Address;
+			immediate = Immediate;
 		}
 		
 		public function get inMemory():Boolean {

@@ -89,10 +89,6 @@ package Levels {
 			var OP_TUT:Level = new Level("Opcodes", new OpcodeTutorialGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			OP_TUT.predecessors.push(ACC_TUT);
-			var REG_TUT:Level = new Level("Registers", new RegfileGoal, false,
-										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, Mux, Demux, InstructionDemux, Latch], [OpcodeValue.OP_SET, OpcodeValue.OP_SAV]);
-			REG_TUT.predecessors.push(INSTR_TUT, OP_TUT);
-			REG_TUT.writerLimit = 8;
 			
 			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT);
 			
@@ -145,7 +141,6 @@ package Levels {
 			columns.push(makeVec([MOD_TUT]));
 			columns.push(makeVec([ACC_TUT]));
 			columns.push(makeVec([INSTR_TUT, OP_TUT]));
-			columns.push(makeVec([REG_TUT]));
 			columns.push(makeVec([addCPU, cpuJMP, cpuADV, cpuLD]));
 			columns.push(makeVec([D0_TUT]));
 			columns.push(makeVec([D1_TUT]));

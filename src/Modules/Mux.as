@@ -1,8 +1,10 @@
 package Modules {
 	import Components.Port;
-	import Values.Value;
-	import Layouts.ModuleLayout;
-	import Layouts.DefaultLayout;
+	import Values.*;
+	
+	import Layouts.*;
+	import Layouts.Nodes.*;
+	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -10,7 +12,7 @@ package Modules {
 	public class Mux extends Module {
 		
 		public var width:int;
-		public function Mux(X:int, Y:int, Width:int = 4) {
+		public function Mux(X:int, Y:int, Width:int = 8) {
 			super(X, Y, "Mux", Module.CAT_LOGIC, 1, Width, 1);
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
@@ -20,9 +22,34 @@ package Modules {
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = new DefaultLayout(this, 2, 5);
 			for (var i:int = 0; i < layout.ports.length; i++)
-				if (i != 1)
+				if (i == 1)
+					layout.ports[i].offset.x += 1;
+				else
 					layout.ports[i].offset.y += 1;
 			return layout;
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			var i:int;
+			
+			var connections:Array = [layout.ports[0]];
+			for (i = 0; i < outputs.length; i++)
+				connections.push(layout.ports[i + 2]);
+			var inputNode:InternalNode = new WideNode(this, new Point(layout.ports[0].offset.x + 3, layout.ports[0].offset.y),
+													  connections, null, inputs[0].getValue, "Input");
+			
+			var controlLines:Array = [];
+			for (i = 0; i < outputs.length; i++) {
+				controlLines.push(new NodeTuple(inputNode, layout.ports[i+2], function (i:int):Boolean {
+					var control:Value = controls[0].getValue();
+					return !control.unknown && !control.unpowered && control.toNumber() == i;
+				}, i));
+			}
+			
+			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
+															[layout.ports[inputs.length]], controlLines,
+															controls[0].getValue, "Selected input no.");
+			return new InternalLayout([inputNode, controlNode]);
 		}
 		
 		protected function resetPorts():void {

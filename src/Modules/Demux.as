@@ -14,7 +14,7 @@ package Modules {
 	public class Demux extends Module {
 		
 		public var width:int;
-		public function Demux(X:int, Y:int, Width:int = 4) {
+		public function Demux(X:int, Y:int, Width:int = 8) {
 			super(X, Y, "Demux", Module.CAT_LOGIC, Width, 1, 1);
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
@@ -30,10 +30,7 @@ package Modules {
 			return layout;
 		}
 		
-		override protected function generateInternalLayout():InternalLayout {
-			if (!U.state) return null;
-			
-			var nodes:Array = [];
+		override protected function generateInternalLayout():InternalLayout {var nodes:Array = [];
 			var controlLines:Array = [];
 			for (var i:int = 0; i < inputs.length; i++) {
 				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2, layout.ports[i].offset.y);

@@ -59,6 +59,7 @@ package  {
 		public static const V_UNKNOWN:FixedValue = new FixedValue("?", NaN);
 		
 		public static const SAVE_DELIM:String = '~';
+		public static const MAJOR_SAVE_DELIM:String = "~~";
 		public static const COORD_DELIM:String = ',';
 		public static const POINT_DELIM:String = ',,';
 		public static const ARG_DELIM:String = ',';

@@ -13,6 +13,7 @@ package Modules {
 		public function BabyLatch(X:int, Y:int, InitialValue:int = 0) {
 			super(X, Y, "Simple Latch", Module.CAT_STORAGE, 1, 1, 0, InitialValue);
 			delay = 1;
+			storesData = true;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {

@@ -24,6 +24,7 @@ package Modules {
 			
 			delay = 2;
 			configurableInPlace = false;
+			storesData = true;
 		}
 		
 		override public function initialize():void {

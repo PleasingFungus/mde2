@@ -112,6 +112,12 @@ package
 			return string;
 		}
 		
+		public static function replaceAllLinear(string:String, pattern:String, replacement:String):String {
+			for (var index:int = string.indexOf(pattern); index != -1; index = string.indexOf(pattern, index + replacement.length))
+				string = string.slice(0, index) + replacement + string.slice(index + pattern.length);
+			return string;
+		}
+		
 		
 		public static function interpolateColors(a:uint, b:uint, aFraction:Number):uint {
 			var alpha:int = ((a >> 24) & 0xff) * aFraction + ((b >> 24) & 0xff) * (1 - aFraction);

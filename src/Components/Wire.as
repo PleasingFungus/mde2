@@ -397,10 +397,10 @@ package Components {
 		}
 		
 		public function saveString():String {
-			var out:String = '';
+			var pointStrings:Vector.<String> = new Vector.<String>;
 			for each (var p:Point in path)
-				out += p.x + U.COORD_DELIM + p.y + U.POINT_DELIM;
-			return out.substr(0, out.length - 1) + U.SAVE_DELIM;
+				pointStrings.push(p.x + U.COORD_DELIM + p.y);
+			return pointStrings.join(U.POINT_DELIM);
 		}
 		
 		public static function fromString(str:String):Wire {

@@ -1008,35 +1008,29 @@ package LevelStates {
 		}
 		
 		private function genSaveString():String {
-			var saveString:String = "";
+			var saveStrings:Vector.<String>  = new Vector.<String>;
 			
 			//save modules
-			var modulesExist:Boolean;
+			var moduleStrings:Vector.<String> = new Vector.<String>;
 			for each (var module:Module in modules)
-				if (module.exists && !module.FIXED) {
-					saveString += module.saveString();
-					modulesExist = true;
-				}
-			saveString += U.SAVE_DELIM;
-			if (!modulesExist)
-				saveString += U.SAVE_DELIM;
+				if (module.exists && !module.FIXED)
+					moduleStrings.push(module.saveString());
+			saveStrings.push(moduleStrings.join(U.SAVE_DELIM));
 			
 			//save wires
-			var wiresExist:Boolean;
+			var wireStrings:Vector.<String> = new Vector.<String>;
 			for each (var wire:Wire in wires)
-				if (wire.exists) {
-					saveString += wire.saveString();
-					wiresExist = true;
-				}
+				if (wire.exists)
+					wireStrings.push(wire.saveString());
+			saveStrings.push(wireStrings.join(U.SAVE_DELIM));
 			
-			saveString += U.SAVE_DELIM;
-			if (!wiresExist)
-				saveString += U.SAVE_DELIM;
-			
+			var miscStrings:Vector.<String> = new Vector.<String>;
 			if (level.delay)
-				saveString += time.clockPeriod + U.SAVE_DELIM;
+				miscStrings.push(time.clockPeriod.toString());
+			saveStrings.push(miscStrings.join(U.SAVE_DELIM));
 			
-			return saveString;
+			var string:String = saveStrings.join(U.MAJOR_SAVE_DELIM);
+			return string;
 		}
 		
 		
@@ -1058,7 +1052,7 @@ package LevelStates {
 			if (saveString == null)
 				saveString = findSuccessSave();
 			if (saveString) {
-				var saveArray:Array = saveString.split(U.SAVE_DELIM + U.SAVE_DELIM);
+				var saveArray:Array = saveString.split(U.MAJOR_SAVE_DELIM);
 				
 				//ordering is key
 				//misc info first
@@ -1066,7 +1060,7 @@ package LevelStates {
 				if (miscStringsString.length) {
 					var miscStrings:Array = miscStringsString.split(U.SAVE_DELIM);
 					if (level.delay)
-						time.clockPeriod = int(miscStrings[0]);
+						time.clockPeriod = C.safeInt(miscStrings[0]);
 				}
 				
 				//load wires

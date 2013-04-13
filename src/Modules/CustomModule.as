@@ -62,6 +62,21 @@ package Modules {
 				module.initialize();
 		}
 		
+		override public function lastMinuteInit():void {
+			for each (var module:Module in modules)
+				module.lastMinuteInit();
+		}
+		
+		override public function cacheValues():void {
+			for each (var module:Module in modules)
+				module.cacheValues();
+		}
+		
+		override public function clearCachedValues():void {
+			for each (var module:Module in modules)
+				module.clearCachedValues();
+		}
+		
 		override public function updateState():Boolean {
 			var changed:Boolean = false;
 			for each (var module:Module in modules)
@@ -89,20 +104,24 @@ package Modules {
 					
 					var source:Port = portLayout.port.source;
 					if (!source || modules.indexOf(source.parent) == -1)
-						moduleConnections.push(NIL_CONNECT + INTERNAL_DELIM + NIL_CONNECT);
+						moduleConnections.push(NIL_CONNECT + CONNECTION_DELIM + NIL_CONNECT);
 					else
-						moduleConnections.push(modules.indexOf(source.parent) + INTERNAL_DELIM + source.parent.outputs.indexOf(source));
+						moduleConnections.push(modules.indexOf(source.parent) + CONNECTION_DELIM + source.parent.outputs.indexOf(source));
 				}
 				
-				var saveValue:String = module.getSaveValues().join(INTERNAL_DELIM);
+				var saveValue:String = escapeModuleString(module.saveString());
 				if (moduleConnections.length)
-					saveValue += SECTION_DELIM + moduleConnections.join(SECTION_DELIM);
+					saveValue += MODULE_DELIM + moduleConnections.join(MODULE_DELIM);
 				saveValues.push(saveValue);
 			}
 			
 			return saveValues;
 			
-			//50,49||32|-15|0||3|1||3|2||...
+			
+			//per custom module: type,x,y,module1,module2...
+			//per module: [escaped modulestr]||connect1||connect2...
+			//per connect: module|port
+			//50,5,4,49||32|-15|0||3|1||3|2,...
 		}
 		
 		public static function fromArgs(args:Array):CustomModule {
@@ -112,18 +131,21 @@ package Modules {
 			
 			var modules:Vector.<Module> = new Vector.<Module>;
 			for each (var argSet:String in args) {
-				var moduleArgs:Array = argSet.split(SECTION_DELIM);
+				var moduleArgs:Array = argSet.split(MODULE_DELIM);
 				var moduleString:String = moduleArgs[0];
-				var module:Module = Module.fromString(C.replaceAll(moduleString, INTERNAL_DELIM, U.ARG_DELIM));
+				var unescapedString:String = unescapeModuleString(moduleString);
+				if (unescapedString.indexOf(CONNECTION_DELIM) != -1)
+					return null; //debug
+				var module:Module = Module.fromString(unescapedString);
 				modules.push(module);
 			}
 			
 			for (var moduleIndex:int = 0; moduleIndex < modules.length; moduleIndex++) {
 				module = modules[moduleIndex];
-				moduleArgs = args[moduleIndex].split(SECTION_DELIM).slice(1);
+				moduleArgs = args[moduleIndex].split(MODULE_DELIM).slice(1);
 				for (var portIndex:int = 0; portIndex < moduleArgs.length; portIndex++) {
 					var port:Port = module.layout.ports[portIndex].port;
-					var connectionArgs:Array = moduleArgs[portIndex].split(INTERNAL_DELIM);
+					var connectionArgs:Array = moduleArgs[portIndex].split(CONNECTION_DELIM);
 					
 					if (connectionArgs[0] == NIL_CONNECT)
 						continue;
@@ -155,7 +177,7 @@ package Modules {
 			var clones:Vector.<Module> = new Vector.<Module>;
 			for each (module in selection) {
 				var moduleString:String = module.saveString();
-				var clone:Module = Module.fromString(moduleString.substr(0, moduleString.length - 1));
+				var clone:Module = Module.fromString(moduleString);
 				clones.push(clone);
 			}
 			
@@ -182,9 +204,23 @@ package Modules {
 			return new CustomModule(clones);
 		}
 		
-		private static var SECTION_DELIM:String = "||";
-		private static var INTERNAL_DELIM:String = "|";
+		private static function escapeModuleString(s:String):String {
+			for (var i:int = 0; i < ESCAPE_TABLE.length; i++)
+				s = C.replaceAllLinear(s, ESCAPE_TABLE[i], ESCAPE_CHAR+i)
+			return s;
+		}
+		
+		private static function unescapeModuleString(s:String):String {
+			for (var i:int = ESCAPE_TABLE.length - 1; i >= 0; i--)
+				s = C.replaceAllLinear(s, ESCAPE_CHAR+i, ESCAPE_TABLE[i])
+			return s;
+		}
+		
+		private static var CONNECTION_DELIM:String = "|";
+		private static var MODULE_DELIM:String = "||";
 		private static var NIL_CONNECT:String = "-";
+		private static var ESCAPE_CHAR:String = "%";
+		private static var ESCAPE_TABLE:Array = [ESCAPE_CHAR, MODULE_DELIM, CONNECTION_DELIM, U.ARG_DELIM];
 	}
 
 }

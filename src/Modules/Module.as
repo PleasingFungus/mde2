@@ -18,6 +18,7 @@ package Modules {
 		public var layout:ModuleLayout;
 		public var internalLayout:InternalLayout;
 		public var writesToMemory:Boolean = false;
+		public var storesData:Boolean = false;
 		
 		public var inputs:Vector.<Port>;
 		public var outputs:Vector.<Port>;
@@ -108,7 +109,7 @@ package Modules {
 		}
 		
 		public function saveString():String {
-			return getSaveValues().join(U.ARG_DELIM) + U.SAVE_DELIM;
+			return getSaveValues().join(U.ARG_DELIM);
 		}
 		
 		public function getSaveValues():Array {
@@ -129,6 +130,22 @@ package Modules {
 			for each (var port:Port in outputs)
 				port.updateDelay();
 		}
+		
+		public function lastMinuteInit():void {
+			for each (var port:Port in outputs)
+				port.lastMinuteInit();
+		}
+		
+		public function cacheValues():void {
+			for each (var portLayout:PortLayout in layout.ports)
+				portLayout.port.cacheValue();
+		}
+		
+		public function clearCachedValues():void {
+			for each (var portLayout:PortLayout in layout.ports)
+				portLayout.port.clearCachedValue();
+		}
+		
 		
 		public function register():Module {
 			exists = true;

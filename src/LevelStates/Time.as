@@ -34,12 +34,10 @@ package LevelStates {
 			
 			if (U.state.level.delay && moment == 0)
 				for each (module in U.state.modules)
-					for each (port in module.outputs)
-						port.lastMinuteInit();
+					module.lastMinuteInit();
 			
 			for each (module in U.state.modules)
-				for each (portLayout in module.layout.ports)
-					portLayout.port.cacheValue();
+				module.cacheValues();
 			
 			moment += 1;
 			
@@ -47,8 +45,7 @@ package LevelStates {
 				module.updateState();
 			
 			for each (module in U.state.modules)
-				for each (portLayout in module.layout.ports)
-					portLayout.port.clearCachedValue();
+				module.clearCachedValues();
 			
 			if (U.state.level.delay)
 				for each (module in U.state.modules)

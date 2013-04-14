@@ -37,11 +37,11 @@ package Modules {
 			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), layout.ports[2]);
 			
 			var dataNode:InternalNode = new BigNode(this, new Point(layout.ports[2].offset.x + 1, layout.ports[0].offset.y), [writeNode, lineNode], [],
-														  getValue, "Memory at line");
+														  getValue, "Memory value at line");
 			var controlNode:InternalNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 															[new NodeTuple(dataNode, writeNode, writeOK)],
 															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; },
-															"Write-control: Memory at line will be set to input value" );
+															"Write-control: Memory value at line will be set to input value" );
 			return new InternalLayout([writeNode, dataNode, lineNode, controlNode]);
 		}
 		

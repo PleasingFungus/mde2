@@ -11,7 +11,7 @@ package Values {
 			boolValue = BoolValue;
 		}
 		
-		override public function toString():String { return boolValue ? "T" : "F"; }
+		override public function toString():String { return boolValue ? "Yes" : "No"; }
 		
 		override public function toNumber():Number { return boolValue ? 1 : 0; }
 		

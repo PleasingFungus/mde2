@@ -27,7 +27,7 @@ package Modules {
 				expectedOps = U.state.level.expectedOps.slice();
 			
 			width = expectedOps.length ? expectedOps.length : 1;
-			super(X, Y, "Instruction Demux", Module.CAT_LOGIC, width, 1, 1);
+			super(X, Y, "Instruction Multiplexer", Module.CAT_LOGIC, width, 1, 1);
 			if (U.state)
 				for (var i:int = 0; i < width; i++)
 					inputs[i].name = expectedOps[i].toString();

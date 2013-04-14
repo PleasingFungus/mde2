@@ -39,7 +39,7 @@ package Modules {
 			controls[0].name = "Line no.";
 			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), layout.ports[1]);
 			var dataNode:InternalNode = new WideNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [writeNode], [],
-															getData, "Memory at line");
+															getData, "Memory value at line");
 			return new InternalLayout([lineNode, writeNode, dataNode]);
 		}
 		

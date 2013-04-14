@@ -28,7 +28,7 @@ package Modules {
 			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[0].offset.x, layout.ports[0].offset.y + 2), layout.ports[0]);
 			
 			var dataNode:InternalNode = new BigNode(this, new Point(layout.ports[1].offset.x - 4, layout.ports[1].offset.y), [lineNode, layout.ports[1]], [],
-														  outputs[0].getValue, "Memory at line");
+														  outputs[0].getValue, "Memory value at line");
 			return new InternalLayout([dataNode, lineNode]);
 		}
 		

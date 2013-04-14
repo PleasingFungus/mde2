@@ -41,7 +41,7 @@ package Modules {
 			var destinNode:InternalNode = new WideNode(this, new Point(layout.ports[4].offset.x - 3, layout.ports[4].offset.y), [layout.ports[4]], [],
 													   function getDestin():Value { return drive(outputs[3]); }, "Destination" ); 
 			var memNode:InternalNode = new BigTallNode(this, new Point(layout.ports[0].offset.x, layout.ports[0].offset.y + 6), [opcodeNode, sourceNode, targetNode, destinNode], [],
-												   getValue, "Memory at line");
+												   getValue, "Memory value at line");
 			var lineNode:InternalNode = new WideNode(this, new Point(layout.ports[0].offset.x, layout.ports[0].offset.y + 2),
 													 [layout.ports[0], memNode], [],
 													 controls[0].getValue, "Line no.");

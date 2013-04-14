@@ -48,7 +48,7 @@ package Displays {
 				addBodyText("\nOps to support:");
 				
 				for each (var op:OpcodeValue in level.expectedOps) {
-					var optext:String = op.toString();
+					var optext:String = op.verboseName;
 					if (op.description)
 						optext += ": " + op.description;
 					addBodyText(optext);

@@ -15,7 +15,7 @@ package Modules {
 		public var compareValue:OpcodeValue;
 		protected var level:Level;
 		public function InstructionComparator(X:int, Y:int, CompareValue:int = 0) {
-			super(X, Y, "I-Comp", Module.CAT_LOGIC, 1, 1, 0);
+			super(X, Y, "Instruction Comparator", Module.CAT_LOGIC, 1, 1, 0);
 			
 			configuration = new OpConfiguration;
 			if (U.state)
@@ -60,7 +60,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Outputs "+BooleanValue.TRUE+" if the input is "+(configuration as OpConfiguration).opValue+", else "+BooleanValue.FALSE+"."
+			return "Outputs "+BooleanValue.NUMERIC_TRUE+" if the input is "+(configuration as OpConfiguration).opValue+", else "+BooleanValue.NUMERIC_FALSE+"."
 		}
 		
 		
@@ -68,7 +68,7 @@ package Modules {
 			var input:Value = inputs[0].getValue();
 			if (input.unknown || input.unpowered)
 				return input;
-			return input.eq(compareValue) ? BooleanValue.TRUE : BooleanValue.FALSE;
+			return input.eq(compareValue) ? BooleanValue.NUMERIC_TRUE : BooleanValue.NUMERIC_FALSE;
 		}
 		
 		override public function getSaveValues():Array {

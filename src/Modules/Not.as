@@ -27,7 +27,7 @@ package Modules {
 			var input:Value = inputs[0].getValue();
 			if (input.unknown || input.unpowered)
 				return input;
-			return BooleanValue.fromValue(input).boolValue ? BooleanValue.FALSE : BooleanValue.TRUE;
+			return BooleanValue.fromValue(input).boolValue ? BooleanValue.NUMERIC_FALSE : BooleanValue.NUMERIC_TRUE;
 		}
 		
 		override public function renderDetails():String {
@@ -35,7 +35,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "If input is " + BooleanValue.FALSE + ", outputs " + BooleanValue.TRUE + ". Else, outputs " + BooleanValue.FALSE + ".";
+			return "If input is " + BooleanValue.FALSE + ", outputs " + BooleanValue.NUMERIC_TRUE + ". Else, outputs " + BooleanValue.NUMERIC_FALSE + ".";
 		}
 		
 	}

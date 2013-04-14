@@ -30,7 +30,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Outputs "+BooleanValue.TRUE+" if any input is "+BooleanValue.TRUE+", else "+BooleanValue.FALSE+"."
+			return "Outputs "+BooleanValue.NUMERIC_TRUE+" if any input is "+BooleanValue.TRUE+", else "+BooleanValue.NUMERIC_FALSE+"."
 		}
 		
 		override public function getSaveValues():Array {
@@ -45,9 +45,9 @@ package Modules {
 				if (inputValue.unknown || inputValue.unpowered)
 					return inputValue;
 				if (BooleanValue.fromValue(inputValue).boolValue)
-					return BooleanValue.TRUE;
+					return BooleanValue.NUMERIC_TRUE;
 			}
-			return BooleanValue.FALSE;
+			return BooleanValue.NUMERIC_FALSE;
 		}
 		
 	}

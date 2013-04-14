@@ -13,7 +13,6 @@ package Levels {
 		public var timeFactor:Number;
 		public var instructionFactor:Number;
 		public var delay:Boolean;
-		//public var prereqs:Vector.<LevelShard> //?
 		public function LevelShard(Name:String, Ops:Array = null, Modules:Array = null, TimeFactor:Number = 1, InstructionFactor:Number = 1, delay:Boolean = false) {
 			var ExpectedOps:Vector.<OpcodeValue> = new Vector.<OpcodeValue>;
 			for each (var op:OpcodeValue in Ops ? Ops : [])
@@ -43,9 +42,11 @@ package Levels {
 			for each (var other:LevelShard in others) {
 				newShard.name += "+" + other.name;
 				for each (var op:OpcodeValue in other.expectedOps)
-					newShard.expectedOps.push(op);
+					if (newShard.expectedOps.indexOf(op) == -1)
+						newShard.expectedOps.push(op);
 				for each (var moduleType:Class in other.allowedModules)
-					newShard.allowedModules.push(moduleType);
+					if (newShard.allowedModules.indexOf(moduleType) == -1)
+						newShard.allowedModules.push(moduleType);
 				newShard.timeFactor *= other.timeFactor;
 				newShard.instructionFactor *= other.instructionFactor;
 				newShard.delay = newShard.delay || other.delay;

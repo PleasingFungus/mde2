@@ -46,8 +46,8 @@ package Modules {
 		
 		override public function getDescription():String {
 			if (2 == width)
-				return "Outputs " + BooleanValue.TRUE + " if both inputs are " + BooleanValue.TRUE + ", else outputs " + BooleanValue.FALSE + ".";
-			return "Outputs "+BooleanValue.FALSE+" if any input is "+BooleanValue.FALSE+", else "+BooleanValue.TRUE+"."
+				return "Outputs " + BooleanValue.NUMERIC_TRUE + " if both inputs are " + BooleanValue.TRUE + ", else outputs " + BooleanValue.NUMERIC_FALSE + ".";
+			return "Outputs "+BooleanValue.NUMERIC_FALSE+" if any input is "+BooleanValue.FALSE+", else "+BooleanValue.NUMERIC_TRUE+"."
 		}
 		
 		override public function getSaveValues():Array {
@@ -62,9 +62,9 @@ package Modules {
 				if (inputValue.unknown || inputValue.unpowered)
 					return inputValue;
 				if (!BooleanValue.fromValue(inputValue).boolValue)
-					return BooleanValue.FALSE;
+					return BooleanValue.NUMERIC_FALSE;
 			}
-			return BooleanValue.TRUE;
+			return BooleanValue.NUMERIC_TRUE;
 		}
 		
 	}

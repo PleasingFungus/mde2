@@ -11,7 +11,7 @@ package Values {
 			boolValue = BoolValue;
 		}
 		
-		override public function toString():String { return boolValue ? "OK" : "No"; }
+		override public function toString():String { return boolValue ? "!0" : "0"; }
 		
 		override public function toNumber():Number { return boolValue ? 1 : 0; }
 		
@@ -27,6 +27,9 @@ package Values {
 		
 		public static const TRUE:BooleanValue = new BooleanValue(true);
 		public static const FALSE:BooleanValue = new BooleanValue(false);
+		
+		public static const NUMERIC_TRUE:NumericValue = new NumericValue(1);
+		public static const NUMERIC_FALSE:NumericValue = new NumericValue(0);
 	}
 
 }

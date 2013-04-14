@@ -14,7 +14,7 @@ package Modules {
 		
 		private var width:int;
 		public function Equals(X:int, Y:int, Width:int = 2) {
-			super(X, Y, "Equal", Module.CAT_LOGIC, Width, 1, 0);
+			super(X, Y, "Comparator", Module.CAT_LOGIC, Width, 1, 0);
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
 			configurableInPlace = false;
@@ -45,7 +45,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Outputs "+BooleanValue.TRUE+" if all inputs are equal, else "+BooleanValue.FALSE+"."
+			return "Outputs "+BooleanValue.NUMERIC_TRUE+" if all inputs are equal, else "+BooleanValue.NUMERIC_FALSE+"."
 		}
 		
 		override public function getSaveValues():Array {
@@ -63,9 +63,9 @@ package Modules {
 				else if (!v)
 					v = inputValue
 				else if (!v.eq(inputValue))
-					return BooleanValue.FALSE;
+					return BooleanValue.NUMERIC_FALSE;
 			}
-			return BooleanValue.TRUE;
+			return BooleanValue.NUMERIC_TRUE;
 		}
 		
 		

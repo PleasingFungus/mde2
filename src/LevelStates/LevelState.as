@@ -174,12 +174,9 @@ package LevelStates {
 			makeDataButton();
 			makeInfoButton();
 			makeBackButton();
-			if (editEnabled)
-				upperLayer.add(displayTime = new DTime(FlxG.width / 2 - 50, 10))
-			else {
+			if (runningDisplayTest) {
 				upperLayer.add(displayTime);
-				if (runningDisplayTest)
-					makeEndTestButton();
+				makeEndTestButton();
 			}
 		}
 		
@@ -234,7 +231,7 @@ package LevelStates {
 		private function makeDataButton():void {			
 			var memoryButton:MenuButton = new GraphicButton(50, 90, _data_sprite, function _():void {
 				upperLayer.add(new DMemory(memory, level.goal.genExpectedMem()));
-			}, "View contents of memory", new Key("E"));
+			}, runningDisplayTest ? "View memory" : "View example memory", new Key("E"));
 			upperLayer.add(memoryButton);
 		}
 		
@@ -290,12 +287,12 @@ package LevelStates {
 					initialMemory = level.goal.genMem();
 					memory = initialMemory.slice();
 					upperLayer.add(new DMemory(memory, level.goal.genExpectedMem()));
-				}, "Generate new memory", new Key("R"));
+				}, "Generate new example memory", new Key("R"));
 				upperLayer.add(randomButton);
 			}
 			
 			if (level.goal.dynamicallyTested) {
-				var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 40, _test_sprite, function _():void {
+				var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 10, _test_sprite, function _():void {
 					level.goal.startRun();
 					lastRunTime = elapsed;
 				}, "Test your machine!", new Key("T"));
@@ -1146,6 +1143,7 @@ package LevelStates {
 		
 		private function runDisplayTest():void {
 			time.reset();
+			upperLayer.add(displayTime = new DTime(FlxG.width / 2 - 50, 10))
 			displayTime.startPlaying();
 			runningDisplayTest = true;
 		}

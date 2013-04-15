@@ -75,6 +75,10 @@ package Displays {
 		override public function update():void {
 			super.update();
 			
+			visible = solid = module.exists;
+			if (!module.exists)
+				return;
+			
 			if (module.dirty)
 				refresh();
 			getColor();
@@ -91,7 +95,6 @@ package Displays {
 			for each (var dWire:DWire in displayConnections)
 				dWire.update();
 			
-			visible = solid = module.exists;
 		}
 		
 		private function getColor():void {

@@ -168,6 +168,8 @@ package Modules {
 				portLayout.attemptConnect();
 			}
 			
+			_lastPosition = null;
+			
 			return this;
 		}
 		
@@ -213,8 +215,14 @@ package Modules {
 			return m.deregister();
 		}
 		
+		private var _lastPosition:Point;
+		private var _lastValid:Boolean;
 		public function get validPosition():Boolean {
 			if (deployed) return true;
+			if (_lastPosition && equals(_lastPosition))
+				return _lastValid;
+			
+			_lastPosition = clone();
 			
 			var OK:Object = { 'x' : true, 'y' : true, 'p' : true };
 			var self:Module = this;
@@ -229,7 +237,7 @@ package Modules {
 			});
 			
 			if (!OK.x || !OK.y)
-				return false;
+				return _lastValid = false;
 			
 			iterContainedPoints(function p(X:int, Y:int):void {
 				if (!OK.p) return;
@@ -244,13 +252,13 @@ package Modules {
 			});
 			
 			if (!OK.p)
-				return false;
+				return _lastValid = false;
 			
 			for each (var portLayout:PortLayout in layout.ports)
 				if (!portLayout.validPosition)
-					return false;
+					return _lastValid = false;
 			
-			return true;
+			return _lastValid = true;
 		}
 		
 		private function iterContainedLines(fH:Function, fV:Function):void {

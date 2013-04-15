@@ -1,4 +1,5 @@
 package Displays {
+	import adobe.utils.ProductManager;
 	import Components.Port;
 	import flash.geom.Point;
 	import Modules.BabyLatch;
@@ -24,6 +25,10 @@ package Displays {
 		protected var vSeg:FlxSprite;
 		protected var join:FlxSprite;
 		protected var animationBlit:FlxSprite;
+		
+		protected var cachedLines:Vector.<FlxSprite>;
+		protected var cachedLoc:Point;
+		//protected var cachedPath:Vector.<Point>; //assume wire path is unchanging once deployed
 		
 		public function DWire(wire:Wire) {
 			this.wire = wire;
@@ -89,7 +94,101 @@ package Displays {
 		}
 		
 		override public function draw():void {
-
+			//if (!cacheValid()) {
+				//if (!wire.deployed) {
+					//drawDynamic();
+					//return;
+				//}
+				//
+				//buildCache();
+			//}
+			//drawCached();
+			drawDynamic();
+		}
+		
+		protected function cacheValid():Boolean {
+			if (!cachedLines)
+				return false;
+			if (U.zoom != lastZoom)
+				return false;
+			/*if (wire.path.length != cachedPath.length)  //assume wire path is unchanging once deployed
+				return false;
+			for (var i:int = 0; i < wire.path.length; i++)
+				if (!wire.path[i].equals(cachedPath[i]))
+					return false;
+			*/
+			return true;
+		}
+		
+		protected function buildCache():void {
+			buildSegs();
+			cachedLines = new Vector.<FlxSprite>;
+			
+			cachedLines.push(buildSubline(wire.path));
+			//TODO: build multiple cached lines
+			
+			cachedLoc = wire.path[0].clone();
+			/*cachedPath = new Vector.<Point>;  //assume wire path is unchanging once deployed
+			for each (var point:Point in wire.path)
+				cachedPath.push(point.clone());
+			*/
+		}
+		
+		protected function buildSubline(path:Vector.<Point>):FlxSprite {
+			var p:Point;
+			
+			var topLeft:Point = new Point(int.MAX_VALUE, int.MAX_VALUE);
+			var bottomRight:Point = new Point(int.MIN_VALUE, int.MIN_VALUE);
+			for each (p in path) {
+				topLeft.x = Math.min(p.x, topLeft.x);
+				topLeft.y = Math.min(p.y, topLeft.y);
+				bottomRight.x = Math.max(p.x, bottomRight.x);
+				bottomRight.y = Math.max(p.y, bottomRight.y);
+			}
+			
+			var width:Number = getWidth();
+			
+			var subline:FlxSprite = new FlxSprite().makeGraphic((bottomRight.x - topLeft.x) * U.GRID_DIM + width,
+																(bottomRight.y - topLeft.y) * U.GRID_DIM + width, 0x0, true);
+			for (var i:int = 0; i < path.length - 1; i++) {
+				p = path[i];
+				var nextP:Point = path[i + 1];
+				var horizontal:Boolean = p.x != nextP.x;
+				var seg:FlxSprite = horizontal ? hSeg : vSeg;
+				var x:int = (Math.min(p.x, nextP.x) - topLeft.x) * U.GRID_DIM - seg.offset.x + width/2;
+				if (!horizontal)
+					x -= seg.width / 2;
+				var y:int = (Math.min(p.y, nextP.y) - topLeft.y) * U.GRID_DIM - seg.offset.y + width/2;
+				if (horizontal)
+					y -= seg.height / 2;
+				subline.stamp(seg, x, y);
+			}
+			
+			subline.x = topLeft.x * U.GRID_DIM - width/2;
+			subline.y = topLeft.y * U.GRID_DIM - width/2;
+			return subline;
+		}
+		
+		protected function drawCached():void {
+			var cachedLine:FlxSprite;
+			
+			if (!wire.path[0].equals(cachedLoc)) {
+				var delta:Point = wire.path[0].subtract(cachedLoc);
+				for each (cachedLine in cachedLines) {
+					cachedLine.x += delta.x * U.GRID_DIM;
+					cachedLine.y += delta.y * U.GRID_DIM;
+				}
+				cachedLoc = wire.path[0].clone();
+			}
+			
+			var segColor:uint = getColor();
+			for each (cachedLine in cachedLines) {
+				cachedLine.color = segColor;
+				cachedLine.draw();
+			}
+		}
+		
+		protected function drawDynamic():void {
 			checkZoom();
 			
 			var segColor:uint = getColor();
@@ -177,6 +276,19 @@ package Displays {
 		protected var willOverlap:Boolean;
 		override public function overlapsPoint(p:FlxPoint, _:Boolean=false, __:FlxCamera=null):Boolean {
 			if (!wire.exists) return false;
+			
+			//var topLeft:Point = new Point(int.MAX_VALUE, int.MAX_VALUE);
+			//var bottomRight:Point = new Point(int.MIN_VALUE, int.MIN_VALUE);
+			//for each (var pathPoint:Point in path) {
+				//topLeft.x = Math.min(pathPoint.x, topLeft.x);
+				//topLeft.y = Math.min(pathPoint.y, topLeft.y);
+				//bottomRight.x = Math.max(pathPoint.x, bottomRight.x);
+				//bottomRight.y = Math.max(pathPoint.y, bottomRight.y);
+			//}
+			//
+			//if (p.x < topLeft.x * U.GRID_DIM || p.y < topLeft.y * U.GRID_DIM ||
+				//p.x > bottomRight.x * U.GRID_DIM || p.y > topLeft.y * U.GRID_DIM)
+				//return false;
 			
 			willOverlap = false;
 			iterWire(function checkOverlap(seg:FlxSprite):void {

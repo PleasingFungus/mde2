@@ -94,16 +94,15 @@ package Displays {
 		}
 		
 		override public function draw():void {
-			//if (!cacheValid()) {
-				//if (!wire.deployed) {
-					//drawDynamic();
-					//return;
-				//}
-				//
-				//buildCache();
-			//}
-			//drawCached();
-			drawDynamic();
+			if (!cacheValid()) {
+				if (!wire.deployed) {
+					drawDynamic();
+					return;
+				}
+				
+				buildCache();
+			}
+			drawCached();
 		}
 		
 		protected function cacheValid():Boolean {
@@ -124,8 +123,18 @@ package Displays {
 			buildSegs();
 			cachedLines = new Vector.<FlxSprite>;
 			
-			cachedLines.push(buildSubline(wire.path));
-			//TODO: build multiple cached lines
+			var sublineStart:int = 0;
+			var lastDelta:Point = wire.path[1].subtract(wire.path[0]);
+			for (var i:int = 2; i < wire.path.length; i++) {
+				var delta:Point = wire.path[i].subtract(wire.path[i - 1]);
+				if (!delta.equals(lastDelta)) {
+					cachedLines.push(buildSubline(wire.path.slice(sublineStart, i)));
+					sublineStart = i - 1;
+				}
+				lastDelta = delta;
+			}
+			cachedLines.push(buildSubline(wire.path.slice(sublineStart, i)));
+			//cachedLines.push(buildSubline(wire.path));
 			
 			cachedLoc = wire.path[0].clone();
 			/*cachedPath = new Vector.<Point>;  //assume wire path is unchanging once deployed
@@ -186,6 +195,9 @@ package Displays {
 				cachedLine.color = segColor;
 				cachedLine.draw();
 			}
+			
+			join.color = segColor;
+			drawJoins();
 		}
 		
 		protected function drawDynamic():void {
@@ -193,12 +205,8 @@ package Displays {
 			
 			var segColor:uint = getColor();
 			hSeg.color = vSeg.color = join.color = segColor;
-			hSeg.alpha = vSeg.alpha = join.alpha = wire.FIXED ? 0.5 : 1;
 			
-			if (wire.deployed) {
-				drawJoin(wire.path[0]);
-				drawJoin(wire.path[wire.path.length - 1]);
-			}
+			drawJoins();
 			
 			iterWire(function drawWire(seg:FlxSprite):void {
 				seg.draw();
@@ -259,6 +267,13 @@ package Displays {
 				buildSegs();
 		}
 		
+		protected function drawJoins():void {
+			if (wire.deployed) {
+				drawJoin(wire.path[0]);
+				drawJoin(wire.path[wire.path.length - 1]);
+			}
+		}
+		
 		protected function drawJoin(current:Point):void {
 			var carriersAt:Vector.<Carrier> = U.state.grid.carriersAtPoint(current);
 			if (!carriersAt || carriersAt.length < 2)
@@ -277,18 +292,19 @@ package Displays {
 		override public function overlapsPoint(p:FlxPoint, _:Boolean=false, __:FlxCamera=null):Boolean {
 			if (!wire.exists) return false;
 			
-			//var topLeft:Point = new Point(int.MAX_VALUE, int.MAX_VALUE);
-			//var bottomRight:Point = new Point(int.MIN_VALUE, int.MIN_VALUE);
-			//for each (var pathPoint:Point in path) {
-				//topLeft.x = Math.min(pathPoint.x, topLeft.x);
-				//topLeft.y = Math.min(pathPoint.y, topLeft.y);
-				//bottomRight.x = Math.max(pathPoint.x, bottomRight.x);
-				//bottomRight.y = Math.max(pathPoint.y, bottomRight.y);
-			//}
-			//
-			//if (p.x < topLeft.x * U.GRID_DIM || p.y < topLeft.y * U.GRID_DIM ||
-				//p.x > bottomRight.x * U.GRID_DIM || p.y > topLeft.y * U.GRID_DIM)
-				//return false;
+			//FIXME
+			/*var topLeft:Point = new Point(int.MAX_VALUE, int.MAX_VALUE);
+			var bottomRight:Point = new Point(int.MIN_VALUE, int.MIN_VALUE);
+			for each (var pathPoint:Point in path) {
+				topLeft.x = Math.min(pathPoint.x, topLeft.x);
+				topLeft.y = Math.min(pathPoint.y, topLeft.y);
+				bottomRight.x = Math.max(pathPoint.x, bottomRight.x);
+				bottomRight.y = Math.max(pathPoint.y, bottomRight.y);
+			}
+			
+			if (p.x < topLeft.x * U.GRID_DIM || p.y < topLeft.y * U.GRID_DIM ||
+				p.x > bottomRight.x * U.GRID_DIM || p.y > topLeft.y * U.GRID_DIM)
+				return false;*/
 			
 			willOverlap = false;
 			iterWire(function checkOverlap(seg:FlxSprite):void {

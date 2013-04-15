@@ -62,9 +62,9 @@ package Modules {
 			return "Mux\n\n" + inputs[0].getValue()+"->"+ controls[0].getValue();
 		}
 		
-		//override public function getDescription():String {
-			//return "Outputs the input to the output port indicated by the control value.";
-		//}
+		override public function getDescription():String {
+			return "Outputs the input to the output port indicated by the control value.";
+		}
 		
 		override public function getSaveValues():Array {
 			var values:Array = super.getSaveValues();

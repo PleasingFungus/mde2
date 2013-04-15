@@ -69,10 +69,10 @@ package Modules {
 				tuples.push(new NodeTuple(layout.ports[i], dataNode, writeOK));
 			}
 			
-			var controlText:String = width == 1 ? "Stored value will be set to input value" : "Stored values will be set to input values";
+			var valueText:String = width == 1 ? "value" : "values";
+			var controlText:String = "Stored " +valueText+ " will be set to input "+valueText;
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[width].offset.x, layout.ports[width].offset.y + 2), [layout.ports[width]],
-															tuples, function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; },
-															controlText);
+															tuples, function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; }, controlText);
 			nodes.push(controlNode);
 			return new InternalLayout(nodes);
 		}

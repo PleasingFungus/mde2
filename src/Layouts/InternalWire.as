@@ -9,14 +9,15 @@ package Layouts {
 	 */
 	public class InternalWire extends Wire {
 		
-		public var controlPoint:int = C.INT_NULL;
+		public var controlPointIndex:int = C.INT_NULL;
+		public var controlTruncated:Boolean;
 		public var getValue:Function;
 		public var getConnected:Function;
 		protected var endpoint:Point;
 		protected var bounds:Rectangle;
 		public var reversed:Boolean;
-		public var fullControl:Boolean;
-		public var reverseControlTruncation:Boolean;
+		public var dashed:Boolean;
+		public var truncatedByControlWireFromEnd:Boolean;
 		public function InternalWire(Start:Point, End:Point, Bounds:Rectangle,
 								     GetConnected:Function, GetValue:Function) {
 			super(Start);

@@ -13,31 +13,22 @@ package Layouts {
 		
 		public var tuple:NodeTuple;
 		public var dependent:InternalWire;
-		protected var intersectPoint:int;
 		public function InternalControlWire(Root:InternalNode, Tuple:NodeTuple, wires:Vector.<InternalWire>) {
 			tuple = Tuple;
 			
 			dependent = findDependent(wires);
-			dependent.reverseControlTruncation = tuple.reverseTruncate;
-			
-			intersectPoint = Math.min(Math.floor(dependent.path.length / 2), Tuple.suggestedIntersect);
+			dependent.truncatedByControlWireFromEnd = tuple.reverseTruncate;
+			dependent.controlPointIndex = Math.min(Math.floor(dependent.path.length / 2), Tuple.suggestedIntersect);
 			//C.log(dependent.path.length, intersectPoint);
-			var midpoint:Point = dependent.path[intersectPoint];
+			
+			var midpoint:Point = dependent.path[dependent.controlPointIndex];
 			super(Root.Loc, midpoint, Root.parent.layout.getBounds(),
 				  function enabled():Boolean { return exists; },
 				  Root.getValue);
-			
-			fullControl = true;
 		}
 		
 		override public function update():void {
-			if (tuple.isEnabled()) {
-				controlPoint = C.INT_NULL;
-				dependent.controlPoint = C.INT_NULL;
-			} else {
-				controlPoint = 0;
-				dependent.controlPoint = intersectPoint;
-			}
+			dependent.controlTruncated = dashed = !tuple.isEnabled();
 		}
 		
 		protected function findDependent(wires:Vector.<InternalWire>):InternalWire {

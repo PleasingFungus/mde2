@@ -39,8 +39,8 @@ package Displays {
 			var w:int = getWidth();
 			hSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w);
 			vSeg = new FlxSprite().makeGraphic(w, U.GRID_DIM);
-			hSeg.height = vSeg.width = w + 4;
-			hSeg.offset.y = vSeg.offset.x = -2;
+			hSeg.height = vSeg.width = w + EXTRA_WIDTH;
+			hSeg.offset.y = vSeg.offset.x = -EXTRA_WIDTH/2;
 			join = new FlxSprite().makeGraphic(w + 4, w + 4);
 			if (U.BLIT_ENABLED)
 				animationBlit = new FlxSprite().makeGraphic(w, w);
@@ -158,7 +158,7 @@ package Displays {
 			var width:Number = getWidth();
 			
 			var subline:FlxSprite = new FlxSprite().makeGraphic((bottomRight.x - topLeft.x) * U.GRID_DIM + width,
-																(bottomRight.y - topLeft.y) * U.GRID_DIM + width, 0x0, true);
+																(bottomRight.y - topLeft.y) * U.GRID_DIM + width, 0xffff00ff, true);
 			for (var i:int = 0; i < path.length - 1; i++) {
 				p = path[i];
 				var nextP:Point = path[i + 1];
@@ -173,8 +173,17 @@ package Displays {
 				subline.stamp(seg, x, y);
 			}
 			
-			subline.x = topLeft.x * U.GRID_DIM - width/2;
-			subline.y = topLeft.y * U.GRID_DIM - width/2;
+			if (topLeft.y == bottomRight.y) {
+				subline.height = width + EXTRA_WIDTH;
+				subline.offset.y = - EXTRA_WIDTH / 2;
+			} else if (topLeft.x == bottomRight.x) {
+				subline.width = width + EXTRA_WIDTH;
+				subline.offset.x = - EXTRA_WIDTH / 2;
+			}
+			
+			subline.x = topLeft.x * U.GRID_DIM - width / 2 + subline.offset.x;
+			subline.y = topLeft.y * U.GRID_DIM - width / 2 + subline.offset.y;
+			
 			return subline;
 		}
 		
@@ -292,6 +301,13 @@ package Displays {
 		override public function overlapsPoint(p:FlxPoint, _:Boolean=false, __:FlxCamera=null):Boolean {
 			if (!wire.exists) return false;
 			
+			if (cacheValid()) {
+				for each (var subline:FlxSprite in cachedLines)
+					if (subline.overlapsPoint(p, _, __))
+						return true;
+				return false;
+			}
+			
 			//FIXME
 			/*var topLeft:Point = new Point(int.MAX_VALUE, int.MAX_VALUE);
 			var bottomRight:Point = new Point(int.MIN_VALUE, int.MIN_VALUE);
@@ -324,6 +340,7 @@ package Displays {
 		}
 		
 		protected const BLIT_PERIOD:Number = 1;
+		protected const EXTRA_WIDTH:int = 4;
 	}
 
 }

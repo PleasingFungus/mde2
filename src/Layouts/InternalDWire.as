@@ -4,6 +4,7 @@ package Layouts {
 	import flash.geom.Rectangle;
 	import Values.Value;
 	import org.flixel.*;
+	import flash.geom.Point;
 	
 	/**
 	 * ...
@@ -15,6 +16,9 @@ package Layouts {
 		protected var altHSeg:FlxSprite;
 		protected var altVSeg:FlxSprite;
 		protected var blockage:FlxSprite;
+		
+		protected var cachedPotentiallyBlockedLines:Vector.<FlxSprite>;
+		
 		public function InternalDWire(wire:InternalWire) {
 			super(wire);
 		}
@@ -52,24 +56,7 @@ package Layouts {
 			var segColor:uint = getColor();
 			hSeg.color = vSeg.color = altHSeg.color = altVSeg.color = join.color = segColor;
 			
-			var start:int = 0;
-			var end:int = iWire.controlPoint;
-			if (iWire.reverseControlTruncation) {
-				start = iWire.controlPoint;
-				end = iWire.path.length - 1;
-			}
-			
-			iterWire(function drawWire(seg:FlxSprite):void {
-				seg.draw();
-			}, start, end);
-			
-			//if (iWire.controlPoint >= 0 && iWire.controlPoint < iWire.path.length) {
-				//blockage.x = iWire.path[iWire.controlPoint].x * U.GRID_DIM - join.width / 2;
-				//blockage.y = iWire.path[iWire.controlPoint].y * U.GRID_DIM - join.height / 2;
-				//blockage.draw();
-			//}
-			
-			if (iWire.fullControl) {
+			if (iWire.dashed) {
 				var oHSeg:FlxSprite = hSeg;
 				var oVSeg:FlxSprite = vSeg;
 				hSeg = altHSeg;
@@ -77,14 +64,52 @@ package Layouts {
 				
 				iterWire(function drawWire(seg:FlxSprite):void {
 					seg.draw();
-				}, iWire.controlPoint);
+				});
 			
 				hSeg = oHSeg;
 				vSeg = oVSeg;
+			} else {			
+				var start:int = 0;
+				var end:int = iWire.path.length - 1;
+				if (iWire.controlTruncated) {
+					if (iWire.truncatedByControlWireFromEnd)
+						start = iWire.controlPointIndex;
+					else
+						end = iWire.controlPointIndex; 
+				}
+				
+				iterWire(function drawWire(seg:FlxSprite):void {
+					seg.draw();
+				}, start, end);
+			}
+		}
+		
+		override protected function drawCached():void {
+			var cachedLine:FlxSprite;
+			
+			if (!wire.path[0].equals(cachedLoc)) {
+				var delta:Point = wire.path[0].subtract(cachedLoc);
+				for each (var lineList:Vector.<FlxSprite> in [cachedLines, cachedPotentiallyBlockedLines])
+					for each (cachedLine in lineList) {
+						cachedLine.x += delta.x * U.GRID_DIM;
+						cachedLine.y += delta.y * U.GRID_DIM;
+					}
+				cachedLoc = wire.path[0].clone();
 			}
 			
-			if (U.BLIT_ENABLED && getBlitActive(segColor))
-				drawBlit();
+			var iWire:InternalWire = wire as InternalWire;
+			var segColor:uint = getColor();
+			
+			//TODO:
+				//draw...
+			//if (iWire.fullControl
+			//for each (cachedLine in cachedLines) {
+				//cachedLine.color = segColor;
+				//cachedLine.draw();
+			//}
+			
+			join.color = segColor;
+			drawJoins();
 		}
 		
 		override protected function getColor():uint {

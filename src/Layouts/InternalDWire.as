@@ -56,21 +56,47 @@ package Layouts {
 		}
 		
 		override protected function buildCache():void {
+			if ((wire as InternalWire).controlPointIndex != C.INT_NULL)
+				C.log("BREAK");
 			cachedPotentiallyBlockedLines = new Vector.<FlxSprite>;
 			super.buildCache();
 		}
 		
-		override protected function breakSublineAt(i:int, delta:Point, lastDelta:Point):Boolean {
-			return (wire as InternalWire).controlPointIndex == i || super.breakSublineAt(i, delta, lastDelta);
+		override protected function breakSublineAt(end:int, delta:Point, lastDelta:Point):Boolean {
+			var iWire:InternalWire = wire as InternalWire;
+			if (iWire.controlPointIndex == end)
+				return true;
+			return super.breakSublineAt(end, delta, lastDelta);
 		}
 		
-		override protected function cacheSubline(start:int, endSuccessor:int):void {
+		override protected function cacheSubline(start:int, end:int):void {
 			var iWire:InternalWire = wire as InternalWire;
-			if ((iWire.truncatedByControlWireFromEnd && start == iWire.controlPointIndex) ||
-				(!iWire.truncatedByControlWireFromEnd && (endSuccessor - 1 == iWire.controlPointIndex)))
-				cachedPotentiallyBlockedLines.push(buildSubline(wire.path.slice(start, endSuccessor)));
+			if ((!iWire.truncatedByControlWireFromEnd && start >= iWire.controlPointIndex) || 
+				(iWire.truncatedByControlWireFromEnd && end <= iWire.controlPointIndex))
+				cachedPotentiallyBlockedLines.push(buildSubline(wire.path.slice(start, end+1)));
 			else
-				super.cacheSubline(start, endSuccessor);
+				super.cacheSubline(start, end);
+		}
+		
+		override protected function shiftSublines(delta:Point):void {
+			super.shiftSublines(delta);
+			for each (var cachedLine:FlxSprite in cachedPotentiallyBlockedLines) {
+				cachedLine.x += delta.x * U.GRID_DIM;
+				cachedLine.y += delta.y * U.GRID_DIM;
+			}
+		}
+		
+		override protected function drawCached():void {
+			super.drawCached();
+			var iWire:InternalWire = wire as InternalWire;
+			if (iWire.controlTruncated)
+				return;
+			
+			var segColor:uint = getColor();
+			for each (var cachedLine:FlxSprite in cachedPotentiallyBlockedLines) {
+				cachedLine.color = segColor;
+				cachedLine.draw();
+			}
 		}
 		
 		override protected function drawDynamic():void {

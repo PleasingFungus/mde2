@@ -132,15 +132,15 @@ package Displays {
 			
 			var sublineStart:int = 0;
 			var lastDelta:Point = wire.path[1].subtract(wire.path[0]);
-			for (var i:int = 2; i < wire.path.length; i++) {
-				var delta:Point = wire.path[i].subtract(wire.path[i - 1]);
-				if (breakSublineAt(i, delta, lastDelta)) {
-					cacheSubline(sublineStart, i);
-					sublineStart = i - 1;
+			for (var end:int = 1; end < wire.path.length - 1; end++) {
+				var delta:Point = wire.path[end+1].subtract(wire.path[end]);
+				if (breakSublineAt(end, delta, lastDelta)) {
+					cacheSubline(sublineStart, end);
+					sublineStart = end;
 				}
 				lastDelta = delta;
 			}
-			cacheSubline(sublineStart, i);
+			cacheSubline(sublineStart, end);
 			//cachedLines.push(buildSubline(wire.path));
 			
 			cachedLoc = wire.path[0].clone();
@@ -150,12 +150,12 @@ package Displays {
 			*/
 		}
 		
-		protected function breakSublineAt(i:int, delta:Point, lastDelta:Point):Boolean {
+		protected function breakSublineAt(end:int, delta:Point, lastDelta:Point):Boolean {
 			return !delta.equals(lastDelta);
 		}
 		
-		protected function cacheSubline(start:int, endSuccessor:int):void {
-			cachedLines.push(buildSubline(wire.path.slice(start, endSuccessor)));
+		protected function cacheSubline(start:int, end:int):void {
+			cachedLines.push(buildSubline(wire.path.slice(start, end+1)));
 		}
 		
 		protected function buildSubline(path:Vector.<Point>):FlxSprite {
@@ -203,25 +203,27 @@ package Displays {
 		}
 		
 		protected function drawCached():void {
-			var cachedLine:FlxSprite;
-			
 			if (!wire.path[0].equals(cachedLoc)) {
 				var delta:Point = wire.path[0].subtract(cachedLoc);
-				for each (cachedLine in cachedLines) {
-					cachedLine.x += delta.x * U.GRID_DIM;
-					cachedLine.y += delta.y * U.GRID_DIM;
-				}
+				shiftSublines(delta);
 				cachedLoc = wire.path[0].clone();
 			}
 			
 			var segColor:uint = getColor();
-			for each (cachedLine in cachedLines) {
+			for each (var cachedLine:FlxSprite in cachedLines) {
 				cachedLine.color = segColor;
 				cachedLine.draw();
 			}
 			
 			join.color = segColor;
 			drawJoins();
+		}
+		
+		protected function shiftSublines(delta:Point):void {
+			for each (var cachedLine:FlxSprite in cachedLines) {
+				cachedLine.x += delta.x * U.GRID_DIM;
+				cachedLine.y += delta.y * U.GRID_DIM;
+			}
 		}
 		
 		protected function drawDynamic():void {

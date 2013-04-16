@@ -94,8 +94,11 @@ package Displays {
 		}
 		
 		override public function draw():void {
+			if (!wire.exists)
+				return;
+			
 			if (!cacheValid()) {
-				if (!wire.deployed) {
+				if (!canBuildCache()) {
 					drawDynamic();
 					return;
 				}
@@ -119,6 +122,10 @@ package Displays {
 			return true;
 		}
 		
+		protected function canBuildCache():Boolean {
+			return wire.deployed;
+		}
+		
 		protected function buildCache():void {
 			buildSegs();
 			cachedLines = new Vector.<FlxSprite>;
@@ -127,13 +134,13 @@ package Displays {
 			var lastDelta:Point = wire.path[1].subtract(wire.path[0]);
 			for (var i:int = 2; i < wire.path.length; i++) {
 				var delta:Point = wire.path[i].subtract(wire.path[i - 1]);
-				if (!delta.equals(lastDelta)) {
-					cachedLines.push(buildSubline(wire.path.slice(sublineStart, i)));
+				if (breakSublineAt(i, delta, lastDelta)) {
+					cacheSubline(sublineStart, i);
 					sublineStart = i - 1;
 				}
 				lastDelta = delta;
 			}
-			cachedLines.push(buildSubline(wire.path.slice(sublineStart, i)));
+			cacheSubline(sublineStart, i);
 			//cachedLines.push(buildSubline(wire.path));
 			
 			cachedLoc = wire.path[0].clone();
@@ -141,6 +148,14 @@ package Displays {
 			for each (var point:Point in wire.path)
 				cachedPath.push(point.clone());
 			*/
+		}
+		
+		protected function breakSublineAt(i:int, delta:Point, lastDelta:Point):Boolean {
+			return !delta.equals(lastDelta);
+		}
+		
+		protected function cacheSubline(start:int, endSuccessor:int):void {
+			cachedLines.push(buildSubline(wire.path.slice(start, endSuccessor)));
 		}
 		
 		protected function buildSubline(path:Vector.<Point>):FlxSprite {

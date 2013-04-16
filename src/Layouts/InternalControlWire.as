@@ -25,10 +25,12 @@ package Layouts {
 			super(Root.Loc, midpoint, Root.parent.layout.getBounds(),
 				  function enabled():Boolean { return exists; },
 				  Root.getValue);
+			
+			dashed = true;
 		}
 		
 		override public function update():void {
-			dependent.controlTruncated = dashed = !tuple.isEnabled();
+			dependent.controlTruncated = exists = !tuple.isEnabled();
 		}
 		
 		protected function findDependent(wires:Vector.<InternalWire>):InternalWire {

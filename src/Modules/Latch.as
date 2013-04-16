@@ -1,5 +1,6 @@
 package Modules {
 	import Components.Port;
+	import Layouts.Nodes.InternalNode;
 	import Layouts.Nodes.WideNode;
 	import Values.*
 	import Layouts.*;
@@ -63,7 +64,7 @@ package Modules {
 			var tuples:Array = [];
 			for (var i:int = 0; i < width; i++) {
 				var outPort:PortLayout = layout.ports[i + width + 1];
-				var dataNode:WideNode = new WideNode(this, new Point(outPort.offset.x - 3, outPort.offset.y), [layout.ports[i], outPort], [],
+				var dataNode:InternalNode = new StandardNode(this, new Point(outPort.offset.x - 3, outPort.offset.y), [layout.ports[i], outPort], [],
 													 outputs[i].getValue /*?*/, "Stored value " + i, true);
 				nodes.push(dataNode);
 				tuples.push(new NodeTuple(layout.ports[i], dataNode, writeOK));

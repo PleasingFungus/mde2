@@ -77,18 +77,21 @@ package Layouts.Nodes {
 			var wires:Vector.<InternalWire> = new Vector.<InternalWire>;
 			var bounds:Rectangle = parent.layout.getBounds();
 			
-			for each (var connection:Node in connections)
+			for each (var connection:Node in connections) {
+				var wire:InternalWire;
+				var reversed:Boolean = Loc.x > connection.Loc.x;
+				var start:Point = reversed ? connection.Loc : Loc;
+				var end:Point = reversed ? Loc : connection.Loc;
 				if (connection is PortLayout) {
 					var pLayout:PortLayout = connection as PortLayout;
-					
-					wires.push(new InternalWire(Loc, pLayout.Loc, bounds,
-												isSource ? _true : pLayout.port.getSource,
-												isSource ? getValue : pLayout.port.getValue));
-				} else {
-					var wire:InternalWire = new InternalWire(connection.Loc, Loc, bounds, _true, getValue);
-					wire.reversed = true;
-					wires.push(wire);
-				}
+					wire = new InternalWire(start, end, bounds,
+											isSource ? _true : pLayout.port.getSource,
+											isSource ? getValue : pLayout.port.getValue);
+				} else
+					wire = new InternalWire(start, end, bounds, _true, getValue);
+				wire.reversed = reversed;
+				wires.push(wire);
+			}
 			
 			return wires;
 		}

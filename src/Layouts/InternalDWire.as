@@ -18,6 +18,7 @@ package Layouts {
 		
 		public function InternalDWire(wire:InternalWire) {
 			super(wire);
+			buildCache();
 		}
 		
 		override protected function buildSegs():void {

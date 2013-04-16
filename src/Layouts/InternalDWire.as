@@ -56,7 +56,7 @@ package Layouts {
 		}
 		
 		override protected function buildCache():void {
-			if ((wire as InternalWire).controlPointIndex != C.INT_NULL)
+			if ((wire as InternalWire).dashed)
 				C.log("BREAK");
 			cachedPotentiallyBlockedLines = new Vector.<FlxSprite>;
 			super.buildCache();

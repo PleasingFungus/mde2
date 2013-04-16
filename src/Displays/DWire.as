@@ -127,7 +127,7 @@ package Displays {
 		}
 		
 		protected function buildCache():void {
-			buildSegs();
+			checkZoom();
 			cachedLines = new Vector.<FlxSprite>;
 			
 			var sublineStart:int = 0;
@@ -179,6 +179,7 @@ package Displays {
 				var nextP:Point = path[i + 1];
 				var horizontal:Boolean = p.x != nextP.x;
 				var seg:FlxSprite = horizontal ? hSeg : vSeg;
+				seg.color = 0xffffffff;
 				var x:int = (Math.min(p.x, nextP.x) - topLeft.x) * U.GRID_DIM - seg.offset.x + width/2;
 				if (!horizontal)
 					x -= seg.width / 2;
@@ -217,6 +218,9 @@ package Displays {
 			
 			join.color = segColor;
 			drawJoins();
+			
+			if (U.BLIT_ENABLED && wire.deployed && getBlitActive(segColor))
+				drawBlit();
 		}
 		
 		protected function shiftSublines(delta:Point):void {

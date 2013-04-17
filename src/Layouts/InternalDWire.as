@@ -24,11 +24,13 @@ package Layouts {
 		override protected function buildSegs():void {
 			var iWire:InternalWire = wire as InternalWire;
 			
-			if (!iWire.dashed) { //assumes a wire is always dashed or never dashed
+			if (iWire.dashed) //assumes a wire is always dashed or never dashed
+				buildDashedSegs();
+			else
 				super.buildSegs();
-				return;
-			}
-			
+		}
+		
+		private function buildDashedSegs():void {
 			var w:int = getWidth();
 			var cached:Boolean = FlxG.checkBitmapCache("hcontrolwire-"+w);
 			hSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w, 0xffffffff, true, "hcontrolwire-"+w);

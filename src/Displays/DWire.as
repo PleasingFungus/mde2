@@ -173,7 +173,7 @@ package Displays {
 			var width:Number = getWidth();
 			
 			var subline:FlxSprite = new FlxSprite().makeGraphic((bottomRight.x - topLeft.x) * U.GRID_DIM + width,
-																(bottomRight.y - topLeft.y) * U.GRID_DIM + width, 0xffff00ff, true);
+																(bottomRight.y - topLeft.y) * U.GRID_DIM + width, 0x0, true);
 			for (var i:int = 0; i < path.length - 1; i++) {
 				p = path[i];
 				var nextP:Point = path[i + 1];

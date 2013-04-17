@@ -732,6 +732,7 @@ package LevelStates {
 									break;
 								}
 						} 
+						
 						if (blocWireMoused) {
 							newGraphic = _grab_cursor;
 							offsetX = -4;

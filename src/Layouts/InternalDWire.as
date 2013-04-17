@@ -57,7 +57,7 @@ package Layouts {
 			return true;
 		}
 		
-		override protected function outsideScreen():Boolean {
+		override public function outsideScreen():Boolean {
 			return false; //if it's inside a module that's being drawn, it's inside the screen
 		}
 		

@@ -125,10 +125,8 @@ package Displays {
 			return true;
 		}
 		
-		protected function outsideScreen():Boolean {
-			var sr:Rectangle = U.screenRect();
-			var bbox:Rectangle = boundingBox;
-			return !bbox.intersects(sr);
+		public function outsideScreen():Boolean {
+			return !boundingBox.intersects(U.screenRect());
 		}
 		
 		protected function canBuildCache():Boolean {

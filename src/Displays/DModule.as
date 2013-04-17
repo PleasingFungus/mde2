@@ -1,6 +1,7 @@
 package Displays {
 	import Components.Port;
 	import Components.Wire;
+	import flash.geom.Rectangle;
 	import Layouts.InternalDWire;
 	import Layouts.InternalWire;
 	import Layouts.PortLayout;
@@ -83,19 +84,20 @@ package Displays {
 		override public function update():void {
 			super.update();
 			
-			visible = solid = module.exists;
+			visible = module.exists;
 			if (!module.exists)
 				return;
 			
-			if (module.dirty)
-				refresh();
+			updatePosition();
+			visible = !outsideScreen();
+			if (!visible)
+				return;
+			
 			getColor();
 			
 			var font:FontTuple = this.font;
 			if (detailsText.font != font.id || detailsText.size != font.size)
 				font.configureFlxText(detailsText = new FlxText(-1, -1, width + U.GRID_DIM / 2, getDetails()), 0x0, 'center');
-			
-			updatePosition();
 			
 			for each (var displayNode:DNode in displayNodes)
 				displayNode.node.update();
@@ -103,6 +105,14 @@ package Displays {
 			for each (var dWire:DWire in displayConnections)
 				dWire.update();
 			
+		}
+		
+		protected function outsideScreen():Boolean {
+			var sr:Rectangle = U.screenRect();
+			return ((x + width + U.GRID_DIM < sr.x) ||
+					(y + height + U.GRID_DIM < sr.y) ||
+					(x - U.GRID_DIM >= sr.right) ||
+					(y - U.GRID_DIM >= sr.bottom));
 		}
 		
 		private function getColor():void {
@@ -173,7 +183,7 @@ package Displays {
 					displayNode.draw();
 				nameText.draw();
 			}
-			else if (U.zoom >= 0.25) {
+			else if (U.zoom >= 0.5) {
 				detailsText.text = getDetails();
 				detailsText.draw();
 			}

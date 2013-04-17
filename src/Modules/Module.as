@@ -30,7 +30,6 @@ package Modules {
 		public var exists:Boolean = true;
 		public var deployed:Boolean = false;
 		public var FIXED:Boolean = false;
-		public var dirty:Boolean;
 		
 		public function Module(X:int, Y:int, Name:String, Category:String, numInputs:int, numOutputs:int, numControls:int ) {
 			super(X, Y);

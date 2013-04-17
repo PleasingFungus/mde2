@@ -14,7 +14,11 @@ package UI {
 		public var width:int;
 		public var height:int;
 		
+		public var arrowScrollFraction:Number;
+		
 		protected var slider:FlxSprite;
+		protected var upArrow:FlxSprite;
+		protected var downArrow:FlxSprite;
 		protected var rail:FlxSprite;
 		
 		protected var barClicked:Boolean;
@@ -28,6 +32,8 @@ package UI {
 			width = 48;
 			height = Height;
 			
+			arrowScrollFraction = 1 / 20;
+			
 			create();
 		}
 		
@@ -37,13 +43,17 @@ package UI {
 			//slider bit
 			slider = new FlxSprite(x, -1).makeGraphic(20, 8, 0xffa0a0a0, true, "sliderBar");
 			slider.framePixels.fillRect(new Rectangle(1, 1, slider.width - 2, slider.height - 2), 0xff202020);
-			slider.y = y;
 			
-			//TODO: arrows
+			upArrow = new FlxSprite(x, y, _up_arrow);
+			downArrow = new FlxSprite(x, y + height, _down_arrow);
+			downArrow.y -= downArrow.height;
 			
 			//"rail"
-			rail = new FlxSprite(slider.x + slider.width / 2 - 4/2, y).makeGraphic(4, height, 0xffa0a0a0);
+			rail = new FlxSprite(slider.x + slider.width / 2 - 4/2, y + upArrow.height).makeGraphic(4, height - upArrow.height - downArrow.height, 0xffa0a0a0);
+			slider.y = rail.y;
 			add(rail);
+			add(upArrow)
+			add(downArrow);
 			add(slider);
 		}
 		
@@ -62,9 +72,15 @@ package UI {
 			if (barMoused && U.buttonManager)
 				U.buttonManager.moused = true
 			
-			if (FlxG.mouse.justPressed() && barMoused) {
-				barClicked = true;
-				moveSlider(adjMouse.y);
+			if (FlxG.mouse.justPressed()) {
+				if (barMoused) {
+					barClicked = true;
+					moveSlider(adjMouse.y);
+				} else if (upArrow.overlapsPoint(adjMouse, true)) {
+					moveSlider(slider.y - rail.height * arrowScrollFraction);
+				} else if (downArrow.overlapsPoint(adjMouse, true)) {
+					moveSlider(slider.y + rail.height * arrowScrollFraction);
+				}
 			}
 			
 			if (barClicked) {
@@ -94,6 +110,9 @@ package UI {
 		public function get scrollFraction():Number {
 			return (slider.y - rail.y) / (rail.height - slider.height);
 		}
+		
+		[Embed(source = "../../lib/art/ui/upscrollarrow.png")] private const _up_arrow:Class;
+		[Embed(source = "../../lib/art/ui/downscrollarrow.png")] private const _down_arrow:Class;
 	}
 
 }

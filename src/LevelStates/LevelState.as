@@ -723,9 +723,22 @@ package LevelStates {
 					hide = true;
 				else {
 					var mousedModule:Module = findMousedModule();
-					if (!mousedModule)
-						newGraphic = _pen_cursor;
-					else if (!mousedModule.FIXED) {
+					if (!mousedModule) {
+						var blocWireMoused:Boolean = false;
+						if (currentBloc) { //implies currentBloc.rooted
+							for each (var dwire:DWire in displayWires)
+								if (currentBloc.wires.indexOf(dwire.wire) != -1 && dwire.overlapsPoint(U.mouseFlxLoc)) {
+									blocWireMoused = true;
+									break;
+								}
+						} 
+						if (blocWireMoused) {
+							newGraphic = _grab_cursor;
+							offsetX = -4;
+							offsetY = -3;
+						} else
+							newGraphic = _pen_cursor;
+					} else if (!mousedModule.FIXED) {
 						if (ControlSet.CLICK_MODIFY_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration()) {
 							newGraphic = _wrench_cursor;
 							offsetX = offsetY = -3;

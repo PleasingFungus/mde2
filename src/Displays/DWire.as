@@ -2,6 +2,7 @@ package Displays {
 	import adobe.utils.ProductManager;
 	import Components.Port;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import Modules.BabyLatch;
 	import org.flixel.*;
 	import Components.Wire;
@@ -96,6 +97,8 @@ package Displays {
 		override public function draw():void {
 			if (!wire.exists)
 				return;
+			if (outsideScreen())
+				return;
 			
 			if (!cacheValid()) {
 				if (!canBuildCache()) {
@@ -122,6 +125,12 @@ package Displays {
 			return true;
 		}
 		
+		protected function outsideScreen():Boolean {
+			var sr:Rectangle = U.screenRect();
+			var bbox:Rectangle = boundingBox;
+			return !bbox.intersects(sr);
+		}
+		
 		protected function canBuildCache():Boolean {
 			return wire.deployed;
 		}
@@ -129,6 +138,7 @@ package Displays {
 		protected function buildCache():void {
 			checkZoom();
 			cachedLines = new Vector.<FlxSprite>;
+			_bounds = null;
 			
 			var sublineStart:int = 0;
 			var lastDelta:Point = wire.path[1].subtract(wire.path[0]);
@@ -141,7 +151,6 @@ package Displays {
 				lastDelta = delta;
 			}
 			cacheSubline(sublineStart, end);
-			//cachedLines.push(buildSubline(wire.path));
 			
 			cachedLoc = wire.path[0].clone();
 			/*cachedPath = new Vector.<Point>;  //assume wire path is unchanging once deployed
@@ -318,11 +327,37 @@ package Displays {
 				}
 		}
 		
+		private var _bounds:Rectangle
+		protected function get boundingBox():Rectangle {
+			if (_bounds)
+				return _bounds;
+			
+			var topLeft:Point = new Point(int.MAX_VALUE, int.MAX_VALUE);
+			var bottomRight:Point = new Point(int.MIN_VALUE, int.MIN_VALUE);
+			for each (var p:Point in wire.path) {
+				topLeft.x = Math.min(p.x, topLeft.x);
+				topLeft.y = Math.min(p.y, topLeft.y);
+				bottomRight.x = Math.max(p.x, bottomRight.x);
+				bottomRight.y = Math.max(p.y, bottomRight.y);
+			}
+			
+			var width:int = (bottomRight.x - topLeft.x) * U.GRID_DIM;
+			var height:int = (bottomRight.y - topLeft.y) * U.GRID_DIM;
+			if (!width)
+				width = getWidth();
+			else if (!height)
+				height = getWidth();
+			_bounds = new Rectangle(topLeft.x * U.GRID_DIM, topLeft.y * U.GRID_DIM, width, height);
+			return _bounds;
+		}
+		
 		protected var willOverlap:Boolean;
 		override public function overlapsPoint(p:FlxPoint, _:Boolean=false, __:FlxCamera=null):Boolean {
 			if (!wire.exists) return false;
 			
 			if (cacheValid()) {
+				if (p.x < boundingBox.x || p.y < boundingBox.y || p.x >= boundingBox.right || p.y >= boundingBox.bottom)
+					return false;
 				for each (var subline:FlxSprite in cachedLines)
 					if (subline.overlapsPoint(p, _, __))
 						return true;

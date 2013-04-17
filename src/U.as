@@ -2,6 +2,7 @@ package  {
 	import Actions.Action;
 	import Controls.ControlSet;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import Levels.LevelShard;
 	import Modules.*;
 	import org.flixel.*;
@@ -125,6 +126,15 @@ package  {
 		public static function pointToGrid(p:Point):Point {
 			return new Point(Math.round(p.x / U.GRID_DIM),
 							 Math.round(p.y / U.GRID_DIM));
+		}
+		
+		private static var _rect:Rectangle = new Rectangle;
+		public static function screenRect():Rectangle {
+			_rect.x = FlxG.camera.scroll.x;
+			_rect.y = FlxG.camera.scroll.y;
+			_rect.width = FlxG.width / zoom;
+			_rect.height = FlxG.height / zoom;
+			return _rect;
 		}
 		
 		

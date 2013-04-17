@@ -26,6 +26,7 @@ package Displays {
 		private var locked:Boolean;
 		private var wasValid:Boolean;
 		private var wasSelected:Boolean;
+		private var wasDeployed:Boolean;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
@@ -119,6 +120,9 @@ package Displays {
 		}
 		
 		protected function updatePosition():void {
+			if (wasDeployed && module.deployed)
+				return;
+			
 			var baseX:int = module.x * U.GRID_DIM;
 			var baseY:int = module.y * U.GRID_DIM;
 			
@@ -143,6 +147,8 @@ package Displays {
 				abbrevText.x = x;
 				abbrevText.y = y + (height - detailsText.height) / 2;
 			}
+			
+			wasDeployed = module.deployed;
 		}
 		
 		public function descriptionAt(fp:FlxPoint):String {

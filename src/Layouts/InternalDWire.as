@@ -57,9 +57,11 @@ package Layouts {
 			return true;
 		}
 		
+		override protected function outsideScreen():Boolean {
+			return false; //if it's inside a module that's being drawn, it's inside the screen
+		}
+		
 		override protected function buildCache():void {
-			if ((wire as InternalWire).dashed)
-				C.log("BREAK");
 			cachedPotentiallyBlockedLines = new Vector.<FlxSprite>;
 			super.buildCache();
 		}

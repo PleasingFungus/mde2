@@ -13,6 +13,7 @@ package Modules {
 		
 		public function Not(X:int, Y:int) {
 			super(X, Y, "Not", Module.CAT_LOGIC, 1, 1, 0);
+			abbrev = "Not";
 			delay = 1;
 		}
 		

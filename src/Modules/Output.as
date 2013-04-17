@@ -10,6 +10,7 @@ package Modules {
 		
 		public function Output(X:int, Y:int) {
 			super(X, Y, "Output", CAT_MISC, 1, 1, 0);
+			abbrev = "Out";
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {

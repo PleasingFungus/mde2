@@ -14,6 +14,7 @@ package Modules {
 		public var width:int;
 		public function Mux(X:int, Y:int, Width:int = 8) {
 			super(X, Y, "Demultiplex", Module.CAT_CONTROL, 1, Width, 1);
+			abbrev = "Dmx";
 			width = Width;
 			configuration = new Configuration(new Range(2, 16, Width));
 			configurableInPlace = false;

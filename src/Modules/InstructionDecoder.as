@@ -15,6 +15,7 @@ package Modules {
 		
 		public function InstructionDecoder(X:int, Y:int) {
 			super(X, Y, "Instruction Decoder", Module.CAT_MISC, 1, 4, 0);
+			abbrev = "Dec";
 			inputs[0].name = "Instruction";
 			outputs[0].name = "Op";
 			outputs[1].name = "Src";

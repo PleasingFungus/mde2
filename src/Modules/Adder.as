@@ -14,6 +14,7 @@ package Modules {
 		
 		public function Adder(X:int, Y:int) {
 			super(X, Y, "Adder", Module.CAT_ARITH, 2, 1, 0);
+			abbrev = "+";
 			delay = 2;
 		}
 		

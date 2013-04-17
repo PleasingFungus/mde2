@@ -41,6 +41,7 @@ package Modules {
 				Y = averageLoc.y;
 			
 			super(X, Y, "Custom", CAT_MISC,  inputs.length, outputs.length, controls.length);
+			abbrev = "?";
 			
 			//TODO: calculate delay
 		}

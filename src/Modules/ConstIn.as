@@ -20,6 +20,7 @@ package Modules {
 			configuration = new Configuration(new Range( -16, 15, InitialValue));
 			setByConfig();
 			super(X, Y, "In", Module.CAT_MISC, 0, 1, 0);
+			abbrev = "In";
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {

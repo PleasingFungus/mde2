@@ -28,6 +28,7 @@ package Modules {
 			
 			width = expectedOps.length ? expectedOps.length : 1;
 			super(X, Y, "Instruction Multiplexer", Module.CAT_CONTROL, width, 1, 1);
+			abbrev = "Imx";
 			if (U.state)
 				for (var i:int = 0; i < width; i++)
 					inputs[i].name = expectedOps[i].toString();

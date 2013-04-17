@@ -14,6 +14,7 @@ package Modules {
 		protected var lastMomentStored:int = -1;
 		public function DataWriterT(X:int, Y:int) {
 			super(X, Y, "Data Writer", Module.CAT_STORAGE, 1, 0, 2);
+			abbrev = "WR";
 			delay = 10;
 			writesToMemory = true;
 		}

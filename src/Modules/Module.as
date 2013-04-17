@@ -12,6 +12,7 @@ package Modules {
 	public class Module extends Point {
 		
 		public var name:String;
+		public var abbrev:String;
 		public var category:String;
 		protected var configuration:Configuration;
 		public var configurableInPlace:Boolean;

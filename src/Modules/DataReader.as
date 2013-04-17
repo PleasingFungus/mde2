@@ -13,6 +13,7 @@ package Modules {
 		
 		public function DataReader(X:int, Y:int) {
 			super(X, Y, "Data Reader", Module.CAT_STORAGE, 0, 1, 1);
+			abbrev = "Rd";
 			delay = 8;
 		}
 		

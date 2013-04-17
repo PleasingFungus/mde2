@@ -16,6 +16,7 @@ package Modules {
 		
 		public function ASU(X:int, Y:int) {
 			super(X, Y, "Add/Sub", Module.CAT_ARITH, 2, 1, 1);
+			abbrev = "+-";
 			delay = 3;
 		}
 		

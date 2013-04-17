@@ -22,6 +22,7 @@ package Modules {
 			setByConfig();
 			
 			super(X, Y, "Latch", Module.CAT_STORAGE, Width, Width, 1);
+			abbrev = "L";
 			
 			delay = 2;
 			configurableInPlace = false;

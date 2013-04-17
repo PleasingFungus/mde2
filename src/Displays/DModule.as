@@ -22,6 +22,7 @@ package Displays {
 		public var selected:Boolean;
 		private var nameText:FlxText;
 		private var detailsText:FlxText;
+		private var abbrevText:FlxText;
 		private var locked:Boolean;
 		private var wasValid:Boolean;
 		private var wasSelected:Boolean;
@@ -39,6 +40,12 @@ package Displays {
 			detailsText = new FlxText( -1, -1, width + U.GRID_DIM / 2, getDetails());
 			font.configureFlxText(detailsText, 0x0, 'center');
 			detailsText.scrollFactor = scrollFactor; //object
+			
+			if (module.abbrev) {
+				abbrevText = new FlxText( -1, -1, width + U.GRID_DIM / 2, module.abbrev);
+				U.NODE_FONT.configureFlxText(abbrevText, 0x0, 'center');
+				abbrevText.scrollFactor = scrollFactor;
+			}
 			
 			displayPorts = new Vector.<DPort>;
 			for each (var layout:PortLayout in module.layout.ports)
@@ -130,6 +137,11 @@ package Displays {
 			if (nameText) {
 				nameText.x = x;
 				nameText.y = y + height - (nameText.height + 2);
+			}
+			
+			if (abbrevText) {
+				abbrevText.x = x;
+				abbrevText.y = y + (height - detailsText.height) / 2;
 			}
 		}
 		

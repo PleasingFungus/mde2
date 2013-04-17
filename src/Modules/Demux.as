@@ -16,6 +16,7 @@ package Modules {
 		public var width:int;
 		public function Demux(X:int, Y:int, Width:int = 8) {
 			super(X, Y, "Multiplexer", Module.CAT_CONTROL, Width, 1, 1);
+			abbrev = "Mx";
 			width = Width;
 			configuration = new Configuration(new Range(2, 16, Width));
 			configurableInPlace = false;

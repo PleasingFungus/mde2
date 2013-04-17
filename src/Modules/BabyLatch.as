@@ -12,6 +12,7 @@ package Modules {
 		
 		public function BabyLatch(X:int, Y:int, InitialValue:int = 0) {
 			super(X, Y, "Simple Latch", Module.CAT_STORAGE, 1, 1, 0, InitialValue);
+			abbrev = "l";
 			delay = 1;
 			storesData = true;
 		}

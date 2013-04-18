@@ -1,6 +1,7 @@
 package UI {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import Modules.Configuration;
 	import org.flixel.*;
 	/**
 	 * ...
@@ -12,6 +13,7 @@ package UI {
 		public var y:int;
 		public var width:int;
 		public var height:int;
+		public var config:Configuration;
 		private var textWidth:int;
 		
 		protected var valueRange:Range;
@@ -20,6 +22,8 @@ package UI {
 		
 		protected var slider:FlxSprite;
 		protected var rail:FlxSprite;
+		protected var leftArrow:FlxSprite;
+		protected var rightArrow:FlxSprite;
 		protected var valueText:FlxText;
 		protected var valueBox:FlxSprite;
 		
@@ -49,11 +53,15 @@ package UI {
 			slider = new FlxSprite(-1, y).makeGraphic(8, 20, 0xffa0a0a0, true, "scrollbar");
 			slider.framePixels.fillRect(new Rectangle(1, 1, slider.width - 2, slider.height - 2), 0xff202020);
 			
-			//TODO: arrows
+			leftArrow = new FlxSprite(x, y, _left_arrow);
+			rightArrow = new FlxSprite(x + width, y, _right_arrow);
+			rightArrow.x -= rightArrow.width;
 			
 			//"rail"
-			rail = new FlxSprite(x, slider.y + slider.height / 2).makeGraphic(width, 4, 0xffa0a0a0);
+			rail = new FlxSprite(x + leftArrow.width, slider.y + slider.height / 2).makeGraphic(width - leftArrow.width * 2, 4, 0xffa0a0a0);
 			add(rail);
+			add(leftArrow);
+			add(rightArrow);
 			add(slider);
 			
 			//value display
@@ -76,11 +84,14 @@ package UI {
 		}
 		
 		protected function positionElements():void {
-			rail.x = x;
+			leftArrow.x = x;
+			rightArrow.x = x + width - rightArrow.width;
+			
+			rail.x = x + leftArrow.width;
 			rail.y = y + slider.height / 2;
 			
 			var posFraction:Number = (value - valueRange.min) / (valueRange.max - valueRange.min);
-			slider.x = rail.x + width * posFraction - slider.width / 2;
+			slider.x = rail.x + rail.width * posFraction;
 			slider.y = y;
 			
 			valueText.x = x + width / 2 - textWidth / 2;
@@ -112,8 +123,11 @@ package UI {
 				if (barMoused) {
 					barClicked = true;
 					moveSlider();
-				}
-				else if (tick && dieOnClickOutside) {
+				} else if (leftArrow.overlapsPoint(U.mouseFlxLoc, true)) {
+					forceValue(config ? config.decrement() : value - 1);
+				} else if (rightArrow.overlapsPoint(U.mouseFlxLoc, true)) {
+					forceValue(config ? config.increment() : value + 1);
+				} else if (tick && dieOnClickOutside) {
 					exists = false;
 					if (onDeath != null)
 						onDeath();
@@ -135,7 +149,7 @@ package UI {
 		
 		private function moveSlider():void {			
 			var oldX:int = slider.x;
-			slider.x = Math.max(rail.x, Math.min(rail.x + rail.width - slider.width, getAdjMouse().x - slider.width / 2));
+			slider.x = Math.max(rail.x, Math.min(rail.x + rail.width - slider.width, getAdjMouse().x));
 			if (oldX != slider.x)
 				updateValue();
 		}
@@ -161,10 +175,13 @@ package UI {
 			valueText.text = valueRange.nameOf(v);
 			
 			var fraction:Number = (v - valueRange.min) / valueRange.width;
-			slider.x = rail.x + fraction * (rail.width - slider.width) - slider.width / 2;
+			slider.x = rail.x + fraction * (rail.width - slider.width);
 			
 			return true;
 		}
+		
+		[Embed(source = "../../lib/art/ui/leftscrollarrow.png")] private const _left_arrow:Class;
+		[Embed(source = "../../lib/art/ui/rightscrollarrow.png")] private const _right_arrow:Class;
 		
 		private const TEXT_BORDER:int = 2;
 	}

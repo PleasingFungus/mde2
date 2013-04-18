@@ -36,6 +36,7 @@ package UI {
 			sliderbar = new Sliderbar(x + INNER_PAD + BORDER_WIDTH, parent.Y, config.valueRange, config.setValue, configValue);
 			sliderbar.y += (parent.fullHeight + 15) / 2 - sliderbar.height / 2;
 			sliderbar.create();
+			sliderbar.config = config;
 			
 			add(bg = new FlxSprite(x, parent.Y).makeGraphic(sliderbar.width + (INNER_PAD + BORDER_WIDTH) * 2, parent.fullHeight, 0xff666666));
 			add(sliderbar);

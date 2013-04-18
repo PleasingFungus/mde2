@@ -15,6 +15,14 @@ package Modules {
 		public function setValue(v:int):int {
 			return value = v;
 		}
+		
+		public function increment():int {
+			return value = Math.min(value + 1, valueRange.max);
+		}
+		
+		public function decrement():int {
+			return value = Math.max(value - 1, valueRange.min);
+		}
 	}
 
 }

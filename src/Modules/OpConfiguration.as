@@ -1,4 +1,5 @@
 package Modules {
+	import Values.NumericValue;
 	import Values.OpcodeValue;
 	
 	/**
@@ -37,6 +38,33 @@ package Modules {
 			return value = opValue.toNumber();
 		}
 		
+		override public function increment():int {
+			for (var newValue:int = value + 1; newValue < OpcodeValue.OPS.length; newValue++) {
+				var op:OpcodeValue = OpcodeValue.fromValue(new NumericValue(newValue));
+				if (op != OpcodeValue.OP_NOOP && U.state.level.expectedOps.indexOf(op) != -1)
+					break;
+			}
+			
+			if (newValue >= OpcodeValue.OPS.length)
+				return value;
+			
+			opValue = op;
+			return value = newValue;
+		}
+		
+		override public function decrement():int {
+			for (var newValue:int = value - 1; newValue; newValue--) {
+				var op:OpcodeValue = OpcodeValue.fromValue(new NumericValue(newValue));
+				if (op != OpcodeValue.OP_NOOP && U.state.level.expectedOps.indexOf(op) != -1)
+					break;
+			}
+			
+			if (!newValue)
+				return value;
+			
+			opValue = op;
+			return value = newValue;
+		}
 	}
 
 }

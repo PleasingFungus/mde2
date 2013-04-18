@@ -33,7 +33,7 @@ package Displays {
 			add(scrollbar = new Scrollbar(bg.x + bg.width - 48/2 - RAISED_BORDER_WIDTH * 3,
 										  pageTop + INNER_BORDER, pageBottom - pageTop - INNER_BORDER * 2));
 			
-			var lineHeight:int = 30;// U.BODY_FONT.configureFlxText(new FlxText( -1, -1, 10000, "Example")).height + 6;
+			var lineHeight:int = U.BODY_FONT.configureFlxText(new FlxText( -1, -1, 10000, "Example")).height + 6;
 			scrollbar.arrowScrollFraction = lineHeight / (pageBottom - pageTop);
 			
 			scroll = 0;

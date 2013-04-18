@@ -54,7 +54,7 @@ package Layouts {
 		}
 		
 		override protected function canBuildCache():Boolean {
-			return true;
+			return cachesThisFrame < MAX_CACHES_PER_FRAME;
 		}
 		
 		override public function outsideScreen():Boolean {

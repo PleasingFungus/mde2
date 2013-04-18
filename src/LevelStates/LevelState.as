@@ -895,6 +895,8 @@ package LevelStates {
 			FlxG.camera.width = buf.width;
 			FlxG.camera.height = buf.height;
 			
+			DWire.updateStatic();
+			
 			super.draw();
 			if (U.DEBUG_RENDER_COLLIDE)
 				debugRenderCollision();

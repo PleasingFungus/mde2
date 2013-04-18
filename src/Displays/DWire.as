@@ -130,7 +130,7 @@ package Displays {
 		}
 		
 		protected function canBuildCache():Boolean {
-			return wire.deployed;
+			return wire.deployed && cachesThisFrame < MAX_CACHES_PER_FRAME;
 		}
 		
 		protected function buildCache():void {
@@ -395,6 +395,11 @@ package Displays {
 		
 		protected const BLIT_PERIOD:Number = 1;
 		protected const EXTRA_WIDTH:int = 4;
+		protected static const MAX_CACHES_PER_FRAME:int = 15;
+		protected static var cachesThisFrame:int;
+		public static function updateStatic():void {
+			cachesThisFrame = 0;
+		}
 	}
 
 }

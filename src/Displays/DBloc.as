@@ -30,6 +30,8 @@ package Displays {
 					setSelect(false);
 				return;
 			}
+			if (!selected)
+				setSelect(true);
 			
 			if (bloc.rooted)
 				checkRootedState();
@@ -89,6 +91,7 @@ package Displays {
 				bloc.moveTo(U.pointToGrid(U.mouseLoc));
 			else {
 				if (bloc.validPosition(U.pointToGrid(U.mouseLoc))) {
+					FlxG.camera.shake(0.01 * U.zoom, 0.05);
 					new CustomAction(bloc.place, bloc.remove, U.pointToGrid(U.mouseLoc)).execute();
 					setSelect(true);
 				} else if (U.buttonManager.moused) { //FIXME: doesn't work

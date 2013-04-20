@@ -668,6 +668,7 @@ package LevelStates {
 		}
 		
 		private function placeModule():void {
+			FlxG.camera.shake(0.01 * U.zoom, 0.05);
 			new CustomAction(Module.place, Module.remove, currentModule, new Point(currentModule.x, currentModule.y)).execute();
 			currentModule = null;
 		}

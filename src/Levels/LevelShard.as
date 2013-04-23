@@ -61,12 +61,12 @@ package Levels {
 		
 		public static const CORE:LevelShard = new LevelShard("Core", [OpcodeValue.OP_SET, OpcodeValue.OP_ADD, OpcodeValue.OP_SAV],
 															 [ConstIn, And, Adder, Latch, InstructionDecoder, DataWriterT, Mux, Demux,
-															 InstructionDemux, InstructionComparator, Not, DataReader, Output]);
-		public static const DELAY:LevelShard = new LevelShard("Delay", [], [SysDelayClock], 40, 1, true);
-		public static const SPD:LevelShard = new LevelShard("Speed", [], [Demux, Equals], 0.1, 2);
-		public static const JUMP:LevelShard = new LevelShard("Jump", [OpcodeValue.OP_JMP], [], 1.1);
-		public static const ADV:LevelShard = new LevelShard("Adv.", [OpcodeValue.OP_SUB, OpcodeValue.OP_MUL, OpcodeValue.OP_DIV], [ASU, MDU], 1.1);
-		public static const LOAD:LevelShard = new LevelShard("Load", [OpcodeValue.OP_LD], [], 1.25);
+															 InstructionDemux, InstructionComparator, Not, DataReader, Output], 3);
+		public static const DELAY:LevelShard = new LevelShard("Delay", [], [SysDelayClock], 12, 1, true); //12*3 = 36 t/i
+		public static const SPD:LevelShard = new LevelShard("Speed", [], [Demux, Equals], 1/2, 2); //12*3/2 = 18 t/i
+		public static const JUMP:LevelShard = new LevelShard("Jump", [OpcodeValue.OP_JMP]);
+		public static const ADV:LevelShard = new LevelShard("Adv.", [OpcodeValue.OP_SUB, OpcodeValue.OP_MUL, OpcodeValue.OP_DIV], [ASU, MDU]);
+		public static const LOAD:LevelShard = new LevelShard("Load", [OpcodeValue.OP_LD]);
 		//public static const ALL:Vector.<LevelShard> = new Vector.<LevelShard>;
 		
 	}

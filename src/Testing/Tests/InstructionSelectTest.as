@@ -22,8 +22,6 @@ package Testing.Tests {
 			}
 			return values;
 		}
-		
-		//override protected function testRun():void { }
 	}
 
 }

@@ -19,23 +19,26 @@ package Testing.Goals {
 		protected var expectedOps:Vector.<OpcodeValue>;
 		public var testRuns:int;
 		public var minInstructions:int;
-		public var timePerRun:Vector.<int>;
+		public var allowedTimePerInstr:int;
+		public var timePerInstr:Vector.<Number>;
 		
 		protected var currentRun:int;
-		public function GeneratedGoal(Description:String, TestClass:Class, ExpectedOps:Vector.<OpcodeValue>, TestRuns:int = 12, Timeout:int=100, MinInstructions:int = 10) {
+		public function GeneratedGoal(Description:String, TestClass:Class, ExpectedOps:Vector.<OpcodeValue>, TestRuns:int = 12, AllowedTimePerInstr:int=3, MinInstructions:int = 10) {
 			super(Description);
 			
 			testClass = TestClass;
 			expectedOps = ExpectedOps;
 			testRuns = TestRuns;
 			minInstructions = MinInstructions;
-			timeLimit = Timeout;
+			allowedTimePerInstr = AllowedTimePerInstr;
 			dynamicallyTested = true;
 			randomizedMemory = true;
 		}
 		
 		override public function genMem():Vector.<Value> {
 			currentTest = new testClass(expectedOps, minInstructions);
+			timeLimit = currentTest.expectedExecutions * allowedTimePerInstr;
+			if (!timeLimit) throw new Error("Time limit must be > 0!");
 			return currentTest.initialMemory;
 		}
 		
@@ -48,7 +51,7 @@ package Testing.Goals {
 			super.startRun();
 			FlxG.globalSeed = 0.5;
 			currentRun = 0;
-			timePerRun = new Vector.<int>;
+			timePerInstr = new Vector.<Number>;
 		}
 		
 		override public function runTestStep(levelState:LevelState):void {
@@ -56,13 +59,15 @@ package Testing.Goals {
 			
 			currentRun += 1;
 			currentTest = new testClass(expectedOps, minInstructions);
+			timeLimit = currentTest.expectedExecutions * allowedTimePerInstr;
+			if (!timeLimit) throw new Error("Time limit must be > 0!");
 			var mem:Vector.<Value> = currentTest.initialMemory;
 			C.log("Memory generated");
 			
 			levelState.initialMemory = mem;
 			super.runTestStep(levelState);
 			if (succeeded)
-				timePerRun.push(U.state.time.moment);
+				timePerInstr.push(U.state.time.moment / currentTest.expectedExecutions);
 		}
 		
 		override public function getProgress():String {
@@ -70,20 +75,20 @@ package Testing.Goals {
 		}
 		
 		override public function getTime():String {
-			return 'Average ticks per test: '+averageTimePerRun();
+			return 'Average ticks per instruction: '+averageTimePerInstruction();
 		}
 		
 		override protected function done():Boolean {
 			return currentRun >= testRuns;
 		}
 		
-		public function averageTimePerRun():int {
-			if (!timePerRun.length) return 0;
+		public function averageTimePerInstruction():Number {
+			if (!timePerInstr.length) return 0;
 			
-			var avg:int = 0;
-			for each (var timeTaken:int in timePerRun)
+			var avg:Number = 0;
+			for each (var timeTaken:Number in timePerInstr)
 				avg += timeTaken;
-			return avg / timePerRun.length;
+			return int(avg * 10 / timePerInstr.length) / 10;
 		}
 		
 	}

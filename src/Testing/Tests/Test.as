@@ -19,6 +19,7 @@ package Testing.Tests {
 		
 		public var initialMemory:Vector.<Value>;
 		public var expectedMemory:Vector.<Value>;
+		public var expectedExecutions:int;
 		
 		protected var memAddressToSet:int;
 		protected var memValueToSet:int;
@@ -251,9 +252,10 @@ package Testing.Tests {
 		
 		
 		protected function postProcess(instructions:Vector.<Instruction>):Vector.<Instruction> {
-			if (expectedOps.indexOf(OpcodeValue.OP_JMP) == -1)
-				return instructions;
-			return addJumpLoop(instructions);
+			if (expectedOps.indexOf(OpcodeValue.OP_JMP) != -1)
+				addJumpLoop(instructions);
+			expectedExecutions = instructions.length;
+			return instructions;
 		}
 		
 		protected function addJumpLoop(instructions:Vector.<Instruction>):Vector.<Instruction> {

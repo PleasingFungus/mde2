@@ -1,5 +1,4 @@
 package Levels {
-	import Testing.Goals.GeneratedGoal;
 	import Testing.Goals.ShardGoal;
 	import Testing.Tests.Test;
 	/**

@@ -13,7 +13,7 @@ package Testing.Goals {
 			var expectedOps:Vector.<OpcodeValue> = new Vector.<OpcodeValue>;
 			expectedOps.push(OpcodeValue.OP_SET);
 			expectedOps.push(OpcodeValue.OP_ADD);
-			super("Execute all instructions and store all register values in memory at "+U.MIN_MEM+"+register index! TODO", RegfileTest, expectedOps, 6, 50);
+			super("Execute all instructions and store all register values in memory at "+U.MIN_MEM+"+register index! TODO", RegfileTest, expectedOps, 6);
 		}
 	}
 

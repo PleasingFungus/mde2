@@ -57,8 +57,10 @@ package Displays {
 			
 			if (level.delay)
 				addBodyText("\nPropagation delay enabled.");
-			if (level.goal is GeneratedGoal)
-				addBodyText("\nTesting: " + (level.goal as GeneratedGoal).testRuns + " random programs, time limit of " + level.goal.timeLimit + " cycles per test");
+			if (level.goal is GeneratedGoal) {
+				var generatedGoal:GeneratedGoal = level.goal as GeneratedGoal;
+				addBodyText("\nTesting: " + generatedGoal.testRuns + " random programs, time limit of " + generatedGoal.allowedTimePerInstr + " cycles per instruction");
+			}
 			if (level.writerLimit)
 				addBodyText("\nNumber of data writers allowed: " + level.writerLimit); 
 		}

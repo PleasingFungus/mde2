@@ -25,6 +25,7 @@ package Testing.Tests {
 			}
 			
 			instructions = new Vector.<Instruction>;
+			expectedExecutions = saves.length;
 		}
 		
 		override protected function genInitialMemory():Vector.<Value> {

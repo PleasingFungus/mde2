@@ -67,7 +67,7 @@ package UI {
 		protected function checkClick():void {
 			var adjMouse:FlxPoint = getAdjMouse();
 			var barMoused:Boolean = ((adjMouse.y >= rail.y && adjMouse.y <= rail.y + rail.height) &&
-									 (adjMouse.x >= slider.x && adjMouse.x <= slider.x + slider.height) &&
+									 (adjMouse.x >= slider.x && adjMouse.x <= slider.x + slider.width) &&
 									 (!U.buttonManager || !U.buttonManager.moused));
 			if (barMoused && U.buttonManager)
 				U.buttonManager.moused = true

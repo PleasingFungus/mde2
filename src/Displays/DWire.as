@@ -95,8 +95,6 @@ package Displays {
 		}
 		
 		override public function draw():void {
-			if (!wire.exists)
-				return;
 			if (outsideScreen())
 				return;
 			
@@ -327,7 +325,7 @@ package Displays {
 		
 		private var _bounds:Rectangle
 		protected function get boundingBox():Rectangle {
-			if (_bounds)
+			if (_bounds && wire.deployed)
 				return _bounds;
 			
 			var topLeft:Point = new Point(int.MAX_VALUE, int.MAX_VALUE);

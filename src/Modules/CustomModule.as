@@ -170,6 +170,13 @@ package Modules {
 			if (!selection.length)
 				return null;
 			
+			var writerCount:int = U.state.numMemoryWriters();
+			for each (module in selection)
+				if (module.writesToMemory)
+					writerCount += 1;
+			if (writerCount > U.state.level.writerLimit)
+				return null;
+			
 			var clones:Vector.<Module> = new Vector.<Module>;
 			for each (module in selection) {
 				var moduleString:String = module.saveString();

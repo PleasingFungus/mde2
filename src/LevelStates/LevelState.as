@@ -828,7 +828,7 @@ package LevelStates {
 		//}
 		
 		
-		private function numMemoryWriters():int {
+		public function numMemoryWriters():int {
 			var num:int = 0;
 			for each (var module:Module in modules)
 				if (module.exists && module.writesToMemory)

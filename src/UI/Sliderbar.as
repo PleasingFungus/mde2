@@ -86,6 +86,7 @@ package UI {
 		protected function positionElements():void {
 			leftArrow.x = x;
 			rightArrow.x = x + width - rightArrow.width;
+			leftArrow.y = rightArrow.y = y;
 			
 			rail.x = x + leftArrow.width;
 			rail.y = y + slider.height / 2;

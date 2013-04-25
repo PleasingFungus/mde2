@@ -115,6 +115,7 @@ package UI {
 		}
 		
 		protected function checkClick():void {
+			var out:*;
 			var adjMouse:FlxPoint = getAdjMouse();
 			var barMoused:Boolean = adjMouse.x >= rail.x && adjMouse.x <= rail.x + rail.width && adjMouse.y >= slider.y && adjMouse.y <= slider.y + slider.height && (!U.buttonManager || !U.buttonManager.moused);
 			if (barMoused && U.buttonManager)
@@ -125,9 +126,21 @@ package UI {
 					barClicked = true;
 					moveSlider();
 				} else if (leftArrow.overlapsPoint(U.mouseFlxLoc, true)) {
-					forceValue(config ? config.decrement() : value - 1);
+					if (config)
+						forceValue(config.decrement());
+					else if (onChange != null) {
+						out = onChange(value - 1);
+						forceValue(out is int ? out as int : value - 1);
+					} else
+						forceValue(value - 1);
 				} else if (rightArrow.overlapsPoint(U.mouseFlxLoc, true)) {
-					forceValue(config ? config.increment() : value + 1);
+					if (config)
+						forceValue(config.increment());
+					else if (onChange != null) {
+						out = onChange(value + 1);
+						forceValue(out is int ? out as int : value + 1);
+					} else
+						forceValue(value + 1);
 				} else if (tick && dieOnClickOutside) {
 					exists = false;
 					if (onDeath != null)

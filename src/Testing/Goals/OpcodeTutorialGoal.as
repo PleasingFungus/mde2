@@ -10,10 +10,10 @@ package Testing.Goals {
 	 */
 	public class OpcodeTutorialGoal extends GeneratedGoal {
 		
-		public function OpcodeTutorialGoal() {
+		public function OpcodeTutorialGoal(MinInstructions:int = 4) {
 			var vec:Vector.<OpcodeValue> = new Vector.<OpcodeValue>;
 			vec.push(OpcodeValue.OP_SAVI);
-			super("Execute all instructions from memory!", OpcodeTest, vec, 6);
+			super("Execute all instructions from memory!", OpcodeTest, vec, 6, 3, MinInstructions);
 			description += "\n\n(From this level onward, your goal will be to go through memory, starting at 0, and execute every instruction there. "
 			description += "Every level has a fixed set of instruction types, but several permutations will be generated to test your solution.)";
 		}

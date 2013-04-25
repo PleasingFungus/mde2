@@ -9,14 +9,13 @@ package Testing.Tests {
 	public class OpcodeTest extends Test {
 		
 		public var saves:Vector.<InstructionValue>;
-		public function OpcodeTest(_:Vector.<OpcodeValue>, __:int = -1, Seed:Number = NaN) {
-			super(_, -1, Seed); 
+		public function OpcodeTest(_:Vector.<OpcodeValue>, ExpectedInstructions:int = 8, Seed:Number = NaN) {
+			super(_, ExpectedInstructions, Seed); 
 		}
 		
 		override protected function generate():void {
-			var savesToGenerate:int = C.randomRange(3, 6);
 			saves = new Vector.<InstructionValue>;
-			for (var i:int = 0; i < savesToGenerate; i++) {
+			for (var i:int = 0; i < expectedInstructions; i++) {
 				var line:int = C.randomRange(8, U.MAX_MEM);
 				if (line < 8)
 					throw Error("!!!");

@@ -102,7 +102,7 @@ package Levels {
 										 [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);
 			D1_TUT.predecessors.push(D0_TUT);
 			var D2_TUT:Level = new Level("Delay Accum. 2", new AccumDelayTutGoal, true,
-										 [ConstIn, Adder, Latch, DataMemory, SysDelayClock]);
+										 [ConstIn, Adder, Latch, DataWriter, SysDelayClock]);
 			D2_TUT.predecessors.push(D1_TUT);
 			
 			levels.push(D0_TUT, D1_TUT, D2_TUT);
@@ -126,6 +126,12 @@ package Levels {
 			
 			levels.push(addCPU_D, cpuADVLDD);
 			
+			var pipeTutorial:Level = new Level("Pipeline Tutorial", new PipelineTutorialGoal, true,
+											   [ConstIn, Adder, Latch, DataWriterT, DataReader, InstructionDecoder, SysDelayClock, And], [OpcodeValue.OP_SAVI]);
+			pipeTutorial.predecessors.push(OP_TUT, D2_TUT);
+			
+			levels.push(pipeTutorial);
+			
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);
 			var pipe:Level = new ShardLevel("Efficiency!", "Make a CPU that runs fast!", pipeShard);
 			pipe.predecessors.push(addCPU_D); //dubious
@@ -148,6 +154,7 @@ package Levels {
 			columns.push(makeVec([D1_TUT]));
 			columns.push(makeVec([D2_TUT]));
 			columns.push(makeVec([addCPU_D, cpuADVLDD]));
+			columns.push(makeVec([pipeTutorial]));
 			columns.push(makeVec([pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD]));
 			
 			return levels;

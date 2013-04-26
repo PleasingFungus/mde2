@@ -724,31 +724,37 @@ package LevelStates {
 				if (currentModule || (currentBloc && !currentBloc.rooted))
 					hide = true;
 				else {
-					var mousedModule:Module = findMousedModule();
-					if (!mousedModule) {
-						var blocWireMoused:Boolean = false;
-						if (currentBloc) { //implies currentBloc.rooted
-							for each (var dwire:DWire in displayWires)
-								if (currentBloc.wires.indexOf(dwire.wire) != -1 && dwire.overlapsPoint(U.mouseFlxLoc)) {
-									blocWireMoused = true;
-									break;
-								}
-						} 
-						
-						if (blocWireMoused) {
-							newGraphic = _grab_cursor;
-							offsetX = -4;
-							offsetY = -3;
-						} else
-							newGraphic = _pen_cursor;
-					} else if (!mousedModule.FIXED) {
-						if (ControlSet.CLICK_MODIFY_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration()) {
-							newGraphic = _wrench_cursor;
-							offsetX = offsetY = -3;
-						} else {
-							newGraphic = _grab_cursor;
-							offsetX = -4;
-							offsetY = -3;
+					if (currentWire)
+						newGraphic = _pen_cursor;
+					else if (ControlSet.DRAG_MODIFY_KEY.pressed() || selectionArea) {
+						newGraphic = _select_cursor;
+					} else {
+						var mousedModule:Module = findMousedModule();
+						if (!mousedModule) {
+							var blocWireMoused:Boolean = false;
+							if (currentBloc) { //implies currentBloc.rooted
+								for each (var dwire:DWire in displayWires)
+									if (currentBloc.wires.indexOf(dwire.wire) != -1 && dwire.overlapsPoint(U.mouseFlxLoc)) {
+										blocWireMoused = true;
+										break;
+									}
+							} 
+							
+							if (blocWireMoused) {
+								newGraphic = _grab_cursor;
+								offsetX = -4;
+								offsetY = -3;
+							} else
+								newGraphic = _pen_cursor;
+						} else if (!mousedModule.FIXED) {
+							if (ControlSet.CLICK_MODIFY_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration()) {
+								newGraphic = _wrench_cursor;
+								offsetX = offsetY = -3;
+							} else {
+								newGraphic = _grab_cursor;
+								offsetX = -4;
+								offsetY = -3;
+							}
 						}
 					}
 				}
@@ -1226,6 +1232,7 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/remove_cursor.png")] private const _remove_cursor:Class;
 		[Embed(source = "../../lib/art/ui/delay_cursor.png")] private const _delay_cursor:Class;
 		[Embed(source = "../../lib/art/ui/wrench_cursor.png")] private const _wrench_cursor:Class;
+		[Embed(source = "../../lib/art/ui/sel.png")] private const _select_cursor:Class;
 	}
 
 }

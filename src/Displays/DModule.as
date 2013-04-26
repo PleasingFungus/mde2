@@ -28,6 +28,7 @@ package Displays {
 		private var wasValid:Boolean;
 		private var wasSelected:Boolean;
 		private var wasDeployed:Boolean;
+		private var wasExtant:Boolean;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
@@ -85,11 +86,14 @@ package Displays {
 			super.update();
 			
 			visible = module.exists;
-			if (!module.exists)
+			if (!module.exists) {
+				wasExtant = false;
 				return;
+			}
 			
 			updatePosition();
 			visible = !outsideScreen();
+			wasExtant = true;
 			if (!visible)
 				return;
 			
@@ -130,7 +134,7 @@ package Displays {
 		}
 		
 		protected function updatePosition():void {
-			if (wasDeployed && module.deployed)
+			if (wasDeployed && module.deployed && wasExtant)
 				return;
 			
 			var baseX:int = module.x * U.GRID_DIM;

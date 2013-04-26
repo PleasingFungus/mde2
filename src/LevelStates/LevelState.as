@@ -588,7 +588,7 @@ package LevelStates {
 					pastedBloc.extendDisplays(displayWires, displayModules);
 					
 					if (currentBloc)
-						currentBloc.exists = false;
+						currentBloc.unravel();
 					currentBloc = pastedBloc.bloc;
 					
 					midLayer.add(pastedBloc);
@@ -636,7 +636,8 @@ package LevelStates {
 			if (!customModule)
 				return;
 			
-			currentBloc.exists = false;
+			currentBloc.unravel();
+			currentBloc = null;
 			
 			currentModule = customModule;
 			modules.push(customModule);
@@ -852,7 +853,7 @@ package LevelStates {
 				currentModule.exists = false;
 				currentModule = null;
 			} else if (currentBloc) {
-				currentBloc.exists = false;
+				currentBloc.unravel();
 				currentBloc = null;
 			}
 		}

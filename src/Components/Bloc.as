@@ -58,6 +58,13 @@ package Components {
 			return true;
 		}
 		
+		public function unravel():void {
+			if (rooted)
+				exists = false;
+			else
+				destroy();
+		}
+		
 		public function destroy():void {
 			for each (var module:Module in modules)
 				module.exists = false;

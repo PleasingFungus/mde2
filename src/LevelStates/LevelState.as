@@ -997,23 +997,31 @@ package LevelStates {
 		}
 		
 		private function canUndo():Boolean {
-			return actionStack.length > 0 && !currentWire && !currentModule && !currentBloc;
+			return actionStack.length > 0 && !currentWire && !currentModule;
 		}
 		
 		private function canRedo():Boolean {
-			return reactionStack.length > 0 && !currentWire && !currentModule && !currentBloc;
+			return reactionStack.length > 0 && !currentWire && !currentModule;
 		}
 		
 		
 		private function undo():Action {
 			if (!canUndo())
 				return null;
+			if (currentBloc) {
+				currentBloc.unravel();
+				currentBloc = null;
+			}
 			return actionStack.pop().revert();
 		}
 		
 		private function redo():Action {
 			if (!canRedo())
 				return null;
+			if (currentBloc) {
+				currentBloc.unravel();
+				currentBloc = null;
+			}
 			return reactionStack.pop().execute();
 		}
 		

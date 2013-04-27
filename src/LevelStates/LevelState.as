@@ -712,65 +712,71 @@ package LevelStates {
 			checkModuleListState();
 		}
 		
-		private var cursorGraphic:Class;
+		private var cursor:Cursor;
 		private var wasHidden:Boolean;
 		private function checkCursorState():void {
-			var newGraphic:Class = null;
-			var offsetX:int = 0;
-			var offsetY:int = 0;
-			var hide:Boolean;
+			var newCursor:Cursor = getCursor();
 			
-			if (listOpen == LIST_NONE && !time.moment && !U.buttonManager.moused) {
-				if (currentModule || (currentBloc && !currentBloc.rooted))
-					hide = true;
-				else {
-					if (currentWire)
-						newGraphic = _pen_cursor;
-					else if (ControlSet.DRAG_MODIFY_KEY.pressed() || selectionArea) {
-						newGraphic = _select_cursor;
-					} else {
-						var mousedModule:Module = findMousedModule();
-						if (!mousedModule) {
-							var blocWireMoused:Boolean = false;
-							if (currentBloc) { //implies currentBloc.rooted
-								for each (var dwire:DWire in displayWires)
-									if (currentBloc.wires.indexOf(dwire.wire) != -1 && dwire.overlapsPoint(U.mouseFlxLoc)) {
-										blocWireMoused = true;
-										break;
-									}
-							} 
-							
-							if (blocWireMoused) {
-								newGraphic = _grab_cursor;
-								offsetX = -4;
-								offsetY = -3;
-							} else if (level.canDrawWires)
-								newGraphic = _pen_cursor;
-						} else if (!mousedModule.FIXED) {
-							if (ControlSet.CLICK_MODIFY_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration()) {
-								newGraphic = _wrench_cursor;
-								offsetX = offsetY = -3;
-							} else {
-								newGraphic = _grab_cursor;
-								offsetX = -4;
-								offsetY = -3;
-							}
-						}
-					}
-				}
-			}
-			
-			if (hide || !upperLayer.visible) {
+			if (cursorHidden() || !upperLayer.visible) {
 				FlxG.mouse.hide();
 				wasHidden = true;
 			} else if (wasHidden) {
-				FlxG.mouse.show(cursorGraphic, 1, offsetX, offsetY);
+				if (newCursor)
+					FlxG.mouse.show(newCursor.rawSprite, 1, newCursor.offsetX, newCursor.offsetY);
+				else
+					FlxG.mouse.show();
 				wasHidden = false;
 			}
-			if (cursorGraphic != newGraphic) {
-				FlxG.mouse.load(newGraphic, 1, offsetX, offsetY);
-				cursorGraphic = newGraphic;
+			
+			if (cursor) {
+				if (cursor.equals(newCursor))
+					return;
+			} else if (!newCursor)
+				return;
+			
+			if (newCursor)
+				FlxG.mouse.load(newCursor.rawSprite, 1, newCursor.offsetX, newCursor.offsetY);
+			else
+				FlxG.mouse.load();
+			cursor = newCursor;
+		}
+		
+		private function cursorHidden():Boolean {
+			return listOpen == LIST_NONE && !time.moment && !U.buttonManager.moused && (currentModule || (currentBloc && !currentBloc.rooted));
+		}
+		
+		private function getCursor():Cursor {
+			if (listOpen != LIST_NONE || time.moment || U.buttonManager.moused)
+				return null;
+			
+			if (currentWire)
+				return Cursor.PEN;
+			if (ControlSet.DRAG_MODIFY_KEY.pressed() || selectionArea)
+				return Cursor.SEL;
+			
+			var mousedModule:Module = findMousedModule();
+			if (mousedModule) {
+				if (mousedModule.FIXED)
+					return null;
+				if (ControlSet.CLICK_MODIFY_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration())
+					return Cursor.EDIT;
+				return Cursor.GRAB;
 			}
+			
+			var blocWireMoused:Boolean = false;
+			if (currentBloc) { //implies currentBloc.rooted
+				for each (var dwire:DWire in displayWires)
+					if (currentBloc.wires.indexOf(dwire.wire) != -1 && dwire.overlapsPoint(U.mouseFlxLoc)) {
+						blocWireMoused = true;
+						break;
+					}
+			} 
+			
+			if (blocWireMoused)
+				return Cursor.GRAB;
+			if (level.canDrawWires)
+				return Cursor.PEN;
+			return null;
 		}
 		
 		private function checkModuleListState():void {
@@ -1190,7 +1196,7 @@ package LevelStates {
 		override public function destroy():void {
 			super.destroy();
 			
-			if (cursorGraphic)
+			if (cursor)
 				FlxG.mouse.load();
 			if (wasHidden)
 				FlxG.mouse.show();
@@ -1233,13 +1239,6 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/test.png")] private const _test_sprite:Class;
 		[Embed(source = "../../lib/art/ui/tset_success.png")] private const _test_success_sprite:Class;
 		[Embed(source = "../../lib/art/ui/tset_failure.png")] private const _test_failure_sprite:Class;
-		
-		[Embed(source = "../../lib/art/ui/pen.png")] private const _pen_cursor:Class;
-		[Embed(source = "../../lib/art/ui/grabby_cursor.png")] private const _grab_cursor:Class;
-		[Embed(source = "../../lib/art/ui/remove_cursor.png")] private const _remove_cursor:Class;
-		[Embed(source = "../../lib/art/ui/delay_cursor.png")] private const _delay_cursor:Class;
-		[Embed(source = "../../lib/art/ui/wrench_cursor.png")] private const _wrench_cursor:Class;
-		[Embed(source = "../../lib/art/ui/sel.png")] private const _select_cursor:Class;
 	}
 
 }

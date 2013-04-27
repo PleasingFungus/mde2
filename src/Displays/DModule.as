@@ -41,7 +41,7 @@ package Displays {
 						0xffffffff, true);
 			
 			detailsText = new FlxText( -1, -1, width + U.GRID_DIM / 2, getDetails());
-			font.configureFlxText(detailsText, 0x0, 'center');
+			U.MODULE_FONT_CLOSE.configureFlxText(detailsText, 0x0, 'center');
 			detailsText.scrollFactor = scrollFactor; //object
 			
 			if (module.abbrev) {
@@ -98,10 +98,6 @@ package Displays {
 				return;
 			
 			getColor();
-			
-			var font:FontTuple = this.font;
-			if (detailsText.font != font.id || detailsText.size != font.size)
-				font.configureFlxText(detailsText = new FlxText(-1, -1, width + U.GRID_DIM / 2, getDetails()), 0x0, 'center');
 			
 			for each (var displayNode:DNode in displayNodes)
 				displayNode.node.update();
@@ -194,10 +190,6 @@ package Displays {
 			
 			for each (var displayPort:DPort in displayPorts)
 				displayPort.draw();
-		}
-		
-		protected function get font():FontTuple {
-			return U.zoom >= 0.5 ? U.MODULE_FONT_CLOSE : U.MODULE_FONT_FAR;
 		}
 	}
 

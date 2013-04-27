@@ -99,7 +99,7 @@ package Displays {
 				displayText += "No source";
 				
 			if (port && port.source && !port.source.getValue().unknown && !port.stable)
-				displayText += " (D" + port.remainingDelay()+")";
+				displayText += " (Ticks Until Stable: " + port.remainingDelay()+")";
 			
 			return displayText;
 		}

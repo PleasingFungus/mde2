@@ -67,7 +67,7 @@ package Displays {
 				}
 			}
 			
-			var timeString:String = "Allowed cycles total: " + U.state.level.goal.timeLimit;
+			var timeString:String = "Allowed ticks total: " + U.state.level.goal.timeLimit;
 			if (U.state.level.goal is GeneratedGoal)
 				timeString += " (over " + (U.state.level.goal.timeLimit / (U.state.level.goal as GeneratedGoal).allowedTimePerInstr) + " expected instruction executions)";
 			timeString += ".";

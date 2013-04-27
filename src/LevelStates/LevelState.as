@@ -2,6 +2,8 @@ package LevelStates {
 	import Components.Bloc;
 	import flash.utils.Dictionary;
 	import flash.geom.Point;
+	import Helpers.DeleteHelper;
+	import Helpers.KeyHelper;
 	import Modules.CustomModule;
 	import Modules.SysDelayClock;
 	import org.flixel.*;
@@ -54,6 +56,8 @@ package LevelStates {
 		private var redoButton:GraphicButton;
 		private var loadButton:MenuButton;
 		private var resetButton:MenuButton;
+		
+		private var deleteHint:KeyHelper;
 		
 		
 		private var displayTime:DTime;
@@ -163,6 +167,7 @@ package LevelStates {
 			upperLayer.add(new Scroller);
 			upperLayer.add(new DCurrent(displayWires, displayModules));
 			upperLayer.add(new DModuleInfo(displayModules));
+			upperLayer.add(deleteHint = new DeleteHelper);
 			if (level.delay) {
 				if (!displayDelay)
 					midLayer.add(displayDelay = new DDelay(modules, displayModules));
@@ -701,6 +706,8 @@ package LevelStates {
 			undoButton.setAlpha(undoAlpha);
 			redoButton.setAlpha(undoAlpha);
 			
+			deleteHint.exists = !currentWire && !currentBloc && !currentModule && (findMousedModule() || findMousedWire());
+			
 			if (loadButton) {
 				var successSave:String = findSuccessSave();
 				loadButton.setExists(successSave != savedString && successSave != null);
@@ -833,13 +840,6 @@ package LevelStates {
 			});
 		}
 		
-		//private function get buttonMoused():MenuButton {
-			//for each (var button:MenuButton in buttons)
-				//if (button.exists && button.moused)
-					//return button;
-			//return null;
-		//}
-		
 		
 		public function numMemoryWriters():int {
 			var num:int = 0;
@@ -849,15 +849,20 @@ package LevelStates {
 			return num;
 		}
 		
-		private function destroyWires():void {
+		private function findMousedWire():DWire {
 			if (U.buttonManager.moused)
-				return;
+				return null;
 			
 			for each (var wire:DWire in displayWires)
-				if (wire.exists && wire.overlapsPoint(U.mouseFlxLoc)) {
-					new CustomAction(Wire.remove, Wire.place, wire.wire).execute();
-					//break;
-				}
+				if (wire.exists && wire.overlapsPoint(U.mouseFlxLoc))
+					return wire;
+			return null;
+		}
+		
+		private function destroyWires():void {
+			var mousedWire:DWire = findMousedWire();
+			if (mousedWire)
+				new CustomAction(Wire.remove, Wire.place, mousedWire.wire).execute();
 		}
 		
 		private function ensureNothingHeld():void {

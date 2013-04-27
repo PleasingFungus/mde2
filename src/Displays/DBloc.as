@@ -15,23 +15,18 @@ package Displays {
 		
 		private var displayWires:Vector.<DWire>;
 		private var displayModules:Vector.<DModule>;
-		private var selected:Boolean;
 		public var bloc:Bloc;
 		public function DBloc() {
 			super();
-			selected = true;
 		}
 		
 		override public function update():void {
 			super.update();
 			
 			if (!bloc.exists) {
-				if (selected)
-					setSelect(false);
+				setSelect(false);
 				return;
 			}
-			if (!selected)
-				setSelect(true);
 			
 			if (bloc.rooted)
 				checkRootedState();
@@ -64,7 +59,6 @@ package Displays {
 				if (moused) {
 					new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
 					bloc.mobilize();
-					setSelect(false);
 					bloc.exists = true;
 				} else
 					setSelect(false);
@@ -76,7 +70,7 @@ package Displays {
 			if (ControlSet.DELETE_KEY.justPressed()) {
 				new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
 				setSelect(false);
-				U.buttonManager.moused = true;
+				U.buttonManager.moused = true; //clunky - avoid other things being deleted
 			}
 			
 			if (ControlSet.CUT_KEY.justPressed()) {
@@ -117,7 +111,7 @@ package Displays {
 				dmodule.selected = selected;
 			for each (var dwire:DWire in displayWires)
 				dwire.selected = selected;
-			bloc.exists = this.selected = selected;
+			bloc.exists = exists = selected;
 		}
 		
 		public static function fromDisplays(DisplayWires:Vector.<DWire>, DisplayModules:Vector.<DModule>, Rooted:Boolean = true):DBloc {

@@ -60,6 +60,10 @@ package Helpers {
 			super.draw();
 		}
 		
+		protected function basicDraw():void {
+			super.draw();
+		}
+		
 		
 		public static const ARROWS_BY_NAME:Array = ["LEFT", "UP", "RIGHT", "DOWN"];
 		

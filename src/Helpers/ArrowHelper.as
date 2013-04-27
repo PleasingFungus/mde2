@@ -45,7 +45,7 @@ package Helpers {
 		}
 		
 		protected static const BUFFER:int = 4;
-		protected static const PRESS_LIMIT:Number = 2.4; //seconds
+		protected static const PRESS_LIMIT:Number = 1.6; //seconds
 	}
 
 }

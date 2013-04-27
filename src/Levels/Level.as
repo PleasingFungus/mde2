@@ -130,7 +130,7 @@ package Levels {
 			SEL_TUT.preplacesFixed = false;
 			SEL_TUT.predecessors.push(MOD_TUT);
 			
-			var COPY_TUT:Level = new Level("Copying Tutorial", new WireTutorialGoal(2, "Set memory line 1 to 2! (Wire-drawing disabled.)\n\n(Copy modules and wires by shift-dragging to select them, then pressing "+ControlSet.COPY_KEY+" to copy and "+ControlSet.PASTE_KEY+" to paste. Modules and wires can be copied from one level to another, so you don't have to duplicate effort.)"),
+			var COPY_TUT:Level = new Level("Copying Tutorial", new WireTutorialGoal(2, "Set memory line 1 to 2! (Wire-drawing disabled.)\n\n(Copy modules and wires by shift-dragging to select them, then pressing "+ControlSet.COPY_KEY+" to copy and "+ControlSet.PASTE_KEY+" to paste.)"),
 											false, [ConstIn, Adder, DataWriter]);
 			COPY_TUT.canDrawWires = COPY_TUT.canPlaceModules = false;
 			COPY_TUT.predecessors.push(SEL_TUT);

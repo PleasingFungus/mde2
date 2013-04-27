@@ -50,7 +50,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Continuously outputs a specified line of memory. Each tick, sets that line in memory to the input if the write-control is " + BooleanValue.TRUE + ".";
+			return "Outputs a specified line of memory. Each tick, sets that line in memory to the input if the write-control is " + BooleanValue.TRUE + ".";
 		}
 		
 		override public function drive(port:Port):Value {

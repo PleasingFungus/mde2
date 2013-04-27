@@ -38,7 +38,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Continuously outputs a specified line of memory.";
+			return "Outputs a specified line of memory.";
 		}
 		
 		override public function drive(port:Port):Value {

@@ -127,7 +127,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Stores " + width + " values, and continuously outputs two of them, specified by index. Each tick, sets one specified value to the input if the write-control is " + BooleanValue.TRUE + ".";
+			return "Stores " + width + " values, and outputs two of them, specified by index. Each tick, sets one specified value to the input if the write-control is " + BooleanValue.TRUE + ".";
 		}
 		
 		override public function drive(port:Port):Value {

@@ -27,7 +27,7 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Stores & continuously outputs a value. Each tick, sets its value to the input."
+			return "Stores & outputs a value. Each tick, sets its value to the input."
 		}
 		
 		override public function drive(port:Port):Value {

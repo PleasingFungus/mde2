@@ -85,8 +85,8 @@ package Modules {
 		
 		override public function getDescription():String {
 			if (width == 1)
-				return "Stores & continuously outputs a value. Each tick, sets its value to the input if the control is "+BooleanValue.TRUE+"."
-			return "Stores & continuously outputs "+width+" values. Each tick, sets its values to the inputs if the control is "+BooleanValue.TRUE+"."
+				return "Stores & outputs a value. Each tick, sets its value to the input if the control is "+BooleanValue.TRUE+"."
+			return "Stores & outputs "+width+" values. Each tick, sets its values to the inputs if the control is "+BooleanValue.TRUE+"."
 		}
 		
 		override public function drive(port:Port):Value {

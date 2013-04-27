@@ -30,18 +30,20 @@ package Helpers {
 				return; //blank key
 			
 			var keySpr:FlxSprite;
-			var off:int;
 			
 			var dir:int = ARROWS_BY_NAME.indexOf(key.key);
 			if (dir != -1) {
 				keySpr = new FlxSprite().loadGraphic(arrow_pngs[dir]);
-				off = 8;
+				stamp(keySpr, 8, 8);
 			} else {
-				keySpr = U.LABEL_FONT.configureFlxText(new FlxText(0, 0, 1000, key.toString()));
-				off = 4;
+				keySpr = new FlxText(0, 0, width, getText()).setFormat(U.MUNRO, 16, 0x1, 'center');
+				stamp(keySpr, 0, 4);
 			}
 			
-			stamp(keySpr, off, off);
+		}
+		
+		protected function getText():String {
+			return key.toString();
 		}
 		
 		override public function update():void {

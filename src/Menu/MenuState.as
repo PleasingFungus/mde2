@@ -15,7 +15,7 @@ package Menu {
 			C.setPrintReady();
 			U.init();
 			
-			if (!U.tutorialState) {
+			if (!U.tutorialState && !U.DEBUG_SKIP_TUT) {
 				FlxG.switchState(new HowToPlayState); return;
 			}
 			

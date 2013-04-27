@@ -40,7 +40,7 @@ package Modules {
 		
 		override public function getDescription():String {
 			var edgeLength:int = configuration.value;
-			return "Outputs "+EDGE+" for "+edgeLength+" ticks every "+(U.state ? U.state.time.clockPeriod : '-')+" ticks, and "+NO_EDGE+" the rest of the time."
+			return "Outputs "+EDGE+" for the last "+edgeLength+" ticks out of every "+(U.state ? U.state.time.clockPeriod : '-')+"; outputs "+NO_EDGE+" the rest of the time."
 		}
 		
 		protected function get delayLength():int {

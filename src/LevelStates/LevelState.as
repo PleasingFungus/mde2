@@ -912,9 +912,9 @@ package LevelStates {
 			DWire.updateStatic();
 			
 			super.draw();
-			if (U.DEBUG_RENDER_COLLIDE)
+			if (DEBUG.RENDER_COLLIDE)
 				debugRenderCollision();
-			if (U.DEBUG_RENDER_CURRENT)
+			if (DEBUG.RENDER_CURRENT)
 				debugRenderCurrent();
 			
 			if (!matrix) {

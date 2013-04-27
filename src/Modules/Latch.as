@@ -21,7 +21,7 @@ package Modules {
 			configuration = new Configuration(new Range(1, 8, Width));
 			setByConfig();
 			
-			super(X, Y, "Latch", Module.CAT_STORAGE, Width, Width, 1);
+			super(X, Y, "Storage", Module.CAT_STORAGE, Width, Width, 1);
 			abbrev = "L";
 			
 			delay = 2;

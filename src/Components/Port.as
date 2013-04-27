@@ -85,7 +85,7 @@ package Components {
 		
 		
 		protected function log(...args):void {
-			if (U.DEBUG_PRINT_CONNECTIONS)
+			if (DEBUG.PRINT_CONNECTIONS)
 				C.log(args);
 		}
 		

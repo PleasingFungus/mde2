@@ -100,7 +100,8 @@ package Testing.Tests {
 				log(i + ": " + instructions[i]);
 			log("PROGRAM END\n\n");
 			
-			testRun();
+			if (DEBUG.ON)
+				testRun();
 		}
 		
 		protected function genFirstValues():Vector.<AbstractArg> {
@@ -306,7 +307,7 @@ package Testing.Tests {
 		
 		
 		protected function log(...args):void {
-			if (U.DEBUG_PRINT_TESTS)
+			if (DEBUG.PRINT_TESTS)
 				C.log(args);
 		}
 		

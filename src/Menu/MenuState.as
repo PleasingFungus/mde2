@@ -15,7 +15,7 @@ package Menu {
 			C.setPrintReady();
 			U.init();
 			
-			if (!U.tutorialState && !U.DEBUG_SKIP_TUT) {
+			if (!U.tutorialState && !DEBUG.SKIP_TUT) {
 				FlxG.switchState(new HowToPlayState); return;
 			}
 			
@@ -36,7 +36,7 @@ package Menu {
 				X = 10;
 				var colButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
 				for each (var level:Level in levelCol) {
-					if (!U.DEBUG_UNLOCK_ALL && !level.unlocked())
+					if (!DEBUG.UNLOCK_ALL && !level.unlocked())
 						continue;
 					
 					var button:TextButton = new TextButton(X, Y, level.name, function switchTo(level:Level):void { 

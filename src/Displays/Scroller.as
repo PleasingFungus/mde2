@@ -1,6 +1,7 @@
 package Displays {
 	import Controls.ControlSet;
 	import flash.geom.Point;
+	import Helpers.ArrowHelper;
 	import org.flixel.*;
 	
 	/**
@@ -14,7 +15,7 @@ package Displays {
 			super();
 			
 			scrollSpeed = new Point;
-			//TODO: add buttons
+			add(new ArrowHelper);
 		}
 		
 		override public function update():void {

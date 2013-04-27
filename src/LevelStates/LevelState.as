@@ -118,7 +118,7 @@ package LevelStates {
 		}
 		
 		private function addWire(w:Wire, fixed:Boolean = true):void {
-			w.FIXED = fixed;
+			w.FIXED = fixed;;
 			if (!Wire.place(w))
 				return;
 			
@@ -565,7 +565,7 @@ package LevelStates {
 							addEditSliderbar();
 						else
 							pickUpModule();
-					} else {
+					} else if (level.canDrawWires) {
 						currentWire = new Wire(U.pointToGrid(U.mouseLoc))
 						displayWires.push(midLayer.add(new DWire(currentWire)));
 					}
@@ -744,7 +744,7 @@ package LevelStates {
 								newGraphic = _grab_cursor;
 								offsetX = -4;
 								offsetY = -3;
-							} else
+							} else if (level.canDrawWires)
 								newGraphic = _pen_cursor;
 						} else if (!mousedModule.FIXED) {
 							if (ControlSet.CLICK_MODIFY_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration()) {
@@ -1107,9 +1107,16 @@ package LevelStates {
 				savedString = saveString;
 			}
 			
-			for each (var module:Module in level.modules) {
-				module.cleanup();
-				addModule(module);
+			if (level.preplacesFixed || RESET_SAVE == saveString || !saveString) {
+				for each (var wire:Wire in level.wires) {
+					wire.connections = new Vector.<Carrier>;
+					addWire(wire, level.preplacesFixed);
+				}
+				
+				for each (var module:Module in level.modules) {
+					module.cleanup();
+					addModule(module, level.preplacesFixed);
+				}
 			}
 		}
 		
@@ -1199,7 +1206,7 @@ package LevelStates {
 		private const LIST_ZOOM:int = 4;
 		private const LIST_VIEW_MODES:int = 5;
 		
-		private const RESET_SAVE:String = U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM + U.SAVE_DELIM;
+		private const RESET_SAVE:String = U.MAJOR_SAVE_DELIM + U.MAJOR_SAVE_DELIM;
 		
 		[Embed(source = "../../lib/art/ui/eye.png")] private const _view_normal_sprite:Class;
 		[Embed(source = "../../lib/art/ui/eye_delayb.png")] private const _view_delay_sprite:Class;

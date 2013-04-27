@@ -387,6 +387,14 @@ package Components {
 			connections.splice(connections.indexOf(connection), 1);
 		}
 		
+		public function shift(delta:Point):Wire {
+			for each (var p:Point in path) {
+				p.x += delta.x;
+				p.y += delta.y;
+			}
+			return this;
+		}
+		
 		public function toString():String {
 			return "WIRE: " + path[0].x + ", " + path[0].y + " -> " + path[path.length - 1].x + ", " + path[path.length -1].y;
 		}
@@ -413,6 +421,15 @@ package Components {
 			var wire:Wire = new Wire(path[0]);
 			wire.path = path;
 			return wire;
+		}
+		
+		public static function wireBetween(Start:Point, End:Point):Wire {
+			var w:Wire = new Wire(Start);
+			w.constrained = false;
+			if (!w.attemptPathTo(End, true))
+				throw new Error("Wire failed to path!");
+			w.constrained = true;
+			return w;
 		}
 		
 		private const LEFT_DELTA:Point = new Point( -1, 0);

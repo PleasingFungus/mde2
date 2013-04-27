@@ -1,4 +1,7 @@
 package Levels {
+	import Components.Wire;
+	import Controls.ControlSet;
+	import flash.geom.Point;
 	import Modules.*;
 	import Testing.*;
 	import Values.OpcodeValue;
@@ -12,7 +15,10 @@ package Levels {
 		public var name:String;
 		public var goal:LevelGoal;
 		public var modules:Vector.<Module>;
-		public var expectedOps:Vector.<OpcodeValue>
+		public var wires:Vector.<Wire>;
+		public var preplacesFixed:Boolean = true;
+		public var canDrawWires:Boolean = true;
+		public var expectedOps:Vector.<OpcodeValue>;
 		public var allowedModules:Vector.<Class>
 		public var predecessors:Vector.<Level>;
 		public var delay:Boolean;
@@ -26,6 +32,7 @@ package Levels {
 			if (Modules)
 				for each (var module:Module in Modules)
 					modules.push(module);
+			wires = new Vector.<Wire>;
 			
 			expectedOps = new Vector.<OpcodeValue>;
 			if (ExpectedOps)
@@ -45,6 +52,13 @@ package Levels {
 			this.delay = delay;
 			
 			predecessors = new Vector.<Level>;
+		}
+		
+		public function setWires(Wires:Array):Level {
+			wires = new Vector.<Wire>;
+			for each (var wire:Wire in Wires)
+				wires.push(wire);
+			return this;
 		}
 		
 		public function setLast():void {
@@ -89,11 +103,33 @@ package Levels {
 			var OP_TUT:Level = new Level("Opcodes", new OpcodeTutorialGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			OP_TUT.predecessors.push(ACC_TUT);
-			var SEL_TUT:Level = new Level("Selection", new InstructionSelectGoal, false,
+			var ISEL_TUT:Level = new Level("Selection", new InstructionSelectGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
-			SEL_TUT.predecessors.push(OP_TUT);
+			ISEL_TUT.predecessors.push(OP_TUT);
 			
-			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT, OP_TUT, SEL_TUT);
+			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT, OP_TUT, ISEL_TUT);
+			
+			var SEL_TUT:Level = new Level("Selection Tutorial", new WireTutorialGoal(2, "Set memory line 1 to 2! (Wire-drawing disabled.)\n\n(Select modules and wires by holding " + ControlSet.DRAG_MODIFY_KEY + " and dragging; once held, pick up & place them by clicking.)"),
+										  false, [], [], [new ConstIn(10, 0, 1), new Adder(16, 2), new DataWriter(22, 14)]);
+			SEL_TUT.setWires([Wire.wireBetween(SEL_TUT.modules[0].layout.ports[0].Loc, SEL_TUT.modules[1].layout.ports[0].Loc), //const to adder input 1
+							  Wire.wireBetween(SEL_TUT.modules[1].layout.ports[0].Loc, SEL_TUT.modules[1].layout.ports[1].Loc), //adder input 1 to adder input 2
+							  Wire.wireBetween(SEL_TUT.modules[1].layout.ports[2].Loc, SEL_TUT.modules[2].layout.ports[0].Loc), //adder to dwrite value
+							  Wire.wireBetween(SEL_TUT.modules[2].layout.ports[1].Loc, SEL_TUT.modules[1].layout.ports[1].Loc)])  //adder input 2 to dwrite line
+			SEL_TUT.modules[0].x -= 4;
+			SEL_TUT.modules[0].y -= 6;
+			SEL_TUT.modules[2].x += 6;
+			SEL_TUT.modules[2].y -= 2;
+			
+			SEL_TUT.wires[0].shift(new Point( -4, -6));
+			SEL_TUT.wires[1].shift(new Point( -2, 2));
+			SEL_TUT.wires[2].shift(new Point(6, -2));
+			SEL_TUT.wires[3].shift(new Point(-6, 4));
+			
+			SEL_TUT.canDrawWires = false;
+			SEL_TUT.preplacesFixed = false;
+			SEL_TUT.predecessors.push(MOD_TUT);
+			
+			levels.push(SEL_TUT);
 			
 			var D0_TUT:Level = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
 										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
@@ -147,8 +183,9 @@ package Levels {
 			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD);
 			
 			columns.push(makeVec([WIRE_TUT, MOD_TUT]));
+			columns.push(makeVec([SEL_TUT]));
 			columns.push(makeVec([ACC_TUT]));
-			columns.push(makeVec([INSTR_TUT, OP_TUT, SEL_TUT]));
+			columns.push(makeVec([INSTR_TUT, OP_TUT, ISEL_TUT]));
 			columns.push(makeVec([addCPU, cpuJMP, cpuADV, cpuLD]));
 			columns.push(makeVec([D0_TUT]));
 			columns.push(makeVec([D1_TUT]));

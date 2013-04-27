@@ -1124,6 +1124,8 @@ package LevelStates {
 					addModule(module, level.preplacesFixed);
 				}
 			}
+			
+			makeUI();
 		}
 		
 		private function loadFromSuccess():void {

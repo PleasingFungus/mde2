@@ -94,7 +94,7 @@ package Displays {
 					FlxG.camera.shake(0.01 * U.zoom, 0.05);
 					new CustomAction(bloc.place, bloc.remove, U.pointToGrid(U.mouseLoc)).execute();
 					setSelect(true);
-				} else {
+				} else if (U.buttonManager.moused) {
 					bloc.destroy();
 					setSelect(false);
 				}

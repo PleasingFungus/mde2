@@ -18,6 +18,7 @@ package Levels {
 		public var wires:Vector.<Wire>;
 		public var preplacesFixed:Boolean = true;
 		public var canDrawWires:Boolean = true;
+		public var canPlaceModules:Boolean = true;
 		public var expectedOps:Vector.<OpcodeValue>;
 		public var allowedModules:Vector.<Class>
 		public var predecessors:Vector.<Level>;
@@ -129,7 +130,12 @@ package Levels {
 			SEL_TUT.preplacesFixed = false;
 			SEL_TUT.predecessors.push(MOD_TUT);
 			
-			levels.push(SEL_TUT);
+			var COPY_TUT:Level = new Level("Copying Tutorial", new WireTutorialGoal(2, "Set memory line 1 to 2! (Wire-drawing disabled.)\n\n(Copy modules and wires by shift-dragging to select them, then pressing "+ControlSet.COPY_KEY+" to copy and "+ControlSet.PASTE_KEY+" to paste. Modules and wires can be copied from one level to another, so you don't have to duplicate effort.)"),
+											false, [ConstIn, Adder, DataWriter]);
+			COPY_TUT.canDrawWires = COPY_TUT.canPlaceModules = false;
+			COPY_TUT.predecessors.push(SEL_TUT);
+			
+			levels.push(SEL_TUT, COPY_TUT);
 			
 			var D0_TUT:Level = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
 										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
@@ -183,7 +189,7 @@ package Levels {
 			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD);
 			
 			columns.push(makeVec([WIRE_TUT, MOD_TUT]));
-			columns.push(makeVec([SEL_TUT]));
+			columns.push(makeVec([SEL_TUT, COPY_TUT]));
 			columns.push(makeVec([ACC_TUT]));
 			columns.push(makeVec([INSTR_TUT, OP_TUT, ISEL_TUT]));
 			columns.push(makeVec([addCPU, cpuJMP, cpuADV, cpuLD]));

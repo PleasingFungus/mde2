@@ -195,7 +195,7 @@ package LevelStates {
 		}
 		
 		private function makeEditLists():void {
-			if (level.allowedModules.length)
+			if (level.canPlaceModules && level.allowedModules.length)
 				switch (listOpen) {
 					case LIST_MODULES: makeModuleList(); break;
 					case LIST_CATEGORIES: makeModuleCatList(); break;

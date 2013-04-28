@@ -134,8 +134,10 @@ package Displays {
 			return dBloc;
 		}
 		
-		public static function fromString(string:String, allowableTypes:Vector.<Class> = null, Rooted:Boolean = false):DBloc {
-			var bloc:Bloc = Bloc.fromString(string, allowableTypes);
+		public static function fromString(string:String, Rooted:Boolean = false):DBloc {
+			var bloc:Bloc = Bloc.fromString(string);
+			if (!bloc)
+				return null;
 			
 			var dBloc:DBloc = new DBloc;
 			dBloc.bloc = bloc;

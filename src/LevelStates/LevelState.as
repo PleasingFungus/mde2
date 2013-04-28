@@ -377,7 +377,7 @@ package LevelStates {
 					archetype = Module.getArchetype(moduleType);
 					moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
 						archetype = Module.getArchetype(moduleType);
-						if (!archetype.writesToMemory || numMemoryWriters() < level.writerLimit) {
+						if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
 							if (archetype.getConfiguration())
 								currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
 							else
@@ -395,7 +395,7 @@ package LevelStates {
 							listOpen = LIST_NONE;
 							makeUI();
 						}
-					}, "", ControlSet.NUMBER_HOTKEYS[i++]).setParam(moduleType).setTooltipCallback(archetype.getFullDescription).setDisabled(archetype.writesToMemory && numMemoryWriters() >= level.writerLimit));
+					}, "", ControlSet.NUMBER_HOTKEYS[i++]).setParam(moduleType).setTooltipCallback(archetype.getFullDescription).setDisabled(archetype.writesToMemory && level.writerLimit && numMemoryWriters() >= level.writerLimit));
 				}
 			}
 			
@@ -437,7 +437,7 @@ package LevelStates {
 				archetype = Module.getArchetype(moduleType);
 				moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
 					archetype = Module.getArchetype(moduleType);
-					if (!archetype.writesToMemory || numMemoryWriters() < level.writerLimit) {
+					if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
 						if (archetype.getConfiguration())
 							currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
 						else
@@ -455,7 +455,7 @@ package LevelStates {
 						listOpen = LIST_NONE;
 						makeUI();
 					}
-				}, "", ControlSet.NUMBER_HOTKEYS[i++]).setParam(moduleType).setDisabled(archetype.writesToMemory && numMemoryWriters() >= level.writerLimit));
+				}, "", ControlSet.NUMBER_HOTKEYS[i++]).setParam(moduleType).setDisabled(archetype.writesToMemory && level.writerLimit && numMemoryWriters() >= level.writerLimit));
 				if (archetype.getFullDescription() != null)
 					moduleButtons[moduleButtons.length - 1].setTooltipCallback(archetype.getFullDescription);
 			}
@@ -582,14 +582,10 @@ package LevelStates {
 				}
 				
 				if (ControlSet.PASTE_KEY.justPressed() && U.clipboard) {
-					var allowedModules:Vector.<Class> = level.allowedModules;
-					if (numMemoryWriters() >= level.writerLimit) {
-						allowedModules = new Vector.<Class>;
-						for each (var moduleType:Class in level.allowedModules)
-							if (!Module.getArchetype(moduleType).writesToMemory)
-								allowedModules.push(moduleType);
-					}
-					var pastedBloc:DBloc = DBloc.fromString(U.clipboard, allowedModules);
+					var pastedBloc:DBloc = DBloc.fromString(U.clipboard);
+					if (!pastedBloc)
+						return;
+					
 					pastedBloc.extendDisplays(displayWires, displayModules);
 					
 					if (currentBloc)
@@ -845,7 +841,7 @@ package LevelStates {
 			var num:int = 0;
 			for each (var module:Module in modules)
 				if (module.exists && module.writesToMemory)
-					num += 1;
+					num += module.writesToMemory;
 			return num;
 		}
 		

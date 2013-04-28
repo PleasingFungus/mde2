@@ -11,6 +11,7 @@ package Levels {
 			super(Name, new ShardGoal(Description, Shard), Shard.delay, [], [], Modules);
 			expectedOps = Shard.expectedOps;
 			allowedModules = Shard.allowedModules;
+			writerLimit = 0;
 		}
 		
 	}

@@ -21,6 +21,7 @@ package Modules {
 			controls = new Vector.<Port>;
 			for each (var module:Module in modules) {
 				averageLoc = averageLoc.add(module);
+				
 				for each (port in module.inputs)
 					if (!port.source)
 						inputs.push(port);
@@ -30,6 +31,8 @@ package Modules {
 				for each (port in module.controls)
 					if (!port.source)
 						controls.push(port);
+				
+				writesToMemory += module.writesToMemory;
 			}
 			
 			averageLoc.x = Math.round(averageLoc.x / modules.length);
@@ -168,12 +171,13 @@ package Modules {
 			if (!selection.length)
 				return null;
 			
-			var writerCount:int = U.state.numMemoryWriters();
-			for each (module in selection)
-				if (module.writesToMemory)
-					writerCount += 1;
-			if (writerCount > U.state.level.writerLimit)
-				return null;
+			if (U.state.level.writerLimit) {
+				var writerCount:int = U.state.numMemoryWriters();
+				for each (module in selection)
+					writerCount += module.writesToMemory;
+				if (writerCount > U.state.level.writerLimit)
+					return null;
+			}
 			
 			var clones:Vector.<Module> = new Vector.<Module>;
 			for each (module in selection) {

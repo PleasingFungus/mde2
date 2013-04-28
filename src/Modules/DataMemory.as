@@ -15,7 +15,7 @@ package Modules {
 		public function DataMemory(X:int, Y:int) {
 			super(X, Y, "Data Memory", Module.CAT_STORAGE, 1, 1, 2);
 			delay = 10;
-			writesToMemory = true;
+			writesToMemory = 1;
 		}
 		
 		override public function initialize():void {

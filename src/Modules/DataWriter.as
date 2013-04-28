@@ -19,7 +19,7 @@ package Modules {
 			super(X, Y, "Basic Data Writer", Module.CAT_STORAGE, 1, 0, 1);
 			abbrev = "wr";
 			delay = 12;
-			writesToMemory = true;
+			writesToMemory = 1;
 		}
 		
 		override public function initialize():void {

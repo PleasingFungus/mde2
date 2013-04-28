@@ -114,20 +114,25 @@ package Components {
 		}
 		
 		
-		public static function fromString(str:String, allowableTypes:Vector.<Class> = null, Rooted:Boolean = false):Bloc {
+		public static function fromString(str:String, Rooted:Boolean = false):Bloc {
 			var stringSegments:Array = str.split(U.MAJOR_SAVE_DELIM);
 			var moduleStrings:Array = stringSegments[0].split(U.SAVE_DELIM);
 			var wireStrings:Array = stringSegments[1].split(U.SAVE_DELIM);
+			
+			var allowableTypes:Vector.<Class> = U.state.level.allowedModules;
+			var writersRemaining:int = U.state.level.writerLimit ? U.state.level.writerLimit - U.state.numMemoryWriters() : int.MAX_VALUE;
 			
 			var modules:Vector.<Module> = new Vector.<Module>;
 			var averageLoc:Point = new Point;
 			for each (var moduleString:String in moduleStrings) {
 				var module:Module = Module.fromString(moduleString, allowableTypes);
 				if (!module) continue;
+				if (module.writesToMemory > writersRemaining) continue;
 				
 				modules.push(module);
 				U.state.modules.push(module);
 				averageLoc = averageLoc.add(module);
+				writersRemaining -= module.writesToMemory;
 			}
 			if (modules.length) {
 				averageLoc.x = Math.round(averageLoc.x / modules.length);
@@ -149,6 +154,8 @@ package Components {
 				}
 			}
 			if (!modules.length) {
+				if (!wires.length)
+					return null;
 				averageLoc.x = Math.round(averageLoc.x / wireLength);
 				averageLoc.y = Math.round(averageLoc.y / wireLength);
 			}

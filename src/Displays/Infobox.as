@@ -13,20 +13,18 @@ package Displays {
 		protected var bg:FlxSprite;
 		private var scrollbar:Scrollbar;
 		private var scroll:int;
-		protected var page:FlxGroup;
-		protected var pageTop:int;
-		protected var pageBottom:int;
+		protected var page:InfoboxPage;
+		private var pageTop:int;
+		private var pageBottom:int;
 		public function Infobox() {
 			super();
 			init();
-			for each (var o:FlxObject in page.members)
-				setVisible(o);
 		}
 		
 		protected function init():void {
 			makeBG();
 			makeCloseButton();
-			add(page = new FlxGroup);
+			add(page = new InfoboxPage(bg.width - RAISED_BORDER_WIDTH * 4, bg.height - RAISED_BORDER_WIDTH * 4));
 			
 			pageTop = bg.y + RAISED_BORDER_WIDTH * 2;
 			pageBottom = bg.y + bg.height - RAISED_BORDER_WIDTH * 2;
@@ -37,6 +35,11 @@ package Displays {
 			scrollbar.arrowScrollFraction = lineHeight / (pageBottom - pageTop);
 			
 			scroll = 0;
+		}
+		
+		protected function setPageTop(top:int):void {
+			pageTop = top;
+			page.setDimensions(bg.width - RAISED_BORDER_WIDTH * 4, pageBottom - pageTop);
 		}
 		
 		protected function makeBG():void {
@@ -83,15 +86,9 @@ package Displays {
 			var newScroll:int = -scrollDistance * scrollFraction;
 			var delta:int = newScroll - scroll;
 			if (delta)
-				for each (var o:FlxObject in page.members) {
+				for each (var o:FlxObject in page.members)
 					o.y += delta;
-					setVisible(o);
-				}
 			scroll = newScroll;
-		}
-		
-		protected function setVisible(o:FlxObject):void {
-			o.visible = o.y >= pageTop && o.y + o.height <= pageBottom;
 		}
 		
 		protected function getPageHeight():int {
@@ -106,6 +103,12 @@ package Displays {
 				exists = false;
 			if (ControlSet.CANCEL_KEY.justPressed())
 				exists = false;
+		}
+		
+		
+		override public function draw():void {
+			page.setLoc(bg.x + RAISED_BORDER_WIDTH * 2, pageTop);
+			super.draw();
 		}
 		
 		[Embed(source = "../../lib/art/ui/close.png")] private const _close_sprite:Class;

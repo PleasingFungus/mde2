@@ -37,7 +37,7 @@ package Displays {
 															  "Expected Memory"), 0xffffff, 'center'));
 			
 			Y += ROW_HEIGHT * 2;
-			pageTop = Y;
+			setPageTop(Y);
 			
 			var skip:Boolean = false;
 			for (var memLine:int = 0; memLine < memory.length; memLine++) {

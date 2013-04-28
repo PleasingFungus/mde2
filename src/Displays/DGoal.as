@@ -31,7 +31,7 @@ package Displays {
 			Y += title.height + 8;
 			add(title);
 			
-			pageTop = Y;
+			setPageTop(Y);
 			
 			var addBodyText:Function = function addBodyText(text:String):void {
 				var bodyText:FlxText = new FlxText(X, Y, Width, text);

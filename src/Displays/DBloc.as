@@ -1,5 +1,7 @@
 package Displays {
+	import Actions.BlocLiftAction;
 	import Actions.CustomAction;
+	import Actions.MoveBlocAction;
 	import Components.Wire;
 	import Components.Bloc;
 	import Controls.ControlSet;
@@ -57,7 +59,7 @@ package Displays {
 				}
 				
 				if (moused) {
-					new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
+					new BlocLiftAction(bloc, U.pointToGrid(U.mouseLoc)).execute();
 					bloc.mobilize();
 					bloc.exists = true;
 				} else
@@ -86,7 +88,7 @@ package Displays {
 			else {
 				if (!U.buttonManager.moused && bloc.validPosition(U.pointToGrid(U.mouseLoc))) {
 					FlxG.camera.shake(0.01 * U.zoom, 0.05);
-					new CustomAction(bloc.place, bloc.remove, U.pointToGrid(U.mouseLoc)).execute();
+					new MoveBlocAction(bloc, U.pointToGrid(U.mouseLoc));
 					setSelect(true);
 				} else if (U.buttonManager.moused) {
 					bloc.destroy();

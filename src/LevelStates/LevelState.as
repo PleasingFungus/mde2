@@ -702,7 +702,7 @@ package LevelStates {
 			undoButton.setAlpha(undoAlpha);
 			redoButton.setAlpha(undoAlpha);
 			
-			deleteHint.exists = !currentWire && !currentBloc && !currentModule && (findMousedModule() || findMousedWire());
+			deleteHint.exists = !currentWire && !currentBloc && !currentModule && !selectionArea && (findMousedModule() || findMousedWire());
 			
 			if (loadButton) {
 				var successSave:String = findSuccessSave();

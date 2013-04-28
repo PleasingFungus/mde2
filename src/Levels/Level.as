@@ -150,6 +150,12 @@ package Levels {
 			levels.push(D0_TUT, D1_TUT, D2_TUT);
 			
 			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
+			addCPU.goal.description += "\n\nCPU instructions reference 'registers'. These are a set of 8 values, numbered 0-7, stored however you like.";
+			addCPU.goal.description += " The only requirement is that you are able to store values to, and on later ticks retrieve values from, locations numbered 0 - 7.";
+			addCPU.goal.description += "\n\nExample: a hypothetical MOVE instruction, which tells you to 'Set the DESTINATION register to the SOURCE register.";
+			addCPU.goal.description += "\n\nThis means you must set the register at the number indicated by the DESTINATION of the instruction to the value of the register at the number indicated by the SOURCE of the instruction.";
+			addCPU.goal.description += "\n\nE.g., MOV R7 = R4: set the value held in register 7 to the value held in register 4."
+			addCPU.goal.description += "\n\nHave fun!";
 			addCPU.predecessors.push(ACC_TUT);
 			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
 			cpuJMP.predecessors.push(addCPU);

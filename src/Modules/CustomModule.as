@@ -42,8 +42,6 @@ package Modules {
 			
 			super(X, Y, "Custom", CAT_MISC,  inputs.length, outputs.length, controls.length);
 			abbrev = "?";
-			
-			//TODO: calculate delay
 		}
 		
 		override protected function makePorts(numInputs:int, numOutputs:int, numControls:int):void {

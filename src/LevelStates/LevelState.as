@@ -601,8 +601,14 @@ package LevelStates {
 		}
 		
 		private function checkModuleControls():void {
-			if (ControlSet.CANCEL_KEY.justPressed() || ControlSet.DELETE_KEY.justPressed()) {
+			if (ControlSet.DELETE_KEY.justPressed()) {
 				currentModule.exists = false;
+				currentModule = null;
+				return;
+			}
+			
+			if (ControlSet.CANCEL_KEY.justPressed()) {
+				actionStack.pop().revert(); //revert 'pick up' action
 				currentModule = null;
 				return;
 			}

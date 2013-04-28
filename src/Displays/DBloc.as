@@ -99,9 +99,14 @@ package Displays {
 			if (ControlSet.CUT_KEY.justPressed())
 				U.clipboard = bloc.toString();
 			
-			if (ControlSet.CANCEL_KEY.justPressed() || ControlSet.DELETE_KEY.justPressed() ||
+			if (ControlSet.DELETE_KEY.justPressed() ||
 				ControlSet.PASTE_KEY.justPressed() || ControlSet.CUT_KEY.justPressed()) {
 				bloc.destroy();
+				setSelect(false);
+			}
+			
+			if (ControlSet.CANCEL_KEY.justPressed()) {
+				U.state.actionStack.pop().revert();
 				setSelect(false);
 			}
 			

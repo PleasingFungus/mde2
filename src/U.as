@@ -19,7 +19,7 @@ package  {
 	public class U {
 		public static const VERSION:String = "0.01";
 		
-		public static const BLIT_ENABLED:Boolean = true;
+		public static const BLIT_ENABLED:Boolean = false;
 		
 		[Embed(source = "../lib/fonts/munro.ttf", fontFamily = "MUNRO")] private const _1:String;
 		public static const MUNRO:String = "MUNRO";

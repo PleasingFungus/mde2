@@ -22,7 +22,7 @@ package Actions {
 		
 		override public function revert():Action {
 			bloc.place(oldLoc);
-			return super.execute();
+			return super.revert();
 		}
 		
 	}

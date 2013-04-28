@@ -1,4 +1,5 @@
 package Displays {
+	import Actions.Action;
 	import Actions.BlocLiftAction;
 	import Actions.CustomAction;
 	import Actions.MoveBlocAction;
@@ -106,7 +107,16 @@ package Displays {
 			}
 			
 			if (ControlSet.CANCEL_KEY.justPressed()) {
-				U.state.actionStack.pop().revert();
+				if (U.state.actionStack.length) {
+					var lastAction:Action = U.state.actionStack.pop();
+					if (lastAction is BlocLiftAction && (lastAction as BlocLiftAction).bloc == bloc)
+						lastAction.revert();
+					else {
+						U.state.actionStack.push(lastAction);
+						bloc.destroy();
+					}
+				} else
+					bloc.destroy();
 				setSelect(false);
 			}
 			

@@ -372,7 +372,7 @@ package LevelStates {
 			}
 			
 			if (recentModules.length) {
-				moduleButtons.push(new TextButton( -1, -1, "<Recent>").setDisabled(true));
+				moduleButtons.push(new TextButton( -1, -1, "---").setDisabled(true));
 				for each (moduleType in recentModules) {
 					archetype = Module.getArchetype(moduleType);
 					moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
@@ -608,7 +608,16 @@ package LevelStates {
 			}
 			
 			if (ControlSet.CANCEL_KEY.justPressed()) {
-				actionStack.pop().revert(); //revert 'pick up' action
+				if (U.state.actionStack.length) {
+					var lastAction:Action = actionStack.pop();
+					if (lastAction is CustomAction && (lastAction as CustomAction).param == currentModule)
+						lastAction.revert(); //revert 'pick up' action
+					else {
+						currentModule.exists = false;
+						actionStack.push(lastAction);
+					}
+				} else
+					currentModule.exists = false;
 				currentModule = null;
 				return;
 			}

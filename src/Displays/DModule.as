@@ -1,6 +1,7 @@
 package Displays {
 	import Components.Port;
 	import Components.Wire;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import Layouts.InternalDWire;
 	import Layouts.InternalWire;
@@ -24,11 +25,6 @@ package Displays {
 		private var nameText:FlxText;
 		private var detailsText:FlxText;
 		private var abbrevText:FlxText;
-		private var locked:Boolean;
-		private var wasValid:Boolean;
-		private var wasSelected:Boolean;
-		private var wasDeployed:Boolean;
-		private var wasExtant:Boolean;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
@@ -67,6 +63,8 @@ package Displays {
 				U.NODE_FONT.configureFlxText(nameText, 0x0, 'center');
 				nameText.scrollFactor = scrollFactor;
 			}
+			
+			updatePosition();
 		}
 		
 		private function getDetails():String {
@@ -86,14 +84,11 @@ package Displays {
 			super.update();
 			
 			visible = module.exists;
-			if (!module.exists) {
-				wasExtant = false;
+			if (!module.exists)
 				return;
-			}
 			
 			updatePosition();
 			visible = !outsideScreen();
-			wasExtant = true;
 			if (!visible)
 				return;
 			
@@ -116,21 +111,21 @@ package Displays {
 		}
 		
 		private function getColor():void {
-			wasValid = module.validPosition;
 			var moduleColor:uint;
 			
 			if (selected)
 				color = U.SELECTION_COLOR;
 			else if (module.FIXED)
 				color = 0xff808080;
-			else if (wasValid)
+			else if (module.validPosition)
 				color = 0xff7070a0;
 			else
 				color = 0xffa07070;
 		}
 		
+		private var lastLoc:Point;
 		protected function updatePosition():void {
-			if (wasDeployed && module.deployed && wasExtant)
+			if (lastLoc && module.equals(lastLoc))
 				return;
 			
 			var baseX:int = module.x * U.GRID_DIM;
@@ -158,7 +153,7 @@ package Displays {
 				abbrevText.y = y + (height - detailsText.height) / 2;
 			}
 			
-			wasDeployed = module.deployed;
+			lastLoc = module.clone();
 		}
 		
 		public function descriptionAt(fp:FlxPoint):String {

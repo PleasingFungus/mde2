@@ -16,6 +16,7 @@ package Displays {
 		
 		public function setDimensions(Width:int, Height:int):void {
 			textArea = new FlxSprite().makeGraphic(Width, Height, 0xffffffff, true);
+			textArea.scrollFactor.x = textArea.scrollFactor.y = 0;
 		}
 		
 		public function setLoc(X:int, Y:int):void {

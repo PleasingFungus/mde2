@@ -41,7 +41,7 @@ package Modules {
 														  getValue, "Memory value at line");
 			var controlNode:InternalNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
 															[new NodeTuple(dataNode, writeNode, writeOK)],
-															function getValue():BooleanValue { return writeOK() ? BooleanValue.TRUE : BooleanValue.FALSE; },
+															controls[0].getValue,
 															"Write-control: Memory value at line will be set to input value" );
 			return new InternalLayout([writeNode, dataNode, lineNode, controlNode]);
 		}

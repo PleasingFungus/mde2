@@ -4,6 +4,7 @@ package Modules {
 	import flash.utils.Dictionary;
 	import Layouts.*;
 	import Components.Port;
+	import UI.HighlightFormat;
 	import Values.Value;
 	/**
 	 * ...
@@ -78,6 +79,10 @@ package Modules {
 		}
 		
 		public function getDescription():String {
+			return null;
+		}
+		
+		public function getHighlitDescription():HighlightFormat {
 			return null;
 		}
 		

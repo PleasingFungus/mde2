@@ -2,6 +2,7 @@ package Displays {
 	import org.flixel.*;
 	import Testing.Goals.GeneratedGoal;
 	import UI.GraphicButton;
+	import UI.HighlightText;
 	import UI.MenuButton;
 	import Controls.ControlSet;
 	import Levels.Level;
@@ -48,10 +49,10 @@ package Displays {
 				addBodyText("\nOps to support:");
 				
 				for each (var op:OpcodeValue in level.expectedOps) {
-					var optext:String = op.verboseName;
-					if (op.description)
-						optext += ": " + op.description;
-					addBodyText(optext);
+					var highlitText:HighlightText = op.highlitDescription.makeHighlightText(X, Y, Width);
+					U.BODY_FONT.configureFlxText(highlitText);
+					Y += highlitText.height + 8;
+					page.add(highlitText);
 				}
 			}
 			

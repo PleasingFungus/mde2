@@ -1,4 +1,7 @@
 package Values {
+	import UI.ColorText;
+	import UI.HighlightFormat;
+	import UI.HighlightText;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -6,12 +9,30 @@ package Values {
 	public class OpcodeValue extends FixedValue {
 		
 		public var description:String;
+		public var highlitDescription:HighlightFormat;
 		public var longName:String;
 		
 		public function OpcodeValue(Name:String, value:int, Description:String = null, LongName:String = null) {
 			super(Name, value);
 			description = Description;
 			longName = LongName ? LongName : Name;
+			
+			if (description)
+				generateHighlitDescription();
+		}
+		
+		private function generateHighlitDescription():void {
+			var colorStrings:Vector.<ColorText> = new Vector.<ColorText>;
+			var escapedString:String = description;
+			for each (var keyword:ColorText in [SOURCE, TARGET, DESTINATION]) {
+				var keywordIndex:int = escapedString.indexOf(keyword.text.toUpperCase());
+				while (keywordIndex != -1) {
+					escapedString = escapedString.slice(0, keywordIndex) + HighlightText.FORMAT_MARK + escapedString.slice(keywordIndex + keyword.text.length);
+					colorStrings.push(keyword);
+					keywordIndex = escapedString.indexOf(keyword.text.toUpperCase());
+				}
+			}
+			highlitDescription = new HighlightFormat(verboseName + ": " + escapedString, colorStrings);
 		}
 		
 		override public function toString():String { return name + " (" + value + ")"; }
@@ -52,6 +73,9 @@ package Values {
 		public static const OP_ADDM:OpcodeValue = new OpcodeValue("ADDM", 14, "Set memory at the TARGET value to the sum of the SOURCE value and the DESTINATION value.", "Add Memory");
 		public static const OPS:Array = [OP_NOOP, OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_SET, OP_JMP, OP_SAV, OP_NOT, OP_AND, OP_OR, OP_GT, OP_SAVI, OP_ADDM];
 		
+		private const SOURCE:ColorText = new ColorText(0xe2618e, "source");
+		private const TARGET:ColorText = new ColorText(0xe29461, "target");
+		private const DESTINATION:ColorText = new ColorText(0x89cfcf, "destination");
 	}
 
 }

@@ -10,6 +10,8 @@ package Displays {
 	import Modules.Module;
 	import org.flixel.*;
 	import UI.FontTuple;
+	import UI.HighlightFormat;
+	import UI.Tooltip;
 	
 	/**
 	 * ...
@@ -156,15 +158,21 @@ package Displays {
 			lastLoc = module.clone();
 		}
 		
-		public function descriptionAt(fp:FlxPoint):String {
+		public function descriptionAt(fp:FlxPoint):HighlightFormat {
 			for each (var displayNode:DNode in displayNodes)
 				if (displayNode.overlapsPoint(fp))
-					return displayNode.node.getLabel();
+					return HighlightFormat.plain(displayNode.node.getLabel());
+			
+			var format:HighlightFormat = module.getHighlitDescription();
+			if (format) {
+				format.formatString = module.name + ": " + format.formatString;
+				return format;
+			}
 			
 			var out:String = module.name;
 			if (module.getDescription())
 				out += ": " + module.getFullDescription();
-			return out;
+			return HighlightFormat.plain(out);
 		}
 		
 		override public function draw():void {

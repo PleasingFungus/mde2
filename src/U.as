@@ -137,6 +137,7 @@ package  {
 		public static const SELECTION_COLOR:uint = 0x519dcf;
 		public static const DEFAULT_COLOR:uint = 0x0;
 		
+		public static const CONFIG_COLOR:uint = 0x89cfcf;
 		
 		public static const MIN_INT:int = -128;
 		public static const MAX_INT:int = 127;

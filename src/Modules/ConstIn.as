@@ -4,6 +4,8 @@ package Modules {
 	import Layouts.Nodes.PortNode;
 	import Layouts.Nodes.InternalNode;
 	import Layouts.PortLayout;
+	import UI.ColorText;
+	import UI.HighlightFormat;
 	import Values.NumericValue;
 	import Values.Value;
 	import Components.Port;
@@ -40,6 +42,10 @@ package Modules {
 		
 		override public function getDescription():String {
 			return "Outputs "+configuration.value+"."
+		}
+		
+		override public function getHighlitDescription():HighlightFormat {
+			return new HighlightFormat("Outputs {}", ColorText.singleVec(new ColorText(U.CONFIG_COLOR, configuration.value.toString())));
 		}
 		
 		override public function drive(port:Port):Value {

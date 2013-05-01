@@ -1,7 +1,10 @@
 package Displays {
 	import Modules.Module;
 	import org.flixel.*;
+	import UI.ColorText;
 	import UI.FloatText;
+	import UI.HighlightFormat;
+	import UI.HighlightText;
 	
 	/**
 	 * ...
@@ -18,7 +21,7 @@ package Displays {
 		
 		override public function update():void {
 			if (!renderBuddy)
-				U.state.upperLayer.add(renderBuddy = new FloatText(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, 300, " "), 0xffffff)));
+				U.state.upperLayer.add(renderBuddy = new FloatText(U.LABEL_FONT.configureFlxText(new HighlightText( -1, -1, 300, " ", new Vector.<ColorText>), 0xffffff)));
 			renderBuddy.visible = U.state.VIEW_MODE_NORMAL == U.state.viewMode;
 			if (renderBuddy.visible)
 				checkMouse();
@@ -32,9 +35,7 @@ package Displays {
 				//second iteration to avoid repeating checks on constraints from findMousedModule
 				for each (var dModule:DModule in displayModules)
 					if (dModule.module == mousedModule) {
-						var tip:String = dModule.descriptionAt(U.mouseFlxLoc);
-						if (tip != renderBuddy.text.text)
-							renderBuddy.text.text = tip;
+						dModule.descriptionAt(U.mouseFlxLoc).update(renderBuddy.text as HighlightText);
 						break;
 					}
 		}

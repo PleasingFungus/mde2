@@ -6,6 +6,8 @@ package Modules {
 	import Layouts.*;
 	import Layouts.Nodes.StandardNode;
 	import flash.geom.Point;
+	import UI.ColorText;
+	import UI.HighlightFormat;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -62,6 +64,11 @@ package Modules {
 		
 		override public function getDescription():String {
 			return "Outputs "+BooleanValue.NUMERIC_TRUE+" if the input is "+(configuration as OpConfiguration).opValue+", else "+BooleanValue.NUMERIC_FALSE+"."
+		}
+		
+		override public function getHighlitDescription():HighlightFormat {
+			return new HighlightFormat("Outputs " + BooleanValue.NUMERIC_TRUE + " if the input is {}, else " + BooleanValue.NUMERIC_FALSE + ".",
+									   ColorText.singleVec(new ColorText(U.CONFIG_COLOR, (configuration as OpConfiguration).opValue.toString().replace(' ', ''))));
 		}
 		
 		

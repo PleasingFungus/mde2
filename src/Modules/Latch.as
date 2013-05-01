@@ -7,6 +7,8 @@ package Modules {
 	import Layouts.Nodes.StandardNode;
 	import Layouts.Nodes.NodeTuple;
 	import flash.geom.Point;
+	import UI.ColorText;
+	import UI.HighlightFormat;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -87,6 +89,13 @@ package Modules {
 			if (width == 1)
 				return "Stores & outputs a value. Each tick, sets its value to the input if the control is "+BooleanValue.TRUE+"."
 			return "Stores & outputs "+width+" values. Each tick, sets its values to the inputs if the control is "+BooleanValue.TRUE+"."
+		}
+		
+		override public function getHighlitDescription():HighlightFormat {
+			if (width == 1)
+				return null;
+			return new HighlightFormat( "Stores & outputs {} values. Each tick, sets its values to the inputs if the control is "+BooleanValue.TRUE+".",
+									   ColorText.singleVec(new ColorText(U.CONFIG_COLOR, width.toString())));
 		}
 		
 		override public function drive(port:Port):Value {

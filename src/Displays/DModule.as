@@ -11,7 +11,6 @@ package Displays {
 	import org.flixel.*;
 	import UI.FontTuple;
 	import UI.HighlightFormat;
-	import UI.Tooltip;
 	
 	/**
 	 * ...

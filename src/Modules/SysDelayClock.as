@@ -2,6 +2,8 @@ package Modules {
 	import Components.Port;
 	import Values.Value;
 	import Values.NumericValue;
+	import UI.ColorText;
+	import UI.HighlightFormat;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -41,6 +43,11 @@ package Modules {
 		override public function getDescription():String {
 			var edgeLength:int = configuration.value;
 			return "Outputs "+EDGE+" for the last "+(edgeLength != 1 ? edgeLength + ' ticks' : 'tick')+" out of every "+(U.state ? U.state.time.clockPeriod : '-')+"; outputs "+NO_EDGE+" the rest of the time."
+		}
+		
+		override public function getHighlitDescription():HighlightFormat {
+			return new HighlightFormat("Outputs " + EDGE + " for the last {}"+(edgeLength != 1 ? ' ticks' : '')+" out of every " + (U.state ? U.state.time.clockPeriod : '-') + "; outputs " + NO_EDGE + " the rest of the time.",
+										ColorText.singleVec(new ColorText(U.CONFIG_COLOR, (edgeLength != 1 ? edgeLength.toString() : 'tick'))));
 		}
 		
 		protected function get delayLength():int {

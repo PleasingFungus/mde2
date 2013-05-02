@@ -78,6 +78,8 @@ package  {
 				return;
 			initialized = true;
 			
+			C.warmupFactors(MAX_INT);
+			
 			save = new FlxSave();
 			save.bind("MultiduckExtravaganza");
 			
@@ -88,10 +90,10 @@ package  {
 			LevelShard.init();
 			
 			levels = Level.list();
+			if (DEBUG.ON)
+				Level.validate(levels);
 			
 			zoom = 1;
-			
-			C.warmupFactors(MAX_INT);
 		}
 		
 		public static function load():void {

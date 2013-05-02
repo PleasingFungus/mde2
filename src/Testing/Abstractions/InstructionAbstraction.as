@@ -14,7 +14,7 @@ package Testing.Abstractions {
 		public function InstructionAbstraction(type:InstructionType, args:Vector.<int>, value:int) {
 			this.type = type;
 			this.args = args ? args : new Vector.<int>;
-			this.value = value; 
+			this.value = value;
 		}
 		
 		public function toString():String {

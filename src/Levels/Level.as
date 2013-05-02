@@ -6,6 +6,7 @@ package Levels {
 	import Testing.*;
 	import Values.OpcodeValue;
 	import Testing.Goals.*;
+	import org.flixel.FlxG;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -210,6 +211,13 @@ package Levels {
 			columns.push(makeVec([pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD]));
 			
 			return levels;
+		}
+		
+		public static function validate(levels:Vector.<Level>):void {
+			for each (var level:Level in levels) {
+				FlxG.globalSeed = 0.5;
+				level.goal.genMem();
+			}
 		}
 		
 		private static function makeVec(levels:Array):Vector.<Level> {

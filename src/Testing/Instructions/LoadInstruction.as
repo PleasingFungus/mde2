@@ -16,6 +16,8 @@ package Testing.Instructions {
 		}
 		
 		override public function execute(memory:Dictionary, registers:Dictionary):int {
+			if (isNaN( memory[registers[args[1].value]]))
+				throw new Error("!!!");
 			registers[args[0].value] = memory[registers[args[1].value]];
 			return C.INT_NULL;
 		}

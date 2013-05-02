@@ -101,17 +101,18 @@ package Levels {
 											[ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder]);
 			INSTR_TUT.predecessors.push(ACC_TUT);
 			INSTR_TUT.writerLimit = 4;
-			var OP_TUT:Level = new Level("Opcodes", new OpcodeTutorialGoal, false,
+			var OP_TUT:Level = new Level("One Instruction", new OpcodeTutorialGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			OP_TUT.predecessors.push(ACC_TUT);
-			var ISEL_TUT:Level = new Level("Selection", new InstructionSelectGoal, false,
+			var ISEL_TUT:Level = new Level("Two Instructions", new InstructionSelectGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
 			ISEL_TUT.predecessors.push(OP_TUT);
 			
 			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT, OP_TUT, ISEL_TUT);
 			
-			var SEL_TUT:Level = new Level("Selection Tutorial", new WireTutorialGoal(2, "Set memory line 1 to 2! (Wire-drawing disabled.)\n\n(Select modules and wires by holding " + ControlSet.DRAG_MODIFY_KEY + " and dragging; once held, pick up & place them by clicking.)"),
-										  false, [], [], [new ConstIn(10, 0, 1), new Adder(16, 2), new DataWriter(22, 14)]);
+			var SEL_TUT:Level = new Level("Drag-Select Tutorial", new WireTutorialGoal(2, "Set memory line 1 to 2! (Wire-drawing disabled.)"),
+									      false, [], [], [new ConstIn(10, 0, 1), new Adder(16, 2), new DataWriter(22, 14)]);
+			SEL_TUT.goal.description += "\n\n(Select modules, and wires, by holding " + ControlSet.DRAG_MODIFY_KEY + " and dragging; once held, pick up & place them by clicking.)";
 			SEL_TUT.setWires([Wire.wireBetween(SEL_TUT.modules[0].layout.ports[0].Loc, SEL_TUT.modules[1].layout.ports[0].Loc), //const to adder input 1
 							  Wire.wireBetween(SEL_TUT.modules[1].layout.ports[0].Loc, SEL_TUT.modules[1].layout.ports[1].Loc), //adder input 1 to adder input 2
 							  Wire.wireBetween(SEL_TUT.modules[1].layout.ports[2].Loc, SEL_TUT.modules[2].layout.ports[0].Loc), //adder to dwrite value
@@ -130,8 +131,10 @@ package Levels {
 			SEL_TUT.preplacesFixed = false;
 			SEL_TUT.predecessors.push(MOD_TUT);
 			
-			var COPY_TUT:Level = new Level("Copying Tutorial", new WireTutorialGoal(2, "Set memory line 1 to 2! (Wire-drawing disabled.)\n\n(Copy modules and wires by shift-dragging to select them, then pressing "+ControlSet.COPY_KEY+" to copy and "+ControlSet.PASTE_KEY+" to paste.)"),
+			var COPY_TUT:Level = new Level("Copying Tutorial", new WireTutorialGoal(2, "Set memory line 1 to 2! (Wire-drawing disabled.)"),
 											false, [ConstIn, Adder, DataWriter]);
+			COPY_TUT.goal.description += "\n\n(Copy modules and wires by shift-dragging to select them, then pressing " + ControlSet.COPY_KEY + " to copy and " + ControlSet.PASTE_KEY + " to paste.)";
+			COPY_TUT.goal.description += "\n\n\(You can copy within and between levels.)"
 			COPY_TUT.canDrawWires = COPY_TUT.canPlaceModules = false;
 			COPY_TUT.predecessors.push(SEL_TUT);
 			

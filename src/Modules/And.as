@@ -1,6 +1,8 @@
 package Modules {
 	import Components.Port;
 	import Layouts.PortLayout;
+	import Layouts.ModuleLayout;
+	import Layouts.DefaultLayout;
 	import Layouts.InternalLayout;
 	import Layouts.Nodes.TallNode;
 	import Values.Value;
@@ -19,6 +21,11 @@ package Modules {
 			configuration = new Configuration(new Range(2, 8, Width));
 			configurableInPlace = false;
 			delay = Math.ceil(Math.log(Width) / Math.log(2));
+		}
+		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = new DefaultLayout(this, 2, 3);
+			return layout;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {

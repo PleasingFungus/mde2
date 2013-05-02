@@ -1,7 +1,13 @@
 package Modules {
 	import Components.Port;
+	import Layouts.PortLayout;
+	import Layouts.ModuleLayout;
+	import Layouts.DefaultLayout;
+	import Layouts.InternalLayout;
+	import Layouts.Nodes.TallNode;
 	import Values.Value;
 	import Values.BooleanValue;
+	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -16,6 +22,22 @@ package Modules {
 			configuration = new Configuration(new Range(2, 8, Width));
 			configurableInPlace = false;
 			delay = Math.ceil(Math.log(Width) / Math.log(2));
+		}
+		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = new DefaultLayout(this, 2, 3);
+			return layout;
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			var ports:Array = [];
+			for each (var portLayout:PortLayout in layout.ports)
+				ports.push(portLayout);
+			
+			var outport:PortLayout = layout.ports[layout.ports.length - 1];
+			
+			return new InternalLayout([new TallNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
+														ports, [], function getValue():Value { return drive(outputs[0]); }, "Any" )]);
 		}
 		
 		protected function resetPorts():void {

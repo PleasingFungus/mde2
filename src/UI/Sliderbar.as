@@ -92,6 +92,8 @@ package UI {
 			rail.y = y + slider.height / 2;
 			
 			var posFraction:Number = (value - valueRange.min) / (valueRange.max - valueRange.min);
+			if (isNaN(posFraction))
+				posFraction = 0.5;
 			slider.x = rail.x + rail.width * posFraction;
 			slider.y = y;
 			

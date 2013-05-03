@@ -146,7 +146,10 @@ package LevelStates {
 		}
 		
 		private function makeUI():void {
+			var UIEnabled:Boolean = !upperLayer || upperLayer.visible;
 			upperLayer = new FlxGroup;
+			upperLayer.visible = UIEnabled;
+			
 			new ButtonManager;
 			UIChanged = true;
 			addUIActives();

@@ -124,9 +124,7 @@ package Levels {
 			SEL_TUT.modules[2].y -= 2;
 			
 			SEL_TUT.wires[0].shift(new Point( -4, -6));
-			SEL_TUT.wires[1].shift(new Point( -2, 2));
 			SEL_TUT.wires[2].shift(new Point(6, -2));
-			SEL_TUT.wires[3].shift(new Point(-6, 4));
 			
 			SEL_TUT.canDrawWires = false;
 			SEL_TUT.preplacesFixed = false;

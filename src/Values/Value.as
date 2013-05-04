@@ -1,4 +1,5 @@
 package Values {
+	import UI.HighlightFormat;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -8,6 +9,7 @@ package Values {
 		public function Value() { }
 		
 		public function toString():String { return null; }
+		public function toFormat():HighlightFormat { return null; }
 		
 		public function toNumber():Number { return NaN; }
 		

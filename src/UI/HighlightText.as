@@ -43,6 +43,8 @@ package UI {
 			for each (highlightText in highlightTexts) {
 				//replicating 'stamp()'
 				_flashPoint.x = highlightText.x - x;
+				if ('right' == alignment)
+					_flashPoint.x += width - textWidth - 4; //-4 = hack
 				_flashPoint.y = highlightText.y - y;
 				_flashRect2.width = highlightText.framePixels.width;
 				_flashRect2.height = highlightText.framePixels.height;
@@ -54,8 +56,9 @@ package UI {
 			DEBUG_HIGHLIGHT_TEXTS = highlightTexts;
 		}
 		
-		override public function setFormat(Font:String=null,Size:Number=8,Color:uint=0xffffff,_:String='',ShadowColor:uint=0):FlxText {
-			super.setFormat(Font, Size, Color, 'left', ShadowColor);
+		override public function setFormat(Font:String = null, Size:Number = 8, Color:uint = 0xffffff, Align:String = 'left', ShadowColor:uint = 0):FlxText {
+			Align = ALLOWED_ALIGNMENTS.indexOf(Align) != -1 ? Align : 'left';
+			super.setFormat(Font, Size, Color, Align, ShadowColor);
 			generate();
 			return this;
 		}
@@ -76,7 +79,11 @@ package UI {
 			generate();
 		}
 		
-		override public function set alignment(Alignment:String):void {	}
+		override public function set alignment(Alignment:String):void {
+			Alignment = ALLOWED_ALIGNMENTS.indexOf(Alignment) != -1 ? Alignment : 'left';
+			super.alignment = Alignment;
+			generate();
+		}
 		
 		override public function set shadow(Color:uint):void {
 			super.shadow = Color;
@@ -84,6 +91,7 @@ package UI {
 		}
 		
 		public static const FORMAT_MARK:String = "{}";
+		private const ALLOWED_ALIGNMENTS:Array = ["left", "right"];
 	}
 
 }

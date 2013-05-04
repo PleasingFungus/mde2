@@ -1,4 +1,6 @@
 package Values {
+	import UI.ColorText;
+	import UI.HighlightFormat;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -10,12 +12,16 @@ package Values {
 		public var targetArg:NumericValue;
 		public var destArg:NumericValue;
 		public var comment:String;
-		public function InstructionValue(Operation:OpcodeValue, SourceArg:int, TargetArg:int, DestArg:int, Comment:String = null) {
+		public var commentFormat:HighlightFormat;
+		public function InstructionValue(Operation:OpcodeValue, SourceArg:int, TargetArg:int, DestArg:int,
+										 Comment:String = null, CommentFormat:HighlightFormat = null) {
 			operation = Operation;
 			sourceArg = new NumericValue(SourceArg);
 			targetArg = new NumericValue(TargetArg);
 			destArg = new NumericValue(DestArg);
+			
 			comment = Comment;
+			commentFormat = CommentFormat;
 		}
 		
 		override public function toString():String {
@@ -42,7 +48,9 @@ package Values {
 					return operation.getName() + " OVER " + sourceArg;
 				
 				case OpcodeValue.OP_SAVI:
-					return operation.getName()+" M[" + targetArg + "]=" + sourceArg;
+					return operation.getName() + " M[" + targetArg + "]=" + sourceArg;
+				case OpcodeValue.OP_ADDM:
+					return operation.getName() + " M[" + targetArg + "]=" + sourceArg + "+" + destArg;
 			}
 			
 			var out:String = operation.getName() + "(" + sourceArg.toNumber();
@@ -51,6 +59,45 @@ package Values {
 			if (destArg.toNumber() != C.INT_NULL)
 				out += "," + destArg.toNumber();
 			return out + ")";
+		}
+		
+		override public function toFormat():HighlightFormat {
+			switch (operation) {
+				case OpcodeValue.OP_SET:
+					return formatFrom("R{} = {}", [U.DESTINATION, U.SOURCE]);
+				case OpcodeValue.OP_ADD:
+					return formatFrom("R{} = R{}+R{}", [U.DESTINATION, U.SOURCE, U.TARGET]);
+				case OpcodeValue.OP_SUB:
+					return formatFrom("R{} = R{}-R{}", [U.DESTINATION, U.SOURCE, U.TARGET]);
+				case OpcodeValue.OP_MUL:
+					return formatFrom("R{} = R{}*R{}", [U.DESTINATION, U.SOURCE, U.TARGET]);
+				case OpcodeValue.OP_DIV:
+					return formatFrom("R{} = R{}/R{}", [U.DESTINATION, U.SOURCE, U.TARGET]);
+				case OpcodeValue.OP_AND:
+					return formatFrom("R{} = R{}&R{}", [U.DESTINATION, U.SOURCE, U.TARGET]);
+				case OpcodeValue.OP_NOT:
+					return formatFrom("R{} = !R{}", [U.DESTINATION, U.SOURCE]);
+				case OpcodeValue.OP_SAV:
+					return formatFrom("M[R{}] = R{}", [U.TARGET, U.SOURCE]);
+				case OpcodeValue.OP_LD:
+					return formatFrom("R{} = M[R{}]", [U.DESTINATION, U.TARGET]);
+				case OpcodeValue.OP_JMP:
+					return formatFrom("OVER {}", [U.SOURCE]);
+				
+				case OpcodeValue.OP_SAVI:
+					return formatFrom("M[{}] = {}", [U.TARGET, U.SOURCE]);
+				case OpcodeValue.OP_ADDM:
+					return formatFrom("M[{}] = {}+{}", [U.TARGET, U.SOURCE, U.DESTINATION]);
+			}
+			
+			return null;
+		}
+		
+		private function formatFrom(baseStr:String, keys:Array):HighlightFormat {
+			var colorTexts:Vector.<ColorText> = new Vector.<ColorText>;
+			for each (var color:ColorText in keys)
+				colorTexts.push(new ColorText(color.color, (color == U.SOURCE ? sourceArg : color == U.TARGET ? targetArg : destArg).toString()));
+			return new HighlightFormat(operation.getName() + " " + baseStr, colorTexts);
 		}
 		
 		override public function toNumber():Number {

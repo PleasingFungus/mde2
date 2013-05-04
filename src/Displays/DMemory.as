@@ -30,9 +30,6 @@ package Displays {
 			makeCommentButton();
 			moment = U.state.time.moment;
 			
-			var COL_WIDTH:int = 225;
-			var ROW_HEIGHT:int = 20;
-			
 			var Y:int = bg.y + INNER_BORDER;
 			add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 2, Y, COL_WIDTH,
 															  "Current Memory"), 0xffffff, 'center'));
@@ -54,17 +51,18 @@ package Displays {
 					skip = false;
 					
 					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER, Y, COL_WIDTH, memLine + ".")));
-					
-					var memValText:String = memValue != FixedValue.NULL ? memValue.toString() : "---";
-					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 2, Y, COL_WIDTH, memValText), 0xffffff, 'right' ));
+					page.add(makeTextFor(memValue, bg.x + INNER_BORDER * 2 + 8, Y, 'right'));
 					
 					if (displayComments) {
-						comment = comment ? comment : "---";
-						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, comment)));
-					} else {
-						var expValText:String = expValue != FixedValue.NULL ? expValue.toString() : "---";
-						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, expValText)));
-					}
+						if (comment && (memValue as InstructionValue).commentFormat) {
+							page.add(U.BODY_FONT.configureFlxText((memValue as InstructionValue).commentFormat.makeHighlightText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH),
+																  0xffffff));
+						} else {
+							comment = comment ? comment : "---";
+							page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, comment)));
+						}
+					} else
+						page.add(makeTextFor(expValue, bg.x + INNER_BORDER * 4 + COL_WIDTH, Y));
 					Y += ROW_HEIGHT * 1.5;
 				} else {
 					if (!skip) {
@@ -84,11 +82,23 @@ package Displays {
 			add(timeText);
 		}
 		
+		private function makeTextFor(value:Value, X:int, Y:int, Align:String = 'left'):FlxText {
+			if (value != FixedValue.NULL && value.toFormat()) {
+				return U.BODY_FONT.configureFlxText(value.toFormat().makeHighlightText(X, Y, COL_WIDTH), 0xffffff, Align);
+			} else {
+				var valueText:String = value != FixedValue.NULL ? value.toString() : "---";
+				return U.BODY_FONT.configureFlxText(new FlxText(X, Y, COL_WIDTH, valueText), 0xffffff, Align);
+			}
+		}
+		
 		protected function makeCommentButton():void {
 			var kludge:DMemory = this;
 			add(new GraphicButton(bg.x + INNER_BORDER + bg.width / 2 - 16 - 10, bg.y + INNER_BORDER,
 								  displayComments ? _code_sprite : _comment_sprite, function comment():void { kludge.displayComments = !kludge.displayComments; init(); } ))
 		}
+		
+		private const COL_WIDTH:int = 225;
+		private const ROW_HEIGHT:int = 20;
 		
 		[Embed(source = "../../lib/art/ui/info.png")] private const _comment_sprite:Class;
 		[Embed(source = "../../lib/art/ui/code.png")] private const _code_sprite:Class;

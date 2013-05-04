@@ -31,7 +31,7 @@ package Testing.Instructions {
 		}
 		
 		override public function toMemValue():InstructionValue {
-			return new InstructionValue(OpcodeValue.OP_JMP, args[0].value, args[0].value, args[0].value, abstract.toString());
+			return new InstructionValue(OpcodeValue.OP_JMP, args[0].value, args[0].value, args[0].value, abstract.toString(), abstract.toFormat());
 		}
 		
 	}

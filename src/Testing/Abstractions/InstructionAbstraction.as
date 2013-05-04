@@ -1,6 +1,8 @@
 package Testing.Abstractions {
 	import Testing.Types.AbstractArg;
 	import Testing.Types.InstructionType;
+	import UI.ColorText;
+	import UI.HighlightFormat;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -25,6 +27,23 @@ package Testing.Abstractions {
 			if (value != C.INT_NULL)
 				out += "= " + value;
 			return out;
+		}
+		
+		public function toFormat():HighlightFormat {
+			var out:String = "";
+			var colorTexts:Vector.<ColorText> = new Vector.<ColorText>;
+			var colorOptions:Array = [U.SOURCE, U.TARGET, U.DESTINATION];
+			
+			out += type.name + " ";
+			for each (var arg:int in args) {
+				out += "{} ";
+				colorTexts.push(new ColorText(colorOptions[colorTexts.length].color, arg.toString()));
+			}
+			if (value != C.INT_NULL) {
+				out += "= {}";
+				colorTexts.push(new ColorText(U.DESTINATION.color, value.toString()));
+			}
+			return new HighlightFormat(out, colorTexts);
 		}
 		
 		public function getAbstractArgs():Vector.<AbstractArg> {

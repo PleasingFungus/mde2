@@ -12,6 +12,7 @@ package  {
 	import Values.FixedValue;
 	import LevelStates.LevelState;
 	import Levels.Level;
+	import UI.ColorText;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -37,6 +38,10 @@ package  {
 		public static const NODE_FONT:FontTuple = new FontTuple(MUNRO_WEB, 32);
 		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
+		
+		public static const SOURCE:ColorText = new ColorText(0xe2618e, "source");
+		public static const TARGET:ColorText = new ColorText(0xe29461, "target");
+		public static const DESTINATION:ColorText = new ColorText(0x89cfcf, "destination");
 		
 		public static var save:FlxSave;
 		public static var levels:Vector.<Level>;

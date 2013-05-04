@@ -24,7 +24,7 @@ package Values {
 		private function generateHighlitDescription():void {
 			var colorStrings:Vector.<ColorText> = new Vector.<ColorText>;
 			var escapedString:String = description;
-			for each (var keyword:ColorText in [SOURCE, TARGET, DESTINATION]) {
+			for each (var keyword:ColorText in [U.SOURCE, U.TARGET, U.DESTINATION]) {
 				var keywordIndex:int = escapedString.indexOf(keyword.text.toUpperCase());
 				while (keywordIndex != -1) {
 					escapedString = escapedString.slice(0, keywordIndex) + HighlightText.FORMAT_MARK + escapedString.slice(keywordIndex + keyword.text.length);
@@ -72,10 +72,6 @@ package Values {
 		public static const OP_LD:OpcodeValue = new OpcodeValue("LD", 13, "Set the DESTINATION register to the value of memory at the value of the TARGET register.", "Load");
 		public static const OP_ADDM:OpcodeValue = new OpcodeValue("ADDM", 14, "Set memory at the TARGET value to the sum of the SOURCE value and the DESTINATION value.", "Add Memory");
 		public static const OPS:Array = [OP_NOOP, OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_SET, OP_JMP, OP_SAV, OP_NOT, OP_AND, OP_OR, OP_GT, OP_SAVI, OP_ADDM];
-		
-		private const SOURCE:ColorText = new ColorText(0xe2618e, "source");
-		private const TARGET:ColorText = new ColorText(0xe29461, "target");
-		private const DESTINATION:ColorText = new ColorText(0x89cfcf, "destination");
 	}
 
 }

@@ -64,14 +64,11 @@ package Values {
 		public static const OP_SET:OpcodeValue = new OpcodeValue("SET", 5, "Set the TARGET register to the SOURCE value.", "Set");
 		public static const OP_JMP:OpcodeValue = new OpcodeValue("JMP", 6, "Jump over the DESTINATION value, to the instruction after.", "Jump");
 		public static const OP_SAV:OpcodeValue = new OpcodeValue("SAV", 7, "Set memory at the value of the TARGET register to the value of the SOURCE register.", "Save");
-		public static const OP_NOT:OpcodeValue = new OpcodeValue("NOT", 8);
-		public static const OP_AND:OpcodeValue = new OpcodeValue("AND", 9);
-		public static const OP_OR:OpcodeValue = new OpcodeValue("OR", 10);
-		public static const OP_GT:OpcodeValue = new OpcodeValue("GT", 11);
+		public static const OP_BEQ:OpcodeValue = new OpcodeValue("BEQ", 8, "Jump over the DESTINATION value if the SOURCE register equals the TARGET register.", "Branch");
 		public static const OP_SAVI:OpcodeValue = new OpcodeValue("SETM", 12, "Set memory at the TARGET value to the SOURCE value.", "Set Memory");
 		public static const OP_LD:OpcodeValue = new OpcodeValue("LD", 13, "Set the DESTINATION register to the value of memory at the value of the TARGET register.", "Load");
 		public static const OP_ADDM:OpcodeValue = new OpcodeValue("ADDM", 14, "Set memory at the TARGET value to the sum of the SOURCE value and the DESTINATION value.", "Add Memory");
-		public static const OPS:Array = [OP_NOOP, OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_SET, OP_JMP, OP_SAV, OP_NOT, OP_AND, OP_OR, OP_GT, OP_SAVI, OP_ADDM];
+		public static const OPS:Array = [OP_NOOP, OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_SET, OP_JMP, OP_SAV, OP_BEQ, OP_SAVI, OP_ADDM];
 	}
 
 }

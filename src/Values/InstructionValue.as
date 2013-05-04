@@ -36,10 +36,6 @@ package Values {
 					return operation.getName()+" R" + destArg + " = R" + sourceArg + "*R" + targetArg;
 				case OpcodeValue.OP_DIV:
 					return operation.getName()+" R" + destArg + " = R" + sourceArg + "/R" + targetArg;
-				case OpcodeValue.OP_AND:
-					return operation.getName()+" R" + destArg + " = R" + sourceArg + "&R" + targetArg;
-				case OpcodeValue.OP_NOT:
-					return operation.getName()+" R" + destArg + " = !R" + sourceArg;
 				case OpcodeValue.OP_SAV:
 					return operation.getName()+" M[R" + targetArg + "] = R" + sourceArg;
 				case OpcodeValue.OP_LD:
@@ -73,10 +69,6 @@ package Values {
 					return formatFrom("R{} = R{}*R{}", [U.DESTINATION, U.SOURCE, U.TARGET]);
 				case OpcodeValue.OP_DIV:
 					return formatFrom("R{} = R{}/R{}", [U.DESTINATION, U.SOURCE, U.TARGET]);
-				case OpcodeValue.OP_AND:
-					return formatFrom("R{} = R{}&R{}", [U.DESTINATION, U.SOURCE, U.TARGET]);
-				case OpcodeValue.OP_NOT:
-					return formatFrom("R{} = !R{}", [U.DESTINATION, U.SOURCE]);
 				case OpcodeValue.OP_SAV:
 					return formatFrom("M[R{}] = R{}", [U.TARGET, U.SOURCE]);
 				case OpcodeValue.OP_LD:

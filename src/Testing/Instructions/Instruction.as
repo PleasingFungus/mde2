@@ -55,10 +55,6 @@ package Testing.Instructions {
 					return MulInstruction;
 				case InstructionType.DIV:
 					return DivInstruction;
-				//case InstructionType.AND:
-					//return AndInstruction;
-				case InstructionType.NOT:
-					return NotAnInstruction;
 				case InstructionType.SAVE:
 					return SaveInstruction;
 				case InstructionType.LOAD:

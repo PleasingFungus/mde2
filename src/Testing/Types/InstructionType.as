@@ -82,7 +82,6 @@ package Testing.Types {
 		public static var MUL:MulType;
 		public static var DIV:DivType;
 		//public static var AND:AndType;
-		public static var NOT:NotAType;
 		public static var SAVE:SaveType;
 		public static var JUMP:JumpType;
 		
@@ -97,7 +96,6 @@ package Testing.Types {
 			MUL = new MulType();
 			DIV = new DivType();
 			//AND = new AndType();
-			NOT = new NotAType();
 			SAVE = new SaveType();
 			JUMP = new JumpType();
 			

@@ -23,7 +23,7 @@ package Testing.Instructions {
 		}
 		
 		override public function toMemValue():InstructionValue {
-			return new InstructionValue(getOpcode(), args[1].value, args[2].value, args[0].value);
+			return new InstructionValue(getOpcode(), args[1].value, args[2].value, args[0].value, abstract.toString());
 		}
 		
 		protected function getOpcode():OpcodeValue {

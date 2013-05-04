@@ -19,7 +19,7 @@ package Testing.Instructions {
 		}
 		
 		override public function toMemValue():InstructionValue {
-			return new InstructionValue(OpcodeValue.OP_ADDM, args[0].value, args[2].value, args[1].value);
+			return new InstructionValue(OpcodeValue.OP_ADDM, args[0].value, args[2].value, args[1].value, abstract.toString());
 		}
 		
 		override protected function findArgs(registers:Vector.<int>, abstract:InstructionAbstraction):Vector.<InstructionArg> {

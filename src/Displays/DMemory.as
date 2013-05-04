@@ -4,6 +4,7 @@ package Displays {
 	import Testing.Goals.GeneratedGoal;
 	import UI.MenuButton;
 	import Values.FixedValue;
+	import Values.InstructionValue;
 	import Values.Value;
 	import UI.GraphicButton;
 	
@@ -14,6 +15,7 @@ package Displays {
 	public class DMemory extends Infobox {
 		
 		private var moment:int;
+		private var displayComments:Boolean;
 		
 		public var memory:Vector.<Value>;
 		public var expectedMemory:Vector.<Value>;
@@ -25,6 +27,7 @@ package Displays {
 		
 		override protected function init():void {
 			super.init();
+			makeCommentButton();
 			moment = U.state.time.moment;
 			
 			var COL_WIDTH:int = 225;
@@ -43,6 +46,7 @@ package Displays {
 			for (var memLine:int = 0; memLine < memory.length; memLine++) {
 				var memValue:Value = memory[memLine];
 				var expValue:Value = expectedMemory[memLine];
+				var comment:String = (memValue is InstructionValue) ? (memValue as InstructionValue).comment : null;
 				
 				if (memValue != FixedValue.NULL || expValue != FixedValue.NULL) {
 					if (skip)
@@ -54,8 +58,13 @@ package Displays {
 					var memValText:String = memValue != FixedValue.NULL ? memValue.toString() : "---";
 					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 2, Y, COL_WIDTH, memValText), 0xffffff, 'right' ));
 					
-					var expValText:String = expValue != FixedValue.NULL ? expValue.toString() : "---";
-					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, expValText)));
+					if (displayComments) {
+						comment = comment ? comment : "---";
+						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, comment)));
+					} else {
+						var expValText:String = expValue != FixedValue.NULL ? expValue.toString() : "---";
+						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, expValText)));
+					}
 					Y += ROW_HEIGHT * 1.5;
 				} else {
 					if (!skip) {
@@ -74,6 +83,15 @@ package Displays {
 			var timeText:FlxText = U.BODY_FONT.configureFlxText(new FlxText(bg.x, bg.y + bg.height + 2, bg.width, timeString), 0xffffff, 'center', 0x1);
 			add(timeText);
 		}
+		
+		protected function makeCommentButton():void {
+			var kludge:DMemory = this;
+			add(new GraphicButton(bg.x + INNER_BORDER + bg.width / 2 - 16 - 10, bg.y + INNER_BORDER,
+								  displayComments ? _code_sprite : _comment_sprite, function comment():void { kludge.displayComments = !kludge.displayComments; init(); } ))
+		}
+		
+		[Embed(source = "../../lib/art/ui/info.png")] private const _comment_sprite:Class;
+		[Embed(source = "../../lib/art/ui/code.png")] private const _code_sprite:Class;
 		
 	}
 

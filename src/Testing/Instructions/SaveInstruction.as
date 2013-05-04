@@ -19,7 +19,7 @@ package Testing.Instructions {
 		}
 		
 		override public function toMemValue():InstructionValue {
-			return new InstructionValue(OpcodeValue.OP_SAV, args[0].value, args[1].value, C.INT_NULL);
+			return new InstructionValue(OpcodeValue.OP_SAV, args[0].value, args[1].value, C.INT_NULL, abstract.toString());
 		}
 	}
 

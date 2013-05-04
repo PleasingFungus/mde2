@@ -22,14 +22,20 @@ package Displays {
 		}
 		
 		protected function init():void {
+			members = [];
 			makeBG();
 			makeCloseButton();
 			add(page = new InfoboxPage(bg.width - RAISED_BORDER_WIDTH * 4, bg.height - RAISED_BORDER_WIDTH * 4));
 			
 			pageTop = bg.y + RAISED_BORDER_WIDTH * 2;
 			pageBottom = bg.y + bg.height - RAISED_BORDER_WIDTH * 2;
+			var lastScrollFraction:Number = NaN;
+			if (scrollbar)
+				lastScrollFraction = scrollbar.scrollFraction;
 			add(scrollbar = new Scrollbar(bg.x + bg.width - 48/2 - RAISED_BORDER_WIDTH * 3,
 										  pageTop + INNER_BORDER, pageBottom - pageTop - INNER_BORDER * 2));
+			if (!isNaN(lastScrollFraction))
+				scrollbar.scrollFraction = lastScrollFraction;
 			
 			var lineHeight:int = U.BODY_FONT.configureFlxText(new FlxText( -1, -1, 10000, "Example")).height + 6;
 			scrollbar.arrowScrollFraction = lineHeight / (pageBottom - pageTop);

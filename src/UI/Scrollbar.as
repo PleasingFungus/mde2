@@ -111,6 +111,10 @@ package UI {
 			return (slider.y - rail.y) / (rail.height - slider.height);
 		}
 		
+		public function set scrollFraction(fraction:Number):void {
+			slider.y = rail.y + (rail.height - slider.height) * fraction;
+		}
+		
 		[Embed(source = "../../lib/art/ui/upscrollarrow.png")] private const _up_arrow:Class;
 		[Embed(source = "../../lib/art/ui/downscrollarrow.png")] private const _down_arrow:Class;
 	}

@@ -17,9 +17,9 @@ package Testing.Goals {
 			timeLimit = 36;
 			
 			initialInstructions = new Vector.<InstructionValue>;
-			initialInstructions.push( new InstructionValue(OpcodeValue.OP_ADD, 0, 5, 7));
-			initialInstructions.push( new InstructionValue(OpcodeValue.OP_MUL, 3, 2, 6));
-			initialInstructions.push( new InstructionValue(OpcodeValue.OP_DIV, 4, 5, 4));
+			initialInstructions.push( new InstructionValue(OpcodeValue.OP_ADD, 0, 5, 7, "This is a comment."));
+			initialInstructions.push( new InstructionValue(OpcodeValue.OP_MUL, 3, 2, 6, "It describes an instruction."));
+			initialInstructions.push( new InstructionValue(OpcodeValue.OP_DIV, 4, 5, 4, "Don't worry about it now."));
 			
 			expectedMemory = generateBlankMemory();
 			for (var i:int = 0; i < initialInstructions.length; i++) {

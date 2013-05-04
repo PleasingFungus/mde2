@@ -9,11 +9,13 @@ package Values {
 		public var sourceArg:NumericValue;
 		public var targetArg:NumericValue;
 		public var destArg:NumericValue;
-		public function InstructionValue(Operation:OpcodeValue, SourceArg:int, TargetArg:int, DestArg:int) {
+		public var comment:String;
+		public function InstructionValue(Operation:OpcodeValue, SourceArg:int, TargetArg:int, DestArg:int, Comment:String = null) {
 			operation = Operation;
 			sourceArg = new NumericValue(SourceArg);
 			targetArg = new NumericValue(TargetArg);
 			destArg = new NumericValue(DestArg);
+			comment = Comment;
 		}
 		
 		override public function toString():String {

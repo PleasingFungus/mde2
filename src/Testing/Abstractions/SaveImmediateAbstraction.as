@@ -1,6 +1,7 @@
 package Testing.Abstractions {
 	import Testing.Types.InstructionType
 	import Testing.Types.AbstractArg;
+	import UI.HighlightFormat;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -22,6 +23,8 @@ package Testing.Abstractions {
 				abstractArgs.push(new AbstractArg(arg, C.INT_NULL, true));
 			return abstractArgs;
 		}
+		
+		override public function toFormat():HighlightFormat { return null; }
 		
 		override public function get memoryAddress():int { return args[1]; }
 		override public function get memoryValue():int { return args[0]; }

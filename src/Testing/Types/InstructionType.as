@@ -84,6 +84,7 @@ package Testing.Types {
 		//public static var AND:AndType;
 		public static var NOT:NotAType;
 		public static var SAVE:SaveType;
+		public static var JUMP:JumpType;
 		
 		public static var SAVI:SaveImmediateType;
 		public static var ADDM:AddMemoryType;
@@ -98,6 +99,7 @@ package Testing.Types {
 			//AND = new AndType();
 			NOT = new NotAType();
 			SAVE = new SaveType();
+			JUMP = new JumpType();
 			
 			SAVI = new SaveImmediateType();
 			ADDM = new AddMemoryType();

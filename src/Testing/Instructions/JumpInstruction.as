@@ -1,6 +1,7 @@
 package Testing.Instructions {
 	import Testing.Abstractions.InstructionAbstraction;
 	import flash.utils.Dictionary;
+	import Testing.Abstractions.JumpAbstraction;
 	import Testing.Types.JumpType;
 	import Values.InstructionValue;
 	import Values.OpcodeValue;
@@ -13,7 +14,7 @@ package Testing.Instructions {
 		public function JumpInstruction(address:int, noop:Boolean = false) {
 			var args:Vector.<int> = new Vector.<int>;
 			args.push(address);
-			super(args, new InstructionAbstraction(new JumpType, args, C.INT_NULL), noop);
+			super(args, new JumpAbstraction(address), noop);
 		}
 		
 		override protected function findArgs(registers:Vector.<int>, _:InstructionAbstraction):Vector.<InstructionArg> {

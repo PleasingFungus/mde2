@@ -1,6 +1,8 @@
 package Testing.Abstractions {
 	import Testing.Types.AbstractArg;
 	import Testing.Types.InstructionType;
+	import UI.ColorText;
+	import UI.HighlightFormat;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -13,6 +15,11 @@ package Testing.Abstractions {
 		
 		override public function toString():String {
 			return type.name + " M[" + args[0] + "] ("+value+")";
+		}
+		
+		override public function toFormat():HighlightFormat {
+			return new HighlightFormat(type.name +" M[{}] ({})", ColorText.vecFromArray([new ColorText(U.TARGET.color, args[0].toString()),
+																					     new ColorText(U.DESTINATION.color, value.toString())]));
 		}
 		
 		override public function getAbstractArgs():Vector.<AbstractArg> {

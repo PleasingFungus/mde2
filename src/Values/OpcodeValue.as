@@ -62,7 +62,7 @@ package Values {
 		public static const OP_MUL:OpcodeValue = new OpcodeValue("MUL", 3, "Multiply the SOURCE register with the TARGET register, and store the product in the DESTINATION register.", "Multiply");
 		public static const OP_DIV:OpcodeValue = new OpcodeValue("DIV", 4, "Divide the SOURCE register by the TARGET register, and store the quotient in the DESTINATION register.", "Divide");
 		public static const OP_SET:OpcodeValue = new OpcodeValue("SET", 5, "Set the TARGET register to the SOURCE value.", "Set");
-		public static const OP_JMP:OpcodeValue = new OpcodeValue("JMP", 6, "Jump over the TARGET value, to the instruction after.", "Jump");
+		public static const OP_JMP:OpcodeValue = new OpcodeValue("JMP", 6, "Jump over the DESTINATION value, to the instruction after.", "Jump");
 		public static const OP_SAV:OpcodeValue = new OpcodeValue("SAV", 7, "Set memory at the value of the TARGET register to the value of the SOURCE register.", "Save");
 		public static const OP_NOT:OpcodeValue = new OpcodeValue("NOT", 8);
 		public static const OP_AND:OpcodeValue = new OpcodeValue("AND", 9);

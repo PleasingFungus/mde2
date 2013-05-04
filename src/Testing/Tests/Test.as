@@ -254,7 +254,7 @@ package Testing.Tests {
 		
 		protected function postProcess(instructions:Vector.<Instruction>):Vector.<Instruction> {
 			if (expectedOps.indexOf(OpcodeValue.OP_JMP) != -1)
-				addJumpLoop(instructions);
+				instructions = addJumpLoop(instructions);
 			expectedExecutions = instructions.length;
 			return instructions;
 		}

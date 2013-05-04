@@ -160,14 +160,16 @@ package Levels {
 			addCPU.goal.description += "\n\nE.g., MOV R7 = R4: set the value held in register 7 to the value held in register 4."
 			addCPU.goal.description += "\n\nHave fun!";
 			addCPU.predecessors.push(ACC_TUT);
-			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
-			cpuJMP.predecessors.push(addCPU);
 			var cpuADV:Level = new ShardLevel("Advanced Ops", "Make a CPU that does arithmetic!", LevelShard.CORE.compositWith(LevelShard.ADV));
 			cpuADV.predecessors.push(addCPU);
 			var cpuLD:Level = new ShardLevel("Load", "Make a CPU that can load from memory!", LevelShard.CORE.compositWith(LevelShard.LOAD));
 			cpuLD.predecessors.push(addCPU);
+			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
+			cpuJMP.predecessors.push(addCPU);
+			var cpuBRANCH:Level = new ShardLevel("Branch!", "Make a CPU that does jumps... conditionally!", LevelShard.CORE.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
+			cpuBRANCH.predecessors.push(cpuJMP);
 			
-			levels.push(addCPU, cpuJMP, cpuADV, cpuLD);
+			levels.push(addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD);
 			
 			var delayShard:LevelShard = LevelShard.CORE.compositWith(LevelShard.DELAY);
 			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", "Make a basic CPU... with propagation delay!", delayShard);
@@ -201,7 +203,7 @@ package Levels {
 			columns.push(makeVec([SEL_TUT, COPY_TUT]));
 			columns.push(makeVec([ACC_TUT]));
 			columns.push(makeVec([INSTR_TUT, OP_TUT, ISEL_TUT]));
-			columns.push(makeVec([addCPU, cpuJMP, cpuADV, cpuLD]));
+			columns.push(makeVec([addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD]));
 			columns.push(makeVec([D0_TUT]));
 			columns.push(makeVec([D1_TUT]));
 			columns.push(makeVec([D2_TUT]));

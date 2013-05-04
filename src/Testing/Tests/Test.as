@@ -29,6 +29,9 @@ package Testing.Tests {
 		protected var saveTargets:Vector.<AbstractArg>
 		protected var expectedOps:Vector.<OpcodeValue>;
 		
+		protected var loop:Vector.<Instruction>
+		protected var loopExecutions:int;
+		
 		public function Test(ExpectedOps:Vector.<OpcodeValue>, ExpectedInstructions:int = 12, seed:Number = NaN) {
 			expectedOps = ExpectedOps;
 			if (!isNaN(seed))
@@ -56,30 +59,26 @@ package Testing.Tests {
 			for (var abstractionsMade:int = 0; remainingAbstractions(abstractionsMade, values) > 0; abstractionsMade++) {
 				var value:AbstractArg = values[0];
 				values.splice(0, 1); //values.shift()?
-				var abstraction:InstructionAbstraction = genAbstraction(value, values, instructionTypes);
 				
-				if (abstraction.writesToMemory) {
-					if (!value.inMemory || value.value != abstraction.memoryValue || value.address != abstraction.memoryAddress)
-						throw new Error("!!");
-				} else if (abstraction.value != value.value)
-					throw new Error("!!!");
-				
-				for each (var arg:AbstractArg in abstraction.getAbstractArgs())
-					if (!arg.immediate && !AbstractArg.argInVec(arg, values))
-						values.push(arg);
-				
-				if (AbstractArg.instructionsToSet(values) > NUM_REGISTERS) {
-					values.pop();
-					values.pop(); //assuming max 2 args, error condition can only occur if both are added, not prev. present; so safe to pop
-					values.push(value);
-					log("Early termination due to register overflow");
-					break;
+				if (!loop && canMakeLoop(value, values, instructionTypes, abstractionsMade) && FlxG.random() < 1 / 2) {
+					loop = makeLoop(value, values, instructionTypes, registers, instructions);
+					abstractionsMade += loop.length;
+				} else {
+					var abstraction:InstructionAbstraction = genAbstraction(value, values, instructionTypes);
+					
+					if (AbstractArg.instructionsToSet(values) > NUM_REGISTERS) {
+						values.pop();
+						values.pop(); //assuming max 2 args, error condition can only occur if both are added, not prev. present; so safe to pop
+						values.push(value);
+						log("Early termination due to register overflow");
+						break;
+					}
+					
+					if (abstraction.writesToMemory)
+						saveTargets.push(new AbstractArg(abstraction.memoryValue, abstraction.memoryAddress));
+					
+					instructions.push(makeInstruction(abstraction, registers));
 				}
-				
-				if (abstraction.writesToMemory)
-					saveTargets.push(new AbstractArg(abstraction.memoryValue, abstraction.memoryAddress));
-				
-				instructions.push(makeInstruction(abstraction, registers));
 			}
 			
 			dataMemory = new Vector.<AbstractArg>;
@@ -88,7 +87,7 @@ package Testing.Tests {
 			log("PROGRAM END\n\n");
 			
 			var orderedInstructions:Vector.<Instruction> = new Vector.<Instruction>;
-			while (instructions.length)
+ 			while (instructions.length)
 				orderedInstructions.push(instructions.pop());
 			instructions = orderedInstructions;
 			
@@ -163,30 +162,36 @@ package Testing.Tests {
 					noop = true;
 			}
 			
-			for each (var abstractArg:AbstractArg in abstraction.getAbstractArgs()) {
-				if (abstractArg.immediate)
-					continue;
-				var arg:int = abstractArg.value;
-				
-				var register:int = registers.indexOf(arg);
-				if (register != -1) {
-					argRegisters.push(register);
-					continue;
-				}
-				
-				var potentialRegisters:Vector.<int> = new Vector.<int>;
-				for (register = 0; register < registers.length; register++)
-					if (registers[register] === C.INT_NULL)
-						potentialRegisters.push(register);
-				if (potentialRegisters.length == 0)
-					throw new Error("!!!");
-				register = C.randomIntChoice(potentialRegisters);
-				registers[register] = arg;
-				argRegisters.push(register);
-			}
+			for each (var abstractArg:AbstractArg in abstraction.getAbstractArgs())
+				if (!abstractArg.immediate)
+					argRegisters.push(setRegisterFor(abstractArg.value, registers));
 			
 			var instructionClass:Class = Instruction.mapByType(abstraction.type);
 			return new instructionClass(argRegisters, abstraction, noop);
+		}
+		
+		protected function setRegisterFor(arg:int, registers:Vector.<int>):int {
+			var register:int = registers.indexOf(arg);
+			if (register != -1)
+				return register;
+			
+			register = getFreeRegister(registers);
+			if (register == -1)
+				throw new Error("!!!");
+			
+			registers[register] = arg;
+			return register;
+		}
+		
+		protected function getFreeRegister(registers:Vector.<int>):int {
+			var potentialRegisters:Vector.<int> = new Vector.<int>;
+			for (var register:int = 0; register < registers.length; register++)
+				if (registers[register] === C.INT_NULL)
+					potentialRegisters.push(register);
+			if (potentialRegisters.length == 0)
+				return -1;
+			
+			return C.randomIntChoice(potentialRegisters);
 		}
 		
 		
@@ -234,7 +239,20 @@ package Testing.Tests {
 					orderableInstructionType.numAlreadyProduced += 1;
 					break;
 				}
-			return type.produceMinimally(value, values);
+			
+			var abstraction:InstructionAbstraction = type.produceMinimally(value, values);
+				
+			if (abstraction.writesToMemory) {
+				if (!value.inMemory || value.value != abstraction.memoryValue || value.address != abstraction.memoryAddress)
+					throw new Error("!!");
+			} else if (abstraction.value != value.value)
+				throw new Error("!!!");
+			
+			for each (var arg:AbstractArg in abstraction.getAbstractArgs())
+				if (!arg.immediate && !AbstractArg.argInVec(arg, values))
+					values.push(arg);
+			
+			return abstraction;
 		}
 		
 		protected function randomTypeChoice(options:Vector.<InstructionType>):InstructionType {
@@ -251,13 +269,120 @@ package Testing.Tests {
 			}
 		}
 		
+		protected function canMakeLoop(value:AbstractArg, values:Vector.<AbstractArg>, instructionTypes:Vector.<OrderableInstructionType>, abstractionsMade:int):Boolean {
+			return branchesEnabled && value.inRegisters && AbstractArg.instructionsToSet(values) + 4 <= NUM_REGISTERS && remainingAbstractions(abstractionsMade, values) >= 4;
+		}
+		
+		protected function makeLoop(value:AbstractArg, values:Vector.<AbstractArg>,
+									instructionTypes:Vector.<OrderableInstructionType>,
+									registers:Vector.<int>, instructions:Vector.<Instruction>):Vector.<Instruction> {
+			//choose
+				//instruction type (add, sub, mul, div)
+			var validInstructionTypes:Vector.<InstructionType> = new Vector.<InstructionType>;
+			var allAcceptableTypes:Array = [InstructionType.ADD, InstructionType.SUB, InstructionType.DIV];
+			for each (var orderableType:OrderableInstructionType in instructionTypes)
+				if (allAcceptableTypes.indexOf(orderableType.type) != -1)
+					validInstructionTypes.push(orderableType.type);
+			var instructionType:InstructionType = validInstructionTypes[int(FlxG.random() * validInstructionTypes.length)];
+				//# loops (2-4 mul-div, 3-6 add-sub)
+				//applicand (can't be 0; must be between -256-255 for add-sub, -16-15 for mul-div)
+			var loopCount:int, applicand:int;
+			if (instructionType == InstructionType.ADD || instructionType == InstructionType.SUB) {
+				loopCount = C.randomRange(3, 7);
+				applicand = FlxG.random() < 0.5 ? C.randomRange( -256, 0) : C.randomRange(1, 256);
+			} else {
+				loopCount = C.randomRange(2, 5);
+				if (instructionType == InstructionType.DIV)
+					applicand = FlxG.random() < 0.5 ? C.randomRange( -16, 0) : C.randomRange(1, 16);
+				else if (instructionType == InstructionType.MUL) {
+					//applicand = C.randomIntChoice(C.factorsOf(value.value)); //TODO
+					instructionType = InstructionType.ADD;
+					loopCount = C.randomRange(3, 7);
+					applicand = FlxG.random() < 0.5 ? C.randomRange( -256, 0) : C.randomRange(1, 256);
+				} else
+					throw new Error("Unexpected instruction type: " + instructionType);
+			}
+			loopExecutions = loopCount * 4 + 1;
+			
+				//incr loop (loopCount = 0; end if loopCount == loopLimit; loopCount++) or decr loop (loopCount = loopLimit; end if loopCount == 0; loopCount--)
+			var increment:int = C.randomRange(1, 4);
+			var loopLimit:int = loopCount * increment;
+			var loopBackwards:Boolean = expectedOps.indexOf(OpcodeValue.OP_SUB) != -1 && FlxG.random() < 0.5;
+			
+			//determine base value
+			var base:int = value.value;
+			for (var i:int = 0; i < loopCount; i++)
+				switch (instructionType) {
+					case InstructionType.ADD:
+						base -= applicand; break;
+					case InstructionType.SUB:
+						base += applicand; break;
+					case InstructionType.DIV:
+						base *= applicand; break;
+					default:
+						throw new Error("Unexpected instruction type: " + instructionType);
+				}
+			//determine values to be set (loop #, applicand, base)
+			var newValues:Vector.<int> = C.buildIntSet(loopLimit, applicand, base, increment, 0);
+			for each (var newValue:int in newValues) {
+				var v:AbstractArg = new AbstractArg(newValue);
+				if (!AbstractArg.argInVec(v, values))
+					values.push(v);
+			}
+			
+			//find registers
+			var destRegister:int = registers.indexOf(value.value);
+			if (destRegister == -1)
+				throw new Error("!!!");
+			
+			var applicandRegister:int = setRegisterFor(applicand, registers);
+			var loopCountRegister:int = setRegisterFor(loopBackwards ? loopLimit : 0, registers);
+			var loopLimitRegister:int = setRegisterFor(loopBackwards ? 0 : loopLimit, registers);
+			var incrementRegister:int = setRegisterFor(increment, registers);
+			
+			//generate actual instructions
+			//branch
+			//operate
+			//increment
+			//jump
+			//(but backwards)
+			var loop:Vector.<Instruction> = new Vector.<Instruction>;
+			loop.push(new JumpInstruction(C.INT_NULL)); //jump back to start
+			//TODO: scramble source/target for increment?
+			if (loopBackwards)
+				loop.push(new SubInstruction(C.buildIntVector(loopCountRegister, loopCountRegister, incrementRegister), new SubAbstraction(C.INT_NULL, C.INT_NULL), false)); //decrement
+			else
+				loop.push(new AddInstruction(C.buildIntVector(loopCountRegister, loopCountRegister, incrementRegister), new AddAbstraction(C.INT_NULL, C.INT_NULL), false)); //increment
+			loop.push(new (Instruction.mapByType(instructionType))(C.buildIntVector(destRegister, destRegister, applicandRegister), instructionType.produce(C.INT_NULL, C.INT_NULL), false)); //operate
+			loop.push(new BranchInstruction(C.buildIntVector(C.INT_NULL, loopCountRegister, loopLimitRegister)));
+			
+			//final cleanup
+			registers[destRegister] = base;
+			
+			for each (var instruction:Instruction in loop)
+				instructions.push(instruction);
+			
+			return loop;
+		}
+		
 		
 		protected function postProcess(instructions:Vector.<Instruction>):Vector.<Instruction> {
-			if (expectedOps.indexOf(OpcodeValue.OP_JMP) != -1)
+			if (jumpsEnabled && (!branchesEnabled || FlxG.random() < 1/4))
 				instructions = addJumpLoop(instructions);
 			expectedExecutions = instructions.length;
+			if (loop) {
+				var jumpOverInstruction:Instruction = loop[loop.length - 1];
+				var jumpBackInstruction:Instruction = loop[0];
+				jumpOverInstruction.args[0] = new InstructionArg(InstructionArg.INT, instructions.indexOf(jumpBackInstruction));
+				jumpBackInstruction.args[0] = new InstructionArg(InstructionArg.INT, instructions.indexOf(jumpOverInstruction) - 1);
+				
+				expectedExecutions += loopExecutions;
+			}
 			return instructions;
 		}
+		
+		protected function get jumpsEnabled():Boolean { return expectedOps.indexOf(OpcodeValue.OP_JMP) != -1; }
+		protected function get branchesEnabled():Boolean { return expectedOps.indexOf(OpcodeValue.OP_BEQ) != -1; }
 		
 		protected function addJumpLoop(instructions:Vector.<Instruction>):Vector.<Instruction> {
 			var nums:Array = [];

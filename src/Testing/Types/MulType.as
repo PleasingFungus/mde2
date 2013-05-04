@@ -46,6 +46,8 @@ package Testing.Types {
 			return new MulAbstraction(a1, a2);
 		}
 		
+		override public function produce(...args):InstructionAbstraction { return new MulAbstraction(C.INT_NULL, C.INT_NULL); }
+		
 	}
 
 }

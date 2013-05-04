@@ -38,6 +38,7 @@ package Testing.Types {
 			return new AddAbstraction(a1, a2);
 		}
 		
+		override public function produce(...args):InstructionAbstraction { return new AddAbstraction(C.INT_NULL, C.INT_NULL); }
 	}
 
 }

@@ -33,6 +33,8 @@ package Testing.Types {
 			return new SubAbstraction(a1, a2);
 		}
 		
+		override public function produce(...args):InstructionAbstraction { return new SubAbstraction(C.INT_NULL, C.INT_NULL); }
+		
 	}
 
 }

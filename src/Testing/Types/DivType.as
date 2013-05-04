@@ -45,6 +45,8 @@ package Testing.Types {
 			return new DivAbstraction(a1, divisor);
 		}
 		
+		override public function produce(...args):InstructionAbstraction { return new DivAbstraction(C.INT_NULL, C.INT_NULL); }
+		
 	}
 
 }

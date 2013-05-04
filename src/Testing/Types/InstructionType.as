@@ -75,6 +75,8 @@ package Testing.Types {
 			return null;
 		}
 		
+		public function produce(...args):InstructionAbstraction { throw new Error("Not implemented!"); }
+		
 		public static var SET:SetType;
 		public static var LOAD:LoadType;
 		public static var ADD:AddType;
@@ -84,6 +86,7 @@ package Testing.Types {
 		//public static var AND:AndType;
 		public static var SAVE:SaveType;
 		public static var JUMP:JumpType;
+		public static var BEQ:InstructionType;
 		
 		public static var SAVI:SaveImmediateType;
 		public static var ADDM:AddMemoryType;
@@ -98,6 +101,7 @@ package Testing.Types {
 			//AND = new AndType();
 			SAVE = new SaveType();
 			JUMP = new JumpType();
+			BEQ = new InstructionType("Branch");
 			
 			SAVI = new SaveImmediateType();
 			ADDM = new AddMemoryType();

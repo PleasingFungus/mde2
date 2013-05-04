@@ -27,7 +27,8 @@ package Displays {
 		
 		override protected function init():void {
 			super.init();
-			makeCommentButton();
+			if (U.state.level.commentsEnabled)
+				makeCommentButton();
 			moment = U.state.time.moment;
 			
 			var Y:int = bg.y + INNER_BORDER;

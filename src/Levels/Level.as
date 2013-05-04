@@ -20,6 +20,7 @@ package Levels {
 		public var preplacesFixed:Boolean = true;
 		public var canDrawWires:Boolean = true;
 		public var canPlaceModules:Boolean = true;
+		public var commentsEnabled:Boolean;
 		public var expectedOps:Vector.<OpcodeValue>;
 		public var allowedModules:Vector.<Class>
 		public var predecessors:Vector.<Level>;

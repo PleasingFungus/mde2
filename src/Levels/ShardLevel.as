@@ -12,6 +12,7 @@ package Levels {
 			expectedOps = Shard.expectedOps;
 			allowedModules = Shard.allowedModules;
 			writerLimit = 0;
+			commentsEnabled = true;
 		}
 		
 	}

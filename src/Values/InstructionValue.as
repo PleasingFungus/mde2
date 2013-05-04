@@ -43,7 +43,7 @@ package Values {
 				case OpcodeValue.OP_JMP:
 					return operation.getName() + " OVER " + destArg;
 				case OpcodeValue.OP_BEQ:
-					return operation.getName() + " OVER " + destArg + " IF R" + sourceArg +" is R"+targetArg;
+					return operation.getName() + " R" + sourceArg +"=R"+targetArg + " OVER " + destArg;
 				
 				case OpcodeValue.OP_SAVI:
 					return operation.getName() + " M[" + targetArg + "]=" + sourceArg;
@@ -78,7 +78,7 @@ package Values {
 				case OpcodeValue.OP_JMP:
 					return formatFrom("OVER {}", [U.DESTINATION]);
 				case OpcodeValue.OP_BEQ:
-					return formatFrom("OVER {} IF R{}==R{}", [U.DESTINATION, U.SOURCE, U.TARGET]);
+					return formatFrom("R{}=R{} OVER {}", [U.SOURCE, U.TARGET, U.DESTINATION]);
 				
 				case OpcodeValue.OP_SAVI:
 					return formatFrom("M[{}] = {}", [U.TARGET, U.SOURCE]);

@@ -321,9 +321,11 @@ package Modules {
 												Or, Output, And, Not, Delay, DataWriter,
 												InstructionComparator, MDU, BabyLatch, SysDelayClock,
 												MagicWriter, DataReader, DataWriterT, InstructionDecoder,
-												CustomModule]) {
+												CustomModule, Subtractor, Multiplier, Divider]) {
 				ALL_MODULES.push(moduleClass);
-				if (moduleClass != CustomModule)
+				if (moduleClass == CustomModule)
+					ARCHETYPES.push(null);
+				else
 					ARCHETYPES.push(new moduleClass( -1, -1));
 			}
 			

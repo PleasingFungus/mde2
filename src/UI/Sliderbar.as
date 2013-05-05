@@ -120,7 +120,7 @@ package UI {
 			var out:*;
 			var adjMouse:FlxPoint = getAdjMouse();
 			var barMoused:Boolean = adjMouse.x >= rail.x && adjMouse.x <= rail.x + rail.width && adjMouse.y >= slider.y && adjMouse.y <= slider.y + slider.height && (!U.buttonManager || !U.buttonManager.moused);
-			if (barMoused && U.buttonManager)
+			if ((barMoused || leftArrow.overlapsPoint(U.mouseFlxLoc, true) || rightArrow.overlapsPoint(U.mouseFlxLoc, true)) && U.buttonManager)
 				U.buttonManager.moused = true
 			
 			if (FlxG.mouse.justPressed()) {

@@ -163,7 +163,7 @@ package Testing.Tests {
 			}
 			
 			for each (var abstractArg:AbstractArg in abstraction.getAbstractArgs())
-				if (!abstractArg.immediate)
+				if (!abstractArg.immediate && abstractArg.inRegisters)
 					argRegisters.push(setRegisterFor(abstractArg.value, registers));
 			
 			var instructionClass:Class = Instruction.mapByType(abstraction.type);

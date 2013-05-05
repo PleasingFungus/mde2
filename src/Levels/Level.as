@@ -168,16 +168,22 @@ package Levels {
 			cpuJMP.predecessors.push(addCPU);
 			var cpuBRANCH:Level = new ShardLevel("Branch!", "Make a CPU that does jumps... conditionally!", LevelShard.CORE.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
 			cpuBRANCH.predecessors.push(cpuJMP);
+			var cpuFULL:Level = new ShardLevel("Full!", "Make a CPU that does everything!", LevelShard.CORE.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			cpuFULL.predecessors.push(cpuADV, cpuLD, cpuBRANCH);
 			
-			levels.push(addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD);
+			levels.push(addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD, cpuFULL);
 			
 			var delayShard:LevelShard = LevelShard.CORE.compositWith(LevelShard.DELAY);
 			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", "Make a basic CPU... with propagation delay!", delayShard);
 			addCPU_D.predecessors.push(addCPU, D2_TUT);
-			var cpuADVLDD:Level = new ShardLevel("Adv/Load Delay", " ", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
+			var cpuADVLDD:Level = new ShardLevel("Adv/Load Delay", "TODO", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
 			cpuADVLDD.predecessors.push(addCPU_D, cpuADV, cpuLD);
+			var cpuD_BRANCH:Level = new ShardLevel("Branch Delay", "TODO", delayShard.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
+			cpuD_BRANCH.predecessors.push(addCPU_D, cpuBRANCH);
+			var cpuD_FULL:Level = new ShardLevel("Full Delay", "Make a full CPU with delay!", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			cpuD_FULL.predecessors.push(cpuADVLDD, cpuBRANCH);
 			
-			levels.push(addCPU_D, cpuADVLDD);
+			levels.push(addCPU_D, cpuADVLDD, cpuD_BRANCH, cpuD_FULL);
 			
 			var pipeTutorial:Level = new Level("Pipeline Tutorial", new PipelineTutorialGoal, true,
 											   [ConstIn, Adder, Latch, DataWriterT, DataReader, InstructionDecoder, SysDelayClock, And], [OpcodeValue.OP_SAVI]);
@@ -188,28 +194,32 @@ package Levels {
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);
 			var pipe:Level = new ShardLevel("Efficiency!", "Make a CPU that runs fast!", pipeShard);
 			pipe.predecessors.push(addCPU_D); //dubious
-			var pipeJMP:Level = new ShardLevel("Efficient Jump", " ", pipeShard.compositWith( LevelShard.JUMP));
+			var pipeJMP:Level = new ShardLevel("Efficient Jump", "TODO", pipeShard.compositWith( LevelShard.JUMP));
 			pipeJMP.predecessors.push(pipe, cpuJMP);
-			var pipeADV:Level = new ShardLevel("Efficient Adv Op", " ", pipeShard.compositWith(LevelShard.ADV));
+			var pipeBranch:Level = new ShardLevel("Efficient Branch", "TODO", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));
+			pipeBranch.predecessors.push(pipeJMP);
+			var pipeADV:Level = new ShardLevel("Efficient Adv Op", "TODO", pipeShard.compositWith(LevelShard.ADV));
 			pipeADV.predecessors.push(pipe, cpuADVLDD);
-			var pipeLD:Level = new ShardLevel("Efficient Load", " ", pipeShard.compositWith(LevelShard.LOAD));
+			var pipeLD:Level = new ShardLevel("Efficient Load", "TODO", pipeShard.compositWith(LevelShard.LOAD));
 			pipeLD.predecessors.push(pipe, cpuADVLDD);
-			var pipeADVLDD:Level = new ShardLevel("Eff. Adv/Load", " ", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
+			var pipeADVLDD:Level = new ShardLevel("Eff. Adv/Load", "TODO", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
 			pipeADVLDD.predecessors.push(pipeLD, pipeADV);
+			var pipeFull:Level = new ShardLevel("Full Efficient", "TODO", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			pipeFull.predecessors.push(pipeBranch, pipeADVLDD);
 			
-			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD);
+			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD, pipeBranch, pipeFull);
 			
 			columns.push(makeVec([WIRE_TUT, MOD_TUT]));
 			columns.push(makeVec([SEL_TUT, COPY_TUT]));
 			columns.push(makeVec([ACC_TUT]));
 			columns.push(makeVec([INSTR_TUT, OP_TUT, ISEL_TUT]));
-			columns.push(makeVec([addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD]));
+			columns.push(makeVec([addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD, cpuFULL]));
 			columns.push(makeVec([D0_TUT]));
 			columns.push(makeVec([D1_TUT]));
 			columns.push(makeVec([D2_TUT]));
-			columns.push(makeVec([addCPU_D, cpuADVLDD]));
+			columns.push(makeVec([addCPU_D, cpuADVLDD, cpuD_BRANCH, cpuD_FULL]));
 			columns.push(makeVec([pipeTutorial]));
-			columns.push(makeVec([pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD]));
+			columns.push(makeVec([pipe, pipeJMP, pipeBranch, pipeADV, pipeLD, pipeADVLDD, pipeFull]));
 			
 			return levels;
 		}

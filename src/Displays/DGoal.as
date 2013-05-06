@@ -27,7 +27,7 @@ package Displays {
 			var X:int = bg.x + INNER_BORDER;
 			var Y:int = bg.y + RAISED_BORDER_WIDTH * 3;
 			var Width:int = bg.width - INNER_BORDER * 2 - 48/2;
-			title = new FlxText(X, Y, Width, level.name);
+			title = new FlxText(X, Y, Width, level.displayName);
 			U.TITLE_FONT.configureFlxText(title, 0xffffff, 'center');
 			Y += title.height + 8;
 			add(title);

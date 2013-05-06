@@ -14,6 +14,7 @@ package Levels {
 	public class Level {
 		
 		public var name:String;
+		public var displayName:String;
 		public var goal:LevelGoal;
 		public var modules:Vector.<Module>;
 		public var wires:Vector.<Wire>;
@@ -28,7 +29,7 @@ package Levels {
 		public var writerLimit:int = 1;
 		
 		public function Level(Name:String, Goal:LevelGoal, delay:Boolean = false, AllowedModules:Array = null, ExpectedOps:Array = null, Modules:Array = null) {
-			name = Name;
+			name = displayName = Name;
 			this.goal = Goal;
 			
 			modules = new Vector.<Module>;

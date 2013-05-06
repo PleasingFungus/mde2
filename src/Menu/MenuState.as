@@ -39,7 +39,7 @@ package Menu {
 					if (!DEBUG.UNLOCK_ALL && !level.unlocked())
 						continue;
 					
-					var button:TextButton = new TextButton(X, Y, level.name, function switchTo(level:Level):void { 
+					var button:TextButton = new TextButton(X, Y, level.displayName, function switchTo(level:Level):void { 
 						FlxG.switchState(new LevelState(level));
 					});
 					button.setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, level.successSave ? U.HIGHLIGHTED_COLOR : 0xffffff);

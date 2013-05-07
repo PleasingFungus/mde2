@@ -13,6 +13,7 @@ package Displays {
 		private var _fraction:Number;
 		private var hand:FlxSprite;
 		private var _handFraction:Number;
+		private var on:Boolean;
 		public function Clock(X:int, Y:int, Fraction:Number) {
 			super(X, Y);
 			_fraction = Fraction;
@@ -20,8 +21,10 @@ package Displays {
 		}
 		
 		private function init():void {
-			var existed:Boolean = FlxG.checkBitmapCache("Clock-" + fraction);
-			makeGraphic(RADIUS * 2, RADIUS * 2, mostlyOn ? COLOR_ON : COLOR_OFF, true, "Clock-" + fraction);
+			on = handIndicatesOn();
+			var bitmapString:String = "Clock-" + fraction + "-" + on;
+			var existed:Boolean = FlxG.checkBitmapCache(bitmapString);
+			makeGraphic(RADIUS * 2, RADIUS * 2, mostlyOn ? COLOR_ON : COLOR_OFF, true, bitmapString);
 			if (existed)
 				return;
 			
@@ -92,6 +95,8 @@ package Displays {
 			if (_handFraction != Fraction) {
 				_handFraction = Fraction;
 				initHand();
+				if (handIndicatesOn() != on)
+					init();
 			}
 		}
 		
@@ -124,13 +129,27 @@ package Displays {
 			return _fraction < 0.5;
 		}
 		
+		protected function handIndicatesOn():Boolean {
+			return handFraction >= 1 - fraction;
+		}
+		
 		protected function minorColor():uint {
 			return mostlyOn ? COLOR_OFF : COLOR_ON;
 		}
 		
+		protected function get COLOR_ON():uint {
+			return on ? BRIGHT_COLOR_ON : DARK_COLOR_ON;
+		}
+		
+		protected function get COLOR_OFF():uint {
+			return on ? DARK_COLOR_OFF : BRIGHT_COLOR_OFF;
+		}
+		
 		private const RADIUS:int = 16;
-		private const COLOR_ON:uint = 0xfff0ea67;
-		private const COLOR_OFF:uint = 0xff699df5;
+		private const DARK_COLOR_ON:uint = 0xfff0ea67;
+		private const DARK_COLOR_OFF:uint = 0xff5482c4;
+		private const BRIGHT_COLOR_ON:uint = 0xfffff85f;
+		private const BRIGHT_COLOR_OFF:uint = 0xff143666;
 		private const OUTER_COLOR:uint = 0xff7070a0;
 		
 		[Embed(source = "../../lib/art/outline.png")] private const _outline:Class;

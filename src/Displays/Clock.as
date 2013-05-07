@@ -11,6 +11,8 @@ package Displays {
 	public class Clock extends FlxSprite {
 		
 		private var _fraction:Number;
+		private var hand:FlxSprite;
+		private var _handFraction:Number;
 		public function Clock(X:int, Y:int, Fraction:Number) {
 			super(X, Y);
 			_fraction = Fraction;
@@ -27,7 +29,7 @@ package Displays {
 			drawRects();
 			
 			var outline:FlxSprite = new FlxSprite( -1, -1, _outline);
-			outline.color = 0x202020;
+			outline.color = 0xff7070a0;
 			stamp(outline);
 		}
 		
@@ -86,6 +88,34 @@ package Displays {
 			return _fraction;
 		}
 		
+		public function set handFraction(Fraction:Number):void {
+			if (_handFraction != Fraction) {
+				_handFraction = Fraction;
+				initHand();
+			}
+		}
+		
+		public function get handFraction():Number {
+			return _handFraction;
+		}
+		
+		private function initHand():void {
+			if (!hand) {
+				hand = new FlxSprite( -1, -1, _hand);
+				hand.color = 0xff7070a0;
+			}
+			hand.angle = 360 * handFraction;
+		}
+		
+		override public function draw():void {
+			super.draw();
+			if (hand) {
+				hand.x = x;
+				hand.y = y;
+				hand.draw();
+			}
+		}
+		
 		protected function get mostlyOn():Boolean {
 			return _fraction > 0.5;
 		}
@@ -100,9 +130,11 @@ package Displays {
 		
 		private const RADIUS:int = 16;
 		private const COLOR_ON:uint = 0xfff0ea67;
-		private const COLOR_OFF:uint = 0xff5482c4;
+		private const COLOR_OFF:uint = 0xff699df5;
+		private const OUTER_COLOR:uint = 0xff7070a0;
 		
 		[Embed(source = "../../lib/art/outline.png")] private const _outline:Class;
+		[Embed(source = "../../lib/art/hand.png")] private const _hand:Class;
 		
 	}
 

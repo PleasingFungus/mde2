@@ -1,9 +1,17 @@
 package Modules {
 	import Components.Port;
+	import Displays.DModule;
+	import Displays.DClockModule;
 	import Values.Value;
 	import Values.NumericValue;
 	import UI.ColorText;
 	import UI.HighlightFormat;
+	import Layouts.PortLayout;
+	import Layouts.InternalLayout;
+	import flash.geom.Point;
+	import Layouts.Nodes.InternalNode;
+	import Layouts.Nodes.PortNode;
+	import Layouts.ModuleLayout;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -20,6 +28,12 @@ package Modules {
 			setByConfig();
 		}
 		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = super.generateLayout();
+			layout.ports[0].offset.y -= 1;
+			return layout;
+		}
+		
 		override public function getConfiguration():Configuration {
 			var maxEdge:int = U.state ? U.state.time.clockPeriod - 1 : 64;
 			if (!configuration)
@@ -30,6 +44,17 @@ package Modules {
 				configuration.value = initial;
 			}
 			return configuration;
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			var lport:PortLayout = layout.ports[0];
+			lport.port.name = "Clock";
+			return new InternalLayout([new PortNode(this, InternalNode.DIM_STANDARD,
+													new Point(lport.offset.x - layout.dim.x / 2 - 1 / 2, lport.offset.y), lport)]);
+		}
+		
+		override public function generateDisplay():DModule {
+			return new DClockModule(this);
 		}
 		
 		override public function setByConfig():void {

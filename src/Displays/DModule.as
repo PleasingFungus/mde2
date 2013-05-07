@@ -88,7 +88,8 @@ package Displays {
 			if (!module.exists)
 				return;
 			
-			updatePosition();
+			if (!lastLoc || !module.equals(lastLoc))
+				updatePosition();
 			visible = !outsideScreen();
 			if (!visible)
 				return;
@@ -126,9 +127,6 @@ package Displays {
 		
 		private var lastLoc:Point;
 		protected function updatePosition():void {
-			if (lastLoc && module.equals(lastLoc))
-				return;
-			
 			var baseX:int = module.x * U.GRID_DIM;
 			var baseY:int = module.y * U.GRID_DIM;
 			

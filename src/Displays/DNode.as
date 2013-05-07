@@ -54,6 +54,10 @@ package Displays {
 				delayFiller.draw();
 			}
 			
+			drawLabel();
+		}
+		
+		public function drawLabel():void {
 			label.x = x - 1 - offset.x;
 			label.y = y + 1 - offset.y;
 			var valueString:String = node.getValue().toString();

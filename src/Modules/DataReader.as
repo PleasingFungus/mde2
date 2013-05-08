@@ -14,6 +14,7 @@ package Modules {
 		public function DataReader(X:int, Y:int) {
 			super(X, Y, "Data Reader", Module.CAT_STORAGE, 0, 1, 1);
 			abbrev = "Rd";
+			symbol = _symbol;
 			delay = 10;
 		}
 		
@@ -55,6 +56,8 @@ package Modules {
 			
 			return memoryValue;
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_microscope_24.png")] private const _symbol:Class;
 		
 	}
 

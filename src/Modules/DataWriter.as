@@ -18,6 +18,7 @@ package Modules {
 		public function DataWriter(X:int, Y:int) {
 			super(X, Y, "Basic Data Writer", Module.CAT_STORAGE, 1, 0, 1);
 			abbrev = "wr";
+			symbol = _symbol;
 			delay = 12;
 			writesToMemory = 1;
 		}
@@ -92,6 +93,7 @@ package Modules {
 			return memoryValue;
 		}
 		
+		[Embed(source = "../../lib/art/modules/symbol_stamp_24.png")] private const _symbol:Class;
 	}
 
 }

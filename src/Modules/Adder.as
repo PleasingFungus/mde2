@@ -6,6 +6,7 @@ package Modules {
 	import Layouts.*;
 	import Layouts.Nodes.TallNode;
 	import flash.geom.Point;
+	import org.flixel.FlxSprite;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -16,6 +17,13 @@ package Modules {
 			super(X, Y, "Adder", Module.CAT_ARITH, 2, 1, 0);
 			abbrev = "+";
 			delay = 2;
+			symbol = _symbol;
+		}
+		
+		override public function generateSymbolDisplay():FlxSprite {
+			var symbolDisplay:FlxSprite = super.generateSymbolDisplay();
+			symbolDisplay.offset.y = symbolDisplay.height / 2;
+			return symbolDisplay;
 		}
 		
 		override protected function generateLayout():ModuleLayout {
@@ -48,6 +56,8 @@ package Modules {
 		override public function getDescription():String {
 			return "Outputs the sum of its inputs."
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_plus.png")] private const _symbol:Class;
 	}
 
 }

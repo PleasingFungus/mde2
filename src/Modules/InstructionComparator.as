@@ -8,6 +8,7 @@ package Modules {
 	import flash.geom.Point;
 	import UI.ColorText;
 	import UI.HighlightFormat;
+	import org.flixel.FlxSprite;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -19,6 +20,7 @@ package Modules {
 		public function InstructionComparator(X:int, Y:int, CompareValue:int = 0) {
 			super(X, Y, "Instruction Comparator", Module.CAT_LOGIC, 1, 1, 0);
 			abbrev = "I=";
+			symbol = _symbol;
 			
 			configuration = new OpConfiguration;
 			if (U.state)
@@ -27,6 +29,12 @@ package Modules {
 			setByConfig();
 			delay = 1;
 			configurableInPlace = false; //TODO: FIXME
+		}
+		
+		override public function generateSymbolDisplay():FlxSprite {
+			var symbolDisplay:FlxSprite = super.generateSymbolDisplay();
+			symbolDisplay.offset.x = symbolDisplay.width*3/4;
+			return symbolDisplay;
 		}
 		
 		override public function getConfiguration():Configuration {
@@ -84,6 +92,8 @@ package Modules {
 			values.push(compareValue.toNumber());
 			return values;
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_ieqb.png")] private const _symbol:Class;
 		
 	}
 

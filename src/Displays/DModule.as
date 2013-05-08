@@ -25,7 +25,7 @@ package Displays {
 		public var selected:Boolean;
 		private var nameText:FlxText;
 		private var detailsText:FlxText;
-		private var abbrevText:FlxText;
+		private var symbol:FlxSprite;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
@@ -36,16 +36,6 @@ package Displays {
 			makeGraphic(module.layout.dim.x * U.GRID_DIM,
 						module.layout.dim.y * U.GRID_DIM,
 						0xffffffff, true);
-			
-			detailsText = new FlxText( -1, -1, width + U.GRID_DIM / 2, getDetails());
-			U.MODULE_FONT_CLOSE.configureFlxText(detailsText, 0x0, 'center');
-			detailsText.scrollFactor = scrollFactor; //object
-			
-			if (module.abbrev) {
-				abbrevText = new FlxText( -1, -1, width + U.GRID_DIM / 2, module.abbrev);
-				U.NODE_FONT.configureFlxText(abbrevText, 0x0, 'center');
-				abbrevText.scrollFactor = scrollFactor;
-			}
 			
 			displayPorts = new Vector.<DPort>;
 			for each (var layout:PortLayout in module.layout.ports)
@@ -60,9 +50,16 @@ package Displays {
 						displayConnections.push(new InternalDWire(connection));
 				}
 				
-				nameText = new FlxText( -1, -1, width, module.name);
-				U.NODE_FONT.configureFlxText(nameText, 0x0, 'center');
-				nameText.scrollFactor = scrollFactor;
+				symbol = module.generateSymbolDisplay();
+				if (!symbol) {
+					nameText = new FlxText( -1, -1, width, module.name);
+					U.NODE_FONT.configureFlxText(nameText, 0x0, 'center');
+					nameText.scrollFactor = scrollFactor;
+				}
+			} else {			
+				detailsText = new FlxText( -1, -1, width + U.GRID_DIM / 2, getDetails());
+				U.MODULE_FONT_CLOSE.configureFlxText(detailsText, 0x0, 'center');
+				detailsText.scrollFactor = scrollFactor; //object
 			}
 			
 			updatePosition();
@@ -139,17 +136,16 @@ package Displays {
 			for each (var displayNode:DNode in displayNodes)
 				displayNode.node.updatePosition();
 			
-			detailsText.x = x;
-			detailsText.y = y + (height - detailsText.height) / 2;
 			
-			if (nameText) {
+			if (symbol) {
+				symbol.x = x + width / 2 - symbol.width / 2;
+				symbol.y = y + height - symbol.height - 4;
+			} else if (nameText) {
 				nameText.x = x;
 				nameText.y = y + height - (nameText.height + 2);
-			}
-			
-			if (abbrevText) {
-				abbrevText.x = x;
-				abbrevText.y = y + (height - detailsText.height) / 2;
+			} else {			
+				detailsText.x = x;
+				detailsText.y = y + (height - detailsText.height) / 2;
 			}
 			
 			lastLoc = module.clone();
@@ -175,13 +171,22 @@ package Displays {
 		override public function draw():void {
 			super.draw();
 			
-			if (module.internalLayout && U.zoom >= 0.5) {	
-				for each (var displayConnection:DWire in displayConnections)
-					if (displayConnection.visible)
-						displayConnection.draw();
-				for each (var displayNode:DNode in displayNodes)
-					displayNode.draw();
-				nameText.draw();
+			if (module.internalLayout) {	
+				if (U.zoom >= 0.5) {
+					for each (var displayConnection:DWire in displayConnections)
+						if (displayConnection.visible)
+							displayConnection.draw();
+					for each (var displayNode:DNode in displayNodes)
+						displayNode.draw();
+					if (symbol) {
+						//symbol.scale.x = symbol.scale.y = 1;
+						symbol.draw();
+					} else
+						nameText.draw();
+				} else if (symbol) {
+					//symbol.scale.x = symbol.scale.y = 2;
+					symbol.draw();
+				}
 			}
 			else if (U.zoom >= 0.5) {
 				detailsText.text = getDetails();

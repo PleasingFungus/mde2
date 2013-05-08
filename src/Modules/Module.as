@@ -4,6 +4,7 @@ package Modules {
 	import flash.utils.Dictionary;
 	import Layouts.*;
 	import Components.Port;
+	import org.flixel.FlxSprite;
 	import UI.HighlightFormat;
 	import Values.Value;
 	/**
@@ -15,18 +16,19 @@ package Modules {
 		public var name:String;
 		public var abbrev:String;
 		public var category:String;
-		protected var configuration:Configuration;
-		public var configurableInPlace:Boolean;
+		public var symbol:Class;
 		public var layout:ModuleLayout;
 		public var internalLayout:InternalLayout;
-		public var writesToMemory:int = 0;
-		public var storesData:Boolean = false;
 		
 		public var inputs:Vector.<Port>;
 		public var outputs:Vector.<Port>;
 		public var controls:Vector.<Port>;
 		
+		protected var configuration:Configuration;
+		public var configurableInPlace:Boolean;
 		public var delay:int;
+		public var writesToMemory:int = 0;
+		public var storesData:Boolean = false;
 		
 		public var exists:Boolean = true;
 		public var deployed:Boolean = false;
@@ -67,6 +69,14 @@ package Modules {
 		
 		public function generateDisplay():DModule {
 			return new DModule(this);
+		}
+		
+		public function generateSymbolDisplay():FlxSprite {
+			if (!symbol)
+				return null;
+			var symbolDisplay:FlxSprite = new FlxSprite( -1, -1, symbol);
+			symbolDisplay.color = 0x0;
+			return symbolDisplay;
 		}
 		
 		private function populatePorts(ports:Vector.<Port>, numPorts:int, isOutput:Boolean):void {

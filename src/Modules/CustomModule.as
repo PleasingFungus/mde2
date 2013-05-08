@@ -212,7 +212,13 @@ package Modules {
 					}
 				}
 			}
-			return new CustomModule(clones);
+			
+			var customModule:CustomModule = new CustomModule(clones);
+			if (customModule.outputs.length > 16 || customModule.inputs.length > 16 || customModule.controls.length > 16)
+				return null;
+			if (Math.max(customModule.outputs.length, customModule.inputs.length) * customModule.controls.length > 64)
+				return null;
+			return customModule;
 		}
 		
 		private static function escapeModuleString(s:String):String {

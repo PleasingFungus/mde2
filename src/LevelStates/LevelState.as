@@ -388,7 +388,7 @@ package LevelStates {
 							currentModule.initialize();
 							
 							modules.push(currentModule);
-							displayModules.push(midLayer.add(new DModule(currentModule)));
+							displayModules.push(midLayer.add(currentModule.generateDisplay()));
 							addRecentModule(moduleType);
 							
 							preserveModule = true;
@@ -448,7 +448,7 @@ package LevelStates {
 						currentModule.initialize();
 						
 						modules.push(currentModule);
-						displayModules.push(midLayer.add(new DModule(currentModule)));
+						displayModules.push(midLayer.add(currentModule.generateDisplay()));
 						addRecentModule(moduleType);
 						
 						preserveModule = true;

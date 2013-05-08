@@ -15,6 +15,7 @@ package Modules {
 		public function Subtractor(X:int, Y:int) {
 			super(X, Y, "Subtractor", Module.CAT_ARITH, 2, 1, 0);
 			abbrev = "-";
+			symbol = _symbol;
 			delay = 2;
 		}
 		
@@ -49,6 +50,8 @@ package Modules {
 			return "Outputs the difference of its inputs."
 		}
 		
+		
+		[Embed(source = "../../lib/art/modules/symbol_minus_24.png")] private const _symbol:Class;
 	}
 
 }

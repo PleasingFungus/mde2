@@ -13,6 +13,7 @@ package Modules {
 		public function BabyLatch(X:int, Y:int, InitialValue:int = 0) {
 			super(X, Y, "Basic Storage", Module.CAT_STORAGE, 1, 1, 0, InitialValue);
 			abbrev = "l";
+			symbol = _symbol;
 			delay = 1;
 			storesData = true;
 		}
@@ -44,6 +45,7 @@ package Modules {
 			return true;
 		}
 		
+		[Embed(source = "../../lib/art/modules/symbol_box_unlocked_24.png")] private const _symbol:Class;
 	}
 
 }

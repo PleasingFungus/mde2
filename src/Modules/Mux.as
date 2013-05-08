@@ -15,6 +15,8 @@ package Modules {
 		public function Mux(X:int, Y:int, Width:int = 8) {
 			super(X, Y, "Demultiplex", Module.CAT_CONTROL, 1, Width, 1);
 			abbrev = "Dmx";
+			symbol = _symbol;
+			
 			width = Width;
 			configuration = new Configuration(new Range(2, 16, Width));
 			configurableInPlace = false;
@@ -82,6 +84,8 @@ package Modules {
 				return inputs[0].getValue();
 			return U.V_UNPOWERED;
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_demultiplex_24.png")] private const _symbol:Class;
 		
 	}
 

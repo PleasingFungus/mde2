@@ -29,6 +29,8 @@ package Modules {
 			width = expectedOps.length ? expectedOps.length : 1;
 			super(X, Y, "Instruction Multiplexer", Module.CAT_CONTROL, width, 1, 1);
 			abbrev = "Imx";
+			symbol = _symbol;
+			
 			if (U.state)
 				for (var i:int = 0; i < width; i++)
 					inputs[i].name = expectedOps[i].toString();
@@ -110,6 +112,8 @@ package Modules {
 			
 			return index;
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_i_multiplex_24.png")] private const _symbol:Class;
 	}
 
 }

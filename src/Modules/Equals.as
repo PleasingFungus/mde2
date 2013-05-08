@@ -16,6 +16,7 @@ package Modules {
 		public function Equals(X:int, Y:int, Width:int = 2) {
 			super(X, Y, "Comparator", Module.CAT_LOGIC, Width, 1, 0);
 			abbrev = "=";
+			symbol = _symbol;
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
 			configurableInPlace = false;
@@ -69,6 +70,8 @@ package Modules {
 			return BooleanValue.NUMERIC_TRUE;
 		}
 		
+		
+		[Embed(source = "../../lib/art/modules/symbol_eq_24.png")] private const _symbol:Class;
 		
 	}
 

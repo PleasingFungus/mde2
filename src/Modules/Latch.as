@@ -25,6 +25,7 @@ package Modules {
 			
 			super(X, Y, "Storage", Module.CAT_STORAGE, Width, Width, 1);
 			abbrev = "L";
+			symbol = _symbol;
 			
 			delay = 2;
 			configurableInPlace = false;
@@ -140,6 +141,8 @@ package Modules {
 			var control:Value = controls[0].getValue();
 			return control != U.V_UNKNOWN && control != U.V_UNPOWERED && control.toNumber() != 0;
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_box_24.png")] private const _symbol:Class;
 		
 	}
 

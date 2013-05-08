@@ -18,6 +18,8 @@ package Modules {
 		public function Or(X:int, Y:int, Width:int = 2) {
 			super(X, Y, "Or", Module.CAT_LOGIC, Width, 1, 0);
 			abbrev = "Or";
+			symbol = _symbol;
+			
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));
 			configurableInPlace = false;
@@ -72,6 +74,8 @@ package Modules {
 			}
 			return BooleanValue.NUMERIC_FALSE;
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_or_24.png")] private const _symbol:Class;
 		
 	}
 

@@ -15,6 +15,7 @@ package Modules {
 		public function Divider(X:int, Y:int) {
 			super(X, Y, "Divider", Module.CAT_ARITH, 2, 1, 0);
 			abbrev = "/";
+			symbol = _symbol;
 			delay = 2;
 		}
 		
@@ -50,5 +51,7 @@ package Modules {
 		override public function getDescription():String {
 			return "Outputs the quotient of its inputs."
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_divide_24.png")] private const _symbol:Class;
 	}
 }

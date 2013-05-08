@@ -15,6 +15,7 @@ package Modules {
 		public function Multiplier(X:int, Y:int) {
 			super(X, Y, "Multiplier", Module.CAT_ARITH, 2, 1, 0);
 			abbrev = "*";
+			symbol = _symbol;
 			delay = 2;
 		}
 		
@@ -48,5 +49,7 @@ package Modules {
 		override public function getDescription():String {
 			return "Outputs the product of its inputs."
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_times_24.png")] private const _symbol:Class;
 	}
 }

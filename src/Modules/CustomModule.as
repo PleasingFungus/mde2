@@ -1,9 +1,13 @@
 package Modules {
 	import Components.Port;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import Layouts.DefaultLayout;
+	import Layouts.InternalLayout;
 	import Layouts.PortLayout;
 	import Layouts.ModuleLayout;
 	import Values.Value;
+	import org.flixel.FlxSprite;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -51,11 +55,61 @@ package Modules {
 			
 		}
 		
+		override public function generateSymbolDisplay():FlxSprite {
+			var module:Module;
+			var base:FlxSprite = new FlxSprite().makeGraphic(layout.dim.x * U.GRID_DIM, layout.dim.y * U.GRID_DIM, 0x0, true);
+			var SYMBOL_DIM:int = 24;
+			var usableSpace:Point = new Point(base.width - SYMBOL_DIM * 1.5, base.height - SYMBOL_DIM * 1.5);
+			
+			var topLeft:Point = new Point(int.MAX_VALUE, int.MAX_VALUE);
+			var bottomRight:Point = new Point(int.MIN_VALUE, int.MIN_VALUE);
+			for each (module in modules) {
+				if (module.x < topLeft.x)
+					topLeft.x = module.x;
+				if (module.y < topLeft.y)
+					topLeft.y = module.y;
+				if (module.x > bottomRight.x)
+					bottomRight.x = module.x;
+				if (module.y > bottomRight.y)
+					bottomRight.y = module.y;
+			}
+			
+			topLeft.x *= U.GRID_DIM;
+			topLeft.y *= U.GRID_DIM;
+			bottomRight.x *= U.GRID_DIM;
+			bottomRight.y *= U.GRID_DIM;
+			
+			var positioningScale:Point = new Point(usableSpace.x / Math.max(bottomRight.x - topLeft.x, usableSpace.x),
+												   usableSpace.y / Math.max(bottomRight.y - topLeft.y, usableSpace.y));
+			var symbolScale:Number = 1//Math.max(Math.min(positioningScale.x, positioningScale.y), 1/4);
+			
+			for each (module in modules) {
+				var symbol:FlxSprite = module.generateSymbolDisplay();
+				if (!symbol)
+					continue;
+				
+				symbol.scale.x = symbol.scale.y = symbolScale;
+				symbol.x = (module.x * U.GRID_DIM - topLeft.x) * positioningScale.x + symbolScale * SYMBOL_DIM / 2;
+				symbol.y = (module.y * U.GRID_DIM - topLeft.y) * positioningScale.y + symbolScale * SYMBOL_DIM / 2;
+				symbol.offset.x = symbol.offset.y = 0;
+				base.stamp(symbol, symbol.x, symbol.y);
+			}
+			
+			base.alpha = 1;
+			return base;
+		}
+		
+		override public function generateLargeSymbolDisplay():FlxSprite { return generateSymbolDisplay(); }
+		
 		override protected function generateLayout():ModuleLayout {
-			var layout:ModuleLayout = super.generateLayout();
+			var layout:ModuleLayout = new DefaultLayout(this, 2, 6);
 			for each (var portLayout:PortLayout in layout.ports)
 				portLayout.parent = this;
 			return layout;
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			return new InternalLayout([]);
 		}
 		
 		override public function initialize():void {

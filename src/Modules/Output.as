@@ -11,6 +11,7 @@ package Modules {
 		public function Output(X:int, Y:int) {
 			super(X, Y, "Output", CAT_MISC, 1, 1, 0);
 			abbrev = "Out";
+			symbol = _symbol;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
@@ -22,8 +23,10 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Routes the input to the output. (Does nothing. Intended for custom modules.)";
+			return "Routes the input to the output. (Does nothing; intended for custom modules.)";
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_out_24.png")] private const _symbol:Class;
 	}
 
 }

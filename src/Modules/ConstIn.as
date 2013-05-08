@@ -23,6 +23,7 @@ package Modules {
 			setByConfig();
 			super(X, Y, "Number", Module.CAT_MISC, 0, 1, 0);
 			abbrev = "In";
+			symbol = _symbol
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
@@ -61,6 +62,8 @@ package Modules {
 		override public function initialize():void {
 			value = new NumericValue(initialValue);
 		}
+		
+		[Embed(source = "../../lib/art/modules/symbol_num_24.png")] private const _symbol:Class;
 	}
 
 }

@@ -23,10 +23,10 @@ package Displays {
 		public var displayNodes:Vector.<DNode>;
 		public var displayConnections:Vector.<InternalDWire>;
 		public var selected:Boolean;
-		private var nameText:FlxText;
-		private var detailsText:FlxText;
-		private var symbol:FlxSprite;
-		private var largeSymbol:FlxSprite;
+		protected var nameText:FlxText;
+		protected var detailsText:FlxText;
+		protected var symbol:FlxSprite;
+		protected var largeSymbol:FlxSprite;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
@@ -180,21 +180,30 @@ package Displays {
 			
 			super.draw();
 			
+			drawInternals();
+			drawLabel();
+		}
+		
+		protected function drawInternals():void {
+			if (!module.internalLayout || U.zoom < 0.5)
+				return;
+			for each (var displayConnection:DWire in displayConnections)
+				if (displayConnection.visible)
+					displayConnection.draw();
+			for each (var displayNode:DNode in displayNodes)
+				displayNode.draw();
+		}
+		
+		protected function drawLabel():void {
 			if (module.internalLayout) {	
 				if (U.zoom >= 0.5) {
-					for each (var displayConnection:DWire in displayConnections)
-						if (displayConnection.visible)
-							displayConnection.draw();
-					for each (var displayNode:DNode in displayNodes)
-						displayNode.draw();
 					if (symbol)
 						symbol.draw();
 					else
 						nameText.draw();
 				} else if (largeSymbol)
 					largeSymbol.draw();
-			}
-			else if (U.zoom >= 0.5) {
+			} else if (U.zoom >= 0.5) {
 				detailsText.text = getDetails();
 				detailsText.draw();
 			}

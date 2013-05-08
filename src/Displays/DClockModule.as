@@ -24,12 +24,19 @@ package Displays {
 			clock.handFraction = ((U.state.time.moment % U.state.time.clockPeriod) + 0.5) / U.state.time.clockPeriod;
 		}
 		
-		override public function draw():void {
-			super.draw();
-			clock.x = displayNodes[0].x - displayNodes[0].offset.x;
-			clock.y = displayNodes[0].y - displayNodes[0].offset.y;
-			clock.draw();
-			displayNodes[0].drawLabel(); //?
+		override protected function drawInternals():void {
+			super.drawInternals();
+			if (U.zoom >= 0.5) {
+				clock.x = displayNodes[0].x - displayNodes[0].offset.x;
+				clock.y = displayNodes[0].y - displayNodes[0].offset.y;
+				clock.draw();
+				displayNodes[0].drawLabel(); //?
+			}
+		}
+		
+		override protected function drawLabel():void {
+			if (U.zoom < 0.5)
+				largeSymbol.draw();
 		}
 	}
 

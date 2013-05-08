@@ -12,6 +12,7 @@ package Modules {
 	import Layouts.Nodes.InternalNode;
 	import Layouts.Nodes.PortNode;
 	import Layouts.ModuleLayout;
+	import org.flixel.FlxSprite;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -22,6 +23,9 @@ package Modules {
 		public function SysDelayClock(X:int, Y:int, EdgeLength:int = 1) {
 			super(X, Y, "System Clock", Module.CAT_MISC, 0, 1, 0);
 			abbrev = "Clk";
+			symbol = _symbol;
+			largeSymbol = _large_symbol;
+			
 			configuration = getConfiguration();
 			if (U.state)
 				configuration.setValue(EdgeLength);
@@ -30,7 +34,7 @@ package Modules {
 		
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = super.generateLayout();
-			layout.ports[0].offset.y -= 1;
+			layout.ports[0].offset.y += 1;
 			return layout;
 		}
 		
@@ -98,6 +102,9 @@ package Modules {
 		public const EDGE:Value = new NumericValue(1);
 		public const NO_EDGE:Value = new NumericValue(0);
 		
+		
+		[Embed(source = "../../lib/art/modules/symbol_clk_24.png")] private const _symbol:Class;
+		[Embed(source = "../../lib/art/modules/symbol_clk_48.png")] private const _large_symbol:Class;
 	}
 
 }

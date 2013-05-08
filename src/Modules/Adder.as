@@ -18,6 +18,7 @@ package Modules {
 			abbrev = "+";
 			delay = 2;
 			symbol = _symbol;
+			largeSymbol = _large_symbol;
 		}
 		
 		override public function generateSymbolDisplay():FlxSprite {
@@ -57,7 +58,8 @@ package Modules {
 			return "Outputs the sum of its inputs."
 		}
 		
-		[Embed(source = "../../lib/art/modules/symbol_plus.png")] private const _symbol:Class;
+		[Embed(source = "../../lib/art/modules/symbol_plus_24.png")] private const _symbol:Class;
+		[Embed(source = "../../lib/art/modules/symbol_plus_48.png")] private const _large_symbol:Class;
 	}
 
 }

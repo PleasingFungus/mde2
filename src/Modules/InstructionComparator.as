@@ -93,7 +93,8 @@ package Modules {
 			return values;
 		}
 		
-		[Embed(source = "../../lib/art/modules/symbol_ieqb.png")] private const _symbol:Class;
+		[Embed(source = "../../lib/art/modules/symbol_ieqb_24.png")] private const _symbol:Class;
+		//[Embed(source = "../../lib/art/modules/symbol_ieqb_48.png")] private const _large_symbol:Class;
 		
 	}
 

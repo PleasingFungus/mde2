@@ -16,7 +16,8 @@ package Modules {
 		public var name:String;
 		public var abbrev:String;
 		public var category:String;
-		public var symbol:Class;
+		protected var symbol:Class;
+		protected var largeSymbol:Class;
 		public var layout:ModuleLayout;
 		public var internalLayout:InternalLayout;
 		
@@ -75,6 +76,16 @@ package Modules {
 			if (!symbol)
 				return null;
 			var symbolDisplay:FlxSprite = new FlxSprite( -1, -1, symbol);
+			symbolDisplay.color = 0x0;
+			return symbolDisplay;
+		}
+		
+		public function generateLargeSymbolDisplay():FlxSprite {
+			if (!symbol && !largeSymbol)
+				return null;
+			var symbolDisplay:FlxSprite = new FlxSprite( -1, -1, largeSymbol ? largeSymbol : symbol);
+			if (!largeSymbol)
+				symbolDisplay.scale.x = symbolDisplay.scale.y = 2;
 			symbolDisplay.color = 0x0;
 			return symbolDisplay;
 		}

@@ -26,6 +26,7 @@ package Displays {
 		private var nameText:FlxText;
 		private var detailsText:FlxText;
 		private var symbol:FlxSprite;
+		private var largeSymbol:FlxSprite;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
@@ -51,6 +52,7 @@ package Displays {
 				}
 				
 				symbol = module.generateSymbolDisplay();
+				largeSymbol = module.generateLargeSymbolDisplay();
 				if (!symbol) {
 					nameText = new FlxText( -1, -1, width, module.name);
 					U.NODE_FONT.configureFlxText(nameText, 0x0, 'center');
@@ -140,6 +142,10 @@ package Displays {
 			if (symbol) {
 				symbol.x = x + width / 2 - symbol.width / 2;
 				symbol.y = y + height - symbol.height - 4;
+				if (largeSymbol) {
+					largeSymbol.x = x + width / 2 - symbol.width / 2;
+					largeSymbol.y = y + height / 2 - symbol.height / 2;
+				}
 			} else if (nameText) {
 				nameText.x = x;
 				nameText.y = y + height - (nameText.height + 2);
@@ -178,15 +184,12 @@ package Displays {
 							displayConnection.draw();
 					for each (var displayNode:DNode in displayNodes)
 						displayNode.draw();
-					if (symbol) {
-						//symbol.scale.x = symbol.scale.y = 1;
+					if (symbol)
 						symbol.draw();
-					} else
+					else
 						nameText.draw();
-				} else if (symbol) {
-					//symbol.scale.x = symbol.scale.y = 2;
-					symbol.draw();
-				}
+				} else if (largeSymbol)
+					largeSymbol.draw();
 			}
 			else if (U.zoom >= 0.5) {
 				detailsText.text = getDetails();

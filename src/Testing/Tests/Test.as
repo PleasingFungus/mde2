@@ -334,6 +334,7 @@ package Testing.Tests {
 			var destRegister:int = registers.indexOf(value.value);
 			if (destRegister == -1)
 				throw new Error("!!!");
+			registers[destRegister] = C.INT_NULL + 1; //invalid value; won't be used to store other values below
 			
 			var applicandRegister:int = setRegisterFor(applicand, registers);
 			var loopCountRegister:int = setRegisterFor(loopBackwards ? loopLimit : 0, registers);

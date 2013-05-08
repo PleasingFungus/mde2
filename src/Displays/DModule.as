@@ -143,8 +143,8 @@ package Displays {
 				symbol.x = x + width / 2 - symbol.width / 2;
 				symbol.y = y + height - symbol.height - 4;
 				if (largeSymbol) {
-					largeSymbol.x = x + width / 2 - symbol.width / 2;
-					largeSymbol.y = y + height / 2 - symbol.height / 2;
+					largeSymbol.x = x + width / 2 - largeSymbol.width / 2;
+					largeSymbol.y = y + height / 2 - largeSymbol.height / 2;
 				}
 			} else if (nameText) {
 				nameText.x = x;
@@ -175,6 +175,9 @@ package Displays {
 		}
 		
 		override public function draw():void {
+			for each (var displayPort:DPort in displayPorts)
+				displayPort.draw();
+			
 			super.draw();
 			
 			if (module.internalLayout) {	
@@ -195,9 +198,6 @@ package Displays {
 				detailsText.text = getDetails();
 				detailsText.draw();
 			}
-			
-			for each (var displayPort:DPort in displayPorts)
-				displayPort.draw();
 		}
 	}
 

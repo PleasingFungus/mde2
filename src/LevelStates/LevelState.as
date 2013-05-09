@@ -49,7 +49,6 @@ package LevelStates {
 		private var listOpen:int;
 		private var UIChanged:Boolean;
 		private var editEnabled:Boolean = true;
-		public var goalPage:int; //for dgoal; to persist between instances
 		
 		private var UIEnableKey:Key = new Key("U");
 		
@@ -61,6 +60,7 @@ package LevelStates {
 		private var deleteHint:KeyHelper;
 		
 		
+		public var infobox:Infobox;
 		private var displayTime:DTime;
 		private var displayDelay:DDelay;
 		private var preserveModule:Boolean;
@@ -111,7 +111,7 @@ package LevelStates {
 			recentModules = new Vector.<Class>;
 			
 			makeUI();
-			upperLayer.add(new DGoal(level));
+			upperLayer.add(infobox = new DGoal(level));
 			
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
@@ -169,9 +169,9 @@ package LevelStates {
 		
 		private function addUIActives():void {
 			upperLayer.add(new Scroller("levelstate"));
+			upperLayer.add(deleteHint = new DeleteHelper);
 			upperLayer.add(new DCurrent(displayWires, displayModules));
 			upperLayer.add(new DModuleInfo(displayModules));
-			upperLayer.add(deleteHint = new DeleteHelper);
 			if (level.delay) {
 				if (!displayDelay)
 					midLayer.add(displayDelay = new DDelay(modules, displayModules));
@@ -239,14 +239,14 @@ package LevelStates {
 		
 		private function makeDataButton():void {			
 			var memoryButton:MenuButton = new GraphicButton(50, 90, _data_sprite, function _():void {
-				upperLayer.add(new DMemory(memory, level.goal.genExpectedMem()));
+				upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
 			}, runningDisplayTest ? "View memory" : "View example memory", new Key("E"));
 			upperLayer.add(memoryButton);
 		}
 		
 		private function makeInfoButton():void {
 			var infoButton:MenuButton = new GraphicButton(10, 90, _info_sprite, function _():void {
-				upperLayer.add(new DGoal(level));
+				upperLayer.add(infobox = new DGoal(level));
 			}, "Level info", new Key("I"));
 			upperLayer.add(infoButton);
 		}
@@ -295,7 +295,7 @@ package LevelStates {
 				var randomButton:MenuButton = new GraphicButton(90, 90, _random_sprite, function _():void {
 					initialMemory = level.goal.genMem();
 					memory = initialMemory.slice();
-					upperLayer.add(new DMemory(memory, level.goal.genExpectedMem()));
+					upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
 				}, "Generate new example memory", new Key("R"));
 				upperLayer.add(randomButton);
 			}
@@ -496,6 +496,14 @@ package LevelStates {
 			
 			if (FlxG.camera.fading)
 				return;
+			
+			U.buttonManager.update();
+			
+			if (infobox && infobox.exists) {
+				infobox.update();
+				return;
+			}
+			
 			if (level.goal.running) {
 				checkTestControls();
 				if (level.goal.running) {
@@ -514,7 +522,6 @@ package LevelStates {
 			updateUI();
 			super.update();
 			checkControls();
-			checkMenuState();
 			checkTime();
 			checkDDelay();
 			forceScroll();
@@ -525,7 +532,6 @@ package LevelStates {
 		}
 		
 		private function updateUI():void {
-			U.buttonManager.update();
 			UIChanged = false;
 			preserveModule = false;
 			
@@ -768,7 +774,7 @@ package LevelStates {
 		}
 		
 		private function getCursor():Cursor {
-			if (listOpen != LIST_NONE || runningDisplayTest || U.buttonManager.moused)
+			if (listOpen != LIST_NONE || runningDisplayTest || (infobox && infobox.exists) || U.buttonManager.moused)
 				return null;
 			
 			if (currentWire)
@@ -930,6 +936,8 @@ package LevelStates {
 			FlxG.camera.height = buf.height;
 			
 			DWire.updateStatic();
+			
+			checkMenuState();
 			
 			super.draw();
 			if (DEBUG.RENDER_COLLIDE)

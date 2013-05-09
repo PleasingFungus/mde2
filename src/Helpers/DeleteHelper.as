@@ -9,6 +9,7 @@ package Helpers {
 		
 		public function DeleteHelper() {
 			super(ControlSet.DELETE_KEY);
+			exists = false;
 		}
 		
 		override protected function getText():String {

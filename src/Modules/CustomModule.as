@@ -47,7 +47,7 @@ package Modules {
 			if (Y == C.INT_NULL)
 				Y = averageLoc.y;
 			
-			super(X, Y, "Custom", CAT_MISC,  inputs.length, outputs.length, controls.length);
+			super(X, Y, "Custom", ModuleCategory.MISC,  inputs.length, outputs.length, controls.length);
 			abbrev = "?";
 		}
 		

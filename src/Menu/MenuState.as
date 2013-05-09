@@ -62,7 +62,7 @@ package Menu {
 				Y += colHeight + 20;
 			}
 			
-			add(new Scroller);
+			add(new Scroller("menustate"));
 			
 			FlxG.bgColor = 0xff000000;
 			FlxG.mouse.show();

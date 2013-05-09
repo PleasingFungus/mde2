@@ -13,7 +13,7 @@ package Modules {
 		
 		protected var lastMomentStored:int = -1;
 		public function DataMemory(X:int, Y:int) {
-			super(X, Y, "Data Memory", Module.CAT_STORAGE, 1, 1, 2);
+			super(X, Y, "Data Memory", ModuleCategory.STORAGE, 1, 1, 2);
 			delay = 10;
 			writesToMemory = 1;
 		}

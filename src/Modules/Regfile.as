@@ -19,7 +19,7 @@ package Modules {
 		public function Regfile(X:int, Y:int, Width:int = 8) {
 			width = Width;
 			
-			super(X, Y, "Registers", Module.CAT_STORAGE, 1, 2, 4);
+			super(X, Y, "Registers", ModuleCategory.STORAGE, 1, 2, 4);
 			
 			inputs[0].name = "Write v";
 			controls[0].name = "Write";

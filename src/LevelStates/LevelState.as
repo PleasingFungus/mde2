@@ -5,6 +5,7 @@ package LevelStates {
 	import Helpers.DeleteHelper;
 	import Helpers.KeyHelper;
 	import Modules.CustomModule;
+	import Modules.ModuleCategory;
 	import Modules.SysDelayClock;
 	import org.flixel.*;
 	import Actions.*;
@@ -69,7 +70,7 @@ package LevelStates {
 		private var runningDisplayTest:Boolean;
 		
 		private var recentModules:Vector.<Class>;
-		private var moduleCategory:String;
+		private var moduleCategory:ModuleCategory;
 		private var moduleList:ButtonList;
 		private var moduleSliders:Vector.<ModuleSlider>;
 		
@@ -167,7 +168,7 @@ package LevelStates {
 		}
 		
 		private function addUIActives():void {
-			upperLayer.add(new Scroller);
+			upperLayer.add(new Scroller("levelstate"));
 			upperLayer.add(new DCurrent(displayWires, displayModules));
 			upperLayer.add(new DModuleInfo(displayModules));
 			upperLayer.add(deleteHint = new DeleteHelper);
@@ -346,7 +347,7 @@ package LevelStates {
 		}
 		
 		private function makeModuleCatButton():void {
-			var listButton:GraphicButton = new GraphicButton(10, 10, _list_sprite, function openList():void {
+			var listButton:GraphicButton = new GraphicButton(10, 10, _module_sprite, function openList():void {
 				ensureNothingHeld();
 				listOpen = LIST_CATEGORIES;
 				makeUI();
@@ -359,7 +360,7 @@ package LevelStates {
 			//build a list of buttons for allowed modules/names
 			var moduleButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
 			var i:int = 1;
-			for each (var category:String in Module.ALL_CATEGORIES) {
+			for each (var category:ModuleCategory in ModuleCategory.ALL) {
 				var allowed:Boolean = false;
 				for each (var moduleType:Class in level.allowedModules)
 					if (Module.getArchetype(moduleType).category == category) {
@@ -367,11 +368,11 @@ package LevelStates {
 						break;
 					}
 				
-				moduleButtons.push(new TextButton( -1, -1, category, function chooseCategory(category:String):void {
+				moduleButtons.push(new TextButton( -1, -1, category.name, function chooseCategory(category:ModuleCategory):void {
 					listOpen = LIST_MODULES;
 					moduleCategory = category;
 					makeUI();
-				}, "Choose "+category+" modules" /*TODO: replace with category description?*/, ControlSet.NUMBER_HOTKEYS[i++]).setParam(category).setDisabled(!allowed));
+				}, "Choose "+category.name+" modules" /*TODO: replace with category description?*/, ControlSet.NUMBER_HOTKEYS[i++]).setFormat(null, 16, category.color).setParam(category).setDisabled(!allowed));
 			}
 			
 			if (recentModules.length) {
@@ -416,7 +417,7 @@ package LevelStates {
 				moduleType = recentModules[i];
 				var archetype:Module = Module.getArchetype(moduleType);
 				if (archetype.getConfiguration())
-					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+Module.ALL_CATEGORIES.length+1], archetype)));
+					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+ModuleCategory.ALL.length+1], archetype)));
 			}
 		}
 		
@@ -1240,7 +1241,7 @@ package LevelStates {
 		private const VIEW_MODE_SPRITES:Array = [_view_normal_sprite, _view_delay_sprite];
 		private const VIEW_MODE_NAMES:Array = ["normal", "delay"];
 		
-		[Embed(source = "../../lib/art/ui/list.png")] private const _list_sprite:Class;
+		[Embed(source = "../../lib/art/ui/module.png")] private const _module_sprite:Class;
 		[Embed(source = "../../lib/art/ui/undo.png")] private const _undo_sprite:Class;
 		[Embed(source = "../../lib/art/ui/redo.png")] private const _redo_sprite:Class;
 		[Embed(source = "../../lib/art/ui/up.png")] private const _back_sprite:Class;

@@ -16,7 +16,7 @@ package Modules {
 		
 		protected var lastMomentStored:int = -1;
 		public function DataWriter(X:int, Y:int) {
-			super(X, Y, "Basic Data Writer", Module.CAT_STORAGE, 1, 0, 1);
+			super(X, Y, "Basic Data Writer", ModuleCategory.STORAGE, 1, 0, 1);
 			abbrev = "wr";
 			symbol = _symbol;
 			delay = 12;

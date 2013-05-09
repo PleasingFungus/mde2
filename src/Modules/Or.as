@@ -16,7 +16,7 @@ package Modules {
 		
 		private var width:int;
 		public function Or(X:int, Y:int, Width:int = 2) {
-			super(X, Y, "Or", Module.CAT_LOGIC, Width, 1, 0);
+			super(X, Y, "Or", ModuleCategory.LOGIC, Width, 1, 0);
 			abbrev = "Or";
 			symbol = _symbol;
 			

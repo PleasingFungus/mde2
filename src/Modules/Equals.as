@@ -14,7 +14,7 @@ package Modules {
 		
 		private var width:int;
 		public function Equals(X:int, Y:int, Width:int = 2) {
-			super(X, Y, "Comparator", Module.CAT_LOGIC, Width, 1, 0);
+			super(X, Y, "Comparator", ModuleCategory.LOGIC, Width, 1, 0);
 			abbrev = "=";
 			symbol = _symbol;
 			width = Width;

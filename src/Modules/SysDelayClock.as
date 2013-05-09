@@ -21,7 +21,7 @@ package Modules {
 		
 		private var _edgeLength:int = 1;
 		public function SysDelayClock(X:int, Y:int, EdgeLength:int = 1) {
-			super(X, Y, "System Clock", Module.CAT_MISC, 0, 1, 0);
+			super(X, Y, "System Clock", ModuleCategory.MISC, 0, 1, 0);
 			abbrev = "Clk";
 			symbol = _symbol;
 			largeSymbol = _large_symbol;

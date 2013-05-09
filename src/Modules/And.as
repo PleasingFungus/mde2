@@ -16,7 +16,7 @@ package Modules {
 		
 		private var width:int;
 		public function And(X:int, Y:int, Width:int = 2) {
-			super(X, Y, "And", Module.CAT_LOGIC, Width, 1, 0);
+			super(X, Y, "And", ModuleCategory.LOGIC, Width, 1, 0);
 			symbol = _symbol;
 			width = Width;
 			configuration = new Configuration(new Range(2, 8, Width));

@@ -12,7 +12,7 @@ package Modules {
 		
 		public function ProgramCounter(X:int, Y:int, Initial:int = 0) {
 			
-			super(X, Y, "Program Counter", Module.CAT_STORAGE, 1, 1, 2, Initial);
+			super(X, Y, "Program Counter", ModuleCategory.STORAGE, 1, 1, 2, Initial);
 			
 			delay = 5;
 		}

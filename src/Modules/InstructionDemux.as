@@ -27,7 +27,7 @@ package Modules {
 				expectedOps = U.state.level.expectedOps.slice();
 			
 			width = expectedOps.length ? expectedOps.length : 1;
-			super(X, Y, "Instruction Multiplexer", Module.CAT_CONTROL, width, 1, 1);
+			super(X, Y, "Instruction Multiplexer", ModuleCategory.CONTROL, width, 1, 1);
 			abbrev = "Imx";
 			symbol = _symbol;
 			

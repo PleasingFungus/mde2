@@ -9,7 +9,7 @@ package Modules {
 	public class Output extends Module {
 		
 		public function Output(X:int, Y:int) {
-			super(X, Y, "Output", CAT_MISC, 1, 1, 0);
+			super(X, Y, "Output", ModuleCategory.MISC, 1, 1, 0);
 			abbrev = "Out";
 			symbol = _symbol;
 		}

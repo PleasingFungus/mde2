@@ -14,7 +14,7 @@ package Modules {
 	public class InstructionDecoder extends Module {
 		
 		public function InstructionDecoder(X:int, Y:int) {
-			super(X, Y, "Instruction Decoder", Module.CAT_MISC, 1, 4, 0);
+			super(X, Y, "Instruction Decoder", ModuleCategory.MISC, 1, 4, 0);
 			abbrev = "Dec";
 			symbol = _symbol;
 			

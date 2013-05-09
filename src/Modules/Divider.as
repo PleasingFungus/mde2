@@ -13,7 +13,7 @@ package Modules {
 	public class Divider extends Module {
 		
 		public function Divider(X:int, Y:int) {
-			super(X, Y, "Divider", Module.CAT_ARITH, 2, 1, 0);
+			super(X, Y, "Divider", ModuleCategory.ARITH, 2, 1, 0);
 			abbrev = "/";
 			symbol = _symbol;
 			delay = 2;

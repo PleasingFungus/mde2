@@ -13,7 +13,7 @@ package Modules {
 		
 		public var width:int;
 		public function Mux(X:int, Y:int, Width:int = 8) {
-			super(X, Y, "Demultiplex", Module.CAT_CONTROL, 1, Width, 1);
+			super(X, Y, "Demultiplex", ModuleCategory.CONTROL, 1, Width, 1);
 			abbrev = "Dmx";
 			symbol = _symbol;
 			

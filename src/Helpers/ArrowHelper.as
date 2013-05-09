@@ -12,8 +12,9 @@ package Helpers {
 		
 		private var keys:Vector.<KeyHelper>;
 		public var presses:Array;
+		private var context:String;
 		
-		public function ArrowHelper() {
+		public function ArrowHelper(Context:String = null) {
 			keys = new Vector.<KeyHelper>;
 			
 			for each (var directionKey:Key in ControlSet.DIRECTION_KEYS) {
@@ -29,6 +30,10 @@ package Helpers {
 			keys[1].y = BUFFER;
 			keys[3].y = FlxG.height - keys[3].height - BUFFER;
 			keys[1].x = keys[3].x = FlxG.width / 2 - keys[1].width / 2;
+			
+			context = Context ? "SCROLLER-"+Context : null;
+			if (context && U.save.data[context])
+				exists = false;
 		}
 		
 		override public function update():void {
@@ -40,8 +45,11 @@ package Helpers {
 					return;
 				pressTime += key.pressTime;
 			}
-			if (pressTime >= PRESS_LIMIT)	
+			if (pressTime >= PRESS_LIMIT) {
 				exists = false;
+				if (context)
+					U.save.data[context] = true;
+			}
 		}
 		
 		protected static const BUFFER:int = 4;

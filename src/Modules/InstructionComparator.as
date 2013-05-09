@@ -18,7 +18,7 @@ package Modules {
 		public var compareValue:OpcodeValue;
 		protected var level:Level;
 		public function InstructionComparator(X:int, Y:int, CompareValue:int = 0) {
-			super(X, Y, "Instruction Comparator", Module.CAT_LOGIC, 1, 1, 0);
+			super(X, Y, "Instruction Comparator", ModuleCategory.LOGIC, 1, 1, 0);
 			abbrev = "I=";
 			symbol = _symbol;
 			

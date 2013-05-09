@@ -10,7 +10,7 @@ package Modules {
 		
 		public var compareValue:int;
 		public function Comparator(X:int, Y:int, CompareValue:int = 0) {
-			super(X, Y, "OBSOLETE - DONTUSE", Module.CAT_LOGIC, 1, 1, 0);
+			super(X, Y, "OBSOLETE - DONTUSE", ModuleCategory.LOGIC, 1, 1, 0);
 			configuration = new Configuration(new Range( -32, 31, CompareValue));
 			setByConfig();
 			delay = 1;

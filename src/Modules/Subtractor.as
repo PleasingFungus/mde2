@@ -13,7 +13,7 @@ package Modules {
 	public class Subtractor extends Module {
 		
 		public function Subtractor(X:int, Y:int) {
-			super(X, Y, "Subtractor", Module.CAT_ARITH, 2, 1, 0);
+			super(X, Y, "Subtractor", ModuleCategory.ARITH, 2, 1, 0);
 			abbrev = "-";
 			symbol = _symbol;
 			delay = 2;

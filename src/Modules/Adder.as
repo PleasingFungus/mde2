@@ -14,7 +14,7 @@ package Modules {
 	public class Adder extends Module {
 		
 		public function Adder(X:int, Y:int) {
-			super(X, Y, "Adder", Module.CAT_ARITH, 2, 1, 0);
+			super(X, Y, "Adder", ModuleCategory.ARITH, 2, 1, 0);
 			abbrev = "+";
 			delay = 2;
 			symbol = _symbol;

@@ -11,12 +11,12 @@ package Displays {
 	public class Scroller extends FlxGroup {
 		
 		private var scrollSpeed:Point;
-		public function Scroller() {
+		public function Scroller(Context:String = null) {
 			super();
 			
 			scrollSpeed = new Point;
 			if (U.tutorialState >= U.TUT_BEAT_TUT_2)
-				add(new ArrowHelper);
+				add(new ArrowHelper(Context));
 		}
 		
 		override public function update():void {

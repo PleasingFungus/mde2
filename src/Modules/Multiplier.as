@@ -13,7 +13,7 @@ package Modules {
 	public class Multiplier extends Module {
 		
 		public function Multiplier(X:int, Y:int) {
-			super(X, Y, "Multiplier", Module.CAT_ARITH, 2, 1, 0);
+			super(X, Y, "Multiplier", ModuleCategory.ARITH, 2, 1, 0);
 			abbrev = "*";
 			symbol = _symbol;
 			delay = 2;

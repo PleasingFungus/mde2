@@ -12,7 +12,7 @@ package Modules {
 	public class InstructionMemory extends Module {
 		
 		public function InstructionMemory(X:int, Y:int) {
-			super(X, Y, "Instruction Memory", Module.CAT_STORAGE, 0, 4, 1);
+			super(X, Y, "Instruction Memory", ModuleCategory.STORAGE, 0, 4, 1);
 			controls[0].name = "Line";
 			outputs[0].name = "Op";
 			outputs[1].name = "Src";

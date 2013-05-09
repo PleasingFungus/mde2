@@ -12,7 +12,7 @@ package Modules {
 		public var width:int;
 		public function InstructionMux(X:int, Y:int) {
 			width = U.state ? U.state.level.expectedOps.length : 1;
-			super(X, Y, "Instruction Demultiplex", Module.CAT_CONTROL, 1, width, 1);
+			super(X, Y, "Instruction Demultiplex", ModuleCategory.CONTROL, 1, width, 1);
 			abbrev = "Idx";
 			if (U.state)
 				for (var i:int = 0; i < width; i++)

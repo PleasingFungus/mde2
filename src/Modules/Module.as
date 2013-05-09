@@ -15,7 +15,7 @@ package Modules {
 		
 		public var name:String;
 		public var abbrev:String;
-		public var category:String;
+		public var category:ModuleCategory;
 		protected var symbol:Class;
 		protected var largeSymbol:Class;
 		public var layout:ModuleLayout;
@@ -36,7 +36,7 @@ package Modules {
 		
 		public var FIXED:Boolean = false;
 		
-		public function Module(X:int, Y:int, Name:String, Category:String, numInputs:int, numOutputs:int, numControls:int ) {
+		public function Module(X:int, Y:int, Name:String, Category:ModuleCategory, numInputs:int, numOutputs:int, numControls:int ) {
 			super(X, Y);
 			
 			name = Name;
@@ -335,6 +335,8 @@ package Modules {
 		}
 		
 		public static function init():void {
+			ModuleCategory.init();
+			
 			for each (var moduleClass:Class in [Adder, ASU, Clock, ConstIn, Latch,
 												Equals, Regfile, Comparator,
 												InstructionMemory, DataMemory,
@@ -349,9 +351,6 @@ package Modules {
 				else
 					ARCHETYPES.push(new moduleClass( -1, -1));
 			}
-			
-			for each (var category:String in [CAT_CONTROL, CAT_STORAGE, CAT_LOGIC, CAT_ARITH, CAT_MISC])
-				ALL_CATEGORIES.push(category);
 		}
 		
 		public static function getArchetype(moduleClass:Class):Module {
@@ -360,13 +359,6 @@ package Modules {
 		
 		public static const ALL_MODULES:Vector.<Class> = new Vector.<Class>;
 		public static const ARCHETYPES:Vector.<Module> = new Vector.<Module>;
-		
-		public static const CAT_ARITH:String = "Arithmetic";
-		public static const CAT_LOGIC:String = "Logic";
-		public static const CAT_STORAGE:String = "Storage";
-		public static const CAT_CONTROL:String = "Control";
-		public static const CAT_MISC:String = "Misc.";
-		public static const ALL_CATEGORIES:Vector.<String> = new Vector.<String>;
 	}
 
 }

@@ -12,7 +12,7 @@ package Modules {
 	public class DataReader extends Module {
 		
 		public function DataReader(X:int, Y:int) {
-			super(X, Y, "Data Reader", Module.CAT_STORAGE, 0, 1, 1);
+			super(X, Y, "Data Reader", ModuleCategory.STORAGE, 0, 1, 1);
 			abbrev = "Rd";
 			symbol = _symbol;
 			delay = 10;

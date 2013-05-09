@@ -21,7 +21,7 @@ package Modules {
 		public function ConstIn(X:int, Y:int, InitialValue:int = 0) {
 			configuration = new Configuration(new Range( -32, 31, InitialValue));
 			setByConfig();
-			super(X, Y, "Number", Module.CAT_MISC, 0, 1, 0);
+			super(X, Y, "Number", ModuleCategory.MISC, 0, 1, 0);
 			abbrev = "In";
 			symbol = _symbol
 		}

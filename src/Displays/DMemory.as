@@ -3,10 +3,11 @@ package Displays {
 	import Controls.ControlSet;
 	import Testing.Goals.GeneratedGoal;
 	import UI.MenuButton;
+	import UI.GraphicButton;
 	import Values.FixedValue;
 	import Values.InstructionValue;
 	import Values.Value;
-	import UI.GraphicButton;
+	import Controls.Key;
 	
 	/**
 	 * ...
@@ -29,6 +30,9 @@ package Displays {
 			super.init();
 			if (U.state.level.commentsEnabled)
 				makeCommentButton();
+			if (U.state.level.goal.randomizedMemory && U.state.editEnabled)
+				makeRandomButton();
+			
 			moment = U.state.time.moment;
 			
 			var Y:int = bg.y + INNER_BORDER;
@@ -98,11 +102,25 @@ package Displays {
 								  displayComments ? _code_sprite : _comment_sprite, function comment():void { kludge.displayComments = !kludge.displayComments; init(); } ))
 		}
 		
+		private var randomButton:MenuButton;
+		protected function makeRandomButton():void {
+			var kludge:DMemory = this;
+			randomButton = new GraphicButton(bg.x + bg.width / 2 - 16, bg.y + bg.height - 32, _random_sprite, function _():void {
+				U.state.initialMemory = U.state.level.goal.genMem();
+				memory = U.state.memory = U.state.initialMemory.slice();
+				expectedMemory = U.state.level.goal.genExpectedMem();
+				randomButton.setExists(false); //cleanup tooltips
+				init();
+			}, "Generate new example memory", new Key("R"));
+			add(randomButton);
+		}
+		
 		private const COL_WIDTH:int = 225;
 		private const ROW_HEIGHT:int = 20;
 		
 		[Embed(source = "../../lib/art/ui/info.png")] private const _comment_sprite:Class;
 		[Embed(source = "../../lib/art/ui/code.png")] private const _code_sprite:Class;
+		[Embed(source = "../../lib/art/ui/random.png")] private const _random_sprite:Class;
 		
 	}
 

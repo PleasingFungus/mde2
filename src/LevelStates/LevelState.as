@@ -48,7 +48,7 @@ package LevelStates {
 		public var viewMode:int = VIEW_MODE_NORMAL;
 		private var listOpen:int;
 		private var UIChanged:Boolean;
-		private var editEnabled:Boolean = true;
+		public var editEnabled:Boolean = true;
 		
 		private var UIEnableKey:Key = new Key("U");
 		
@@ -292,15 +292,6 @@ package LevelStates {
 		}
 		
 		private function makeTestButtons():void {
-			if (level.goal.randomizedMemory) {
-				var randomButton:MenuButton = new GraphicButton(90, 90, _random_sprite, function _():void {
-					initialMemory = level.goal.genMem();
-					memory = initialMemory.slice();
-					upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
-				}, "Generate new example memory", new Key("R"));
-				upperLayer.add(randomButton);
-			}
-			
 			if (level.goal.dynamicallyTested) {
 				var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 10, _test_sprite, function _():void {
 					level.goal.startRun();
@@ -1265,7 +1256,6 @@ package LevelStates {
 		
 		[Embed(source = "../../lib/art/ui/code.png")] private const _data_sprite:Class;
 		[Embed(source = "../../lib/art/ui/info.png")] private const _info_sprite:Class;
-		[Embed(source = "../../lib/art/ui/random.png")] private const _random_sprite:Class;
 		[Embed(source = "../../lib/art/ui/reset.png")] private const _reset_sprite:Class;
 		[Embed(source = "../../lib/art/ui/test.png")] private const _test_sprite:Class;
 		[Embed(source = "../../lib/art/ui/tset_success.png")] private const _test_success_sprite:Class;

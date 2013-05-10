@@ -98,14 +98,14 @@ package Displays {
 		
 		protected function makeCommentButton():void {
 			var kludge:DMemory = this;
-			add(new GraphicButton(bg.x + INNER_BORDER + bg.width / 2 - 16 - 10, bg.y + INNER_BORDER,
+			add(new GraphicButton(bg.x + INNER_BORDER + bg.width / 2 - 16, bg.y + INNER_BORDER,
 								  displayComments ? _code_sprite : _comment_sprite, function comment():void { kludge.displayComments = !kludge.displayComments; init(); } ))
 		}
 		
 		private var randomButton:MenuButton;
 		protected function makeRandomButton():void {
 			var kludge:DMemory = this;
-			randomButton = new GraphicButton(bg.x + bg.width / 2 - 16, bg.y + bg.height - 32, _random_sprite, function _():void {
+			randomButton = new GraphicButton(bg.x + INNER_BORDER + bg.width / 2 - 16 - 38, bg.y + INNER_BORDER, _random_sprite, function _():void {
 				U.state.initialMemory = U.state.level.goal.genMem();
 				memory = U.state.memory = U.state.initialMemory.slice();
 				expectedMemory = U.state.level.goal.genExpectedMem();
@@ -115,7 +115,7 @@ package Displays {
 			add(randomButton);
 		}
 		
-		private const COL_WIDTH:int = 225;
+		private const COL_WIDTH:int = 255;
 		private const ROW_HEIGHT:int = 20;
 		
 		[Embed(source = "../../lib/art/ui/info.png")] private const _comment_sprite:Class;

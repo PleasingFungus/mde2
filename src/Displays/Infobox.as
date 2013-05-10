@@ -121,7 +121,7 @@ package Displays {
 		
 		protected const RAISED_BORDER_WIDTH:int = 2;
 		protected const INNER_BORDER:int = RAISED_BORDER_WIDTH * 2 + 6;
-		protected const WIDTH_FRACTION:Number = 3 / 4;
+		protected const WIDTH_FRACTION:Number = 7 / 8;
 		protected const HEIGHT_FRACTION:Number = 3 / 4;
 	}
 

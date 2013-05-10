@@ -153,7 +153,7 @@ package LevelStates {
 			
 			new ButtonManager;
 			UIChanged = true;
-			add(new MenuBar(60));
+			upperLayer.add(new MenuBar(60));
 			addUIActives();
 			makeViewButtons();
 			
@@ -166,6 +166,8 @@ package LevelStates {
 			makeEditButtons();
 			makeViewLists();
 			makeEditLists();
+			
+			checkMenuState();
 		}
 		
 		private function addUIActives():void {

@@ -25,7 +25,7 @@ package Menu {
 			add(title);
 			
 			var X:int = 10;
-			var Y:int = 10;
+			var Y:int = 40;
 			
 			var howToPlayButton:MenuButton = new TextStateButton(HowToPlayState, U.tutorialState > U.TUT_READ_HTP ? "How To Play" : "Play");
 			howToPlayButton.X = X;

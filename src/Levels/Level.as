@@ -141,18 +141,6 @@ package Levels {
 			
 			levels.push(SEL_TUT, COPY_TUT);
 			
-			var D0_TUT:Level = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
-										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
-			D0_TUT.predecessors.push(ACC_TUT);
-			var D1_TUT:Level = new Level("Delay Accum. 1", new MagicAccumDelayTutGoal, true,
-										 [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);
-			D1_TUT.predecessors.push(D0_TUT);
-			var D2_TUT:Level = new Level("Delay Accum. 2", new AccumDelayTutGoal, true,
-										 [ConstIn, Adder, Latch, DataWriter, SysDelayClock]);
-			D2_TUT.predecessors.push(D1_TUT);
-			
-			levels.push(D0_TUT, D1_TUT, D2_TUT);
-			
 			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
 			addCPU.goal.description += "\n\nCPU instructions reference 'registers'. These are a set of 8 values, numbered 0-7, stored however you like.";
 			addCPU.goal.description += " The only requirement is that you are able to store values to, and on later ticks retrieve values from, locations numbered 0 - 7.";
@@ -173,6 +161,18 @@ package Levels {
 			cpuFULL.predecessors.push(cpuADV, cpuLD, cpuBRANCH);
 			
 			levels.push(addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD, cpuFULL);
+			
+			var D0_TUT:Level = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
+										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
+			D0_TUT.predecessors.push(ACC_TUT);
+			var D1_TUT:Level = new Level("Delay Accum. 1", new MagicAccumDelayTutGoal, true,
+										 [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);
+			D1_TUT.predecessors.push(D0_TUT);
+			var D2_TUT:Level = new Level("Delay Accum. 2", new AccumDelayTutGoal, true,
+										 [ConstIn, Adder, Latch, DataWriter, SysDelayClock]);
+			D2_TUT.predecessors.push(D1_TUT);
+			
+			levels.push(D0_TUT, D1_TUT, D2_TUT);
 			
 			var delayShard:LevelShard = LevelShard.CORE.compositWith(LevelShard.DELAY);
 			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", "Make a basic CPU... with propagation delay!", delayShard);
@@ -210,14 +210,10 @@ package Levels {
 			
 			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD, pipeBranch, pipeFull);
 			
-			columns.push(makeVec([WIRE_TUT, MOD_TUT]));
-			columns.push(makeVec([SEL_TUT, COPY_TUT]));
-			columns.push(makeVec([ACC_TUT]));
-			columns.push(makeVec([INSTR_TUT, OP_TUT, ISEL_TUT]));
+			columns.push(makeVec([WIRE_TUT, MOD_TUT, SEL_TUT, COPY_TUT]));
+			columns.push(makeVec([ACC_TUT, INSTR_TUT, OP_TUT, ISEL_TUT]));
 			columns.push(makeVec([addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD, cpuFULL]));
-			columns.push(makeVec([D0_TUT]));
-			columns.push(makeVec([D1_TUT]));
-			columns.push(makeVec([D2_TUT]));
+			columns.push(makeVec([D0_TUT, D1_TUT, D2_TUT]));
 			columns.push(makeVec([addCPU_D, cpuADVLDD, cpuD_BRANCH, cpuD_FULL]));
 			columns.push(makeVec([pipeTutorial]));
 			columns.push(makeVec([pipe, pipeJMP, pipeBranch, pipeADV, pipeLD, pipeADVLDD, pipeFull]));

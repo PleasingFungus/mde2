@@ -3,6 +3,7 @@ package Displays {
 	import flash.geom.Rectangle;
 	import org.flixel.*;
 	import UI.GraphicButton;
+	import UI.MenuButton;
 	
 	/**
 	 * ...
@@ -38,21 +39,23 @@ package Displays {
 		
 		public function create():void {
 			var textWidth:int = 50;
-			timeText = new FlxText(x + width/2 -textWidth / 2, y, textWidth, U.state.time.toString());
+			timeText = new FlxText(x -textWidth / 2, y, textWidth, U.state.time.toString());
 			timeText.setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size);
 			
 			var timeBorder:int = 2;
-			timeBox = new FlxSprite(timeText.x - timeBorder, timeText.y - timeBorder);
+			timeBox = new FlxSprite(timeText.x - timeBorder, timeText.y);
 			timeBox.makeGraphic(timeText.width + timeBorder * 2, timeText.height + timeBorder * 2, 0xff666666, true, "TIME BOX");
 			timeBox.framePixels.fillRect(new Rectangle(timeBorder, timeBorder, timeText.width, timeText.height), 0xff202020);
 			
 			add(timeBox);
 			add(timeText);
 			
-			stepButton = new GraphicButton(timeBox.x, timeBox.y + timeBox.height / 2, _step_sprite, U.state.time.step, "Step forward 1 tick", new Key("L"));
+			stepButton = new GraphicButton(timeBox.x, y, _step_sprite, U.state.time.step, "Step forward 1 tick", new Key("L"));
 			stepButton.X -= stepButton.fullWidth;
-			stepButton.Y -= stepButton.fullHeight / 2;
 			add(stepButton);
+			
+			timeBox.y = stepButton.Y + stepButton.fullHeight / 2 - timeBox.height / 2;
+			timeText.y = timeBox.y + timeBorder;
 			
 			playButton = new GraphicButton(stepButton.X, stepButton.Y, _play_sprite, function play():void {
 				if (!derock) return;
@@ -111,6 +114,17 @@ package Displays {
 				derock = 0;
 			}, "Reverse at 10x speed", new Key("N"));
 			add(rFastButton);
+			
+			var min:int = int.MAX_VALUE;
+			for each (var member:FlxBasic in members)
+				if (member is MenuButton)
+					min = Math.min((member as MenuButton).X, min);
+			
+			for each (member in members)
+				if (member is FlxObject)
+					(member as FlxObject).x += x - min;
+				else if (member is MenuButton)
+					(member as MenuButton).X += x - min;
 		}
 		
 		override public function update():void {
@@ -163,7 +177,7 @@ package Displays {
 		
 		public function get isPlaying():Boolean { return playing != 0; }
 		
-		private const width:int = 100;
+		private const width:int = 274;
 		
 		[Embed(source = "../../lib/art/ui/skip.png")] private const _step_sprite:Class;
 		[Embed(source = "../../lib/art/ui/skip_back.png")] private const _backstep_sprite:Class;

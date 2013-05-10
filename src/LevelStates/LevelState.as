@@ -153,6 +153,7 @@ package LevelStates {
 			
 			new ButtonManager;
 			UIChanged = true;
+			add(new MenuBar(60));
 			addUIActives();
 			makeViewButtons();
 			
@@ -215,7 +216,7 @@ package LevelStates {
 		
 		
 		private function makeBackButton():void {
-			var backButton:GraphicButton = new GraphicButton(FlxG.width - 45, 10, _back_sprite, function back():void {
+			var backButton:GraphicButton = new GraphicButton(FlxG.width - 32, -4, _back_sprite, function back():void {
 				FlxG.switchState(new MenuState);
 			}, "Exit to menu");
 			backButton.fades = true;
@@ -223,41 +224,41 @@ package LevelStates {
 		}
 		
 		private function makeSaveButtons():void {
-			loadButton = new GraphicButton(90, 50, _success_load_sprite, loadFromSuccess, "Load last successful", new Key("S"));
+			loadButton = new GraphicButton(170, 10, _success_load_sprite, loadFromSuccess, "Load last successful", new Key("S"));
 			upperLayer.add(loadButton);
 			
-			resetButton = new GraphicButton(130, 50, _reset_sprite, reset, "Erase all placed parts");
+			resetButton = new GraphicButton(130, 10, _reset_sprite, reset, "Erase all placed parts");
 			upperLayer.add(resetButton);
 		}
 		
 		private function makeUndoButtons():void {
-			undoButton = new GraphicButton(10, 50, _undo_sprite, undo, "Undo", new Key("Z"));
+			undoButton = new GraphicButton(50, 10, _undo_sprite, undo, "Undo", new Key("Z"));
 			upperLayer.add(undoButton);
 			
-			redoButton = new GraphicButton(50, 50, _redo_sprite, redo, "Redo", new Key("Y"));
+			redoButton = new GraphicButton(90, 10, _redo_sprite, redo, "Redo", new Key("Y"));
 			upperLayer.add(redoButton);
 		}
 		
 		private function makeDataButton():void {			
-			var memoryButton:MenuButton = new GraphicButton(50, 90, _data_sprite, function _():void {
+			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 180, 10, _data_sprite, function _():void {
 				upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
 			}, runningDisplayTest ? "View memory" : "View example memory", new Key("E"));
 			upperLayer.add(memoryButton);
 		}
 		
 		private function makeInfoButton():void {
-			var infoButton:MenuButton = new GraphicButton(10, 90, _info_sprite, function _():void {
+			var infoButton:MenuButton = new GraphicButton(FlxG.width - 220, 10, _info_sprite, function _():void {
 				upperLayer.add(infobox = new DGoal(level));
 			}, "Level info", new Key("I"));
 			upperLayer.add(infoButton);
 		}
 		
 		private function makeClockButton():void {
-			upperLayer.add(new DClock(130, 90));
+			upperLayer.add(new DClock(210, 10));
 		}
 		
 		private function makeZoomButton():void {
-			var zoomButton:MenuButton = new GraphicButton(50, 10, _zoom_sprite, function openList():void {
+			var zoomButton:MenuButton = new GraphicButton(FlxG.width - 100, 10, _zoom_sprite, function openList():void {
 				listOpen = LIST_ZOOM;
 				makeUI();
 			}, "Display zoom controls", new Key("O"));
@@ -282,7 +283,7 @@ package LevelStates {
 					}
 				}, "Set zoom to "+Math.pow(2, -zoomLevel), ControlSet.NUMBER_HOTKEYS[zoomLevel+1]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == U.zoom));
 			
-			var zoomList:ButtonList = new ButtonList(45, 5, zoomButtons, function onListClose():void {
+			var zoomList:ButtonList = new ButtonList(FlxG.width - 105, 5, zoomButtons, function onListClose():void {
 				if (listOpen == LIST_ZOOM)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -302,13 +303,13 @@ package LevelStates {
 		}
 		
 		private function makeEndTestButton():void {
-			var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 40, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite,
+			var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 10, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite,
 														  finishDisplayTest, "Finish the test!", new Key("T"));
 			upperLayer.add(testButton);
 		}
 		
 		private function makeViewModeButton():void {
-			var modeButton:MenuButton = new GraphicButton(90, 10, VIEW_MODE_SPRITES[viewMode], function openList():void {
+			var modeButton:MenuButton = new GraphicButton(FlxG.width - 140, 10, VIEW_MODE_SPRITES[viewMode], function openList():void {
 				listOpen = LIST_VIEW_MODES;
 				makeUI();
 			}, "Display list of view modes", new Key("Q"));
@@ -329,7 +330,7 @@ package LevelStates {
 				}, "Enter "+VIEW_MODE_NAMES[newMode]+" view mode", ControlSet.NUMBER_HOTKEYS[newMode+1]).setParam(newMode).setSelected(newMode == viewMode));
 			}
 			
-			var modeList:ButtonList = new ButtonList(85, 5, modeSelectButtons, function onListClose():void {
+			var modeList:ButtonList = new ButtonList(FlxG.width - 145, 5, modeSelectButtons, function onListClose():void {
 				if (listOpen == LIST_VIEW_MODES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -1210,7 +1211,7 @@ package LevelStates {
 		
 		private function runDisplayTest():void {
 			time.reset();
-			upperLayer.add(displayTime = new DTime(FlxG.width / 2 - 50, 10))
+			upperLayer.add(displayTime = new DTime(10, 10))
 			displayTime.startPlaying();
 			runningDisplayTest = true;
 		}

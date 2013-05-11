@@ -111,7 +111,7 @@ package LevelStates {
 			recentModules = new Vector.<Class>;
 			
 			makeUI();
-			upperLayer.add(infobox = new DGoal(level));
+			upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
 			
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}

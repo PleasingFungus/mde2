@@ -23,8 +23,9 @@ package Testing.Goals {
 		public var timePerInstr:Vector.<Number>;
 		
 		protected var currentRun:int;
-		public function GeneratedGoal(Description:String, TestClass:Class, ExpectedOps:Vector.<OpcodeValue>, TestRuns:int = 12, AllowedTimePerInstr:int=3, MinInstructions:int = 10) {
-			super(Description);
+		public function GeneratedGoal(TestClass:Class, ExpectedOps:Vector.<OpcodeValue>, TestRuns:int = 12, AllowedTimePerInstr:int=3, MinInstructions:int = 10) {
+			super();
+			description = "Execute all instructions!";
 			
 			testClass = TestClass;
 			expectedOps = ExpectedOps;

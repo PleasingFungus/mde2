@@ -11,7 +11,7 @@ package Testing.Goals {
 			var expectedOps:Vector.<OpcodeValue> = new Vector.<OpcodeValue>;
 			expectedOps.push(OpcodeValue.OP_SAVI);
 			expectedOps.push(OpcodeValue.OP_ADDM);
-			super("Execute all instructions!", InstructionSelectTest, expectedOps, 12);
+			super(InstructionSelectTest, expectedOps, 12);
 			minInstructions = 5;
 		}
 		

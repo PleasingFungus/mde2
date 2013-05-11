@@ -69,7 +69,7 @@ package Displays {
 		
 		protected function makeCloseButton():void {
 			var kludge:Infobox = this;
-			add(new GraphicButton(bg.x + INNER_BORDER, bg.y + INNER_BORDER,
+			add(new GraphicButton(bg.x + bg.width - INNER_BORDER - 32 - 6, bg.y + INNER_BORDER,
 								  _close_sprite, function close():void { kludge.exists = false } ))
 		}
 		

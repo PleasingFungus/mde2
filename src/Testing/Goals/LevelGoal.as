@@ -17,8 +17,8 @@ package Testing.Goals {
 		protected var expectedMemory:Vector.<Value>;
 		
 		public var running:Boolean;
-		public function LevelGoal(Description:String) {
-			description = Description;
+		public function LevelGoal() {
+			
 		}
 		
 		public function genMem():Vector.<Value> {

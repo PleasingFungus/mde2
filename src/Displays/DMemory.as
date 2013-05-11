@@ -33,12 +33,19 @@ package Displays {
 			if (U.state.level.goal.randomizedMemory && U.state.editEnabled)
 				makeRandomButton();
 			
+			var LINE_NO_START:int = bg.x + INNER_BORDER;
+			var COL_1_START:int = bg.x + INNER_BORDER * 2;
+			var COL_2_START:int = bg.x + INNER_BORDER * 4 + COL_WIDTH;
+			var TITLE_SPACING:int = 20;
+			
 			moment = U.state.time.moment;
 			
 			var Y:int = bg.y + INNER_BORDER;
-			add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 2, Y, COL_WIDTH,
+			add(U.BODY_FONT.configureFlxText(new FlxText(LINE_NO_START, Y + 10, 60,
+															  "Line"), 0xffffff, 'left'));
+			add(U.BODY_FONT.configureFlxText(new FlxText(COL_1_START, Y, COL_WIDTH,
 															  "Current Memory"), 0xffffff, 'center'));
-			add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 2 + COL_WIDTH, Y, COL_WIDTH,
+			add(U.BODY_FONT.configureFlxText(new FlxText(COL_2_START, Y, COL_WIDTH - TITLE_SPACING,
 															  "Expected Memory"), 0xffffff, 'center'));
 			
 			Y += ROW_HEIGHT * 2;
@@ -55,24 +62,24 @@ package Displays {
 						Y += ROW_HEIGHT * 1.5;
 					skip = false;
 					
-					page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER, Y, COL_WIDTH, memLine + ".")));
-					page.add(makeTextFor(memValue, bg.x + INNER_BORDER * 2 + 8, Y, 'right'));
+					page.add(U.BODY_FONT.configureFlxText(new FlxText(LINE_NO_START, Y, COL_WIDTH, memLine + ".")));
+					page.add(makeTextFor(memValue, COL_1_START, Y, 'right'));
 					
 					if (displayComments) {
 						if (comment && (memValue as InstructionValue).commentFormat) {
-							page.add(U.BODY_FONT.configureFlxText((memValue as InstructionValue).commentFormat.makeHighlightText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH),
+							page.add(U.BODY_FONT.configureFlxText((memValue as InstructionValue).commentFormat.makeHighlightText(COL_2_START, Y, COL_WIDTH),
 																  0xffffff));
 						} else {
 							comment = comment ? comment : "---";
-							page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, comment)));
+							page.add(U.BODY_FONT.configureFlxText(new FlxText(COL_2_START, Y, COL_WIDTH, comment)));
 						}
 					} else
-						page.add(makeTextFor(expValue, bg.x + INNER_BORDER * 4 + COL_WIDTH, Y));
+						page.add(makeTextFor(expValue, COL_2_START, Y));
 					Y += ROW_HEIGHT * 1.5;
 				} else {
 					if (!skip) {
-						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 2, Y, COL_WIDTH, "---"), 0xffffff, 'right' ));
-						page.add(U.BODY_FONT.configureFlxText(new FlxText(bg.x + INNER_BORDER * 4 + COL_WIDTH, Y, COL_WIDTH, "---")));
+						page.add(U.BODY_FONT.configureFlxText(new FlxText(COL_1_START, Y, COL_WIDTH, "---"), 0xffffff, 'right' ));
+						page.add(U.BODY_FONT.configureFlxText(new FlxText(COL_2_START, Y, COL_WIDTH, "---")));
 					}
 						
 					skip = true;

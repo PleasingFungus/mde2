@@ -1,12 +1,14 @@
 package Levels {
-	import Components.Wire;
-	import Controls.ControlSet;
-	import flash.geom.Point;
-	import Modules.*;
+	import Levels.ControlTutorials.*;
+	import Levels.BasicTutorials.*;
+	
 	import Testing.*;
-	import Values.OpcodeValue;
 	import Testing.Goals.*;
+	import Modules.*;
+	import Values.OpcodeValue;
+	
 	import org.flixel.FlxG;
+	import Components.Wire;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -15,6 +17,9 @@ package Levels {
 		
 		public var name:String;
 		public var displayName:String;
+		public var info:String;
+		public var hints:Vector.<String>;
+		
 		public var goal:LevelGoal;
 		public var modules:Vector.<Module>;
 		public var wires:Vector.<Wire>;
@@ -30,6 +35,8 @@ package Levels {
 		
 		public function Level(Name:String, Goal:LevelGoal, delay:Boolean = false, AllowedModules:Array = null, ExpectedOps:Array = null, Modules:Array = null) {
 			name = displayName = Name;
+			info = "TODO";
+			hints = new Vector.<String>;
 			this.goal = Goal;
 			
 			modules = new Vector.<Module>;
@@ -92,72 +99,54 @@ package Levels {
 			
 			columns = new Vector.<Vector.<Level>>;
 			
-			var WIRE_TUT:Level = new Level("Wire Tutorial", new WireTutorialGoal, false,
-										   [], [], [new ConstIn(12, 12, 1), new ConstIn(12, 20, 2), new DataWriter(22, 16)]);
-			var MOD_TUT:Level = new Level("Module Tutorial", new WireTutorialGoal, false,
-										  [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
+			var WIRE_TUT:Level = new WireTutorial;
+			var MOD_TUT:Level = new ModuleTutorial;
+			var SEL_TUT:Level = new DragSelectTutorial;
+			var COPY_TUT:Level = new CopyingTutorial;
+			
 			MOD_TUT.predecessors.push(WIRE_TUT);
-			var ACC_TUT:Level = new Level("Accumulation", new AccumulatorTutorialGoal, false,
-										  [ConstIn, Adder, BabyLatch, DataWriter]);
+			SEL_TUT.predecessors.push(MOD_TUT);
+			COPY_TUT.predecessors.push(SEL_TUT);
+			levels.push(WIRE_TUT, MOD_TUT, SEL_TUT, COPY_TUT);
+			
+			
+			var ACC_TUT:Level = new AccumTutorial;
 			ACC_TUT.predecessors.push(MOD_TUT);
 			var INSTR_TUT:Level = new Level("Instructions", new InstructionTutorialGoal, false,
 											[ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder]);
+			INSTR_TUT.info += "Instructions are made up of four numbers. The first number, the opcode, says what type of instruction it is. "
+			INSTR_TUT.info += "The other three, the source, target, & destination, have meanings that vary by opcode.\n"
+			INSTR_TUT.info += "For this level, for each instruction in memory, just write the opcode, source, target & destination over four lines."
 			INSTR_TUT.predecessors.push(ACC_TUT);
 			INSTR_TUT.writerLimit = 4;
 			var OP_TUT:Level = new Level("One Instruction", new OpcodeTutorialGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			OP_TUT.predecessors.push(ACC_TUT);
+			OP_TUT.info = "From this level onward, your goal will be to go through memory, starting at 0, and execute every instruction there. "
+			OP_TUT.info += "Every level has a fixed set of instruction types, but several permutations will be generated to test your solution.";
 			var ISEL_TUT:Level = new Level("Two Instructions", new InstructionSelectGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
 			ISEL_TUT.predecessors.push(OP_TUT);
 			
-			levels.push(WIRE_TUT, MOD_TUT, ACC_TUT, INSTR_TUT, OP_TUT, ISEL_TUT);
+			levels.push(ACC_TUT, INSTR_TUT, OP_TUT, ISEL_TUT);
 			
-			var SEL_TUT:Level = new Level("Drag-Select Tutorial", new WireTutorialGoal(2, "Set memory line 1 to 2! (Wire-drawing disabled.)"),
-									      false, [], [], [new ConstIn(10, 0, 1), new Adder(16, 2), new DataWriter(22, 14)]);
-			SEL_TUT.goal.description += "\n\n(Select modules, and wires, by holding " + ControlSet.DRAG_MODIFY_KEY + " and dragging; once held, pick up & place them by clicking.)";
-			SEL_TUT.setWires([Wire.wireBetween(SEL_TUT.modules[0].layout.ports[0].Loc, SEL_TUT.modules[1].layout.ports[0].Loc), //const to adder input 1
-							  Wire.wireBetween(SEL_TUT.modules[1].layout.ports[0].Loc, SEL_TUT.modules[1].layout.ports[1].Loc), //adder input 1 to adder input 2
-							  Wire.wireBetween(SEL_TUT.modules[1].layout.ports[2].Loc, SEL_TUT.modules[2].layout.ports[0].Loc), //adder to dwrite value
-							  Wire.wireBetween(SEL_TUT.modules[2].layout.ports[1].Loc, SEL_TUT.modules[1].layout.ports[1].Loc)])  //adder input 2 to dwrite line
-			SEL_TUT.modules[0].x -= 4;
-			SEL_TUT.modules[0].y -= 6;
-			SEL_TUT.modules[2].x += 6;
-			SEL_TUT.modules[2].y -= 2;
-			
-			SEL_TUT.wires[0].shift(new Point( -4, -6));
-			SEL_TUT.wires[2].shift(new Point(6, -2));
-			
-			SEL_TUT.canDrawWires = false;
-			SEL_TUT.preplacesFixed = false;
-			SEL_TUT.predecessors.push(MOD_TUT);
-			
-			var COPY_TUT:Level = new Level("Copying Tutorial", new WireTutorialGoal(2, "Set memory line 1 to 2! (Wire-drawing disabled.)"),
-											false, [ConstIn, Adder, DataWriter]);
-			COPY_TUT.goal.description += "\n\n(Copy modules and wires by shift-dragging to select them, then pressing " + ControlSet.COPY_KEY + " to copy and " + ControlSet.PASTE_KEY + " to paste.)";
-			COPY_TUT.goal.description += "\n\n\(You can copy within and between levels.)"
-			COPY_TUT.canDrawWires = COPY_TUT.canPlaceModules = false;
-			COPY_TUT.predecessors.push(SEL_TUT);
-			
-			levels.push(SEL_TUT, COPY_TUT);
-			
-			var addCPU:Level = new ShardLevel("Add-CPU", "Make a basic CPU!", LevelShard.CORE);
-			addCPU.goal.description += "\n\nCPU instructions reference 'registers'. These are a set of 8 values, numbered 0-7, stored however you like.";
-			addCPU.goal.description += " The only requirement is that you are able to store values to, and on later ticks retrieve values from, locations numbered 0 - 7.";
-			addCPU.goal.description += "\n\nExample: a hypothetical MOVE instruction, which tells you to 'Set the DESTINATION register to the SOURCE register.";
-			addCPU.goal.description += "\n\nThis means you must set the register at the number indicated by the DESTINATION of the instruction to the value of the register at the number indicated by the SOURCE of the instruction.";
-			addCPU.goal.description += "\n\nE.g., MOV R7 = R4: set the value held in register 7 to the value held in register 4."
-			addCPU.goal.description += "\n\nHave fun!";
+			var addCPU:Level = new ShardLevel("Add-CPU", LevelShard.CORE);
+			addCPU.info = "CPU instructions reference 'registers'. These are a set of 8 values, numbered 0-7, stored however you like.";
+			addCPU.info += " The only requirement is that you are able to store values to, and on later ticks retrieve values from, locations numbered 0 - 7.";
+			addCPU.info += "\n\nExample: a hypothetical MOVE instruction, which tells you to 'Set the DESTINATION register to the SOURCE register.";
+			addCPU.info += "\n\nThis means you must set the register at the number indicated by the DESTINATION of the instruction to the value of the register at the number indicated by the SOURCE of the instruction.";
+			addCPU.info += "\n\nE.g., MOV R7 = R4: set the value held in register 7 to the value held in register 4."
+			addCPU.info += "\n\nHave fun!";
 			addCPU.predecessors.push(ACC_TUT);
-			var cpuADV:Level = new ShardLevel("Advanced Ops", "Make a CPU that does arithmetic!", LevelShard.CORE.compositWith(LevelShard.ADV));
+			var cpuADV:Level = new ShardLevel("Advanced Ops", LevelShard.CORE.compositWith(LevelShard.ADV));
 			cpuADV.predecessors.push(addCPU);
-			var cpuLD:Level = new ShardLevel("Load", "Make a CPU that can load from memory!", LevelShard.CORE.compositWith(LevelShard.LOAD));
+			var cpuLD:Level = new ShardLevel("Load", LevelShard.CORE.compositWith(LevelShard.LOAD));
 			cpuLD.predecessors.push(addCPU);
-			var cpuJMP:Level = new ShardLevel("Jump! Jump!", "Make a CPU that can jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
+			var cpuJMP:Level = new ShardLevel("Jump! Jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
 			cpuJMP.predecessors.push(addCPU);
-			var cpuBRANCH:Level = new ShardLevel("Branch!", "Make a CPU that does jumps... conditionally!", LevelShard.CORE.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
+			var cpuBRANCH:Level = new ShardLevel("Branch!", LevelShard.CORE.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
 			cpuBRANCH.predecessors.push(cpuJMP);
-			var cpuFULL:Level = new ShardLevel("Full!", "Make a CPU that does everything!", LevelShard.CORE.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			var cpuFULL:Level = new ShardLevel("Full!", LevelShard.CORE.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
 			cpuFULL.predecessors.push(cpuADV, cpuLD, cpuBRANCH);
 			
 			levels.push(addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD, cpuFULL);
@@ -175,13 +164,13 @@ package Levels {
 			levels.push(D0_TUT, D1_TUT, D2_TUT);
 			
 			var delayShard:LevelShard = LevelShard.CORE.compositWith(LevelShard.DELAY);
-			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", "Make a basic CPU... with propagation delay!", delayShard);
+			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", delayShard);
 			addCPU_D.predecessors.push(addCPU, D2_TUT);
-			var cpuADVLDD:Level = new ShardLevel("Adv/Load Delay", "TODO", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
+			var cpuADVLDD:Level = new ShardLevel("Adv/Load Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
 			cpuADVLDD.predecessors.push(addCPU_D, cpuADV, cpuLD);
-			var cpuD_BRANCH:Level = new ShardLevel("Branch Delay", "TODO", delayShard.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
+			var cpuD_BRANCH:Level = new ShardLevel("Branch Delay", delayShard.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
 			cpuD_BRANCH.predecessors.push(addCPU_D, cpuBRANCH);
-			var cpuD_FULL:Level = new ShardLevel("Full Delay", "Make a full CPU with delay!", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			var cpuD_FULL:Level = new ShardLevel("Full Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
 			cpuD_FULL.predecessors.push(cpuADVLDD, cpuBRANCH);
 			
 			levels.push(addCPU_D, cpuADVLDD, cpuD_BRANCH, cpuD_FULL);
@@ -193,19 +182,19 @@ package Levels {
 			levels.push(pipeTutorial);
 			
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);
-			var pipe:Level = new ShardLevel("Efficiency!", "Make a CPU that runs fast!", pipeShard);
+			var pipe:Level = new ShardLevel("Efficiency!", pipeShard);
 			pipe.predecessors.push(addCPU_D); //dubious
-			var pipeJMP:Level = new ShardLevel("Efficient Jump", "TODO", pipeShard.compositWith( LevelShard.JUMP));
+			var pipeJMP:Level = new ShardLevel("Efficient Jump", pipeShard.compositWith( LevelShard.JUMP));
 			pipeJMP.predecessors.push(pipe, cpuJMP);
-			var pipeBranch:Level = new ShardLevel("Efficient Branch", "TODO", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));
+			var pipeBranch:Level = new ShardLevel("Efficient Branch", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));
 			pipeBranch.predecessors.push(pipeJMP);
-			var pipeADV:Level = new ShardLevel("Efficient Adv Op", "TODO", pipeShard.compositWith(LevelShard.ADV));
+			var pipeADV:Level = new ShardLevel("Efficient Adv Op", pipeShard.compositWith(LevelShard.ADV));
 			pipeADV.predecessors.push(pipe, cpuADVLDD);
-			var pipeLD:Level = new ShardLevel("Efficient Load", "TODO", pipeShard.compositWith(LevelShard.LOAD));
+			var pipeLD:Level = new ShardLevel("Efficient Load", pipeShard.compositWith(LevelShard.LOAD));
 			pipeLD.predecessors.push(pipe, cpuADVLDD);
-			var pipeADVLDD:Level = new ShardLevel("Eff. Adv/Load", "TODO", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
+			var pipeADVLDD:Level = new ShardLevel("Eff. Adv/Load", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
 			pipeADVLDD.predecessors.push(pipeLD, pipeADV);
-			var pipeFull:Level = new ShardLevel("Full Efficient", "TODO", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			var pipeFull:Level = new ShardLevel("Full Efficient", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
 			pipeFull.predecessors.push(pipeBranch, pipeADVLDD);
 			
 			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD, pipeBranch, pipeFull);

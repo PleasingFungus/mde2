@@ -212,6 +212,13 @@ package
 			return i;
 		}
 		
+		public static function buildStringVector(...strings):Vector.<String> {
+			var vec:Vector.<String> = new Vector.<String>;
+			for each (var str:String in strings)
+				vec.push(str);
+			return vec;
+		}
+		
 		public static function eratosthenes(lim:int):Array {
 			// Create a list of consecutive integers from 2 to n: (2, 3, 4, ..., n).
 			var primeList:Array = [];

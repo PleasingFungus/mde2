@@ -41,9 +41,13 @@ package Displays {
 				page.add(bodyText);
 			}
 			
-			for each (var paragraph:String in level.goal.description.split('\n'))
-				if (paragraph.length)
-					addBodyText(paragraph);
+			addBodyText("GOAL: " + level.goal.description)
+			
+			if (level.info)
+				addBodyText("INFO: " + level.info);
+			if (level.hints) {
+				//TODO
+			}
 			
 			if (level.expectedOps.length) {
 				addBodyText("\nOps to support:");
@@ -63,7 +67,8 @@ package Displays {
 				addBodyText("\nTesting: " + generatedGoal.testRuns + " random programs, time limit of " + generatedGoal.allowedTimePerInstr + " ticks per instruction");
 			}
 			if (level.writerLimit)
-				addBodyText("\nNumber of data writers allowed: " + level.writerLimit); 
+				addBodyText("\nNumber of data writers allowed: " + level.writerLimit);
+			
 		}
 	}
 

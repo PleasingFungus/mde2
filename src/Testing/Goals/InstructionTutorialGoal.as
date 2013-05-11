@@ -9,10 +9,8 @@ package Testing.Goals {
 		
 		private var initialInstructions:Vector.<InstructionValue>;
 		public function InstructionTutorialGoal() {
-			super("Split instructions into their component parts!\n\n");
-			description += "Instructions are made up of four numbers. The first number, the opcode, says what type of instruction it is. "
-			description += "The other three, the source, target, & destination, have meanings that vary by opcode.\n"
-			description += "For this level, for each instruction in memory, just write the opcode, source, target & destination over four lines."
+			super();
+			description = "Split instructions into their component parts!"
 			dynamicallyTested = true;
 			timeLimit = 36;
 			

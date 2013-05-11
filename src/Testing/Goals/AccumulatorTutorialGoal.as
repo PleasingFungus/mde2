@@ -9,7 +9,8 @@ package Testing.Goals {
 	public class AccumulatorTutorialGoal extends LevelGoal {
 		
 		public function AccumulatorTutorialGoal() {
-			super("Set memory lines 0-4 to 0-4!");
+			super();
+			description = "Set memory lines 0-4 to 0-4!";
 			dynamicallyTested = true;
 			timeLimit = 10;
 			

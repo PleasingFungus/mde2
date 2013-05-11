@@ -72,14 +72,14 @@ package Displays {
 				var port:Port = carrier as Port;
 				
 				if (port.name)
-					displayText += " " + port.name
+					displayText += " '" + port.name+"'"
 				displayText += ": "
 				
 				if (port.isOutput)
 					displayText += port.getValue();
 				
 				if (port.isSource()) {
-					if (port.getLastChanged() > -1)
+					if (U.state.level.delay && port.getLastChanged() > -1)
 						displayText += " since " + port.getLastChanged();
 					return displayText;
 				}
@@ -91,9 +91,9 @@ package Displays {
 				if (!port || !port.isOutput)
 					displayText += source.getValue();
 				if (source != carrier) {
-					displayText += " from " + source.parent.name;
+					displayText += " from module " + source.parent.name;
 					if (source.name)
-						displayText += " " +source.name;
+						displayText += "'s '" +source.name+"'";
 				}
 			} else
 				displayText += "No source";

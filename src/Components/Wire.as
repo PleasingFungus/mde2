@@ -261,11 +261,21 @@ package Components {
 			return true;
 		}
 		
+		public function getPotentialConnections():Vector.<Carrier> {
+			var potentialConnections:Vector.<Carrier> = new Vector.<Carrier>;
+			for each (var p:Point in path)
+				for each (var connection:Carrier in U.state.grid.carriersAtPoint(p))
+					if (connection != this && potentialConnections.indexOf(connection) == -1 && (isEndpoint(p) || connection.isEndpoint(p)))
+						potentialConnections.push(connection);
+			return potentialConnections;
+		}
+		
 		protected function checkForConnections():void {
 			log(this +" adding connections");
 			addConnections(U.state.grid.carriersAtPoint(path[0]));
 			addConnections(U.state.grid.carriersAtPoint(path[path.length - 1]));
 			checkForEndpoints();
+			//TODO: for each (var connection:Carrier in getPotentialConnections()) { addConnection(connection); joinConnection(connection); }
 		}
 		
 		protected function checkForEndpoints():void {

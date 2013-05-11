@@ -51,15 +51,19 @@ package Displays {
 			Y += ROW_HEIGHT * 2;
 			setPageTop(Y);
 			
-			var skip:Boolean = false;
+			var skip:Boolean = true;
+			Y -= ROW_HEIGHT * 1.5; //dumb hack for first line
 			for (var memLine:int = 0; memLine < memory.length; memLine++) {
 				var memValue:Value = memory[memLine];
 				var expValue:Value = expectedMemory[memLine];
 				var comment:String = (memValue is InstructionValue) ? (memValue as InstructionValue).comment : null;
 				
 				if (memValue != FixedValue.NULL || expValue != FixedValue.NULL) {
-					if (skip)
+					if (skip) {
+						page.add(U.BODY_FONT.configureFlxText(new FlxText(COL_1_START, Y, COL_WIDTH, "---"), 0xffffff, 'right' ));
+						page.add(U.BODY_FONT.configureFlxText(new FlxText(COL_2_START, Y, COL_WIDTH, "---")));
 						Y += ROW_HEIGHT * 1.5;
+					}
 					skip = false;
 					
 					page.add(U.BODY_FONT.configureFlxText(new FlxText(LINE_NO_START, Y, COL_WIDTH, memLine + ".")));
@@ -76,14 +80,8 @@ package Displays {
 					} else
 						page.add(makeTextFor(expValue, COL_2_START, Y));
 					Y += ROW_HEIGHT * 1.5;
-				} else {
-					if (!skip) {
-						page.add(U.BODY_FONT.configureFlxText(new FlxText(COL_1_START, Y, COL_WIDTH, "---"), 0xffffff, 'right' ));
-						page.add(U.BODY_FONT.configureFlxText(new FlxText(COL_2_START, Y, COL_WIDTH, "---")));
-					}
-						
+				} else
 					skip = true;
-				}
 			}
 			
 			var timeString:String = "Allowed ticks total: " + U.state.level.goal.timeLimit;

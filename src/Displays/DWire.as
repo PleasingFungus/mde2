@@ -273,8 +273,15 @@ package Displays {
 		}
 		
 		protected function getColor():uint {
-			if (!wire.deployed)
-				return U.DEFAULT_COLOR;
+			if (!wire.deployed) {
+				var potentialConnections:Vector.<Carrier> = wire.getPotentialConnections();
+				switch (potentialConnections.length) {
+					case 0: return U.UNCONNECTED_COLOR;
+					case 1: return U.HALFCONNECTED_COLOR;
+					default: return U.DEFAULT_COLOR;
+				}
+				//return U.DEFAULT_COLOR;
+			}
 			
 			if (!U.buttonManager.moused && U.state.viewMode == U.state.VIEW_MODE_NORMAL && overlapsPoint(U.mouseFlxLoc))
 				return U.HIGHLIGHTED_COLOR;
@@ -282,8 +289,11 @@ package Displays {
 			if (selected)
 				return U.SELECTION_COLOR;
 			
-			if (wire.getSource() == null || wire.connections.length < 2)
+			if (wire.getSource() == null || wire.connections.length < 2) {
+				if (wire.connections.length)
+					return U.HALFCONNECTED_COLOR;
 				return U.UNCONNECTED_COLOR;
+			}
 			
 			var value:Value = wire.getSource().getValue();
 			if (value.unknown)

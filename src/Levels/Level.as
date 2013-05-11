@@ -31,7 +31,7 @@ package Levels {
 		public var allowedModules:Vector.<Class>
 		public var predecessors:Vector.<Level>;
 		public var delay:Boolean;
-		public var writerLimit:int = 1;
+		public var writerLimit:int = 0;
 		
 		public function Level(Name:String, Goal:LevelGoal, delay:Boolean = false, AllowedModules:Array = null, ExpectedOps:Array = null, Modules:Array = null) {
 			name = displayName = Name;

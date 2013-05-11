@@ -11,6 +11,7 @@ package Levels.BasicTutorials {
 		
 		public function AccumTutorial() {
 			super("Accumulation", new AccumulatorTutorialGoal, false, [ConstIn, Adder, BabyLatch, DataWriter]);
+			writerLimit = 1;
 		}
 		
 	}

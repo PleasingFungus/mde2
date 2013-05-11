@@ -33,7 +33,7 @@ package Displays {
 			if (scrollbar)
 				lastScrollFraction = scrollbar.scrollFraction;
 			add(scrollbar = new Scrollbar(bg.x + bg.width - 48/2 - RAISED_BORDER_WIDTH * 3,
-										  pageTop + INNER_BORDER, pageBottom - pageTop - INNER_BORDER * 2));
+										  pageTop + INNER_BORDER + 36, pageBottom - pageTop - INNER_BORDER * 2 - 36));
 			if (!isNaN(lastScrollFraction))
 				scrollbar.scrollFraction = lastScrollFraction;
 			

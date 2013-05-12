@@ -13,6 +13,7 @@ package Levels.BasicTutorials {
 		public function Op2Tutorial() {
 			super("Two Instructions", new InstructionSelectGoal, false,
 										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
+			info = "There are two different instruction types that appear in this level, and a new part, the Instruction Multiplexer module.";
 		}
 		
 	}

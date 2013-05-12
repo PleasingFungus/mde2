@@ -28,9 +28,7 @@ package Levels.ControlTutorials {
 			//info += " You can mouse over ports & wires to see their present value & more information."
 			//info += "\n\nWires can be used to create circuits, connecting any number of inputs to a single output."
 			//info += " You cannot connect more than one output to a circuit."
-			info = "Click and drag to draw wires & connect ports."
-			info += " When you think you've built a solution, click the 'test' button at the top-center to see if your machine passes the test."
-			info += "\n\nHave fun!";
+			info = "Draw wires to connect them, then press Test!";
 		}
 		
 		override public function specialInfo():Vector.<FlxSprite> {

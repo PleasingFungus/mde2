@@ -226,33 +226,25 @@ package LevelStates {
 		}
 		
 		private function makeSaveButtons():void {
-			loadButton = new GraphicButton(170, 10, _success_load_sprite, loadFromSuccess, "Load last successful", new Key("S"));
-			upperLayer.add(loadButton);
-			
-			resetButton = new GraphicButton(130, 10, _reset_sprite, reset, "Erase all placed parts");
-			upperLayer.add(resetButton);
+			loadButton = addToolbarButton(170, _success_load_sprite, loadFromSuccess, "Load", "Load last successful machine", new Key("S"));
+			resetButton = addToolbarButton(130, _reset_sprite, reset, "Reset", "Erase all placed parts");
 		}
 		
 		private function makeUndoButtons():void {
-			undoButton = new GraphicButton(50, 10, _undo_sprite, undo, "Undo", new Key("Z"));
-			upperLayer.add(undoButton);
-			
-			redoButton = new GraphicButton(90, 10, _redo_sprite, redo, "Redo", new Key("Y"));
-			upperLayer.add(redoButton);
+			undoButton = addToolbarButton(50, _undo_sprite, undo, "Undo", "Undo", new Key("Z"));
+			redoButton = addToolbarButton(90, _redo_sprite, redo, "Redo", "Redo", new Key("Y"));
 		}
 		
-		private function makeDataButton():void {			
-			var memoryButton:MenuButton = new GraphicButton(FlxG.width - 180, 10, _data_sprite, function _():void {
+		private function makeDataButton():void {
+			addToolbarButton(FlxG.width - 180, _data_sprite, function _():void {
 				upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
-			}, runningDisplayTest ? "View memory" : "View example memory", new Key("E"));
-			upperLayer.add(memoryButton);
+			}, "Memory", runningDisplayTest ? "View memory" : "View example memory", new Key("E"));
 		}
 		
 		private function makeInfoButton():void {
-			var infoButton:MenuButton = new GraphicButton(FlxG.width - 220, 10, _info_sprite, function _():void {
+			addToolbarButton(FlxG.width - 220, _info_sprite, function _():void {
 				upperLayer.add(infobox = new DGoal(level));
-			}, "Level info", new Key("I"));
-			upperLayer.add(infoButton);
+			}, "Info", "Level info", new Key("I"));
 		}
 		
 		private function makeClockButton():void {
@@ -260,11 +252,10 @@ package LevelStates {
 		}
 		
 		private function makeZoomButton():void {
-			var zoomButton:MenuButton = new GraphicButton(FlxG.width - 100, 10, _zoom_sprite, function openList():void {
+			addToolbarButton(FlxG.width - 100, _zoom_sprite, function openList():void {
 				listOpen = LIST_ZOOM;
 				makeUI();
-			}, "Display zoom controls", new Key("O"));
-			upperLayer.add(zoomButton);
+			}, "Zoom", "Display zoom controls", new Key("O"));
 		}
 		
 		private function makeZoomList():void {
@@ -285,7 +276,7 @@ package LevelStates {
 					}
 				}, "Set zoom to "+Math.pow(2, -zoomLevel), ControlSet.NUMBER_HOTKEYS[zoomLevel+1]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == U.zoom));
 			
-			var zoomList:ButtonList = new ButtonList(FlxG.width - 105, 5, zoomButtons, function onListClose():void {
+			var zoomList:ButtonList = new ButtonList(FlxG.width - 105, 3, zoomButtons, function onListClose():void {
 				if (listOpen == LIST_ZOOM)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -295,27 +286,22 @@ package LevelStates {
 		}
 		
 		private function makeTestButtons():void {
-			if (level.goal.dynamicallyTested) {
-				var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 10, _test_sprite, function _():void {
+			if (level.goal.dynamicallyTested)
+				addToolbarButton(FlxG.width / 2 - 16, _test_sprite, function _():void {
 					level.goal.startRun();
 					lastRunTime = elapsed;
-				}, "Test your machine!", new Key("T"));
-				upperLayer.add(testButton);
-			}
+				}, "Test", "Test your machine!", new Key("T"));
 		}
 		
 		private function makeEndTestButton():void {
-			var testButton:MenuButton = new GraphicButton(FlxG.width / 2 - 16, 10, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite,
-														  finishDisplayTest, "Finish the test!", new Key("T"));
-			upperLayer.add(testButton);
+			addToolbarButton(FlxG.width / 2 - 16, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite, finishDisplayTest, "Finish", "Finish the test!", new Key("T"));
 		}
 		
 		private function makeViewModeButton():void {
-			var modeButton:MenuButton = new GraphicButton(FlxG.width - 140, 10, VIEW_MODE_SPRITES[viewMode], function openList():void {
+			addToolbarButton(FlxG.width - 140, VIEW_MODE_SPRITES[viewMode], function openList():void {
 				listOpen = LIST_VIEW_MODES;
 				makeUI();
-			}, "Display list of view modes", new Key("Q"));
-			upperLayer.add(modeButton);
+			}, "Views", "Display list of view modes", new Key("Q"));
 		}
 		
 		private function makeViewModeMenu():void {
@@ -332,7 +318,7 @@ package LevelStates {
 				}, "Enter "+VIEW_MODE_NAMES[newMode]+" view mode", ControlSet.NUMBER_HOTKEYS[newMode+1]).setParam(newMode).setSelected(newMode == viewMode));
 			}
 			
-			var modeList:ButtonList = new ButtonList(FlxG.width - 145, 5, modeSelectButtons, function onListClose():void {
+			var modeList:ButtonList = new ButtonList(FlxG.width - 145, 3, modeSelectButtons, function onListClose():void {
 				if (listOpen == LIST_VIEW_MODES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -342,13 +328,11 @@ package LevelStates {
 		}
 		
 		private function makeModuleCatButton():void {
-			var listButton:GraphicButton = new GraphicButton(10, 10, _module_sprite, function openList():void {
+			addToolbarButton(10, _module_sprite, function openList():void {
 				ensureNothingHeld();
 				listOpen = LIST_CATEGORIES;
 				makeUI();
-			}, "Choose modules", new Key("FIVE"));
-			
-			upperLayer.add(listButton);
+			}, "Modules", "Choose modules", new Key("FIVE"));
 		}
 		
 		private function makeModuleCatList():void {
@@ -399,7 +383,7 @@ package LevelStates {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(5, 5, moduleButtons, function onListClose():void {
+			moduleList = new ButtonList(5, 3, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_CATEGORIES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -460,7 +444,7 @@ package LevelStates {
 			}
 			
 			//put 'em in a list
-			moduleList = new ButtonList(5, 5, moduleButtons, function onListClose():void {
+			moduleList = new ButtonList(5, 3, moduleButtons, function onListClose():void {
 				if (listOpen == LIST_MODULES)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -485,6 +469,30 @@ package LevelStates {
 				recentModules.pop();
 			recentModules.unshift( moduleType);
 		}
+		
+		private function addToolbarButton(X:int, Sprite:Class, Callback:Function, ShortName:String, LongName:String = null, Hotkey:Key = null):GraphicButton {
+			if (!LongName)
+				LongName = ShortName;
+			var button:GraphicButton = new GraphicButton(X, 8, Sprite, Callback, LongName, Hotkey);
+			upperLayer.add(button);
+			
+			var extraWidth:int = 10;
+			var labelText:FlxText = new FlxText(X - extraWidth / 2 - 1, button.Y + button.fullHeight - 2, button.fullWidth + extraWidth, ShortName);
+			U.TOOLBAR_FONT.configureFlxText(labelText, 0xffffff, 'center');
+			upperLayer.add(labelText);
+			button.associatedObjects.push(labelText);
+			
+			return button;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		override public function update():void {
 			elapsed += FlxG.elapsed;

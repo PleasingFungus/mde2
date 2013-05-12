@@ -36,6 +36,7 @@ package  {
 		public static const BODY_FONT:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const TITLE_FONT:FontTuple = new FontTuple(SYSTEM, 32);
 		public static const NODE_FONT:FontTuple = new FontTuple(MUNRO_WEB, 32);
+		public static const TOOLBAR_FONT:FontTuple = new FontTuple(MUNRO_WEB, 16);
 		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
 		
@@ -144,6 +145,8 @@ package  {
 		public static const HIGHLIGHTED_COLOR:uint = 0xfff03c;
 		public static const SELECTION_COLOR:uint = 0x519dcf;
 		public static const DEFAULT_COLOR:uint = 0x0;
+		
+		public static const LINE_NO_COLOR:uint = 0x155814;
 		
 		public static const CONFIG_COLOR:uint = 0x89cfcf;
 		

@@ -35,6 +35,8 @@ package UI {
 		protected var onSelect:Function;
 		public var disabled:Boolean;
 		
+		public var associatedObjects:Vector.<FlxBasic>;
+		
 		public function MenuButton(X:int, Y:int, OnSelect:Function = null, Tooltip:String = null, Hotkey:Key = null) {
 			super();
 			
@@ -50,6 +52,8 @@ package UI {
 					tooltip = "";
 				tooltip += "Hotkey: "+hotkey.key;
 			}
+			
+			associatedObjects = new Vector.<FlxBasic>;
 			
 			if (!highlightBorder)
 				highlightBorder = new Point;
@@ -133,7 +137,9 @@ package UI {
 			}
 			
 			if (!mouseoverText)
-				U.state.upperLayer.add(mouseoverText = new FloatText(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, FlxG.width / 2 - 20, tooltip))));
+				associatedObjects.push(U.state.upperLayer.add(
+					mouseoverText = new FloatText(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, FlxG.width / 2 - 20, tooltip)))
+				));
 			if (tooltipCallback != null && tooltip != tooltipCallback()) {
 				tooltip = tooltipCallback();
 				mouseoverText.text.text = tooltip;
@@ -241,8 +247,8 @@ package UI {
 		
 		public function setExists(e:Boolean):void {
 			exists = e;
-			if (mouseoverText)
-				mouseoverText.exists = e;
+			for each (var associate:FlxBasic in associatedObjects)
+				associate.exists = e;
 		}
 		
 		public static const FADE_TIME:Number = 0.27; //deep wisdom of the elder sages (trial & error)

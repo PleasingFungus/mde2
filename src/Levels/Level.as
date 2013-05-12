@@ -1,6 +1,7 @@
 package Levels {
 	import Levels.ControlTutorials.*;
 	import Levels.BasicTutorials.*;
+	import org.flixel.FlxSprite;
 	
 	import Testing.*;
 	import Testing.Goals.*;
@@ -92,7 +93,14 @@ package Levels {
 			return true;
 		}
 		
+		public function specialInfo():Vector.<FlxSprite> {
+			return null;
+		}
+		
 		private const SUCCESS_SUFFIX:String = '-succ';
+		
+		
+		
 		
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;

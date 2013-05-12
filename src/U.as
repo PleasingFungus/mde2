@@ -146,7 +146,9 @@ package  {
 		public static const SELECTION_COLOR:uint = 0x519dcf;
 		public static const DEFAULT_COLOR:uint = 0x0;
 		
-		public static const LINE_NO_COLOR:uint = 0x155814;
+		public static const BG_COLOR:uint = 0xffe0e0e0;
+		
+		public static const LINE_NUM_COLOR:uint = 0x155814;
 		
 		public static const CONFIG_COLOR:uint = 0x89cfcf;
 		

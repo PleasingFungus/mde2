@@ -43,8 +43,17 @@ package Displays {
 			
 			addBodyText("GOAL: " + level.goal.description)
 			
+			var specialInfo:Vector.<FlxSprite> = level.specialInfo();
+			if (specialInfo)
+				for each (var infosprite:FlxSprite in specialInfo) {
+					infosprite.x = X;
+					infosprite.y = Y;
+					page.add(infosprite);
+					Y += infosprite.height + 8;
+				}
+			
 			if (level.info)
-				addBodyText("INFO: " + level.info);
+				addBodyText((specialInfo ? "" : "INFO: ") + level.info);
 			if (level.hints) {
 				//TODO
 			}

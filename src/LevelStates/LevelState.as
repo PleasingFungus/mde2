@@ -97,7 +97,7 @@ package LevelStates {
 		override public function create():void {
 			U.state = this;
 			
-			FlxG.bgColor = 0xffe0e0e0;
+			FlxG.bgColor = U.BG_COLOR;
 			FlxG.mouse.show();
 			
 			actionStack = new Vector.<Action>;
@@ -294,7 +294,7 @@ package LevelStates {
 		}
 		
 		private function makeEndTestButton():void {
-			addToolbarButton(FlxG.width / 2 - 16, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite, finishDisplayTest, "Finish", "Finish the test!", new Key("T"));
+			addToolbarButton(FlxG.width / 2 - 16, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite, finishDisplayTest, "End Test", "Finish the test!", new Key("T"));
 		}
 		
 		private function makeViewModeButton():void {

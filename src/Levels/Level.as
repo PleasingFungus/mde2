@@ -119,23 +119,14 @@ package Levels {
 			
 			
 			var ACC_TUT:Level = new AccumTutorial;
-			ACC_TUT.predecessors.push(MOD_TUT);
-			var INSTR_TUT:Level = new Level("Instructions", new InstructionTutorialGoal, false,
-											[ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder]);
-			INSTR_TUT.info += "Instructions are made up of four numbers. The first number, the opcode, says what type of instruction it is. "
-			INSTR_TUT.info += "The other three, the source, target, & destination, have meanings that vary by opcode.\n"
-			INSTR_TUT.info += "For this level, for each instruction in memory, just write the opcode, source, target & destination over four lines."
-			INSTR_TUT.predecessors.push(ACC_TUT);
-			INSTR_TUT.writerLimit = 4;
-			var OP_TUT:Level = new Level("One Instruction", new OpcodeTutorialGoal, false,
-										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
-			OP_TUT.predecessors.push(ACC_TUT);
-			OP_TUT.info = "From this level onward, your goal will be to go through memory, starting at 0, and execute every instruction there. "
-			OP_TUT.info += "Every level has a fixed set of instruction types, but several permutations will be generated to test your solution.";
-			var ISEL_TUT:Level = new Level("Two Instructions", new InstructionSelectGoal, false,
-										 [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
-			ISEL_TUT.predecessors.push(OP_TUT);
+			var INSTR_TUT:Level = new InstructionTutorial;
+			var OP_TUT:Level = new OpTutorial;
+			var ISEL_TUT:Level = new Op2Tutorial;
 			
+			ACC_TUT.predecessors.push(MOD_TUT);
+			INSTR_TUT.predecessors.push(ACC_TUT);
+			OP_TUT.predecessors.push(ACC_TUT);
+			ISEL_TUT.predecessors.push(OP_TUT);
 			levels.push(ACC_TUT, INSTR_TUT, OP_TUT, ISEL_TUT);
 			
 			var addCPU:Level = new ShardLevel("Add-CPU", LevelShard.CORE);

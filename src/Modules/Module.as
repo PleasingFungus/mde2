@@ -337,16 +337,15 @@ package Modules {
 		public static function init():void {
 			ModuleCategory.init();
 			
-			for each (var moduleClass:Class in [Adder, ASU, Clock, ConstIn, Latch,
-												Equals, Regfile, Comparator,
-												InstructionMemory, DataMemory,
+			for each (var moduleClass:Class in [Adder, null, null, ConstIn, Latch,
+												Equals, null, null, null, null,
 												Mux, Demux, InstructionMux, InstructionDemux,
-												Or, Output, And, Not, Delay, DataWriter,
-												InstructionComparator, MDU, BabyLatch, SysDelayClock,
+												Or, Output, And, Not, null, DataWriter,
+												InstructionComparator, null, BabyLatch, SysDelayClock,
 												MagicWriter, DataReader, DataWriterT, InstructionDecoder,
 												CustomModule, Subtractor, Multiplier, Divider]) {
 				ALL_MODULES.push(moduleClass);
-				if (moduleClass == CustomModule)
+				if (!moduleClass || moduleClass == CustomModule)
 					ARCHETYPES.push(null);
 				else
 					ARCHETYPES.push(new moduleClass( -1, -1));

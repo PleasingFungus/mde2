@@ -14,6 +14,7 @@ package Layouts.Nodes {
 	public class InternalNode implements Node {
 		
 		public var name:String;
+		public var type:NodeType;
 		public var parent:Module;
 		public var connections:Vector.<Node>
 		public var controlTuples:Vector.<NodeTuple>;
@@ -27,6 +28,7 @@ package Layouts.Nodes {
 									 ControlTuples:Array = null, GetValue:Function = null, Name:String = null,
 									 IsSource:Boolean = false, Param:* = null) {
 			name = Name;
+			type = NodeType.DEFAULT;
 			dim = Dim;
 			this.GetValue = GetValue;
 			isSource = IsSource;

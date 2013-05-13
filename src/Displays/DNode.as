@@ -20,7 +20,7 @@ package Displays {
 			super();
 			makeSprite();
 			label = new FlxText( -1, -1, width);
-			U.NODE_FONT.configureFlxText(label, 0x0, 'center');
+			U.NODE_FONT.configureFlxText(label, node.type.textColor, 'center');
 		}
 		
 		protected function makeSprite():void {
@@ -42,7 +42,7 @@ package Displays {
 			var l:Point = node.Loc;
 			x = l.x * U.GRID_DIM;
 			y = l.y * U.GRID_DIM;
-			color = (node.parent.deployed && U.state.viewMode == U.state.VIEW_MODE_NORMAL && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? U.HIGHLIGHTED_COLOR : 0x8b8bdb;
+			color = (node.parent.deployed && U.state.viewMode == U.state.VIEW_MODE_NORMAL && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? U.HIGHLIGHTED_COLOR : node.type.bgColor;
 			super.draw();
 			
 			var delay:int = node.inputDelay();

@@ -1,6 +1,7 @@
 package Modules {
 	import Components.Port;
 	import Layouts.Nodes.InternalNode;
+	import Layouts.Nodes.NodeType;
 	import Layouts.Nodes.WideNode;
 	import Values.*
 	import Layouts.*;
@@ -70,6 +71,7 @@ package Modules {
 				var outPort:PortLayout = layout.ports[i + width + 1];
 				var dataNode:InternalNode = new StandardNode(this, new Point(outPort.offset.x - 3, outPort.offset.y), [layout.ports[i], outPort], [],
 													 outputs[i].getValue /*?*/, "Stored value " + i, true);
+				dataNode.type = NodeType.STORAGE;
 				nodes.push(dataNode);
 				tuples.push(new NodeTuple(layout.ports[i], dataNode, writeOK));
 			}

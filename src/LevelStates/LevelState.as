@@ -730,7 +730,7 @@ package LevelStates {
 			undoButton.setAlpha(undoAlpha);
 			redoButton.setAlpha(undoAlpha);
 			
-			deleteHint.exists = !currentWire && !currentBloc && !currentModule && !selectionArea && !runningDisplayTest && (findMousedModule() || findMousedWire());
+			deleteHint.exists = canDelete();
 			
 			if (loadButton) {
 				var successSave:String = findSuccessSave();
@@ -741,6 +741,15 @@ package LevelStates {
 			checkCursorState();
 			
 			checkModuleListState();
+		}
+		
+		private function canDelete():Boolean {
+			if (currentWire || currentBloc || currentModule || selectionArea || runningDisplayTest)
+				return false;
+			if (findMousedWire())
+				return true;
+			var module:Module = findMousedModule();
+			return module && !module.FIXED;
 		}
 		
 		private var cursor:Cursor;

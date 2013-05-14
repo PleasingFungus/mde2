@@ -3,9 +3,7 @@ package Modules {
 	import Values.*;
 	
 	import Layouts.*;
-	import Layouts.Nodes.StandardNode;
-	import Layouts.Nodes.WideNode;
-	import Layouts.Nodes.NodeTuple;
+	import Layouts.Nodes.*;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -62,6 +60,7 @@ package Modules {
 			var controlNode:WideNode = new WideNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
 															[layout.ports[layout.ports.length - 2]], controlLines,
 															controls[0].getValue, "Selected input");
+			controlNode.type = NodeType.INDEX;
 			nodes.push(controlNode);
 			return new InternalLayout(nodes);
 		}

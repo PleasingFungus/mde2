@@ -37,6 +37,7 @@ package Modules {
 			var writeNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[0].offset.x + 3, layout.ports[0].offset.y), layout.ports[0]);
 			controls[1].name = "Line no.";
 			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), layout.ports[2]);
+			lineNode.type = NodeType.INDEX;
 			
 			var dataNode:InternalNode = new BigNode(this, new Point(layout.ports[2].offset.x + 1, layout.ports[0].offset.y), [writeNode, lineNode], [],
 														  getValue, "Memory value at line");
@@ -44,6 +45,7 @@ package Modules {
 															[new NodeTuple(dataNode, writeNode, writeOK)],
 															controls[0].getValue,
 															"Write-control: Memory value at line will be set to input value" );
+			controlNode.type = NodeType.TOGGLE;
 			return new InternalLayout([writeNode, dataNode, lineNode, controlNode]);
 		}
 		

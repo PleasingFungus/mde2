@@ -52,6 +52,7 @@ package Modules {
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
 															[layout.ports[inputs.length]], controlLines,
 															controls[0].getValue, "Selected input no.");
+			controlNode.type = NodeType.INDEX;
 			return new InternalLayout([inputNode, controlNode]);
 		}
 		

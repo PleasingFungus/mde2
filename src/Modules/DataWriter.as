@@ -1,10 +1,7 @@
 package Modules {
 	import Values.*;
 	import Layouts.*;
-	import Layouts.Nodes.StandardNode;
-	import Layouts.Nodes.WideNode;
-	import Layouts.Nodes.PortNode;
-	import Layouts.Nodes.InternalNode;
+	import Layouts.Nodes.*;
 	import Components.Port;
 	
 	import flash.geom.Point;
@@ -40,6 +37,8 @@ package Modules {
 			var writeNode:InternalNode = new PortNode(this, InternalNode.DIM_STANDARD, new Point(layout.ports[0].offset.x + 2, layout.ports[0].offset.y), layout.ports[0]);
 			controls[0].name = "Line no.";
 			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), layout.ports[1]);
+			lineNode.type = NodeType.INDEX;
+			
 			var dataNode:InternalNode = new WideNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [writeNode], [],
 															getData, "Memory value at line");
 			return new InternalLayout([lineNode, writeNode, dataNode]);

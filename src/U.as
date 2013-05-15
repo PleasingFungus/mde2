@@ -21,6 +21,7 @@ package  {
 		public static const VERSION:String = "0.01";
 		
 		public static const BLIT_ENABLED:Boolean = false;
+		public static var PLAIN_BG:Boolean = false;
 		
 		[Embed(source = "../lib/fonts/munro.ttf", fontFamily = "MUNRO")] private const _1:String;
 		public static const MUNRO:String = "MUNRO";

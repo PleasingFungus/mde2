@@ -923,7 +923,6 @@ package LevelStates {
 		
 		private var buf:BitmapData;
 		private var matrix:Matrix;
-		private var boundRect:Rectangle;
 		override public function draw():void {
 			if (buf && buf.width != FlxG.width / U.zoom) {
 				buf.dispose();
@@ -937,15 +936,14 @@ package LevelStates {
 				var h:int = FlxG.height / U.zoom;
 				buf = new BitmapData(FlxG.width / U.zoom, FlxG.height / U.zoom, true, FlxG.bgColor);
 			}
-			if (!boundRect)
-				boundRect = new Rectangle(0, 0, buf.width, buf.height);
-			buf.fillRect(boundRect, FlxG.bgColor);
 			
 			var realBuf:BitmapData = FlxG.camera.buffer;
 			FlxG.camera.buffer = buf;
 			
 			FlxG.camera.width = buf.width;
 			FlxG.camera.height = buf.height;
+			
+			fillBG();
 			
 			DWire.updateStatic();
 			
@@ -968,6 +966,24 @@ package LevelStates {
 				drawTestText();
 			else if (upperLayer.exists && upperLayer.visible)
 				upperLayer.draw();
+		}
+		
+		private var boundRect:Rectangle;
+		private var bgTile:FlxSprite;
+		private function fillBG():void {
+			if (U.PLAIN_BG) {
+				if (!boundRect)
+					boundRect = new Rectangle(0, 0, buf.width, buf.height);
+				buf.fillRect(boundRect, FlxG.bgColor);
+				return;
+			}
+			
+			if (!bgTile)
+				bgTile = new FlxSprite().loadGraphic(_bg);
+			var screenRect:Rectangle = U.screenRect();
+			for (bgTile.x = Math.floor(screenRect.x / bgTile.width) * bgTile.width; bgTile.x < screenRect.right; bgTile.x += bgTile.width)
+				for (bgTile.y = Math.floor(screenRect.y / bgTile.height) * bgTile.height; bgTile.y < screenRect.bottom; bgTile.y += bgTile.height)
+					bgTile.draw();
 		}
 		
 		private var debugLineH:FlxSprite;
@@ -1280,6 +1296,8 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/test.png")] private const _test_sprite:Class;
 		[Embed(source = "../../lib/art/ui/tset_success.png")] private const _test_success_sprite:Class;
 		[Embed(source = "../../lib/art/ui/tset_failure.png")] private const _test_failure_sprite:Class;
+		
+		[Embed(source = "../../lib/art/display/bg.png")] private const _bg:Class;
 	}
 
 }

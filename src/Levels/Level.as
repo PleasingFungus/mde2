@@ -136,7 +136,7 @@ package Levels {
 			addCPU.info += "\n\nThis means you must set the register at the number indicated by the DESTINATION of the instruction to the value of the register at the number indicated by the SOURCE of the instruction.";
 			addCPU.info += "\n\nE.g., MOV R7 = R4: set the value held in register 7 to the value held in register 4."
 			addCPU.info += "\n\nHave fun!";
-			addCPU.predecessors.push(ACC_TUT);
+			addCPU.predecessors.push(ISEL_TUT);
 			var cpuADV:Level = new ShardLevel("Advanced Ops", LevelShard.CORE.compositWith(LevelShard.ADV));
 			cpuADV.predecessors.push(addCPU);
 			var cpuLD:Level = new ShardLevel("Load", LevelShard.CORE.compositWith(LevelShard.LOAD));

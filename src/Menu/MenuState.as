@@ -56,7 +56,7 @@ package Menu {
 					}
 				}
 				
-				var colHeight:int = 0;
+				var colHeight:int = 44;
 				for each (button in colButtons)
 					colHeight = Math.max(colHeight, button.fullHeight);
 				Y += colHeight + 20;

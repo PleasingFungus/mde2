@@ -24,12 +24,11 @@ package Helpers {
 				add(helper);
 			}
 			
-			keys[0].x = BUFFER;
-			keys[2].x = FlxG.width - keys[2].width - BUFFER;
-			keys[0].y = keys[2].y = FlxG.height / 2 - keys[0].height / 2;
-			keys[1].y = BUFFER;
-			keys[3].y = FlxG.height - keys[3].height - BUFFER;
 			keys[1].x = keys[3].x = FlxG.width / 2 - keys[1].width / 2;
+			keys[0].y = keys[2].y = keys[3].y = FlxG.height - keys[3].height - BUFFER;
+			keys[1].y = keys[3].y - keys[1].height - BUFFER;
+			keys[0].x = keys[1].x - keys[0].width - BUFFER;
+			keys[2].x = keys[1].x + keys[1].width + BUFFER;
 			
 			context = Context ? "SCROLLER-"+Context : null;
 			if (context && U.save.data[context])

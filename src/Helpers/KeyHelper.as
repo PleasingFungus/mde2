@@ -56,7 +56,7 @@ package Helpers {
 		}
 		
 		override public function draw():void {
-			alpha = key.pressed() ? 1 : 0.5;
+			alpha = key.pressed() ? 1 : 0.75;
 			super.draw();
 		}
 		

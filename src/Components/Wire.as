@@ -264,9 +264,10 @@ package Components {
 		public function getPotentialConnections():Vector.<Carrier> {
 			var potentialConnections:Vector.<Carrier> = new Vector.<Carrier>;
 			for each (var p:Point in path)
-				for each (var connection:Carrier in U.state.grid.carriersAtPoint(p))
-					if (connection != this && potentialConnections.indexOf(connection) == -1 && (isEndpoint(p) || connection.isEndpoint(p)))
-						potentialConnections.push(connection);
+				if (U.state.grid.objTypeAtPoint(p) == Vector)
+					for each (var connection:Carrier in U.state.grid.carriersAtPoint(p))
+						if (connection != this && potentialConnections.indexOf(connection) == -1 && (isEndpoint(p) || connection.isEndpoint(p)))
+							potentialConnections.push(connection);
 			return potentialConnections;
 		}
 		

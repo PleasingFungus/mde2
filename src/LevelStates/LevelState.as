@@ -122,7 +122,7 @@ package LevelStates {
 			add(midLayer = new FlxGroup());
 		}
 		
-		private function addWire(w:Wire, fixed:Boolean = true):void {
+		public function addWire(w:Wire, fixed:Boolean = true):void {
 			w.FIXED = fixed;;
 			if (!Wire.place(w))
 				return;
@@ -132,7 +132,7 @@ package LevelStates {
 			displayWires.push(displayWire);
 		}
 		
-		private function addModule(m:Module, fixed:Boolean = true):void {
+		public function addModule(m:Module, fixed:Boolean = true):void {
 			if (!m || !m.validPosition)
 				return;
 			
@@ -1169,17 +1169,7 @@ package LevelStates {
 				savedString = saveString;
 			}
 			
-			if (level.preplacesFixed || RESET_SAVE == saveString || !saveString) {
-				for each (var wire:Wire in level.wires) {
-					wire.connections = new Vector.<Carrier>;
-					addWire(wire, level.preplacesFixed);
-				}
-				
-				for each (var module:Module in level.modules) {
-					module.cleanup();
-					addModule(module, level.preplacesFixed);
-				}
-			}
+			level.loadIntoState(this, saveString == RESET_SAVE || !saveString);
 			
 			makeUI();
 		}

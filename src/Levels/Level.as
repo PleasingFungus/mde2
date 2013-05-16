@@ -1,6 +1,7 @@
 package Levels {
 	import Levels.ControlTutorials.*;
 	import Levels.BasicTutorials.*;
+	import LevelStates.LevelState;
 	import org.flixel.FlxSprite;
 	
 	import Testing.*;
@@ -23,8 +24,6 @@ package Levels {
 		
 		public var goal:LevelGoal;
 		public var modules:Vector.<Module>;
-		public var wires:Vector.<Wire>;
-		public var preplacesFixed:Boolean = true;
 		public var canDrawWires:Boolean = true;
 		public var canPlaceModules:Boolean = true;
 		public var commentsEnabled:Boolean;
@@ -44,7 +43,6 @@ package Levels {
 			if (Modules)
 				for each (var module:Module in Modules)
 					modules.push(module);
-			wires = new Vector.<Wire>;
 			
 			expectedOps = new Vector.<OpcodeValue>;
 			if (ExpectedOps)
@@ -64,13 +62,6 @@ package Levels {
 			this.delay = delay;
 			
 			predecessors = new Vector.<Level>;
-		}
-		
-		public function setWires(Wires:Array):Level {
-			wires = new Vector.<Wire>;
-			for each (var wire:Wire in Wires)
-				wires.push(wire);
-			return this;
 		}
 		
 		public function setLast():void {
@@ -207,6 +198,13 @@ package Levels {
 			columns.push(makeVec([pipe, pipeJMP, pipeBranch, pipeADV, pipeLD, pipeADVLDD, pipeFull]));
 			
 			return levels;
+		}
+		
+		public function loadIntoState(levelState:LevelState, loadFresh:Boolean = false):void {
+			for each (var module:Module in modules) {
+				module.cleanup();
+				levelState.addModule(module);
+			}
 		}
 		
 		public static function validate(levels:Vector.<Level>):void {

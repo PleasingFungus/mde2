@@ -110,15 +110,13 @@ package Levels {
 			
 			
 			var ACC_TUT:Level = new AccumTutorial;
-			var INSTR_TUT:Level = new InstructionTutorial;
 			var OP_TUT:Level = new OpTutorial;
 			var ISEL_TUT:Level = new Op2Tutorial;
 			
 			ACC_TUT.predecessors.push(MOD_TUT);
-			INSTR_TUT.predecessors.push(ACC_TUT);
 			OP_TUT.predecessors.push(ACC_TUT);
 			ISEL_TUT.predecessors.push(OP_TUT);
-			levels.push(ACC_TUT, INSTR_TUT, OP_TUT, ISEL_TUT);
+			levels.push(ACC_TUT, OP_TUT, ISEL_TUT);
 			
 			var addCPU:Level = new ShardLevel("Add-CPU", LevelShard.CORE);
 			addCPU.info = "CPU instructions reference 'registers'. These are a set of 8 values, numbered 0-7, stored however you like.";
@@ -190,7 +188,7 @@ package Levels {
 			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD, pipeBranch, pipeFull);
 			
 			columns.push(makeVec([WIRE_TUT, MOD_TUT, SEL_TUT, COPY_TUT]));
-			columns.push(makeVec([ACC_TUT, INSTR_TUT, OP_TUT, ISEL_TUT]));
+			columns.push(makeVec([ACC_TUT, OP_TUT, ISEL_TUT]));
 			columns.push(makeVec([addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD, cpuFULL]));
 			columns.push(makeVec([D0_TUT, D1_TUT, D2_TUT]));
 			columns.push(makeVec([addCPU_D, cpuADVLDD, cpuD_BRANCH, cpuD_FULL]));

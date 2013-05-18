@@ -15,9 +15,9 @@ package Layouts.Nodes {
 		}
 		
 		public static const DEFAULT:NodeType = new NodeType;
-		public static const INDEX:NodeType = new NodeType(0x0, 0x8bdbdb);
-		public static const TOGGLE:NodeType = new NodeType(0x0, 0xdb968b);
-		public static const STORAGE:NodeType = new NodeType(0x0, 0x8bdb8e);
+		//public static const INDEX:NodeType = new NodeType(0x0, 0x8bdbdb);
+		//public static const TOGGLE:NodeType = new NodeType(0x0, 0xdb968b);
+		//public static const STORAGE:NodeType = new NodeType(0x0, 0x8bdb8e);
 		
 	}
 

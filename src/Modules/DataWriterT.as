@@ -33,20 +33,17 @@ package Modules {
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			layout.ports[0].port.name = "Input";
-			var writeNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[0].offset.x + 3, layout.ports[0].offset.y), layout.ports[0]);
 			controls[1].name = "Line no.";
 			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[2].offset.x, layout.ports[2].offset.y + 2), layout.ports[2]);
-			lineNode.type = NodeType.INDEX;
+			layout.ports[0].port.name = "Input";
+			var writeNode:InternalNode = new BigNode(this, new Point(layout.ports[2].offset.x, layout.ports[0].offset.y), [layout.ports[0], lineNode], [], getNextValue, "Next Value");
+			//lineNode.type = NodeType.INDEX;
 			
-			var dataNode:InternalNode = new BigNode(this, new Point(layout.ports[2].offset.x + 1, layout.ports[0].offset.y), [writeNode, lineNode], [],
-														  getValue, "Memory value at line");
 			var controlNode:InternalNode = new StandardNode(this, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), [layout.ports[1]],
-															[new NodeTuple(dataNode, writeNode, writeOK)],
-															controls[0].getValue,
+															[new NodeTuple(layout.ports[0], writeNode, writeOK)], controls[0].getValue,
 															"Write-control: Memory value at line will be set to input value" );
-			controlNode.type = NodeType.TOGGLE;
-			return new InternalLayout([writeNode, dataNode, lineNode, controlNode]);
+			//controlNode.type = NodeType.TOGGLE;
+			return new InternalLayout([writeNode, lineNode, controlNode]);
 		}
 		
 		override public function renderDetails():String {
@@ -65,11 +62,22 @@ package Modules {
 			if (index < 0 || index >= U.state.memory.length)
 				return U.V_UNPOWERED;
 			
-			var memoryValue:Value = U.state.memory[index];
-			if (!memoryValue)
-				return U.V_UNKNOWN;
+			return U.state.memory[index];
+		}
+		
+		private function getNextValue():Value {
+			var line:Value = controls[1].getValue();
+			if (line.unpowered || line.unknown)
+				return line;
 			
-			return memoryValue;
+			var index:int = line.toNumber();
+			if (index < 0 || index >= U.state.memory.length)
+				return U.V_UNPOWERED;
+			
+			if (writeOK())
+				return inputs[0].getValue();
+			
+			return U.state.memory[index];
 		}
 		
 		override public function updateState():Boolean {

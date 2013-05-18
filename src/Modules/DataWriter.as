@@ -27,21 +27,17 @@ package Modules {
 		
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = super.generateLayout();
-			layout.ports[0].offset.y += 1;
+			layout.ports[0].offset.y += 2;
 			layout.ports[1].offset.x += 2;
 			return layout;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			layout.ports[0].port.name = "Input";
-			var writeNode:InternalNode = new PortNode(this, InternalNode.DIM_STANDARD, new Point(layout.ports[0].offset.x + 2, layout.ports[0].offset.y), layout.ports[0]);
 			controls[0].name = "Line no.";
 			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), layout.ports[1]);
-			lineNode.type = NodeType.INDEX;
-			
-			var dataNode:InternalNode = new WideNode(this, new Point(layout.ports[1].offset.x, layout.ports[0].offset.y), [writeNode], [],
-															getData, "Memory value at line");
-			return new InternalLayout([lineNode, writeNode, dataNode]);
+			layout.ports[0].port.name = "Input";
+			var writeNode:InternalNode = new BigNode(this, new Point(layout.ports[1].offset.x-1, layout.ports[0].offset.y), [layout.ports[0], lineNode], [], getNextValue, "Next Value");
+			return new InternalLayout([lineNode, writeNode]);
 		}
 		
 		override public function renderDetails():String {
@@ -51,6 +47,18 @@ package Modules {
 		
 		override public function getDescription():String {
 			return "Each tick, writes the input value to the specified line of memory."
+		}
+		
+		private function getNextValue():Value {
+			var line:Value = controls[0].getValue();
+			if (line.unpowered || line.unknown)
+				return line;
+			
+			var index:int = line.toNumber();
+			if (index < 0 || index >= U.state.memory.length)
+				return U.V_UNPOWERED;
+			
+			return inputs[0].getValue();
 		}
 		
 		override public function updateState():Boolean {

@@ -60,7 +60,7 @@ package Modules {
 			var controlNode:WideNode = new WideNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
 															[layout.ports[layout.ports.length - 2]], controlLines,
 															controls[0].getValue, "Selected input");
-			controlNode.type = NodeType.INDEX;
+			//controlNode.type = NodeType.INDEX;
 			nodes.push(controlNode);
 			return new InternalLayout(nodes);
 		}

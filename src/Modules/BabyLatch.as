@@ -22,7 +22,7 @@ package Modules {
 		override protected function generateInternalLayout():InternalLayout {
 			var dataNode:StandardNode = new StandardNode(this, new Point(layout.ports[1].offset.x - 2, layout.ports[1].offset.y), [layout.ports[0], layout.ports[1]], [],
 														function getValue():Value { return value; }, "Stored value")
-			dataNode.type = NodeType.STORAGE;
+			//dataNode.type = NodeType.STORAGE;
 			return new InternalLayout([dataNode]);
 		}
 		

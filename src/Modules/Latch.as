@@ -71,7 +71,7 @@ package Modules {
 				var outPort:PortLayout = layout.ports[i + width + 1];
 				var dataNode:InternalNode = new StandardNode(this, new Point(outPort.offset.x - 3, outPort.offset.y), [layout.ports[i], outPort], [],
 													 outputs[i].getValue /*?*/, "Stored value " + i, true);
-				dataNode.type = NodeType.STORAGE;
+				//dataNode.type = NodeType.STORAGE;
 				nodes.push(dataNode);
 				tuples.push(new NodeTuple(layout.ports[i], dataNode, writeOK));
 			}
@@ -80,7 +80,7 @@ package Modules {
 			var controlText:String = "Stored " +valueText+ " will be set to input "+valueText;
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[width].offset.x, layout.ports[width].offset.y + 2), [layout.ports[width]],
 															tuples, controls[0].getValue, controlText);
-			controlNode.type = NodeType.TOGGLE;
+			//controlNode.type = NodeType.TOGGLE;
 			nodes.push(controlNode);
 			return new InternalLayout(nodes);
 		}

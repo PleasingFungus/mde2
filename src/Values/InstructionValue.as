@@ -91,9 +91,10 @@ package Values {
 		
 		private function formatFrom(baseStr:String, keys:Array):HighlightFormat {
 			var colorTexts:Vector.<ColorText> = new Vector.<ColorText>;
+			colorTexts.push(new ColorText(U.OPCODE_COLOR, operation.getName()));
 			for each (var color:ColorText in keys)
 				colorTexts.push(new ColorText(color.color, (color == U.SOURCE ? sourceArg : color == U.TARGET ? targetArg : destArg).toString()));
-			return new HighlightFormat(operation.getName() + " " + baseStr, colorTexts);
+			return new HighlightFormat("{} " + baseStr, colorTexts);
 		}
 		
 		override public function toNumber():Number {

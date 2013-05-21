@@ -11,8 +11,10 @@ package LevelStates {
 	public class SuccessState extends FlxState {
 		
 		public var level:Level;
-		public function SuccessState(level:Level) {
+		public var partsCount:int;
+		public function SuccessState(level:Level, PartsCount:int) {
 			this.level = level;
+			partsCount = PartsCount;
 			super();
 			
 			FlxG.bgColor = 0xff000000;
@@ -24,6 +26,7 @@ package LevelStates {
 		override public function create():void {
 			add(U.TITLE_FONT.configureFlxText(new FlxText(20, 20, FlxG.width - 40, "Victory!")));
 			add(U.BODY_FONT.configureFlxText(new FlxText(20, 100, FlxG.width - 40, level.goal.getTime())));
+			add(U.BODY_FONT.configureFlxText(new FlxText(20, 140, FlxG.width - 40, "Modules used: "+partsCount)));
 		}
 		
 		override public function update():void {

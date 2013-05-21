@@ -29,6 +29,7 @@ package Modules {
 		public var configurableInPlace:Boolean;
 		public var delay:int;
 		public var writesToMemory:int = 0;
+		public var weight:int = 1;
 		public var storesData:Boolean = false;
 		
 		public var exists:Boolean = true;

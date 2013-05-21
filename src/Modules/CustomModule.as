@@ -49,6 +49,7 @@ package Modules {
 			
 			super(X, Y, "Custom", ModuleCategory.MISC,  inputs.length, outputs.length, controls.length);
 			abbrev = "?";
+			weight = modules.length;
 		}
 		
 		override protected function makePorts(numInputs:int, numOutputs:int, numControls:int):void {

@@ -869,7 +869,7 @@ package LevelStates {
 				U.updateTutState(U.TUT_BEAT_TUT_2);
 			
 			FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
-				FlxG.switchState(new SuccessState(level));
+				FlxG.switchState(new SuccessState(level, modulesUsed()));
 			});
 		}
 		
@@ -880,6 +880,14 @@ package LevelStates {
 				if (module.exists && module.writesToMemory)
 					num += module.writesToMemory;
 			return num;
+		}
+		
+		private function modulesUsed():int { 
+			var used:int = 0;
+			for each (var module:Module in modules)
+				if (module.exists)
+					used += module.weight;
+			return used;
 		}
 		
 		private function findMousedWire():DWire {

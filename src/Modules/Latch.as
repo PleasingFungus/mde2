@@ -77,7 +77,8 @@ package Modules {
 			}
 			
 			var valueText:String = width == 1 ? "value" : "values";
-			var controlText:String = "Stored " +valueText+ " will be set to input "+valueText;
+			var controlText:String = "Stored " +valueText + " will be set to input " + valueText;
+			controls[0].name = name + " write?";
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[width].offset.x, layout.ports[width].offset.y + 2), [layout.ports[width]],
 															tuples, controls[0].getValue, controlText);
 			//controlNode.type = NodeType.TOGGLE;

@@ -43,6 +43,7 @@ package Modules {
 				}, i));
 			}
 			
+			controls[0].name = "Selected input no.";
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
 															[layout.ports[layout.ports.length - 2]], controlLines,
 															controls[0].getValue, "Selected input no.");

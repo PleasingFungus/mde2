@@ -56,7 +56,9 @@ package Displays {
 		private function get MAX_SPEED():int {
 			return 65 / U.zoom;
 		}
-		private const ACCEL:Number = MAX_SPEED / 2;
+		private function get ACCEL():int {
+			return MAX_SPEED / 2;
+		}
 	}
 
 }

@@ -41,6 +41,7 @@ package  {
 		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
 		
+		public static const OPCODE_COLOR:uint = 0x61e263;
 		public static const SOURCE:ColorText = new ColorText(0xe2618e, "source");
 		public static const TARGET:ColorText = new ColorText(0xe29461, "target");
 		public static const DESTINATION:ColorText = new ColorText(0x89cfcf, "destination");

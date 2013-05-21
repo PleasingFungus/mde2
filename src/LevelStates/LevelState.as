@@ -1213,13 +1213,8 @@ package LevelStates {
 		private function runTest():void {
 			level.goal.runTestStep(this);
 			lastRunTime = elapsed;
-			if (!level.goal.running) {
-				if (level.goal.succeeded)
-					C.log("Success!");
-				else
-					C.log("Failure!");
+			if (!level.goal.running)
 				runDisplayTest();
-			}
 		}
 		
 		private function checkTestControls():void {

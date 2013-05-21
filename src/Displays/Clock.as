@@ -49,7 +49,6 @@ package Displays {
 				relAngle = absAngle - (Math.PI / 2) * (3 - segment); //0 or 90 degrees
 			
 			var edgeLength:Number = RADIUS / Math.cos(relAngle / 2);
-			C.log(fraction, segment, absAngle * 180 / Math.PI, relAngle * 180 / Math.PI);
 			
 			var triangleShape:Shape = new Shape();
 			var p:Point;

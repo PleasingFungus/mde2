@@ -12,6 +12,8 @@ package Menu {
 	 */
 	public class MenuState extends FlxState {
 		
+		private var lastZoom:Number;
+		
 		override public function create():void {
 			C.setPrintReady();
 			U.init();
@@ -40,7 +42,8 @@ package Menu {
 					if (!DEBUG.UNLOCK_ALL && !level.unlocked())
 						continue;
 					
-					var button:TextButton = new TextButton(X, Y, level.displayName, function switchTo(level:Level):void { 
+					var button:TextButton = new TextButton(X, Y, level.displayName, function switchTo(level:Level):void {
+						U.zoom = lastZoom;
 						FlxG.switchState(new LevelState(level));
 					});
 					button.setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, level.successSave ? U.HIGHLIGHTED_COLOR : 0xffffff);
@@ -66,6 +69,8 @@ package Menu {
 				Y += colHeight + 20;
 			}
 			
+			lastZoom = U.zoom;
+			U.zoom = 1;
 			add(new Scroller("menustate"));
 			
 			FlxG.bgColor = 0xff000000;

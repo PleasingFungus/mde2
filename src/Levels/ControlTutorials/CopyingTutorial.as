@@ -17,6 +17,7 @@ package Levels.ControlTutorials {
 			info += "\n\n\(You can copy within and between levels.)"
 			
 			canDrawWires = canPlaceModules = false;
+			useModuleRecord = false;
 		}
 		
 	}

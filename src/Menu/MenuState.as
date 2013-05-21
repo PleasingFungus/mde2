@@ -54,6 +54,10 @@ package Menu {
 						FlxG.camera.scroll.x = button.X + button.fullWidth / 2 - FlxG.width / 2;
 						FlxG.camera.scroll.y = button.Y + button.fullHeight / 2 - FlxG.height / 2;
 					}
+					
+					if (level.useModuleRecord && level.fewestModules) {
+						add(U.BODY_FONT.configureFlxText(new FlxText(button.X - 5, button.Y + button.fullHeight - 15, button.fullWidth, level.fewestModules.toString()), U.HIGHLIGHTED_COLOR));
+					}
 				}
 				
 				var colHeight:int = 44;

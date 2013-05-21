@@ -25,8 +25,10 @@ package LevelStates {
 		
 		override public function create():void {
 			add(U.TITLE_FONT.configureFlxText(new FlxText(20, 20, FlxG.width - 40, "Victory!")));
-			add(U.BODY_FONT.configureFlxText(new FlxText(20, 100, FlxG.width - 40, level.goal.getTime())));
-			add(U.BODY_FONT.configureFlxText(new FlxText(20, 140, FlxG.width - 40, "Modules used: "+partsCount)));
+			add(U.BODY_FONT.configureFlxText(new FlxText(20, 100, FlxG.width - 40, level.goal.getTime()))); 
+			var setModuleRecord:Boolean = partsCount == level.fewestModules;
+			if (level.useModuleRecord)
+				add(U.BODY_FONT.configureFlxText(new FlxText(20, 140, FlxG.width - 40, "Modules used: " + partsCount + (setModuleRecord ? " (Best!)" : " (Best: " + level.fewestModules+")"))));
 		}
 		
 		override public function update():void {

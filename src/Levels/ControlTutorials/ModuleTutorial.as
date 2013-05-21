@@ -15,6 +15,7 @@ package Levels.ControlTutorials {
 			info = "To place modules, use the module menu in the top-left."
 			info += " Choose a category and then a module; then click to place the module wherever you want. You can place an unlimited number of most modules.";
 			info += "\n\nAs before, once your machine is done, click 'test' in the top-center.";
+			useModuleRecord = false;
 		}
 		
 	}

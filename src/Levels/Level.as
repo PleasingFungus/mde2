@@ -23,9 +23,11 @@ package Levels {
 		public var hints:Vector.<String>;
 		
 		public var goal:LevelGoal;
+		public var fewestModules:int;
 		public var modules:Vector.<Module>;
 		public var canDrawWires:Boolean = true;
 		public var canPlaceModules:Boolean = true;
+		public var useModuleRecord:Boolean = true;
 		public var commentsEnabled:Boolean;
 		public var expectedOps:Vector.<OpcodeValue>;
 		public var allowedModules:Vector.<Class>
@@ -38,6 +40,8 @@ package Levels {
 			info = "TODO";
 			hints = new Vector.<String>;
 			this.goal = Goal;
+			
+			fewestModules = U.save.data[name + MODULE_SUFFIX];
 			
 			modules = new Vector.<Module>;
 			if (Modules)
@@ -62,6 +66,13 @@ package Levels {
 			this.delay = delay;
 			
 			predecessors = new Vector.<Level>;
+		}
+		
+		public function setFewestModules(m:int):void {
+			if (m < fewestModules || !fewestModules) {
+				fewestModules = m;
+				U.save.data[name + MODULE_SUFFIX] = fewestModules;
+			}
 		}
 		
 		public function setLast():void {
@@ -89,6 +100,7 @@ package Levels {
 		}
 		
 		private const SUCCESS_SUFFIX:String = '-succ';
+		private const MODULE_SUFFIX:String = "-modules";
 		
 		
 		
@@ -141,6 +153,7 @@ package Levels {
 			
 			var D0_TUT:Level = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
 										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
+			D0_TUT.useModuleRecord = false;
 			D0_TUT.predecessors.push(ACC_TUT);
 			var D1_TUT:Level = new Level("Delay Accum. 1", new MagicAccumDelayTutGoal, true,
 										 [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);

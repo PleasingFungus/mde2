@@ -20,6 +20,7 @@ package Levels.ControlTutorials {
 			info = "Select modules, and wires, by holding " + ControlSet.DRAG_MODIFY_KEY + " and dragging; once held, pick up & place them by clicking."
 			
 			canDrawWires = false;
+			useModuleRecord = false;
 		}
 		
 		override public function loadIntoState(levelState:LevelState, loadFresh:Boolean = false):void {

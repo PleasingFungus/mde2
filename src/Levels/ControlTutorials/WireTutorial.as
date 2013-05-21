@@ -29,6 +29,7 @@ package Levels.ControlTutorials {
 			//info += "\n\nWires can be used to create circuits, connecting any number of inputs to a single output."
 			//info += " You cannot connect more than one output to a circuit."
 			info = "Draw wires to connect them, then press Test!";
+			useModuleRecord = false;
 		}
 		
 		override public function specialInfo():Vector.<FlxSprite> {

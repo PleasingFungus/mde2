@@ -26,9 +26,9 @@ package Modules {
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			controls[0].name = "Line no.";
+			controls[0].name = U.LINE_NUM.text;
 			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[0].offset.x, layout.ports[0].offset.y + 2), layout.ports[0]);
-			//lineNode.type = NodeType.INDEX;
+			lineNode.type = new NodeType(0x0, U.LINE_NUM.color);
 			var dataNode:InternalNode = new BigNode(this, new Point(layout.ports[1].offset.x - 4, layout.ports[1].offset.y), [lineNode, layout.ports[1]], [],
 														  outputs[0].getValue, "Memory value at line");
 			return new InternalLayout([dataNode, lineNode]);

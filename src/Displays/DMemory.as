@@ -42,7 +42,7 @@ package Displays {
 			
 			var Y:int = bg.y + INNER_BORDER;
 			add(U.BODY_FONT.configureFlxText(new FlxText(LINE_NO_START, Y + 10, 60,
-															  "Line"), 0xffffff, 'left'));
+															  "Line"), U.LINE_NUM.color, 'left'));
 			add(U.BODY_FONT.configureFlxText(new FlxText(COL_1_START, Y, COL_WIDTH,
 															  "Current Memory"), 0xffffff, 'center'));
 			add(U.BODY_FONT.configureFlxText(new FlxText(COL_2_START, Y, COL_WIDTH - TITLE_SPACING,
@@ -66,7 +66,7 @@ package Displays {
 					}
 					skip = false;
 					
-					page.add(U.BODY_FONT.configureFlxText(new FlxText(LINE_NO_START, Y, COL_WIDTH, memLine + ".")));
+					page.add(U.BODY_FONT.configureFlxText(new FlxText(LINE_NO_START, Y, COL_WIDTH, memLine + "."), U.LINE_NUM.color));
 					page.add(makeTextFor(memValue, COL_1_START, Y, 'right'));
 					
 					if (displayComments) {

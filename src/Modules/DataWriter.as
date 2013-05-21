@@ -33,8 +33,9 @@ package Modules {
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
-			controls[0].name = "Line no.";
+			controls[0].name = U.LINE_NUM.text;
 			var lineNode:InternalNode = new PortNode(this, InternalNode.DIM_WIDE, new Point(layout.ports[1].offset.x, layout.ports[1].offset.y + 2), layout.ports[1]);
+			lineNode.type = new NodeType(0x0, U.LINE_NUM.color);
 			layout.ports[0].port.name = "Input";
 			var writeNode:InternalNode = new BigNode(this, new Point(layout.ports[1].offset.x-1, layout.ports[0].offset.y), [layout.ports[0], lineNode], [], getNextValue, "Next Value");
 			return new InternalLayout([lineNode, writeNode]);

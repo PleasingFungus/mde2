@@ -41,11 +41,6 @@ package  {
 		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
 		
-		public static const OPCODE_COLOR:uint = 0x61e263;
-		public static const SOURCE:ColorText = new ColorText(0xe2618e, "source");
-		public static const TARGET:ColorText = new ColorText(0xe29461, "target");
-		public static const DESTINATION:ColorText = new ColorText(0x89cfcf, "destination");
-		
 		public static var save:FlxSave;
 		public static var levels:Vector.<Level>;
 		
@@ -150,9 +145,14 @@ package  {
 		
 		public static const BG_COLOR:uint = 0xffe0e0e0;
 		
-		public static const LINE_NUM_COLOR:uint = 0x155814;
-		
 		public static const CONFIG_COLOR:uint = 0x89cfcf;
+		
+		public static const OPCODE_COLOR:uint = 0x61e263;
+		public static const SOURCE:ColorText = new ColorText(0xe2618e, "source");
+		public static const TARGET:ColorText = new ColorText(0xe29461, "target");
+		public static const DESTINATION:ColorText = new ColorText(0x89cfcf, "destination");
+		
+		public static const LINE_NUM:ColorText = new ColorText(0xa461e2, "Line no.");
 		
 		public static const MIN_INT:int = -128;
 		public static const MAX_INT:int = 127;

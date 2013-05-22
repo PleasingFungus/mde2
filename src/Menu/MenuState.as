@@ -61,6 +61,9 @@ package Menu {
 					if (level.useModuleRecord && level.fewestModules) {
 						add(U.BODY_FONT.configureFlxText(new FlxText(button.X - 5, button.Y + button.fullHeight - 15, button.fullWidth, level.fewestModules.toString()), U.HIGHLIGHTED_COLOR));
 					}
+					if (level.useTickRecord && level.fewestTicks) {
+						add(U.BODY_FONT.configureFlxText(new FlxText(button.X + 15, button.Y + button.fullHeight - 15, button.fullWidth, level.fewestTicks.toString()), U.HIGHLIGHTED_COLOR, 'right'));
+					}
 				}
 				
 				var colHeight:int = 44;

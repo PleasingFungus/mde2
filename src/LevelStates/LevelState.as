@@ -862,7 +862,7 @@ package LevelStates {
 			}
 			
 			level.successSave = genSaveString();
-			level.setFewestModules(modulesUsed());
+			level.setHighScore(modulesUsed());
 			
 			if (level == U.levels[0])
 				U.updateTutState(U.TUT_BEAT_TUT_1);

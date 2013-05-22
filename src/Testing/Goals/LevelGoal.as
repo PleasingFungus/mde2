@@ -13,6 +13,7 @@ package Testing.Goals {
 		public var randomizedMemory:Boolean;
 		public var succeeded:Boolean;
 		public var timeLimit:int = int.MAX_VALUE;
+		public var totalTicks:int;
 		
 		protected var expectedMemory:Vector.<Value>;
 		
@@ -43,7 +44,10 @@ package Testing.Goals {
 		
 		public function endRun():void {
 			running = false;
+			setTotalTicks();
 		}
+		
+		protected function setTotalTicks():void { totalTicks = U.state.time.moment; }
 		
 		public function runTestStep(levelState:LevelState):void {
 			levelState.time.reset();

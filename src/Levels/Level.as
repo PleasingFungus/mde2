@@ -24,10 +24,12 @@ package Levels {
 		
 		public var goal:LevelGoal;
 		public var fewestModules:int;
+		public var fewestTicks:int;
 		public var modules:Vector.<Module>;
 		public var canDrawWires:Boolean = true;
 		public var canPlaceModules:Boolean = true;
 		public var useModuleRecord:Boolean = true;
+		public var useTickRecord:Boolean = false;
 		public var commentsEnabled:Boolean;
 		public var expectedOps:Vector.<OpcodeValue>;
 		public var allowedModules:Vector.<Class>
@@ -37,11 +39,12 @@ package Levels {
 		
 		public function Level(Name:String, Goal:LevelGoal, delay:Boolean = false, AllowedModules:Array = null, ExpectedOps:Array = null, Modules:Array = null) {
 			name = displayName = Name;
-			info = "TODO";
+			info = DEBUG.ON ? "TODO" : "";
 			hints = new Vector.<String>;
 			this.goal = Goal;
 			
 			fewestModules = U.save.data[name + MODULE_SUFFIX];
+			fewestTicks = U.save.data[name + TICK_SUFFIX];
 			
 			modules = new Vector.<Module>;
 			if (Modules)
@@ -68,10 +71,14 @@ package Levels {
 			predecessors = new Vector.<Level>;
 		}
 		
-		public function setFewestModules(m:int):void {
-			if (m < fewestModules || !fewestModules) {
-				fewestModules = m;
+		public function setHighScore(modules:int):void {
+			if (modules < fewestModules || !fewestModules) {
+				fewestModules = modules;
 				U.save.data[name + MODULE_SUFFIX] = fewestModules;
+			}
+			if (goal.totalTicks < fewestTicks || !fewestTicks) {
+				fewestTicks = goal.totalTicks;
+				U.save.data[name + TICK_SUFFIX] = fewestTicks;
 			}
 		}
 		
@@ -101,7 +108,7 @@ package Levels {
 		
 		private const SUCCESS_SUFFIX:String = '-succ';
 		private const MODULE_SUFFIX:String = "-modules";
-		
+		private const TICK_SUFFIX:String = "-ticks";
 		
 		
 		
@@ -197,6 +204,9 @@ package Levels {
 			pipeADVLDD.predecessors.push(pipeLD, pipeADV);
 			var pipeFull:Level = new ShardLevel("Full Efficient", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
 			pipeFull.predecessors.push(pipeBranch, pipeADVLDD);
+			
+			pipeTutorial.useTickRecord = pipe.useTickRecord = pipeJMP.useTickRecord = pipeBranch.useTickRecord = true;
+			pipeLD.useTickRecord = pipeADVLDD.useTickRecord = pipeFull.useTickRecord = pipeADV.useTickRecord = true;
 			
 			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD, pipeBranch, pipeFull);
 			

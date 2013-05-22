@@ -53,6 +53,7 @@ package Testing.Goals {
 			FlxG.globalSeed = 0.5;
 			currentRun = 0;
 			timePerInstr = new Vector.<Number>;
+			totalTicks = 0;
 		}
 		
 		override public function runTestStep(levelState:LevelState):void {
@@ -67,8 +68,10 @@ package Testing.Goals {
 			
 			levelState.initialMemory = mem;
 			super.runTestStep(levelState);
-			if (succeeded)
+			if (succeeded) {
 				timePerInstr.push(U.state.time.moment / currentTest.expectedExecutions);
+				totalTicks += U.state.time.moment;
+			}
 		}
 		
 		override public function getProgress():String {
@@ -76,12 +79,14 @@ package Testing.Goals {
 		}
 		
 		override public function getTime():String {
-			return 'Average ticks per instruction: '+averageTimePerInstruction();
+			return 'Ticks: Avg. '+averageTimePerInstruction()+'/instr., '+totalTicks+' total';
 		}
 		
 		override protected function done():Boolean {
 			return currentRun >= testRuns;
 		}
+		
+		override protected function setTotalTicks():void {  }
 		
 		public function averageTimePerInstruction():Number {
 			if (!timePerInstr.length) return 0;

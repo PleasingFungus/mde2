@@ -13,7 +13,8 @@ package Levels {
 		public var timeFactor:Number;
 		public var instructionFactor:Number;
 		public var delay:Boolean;
-		public function LevelShard(Name:String, Ops:Array = null, Modules:Array = null, TimeFactor:Number = 1, InstructionFactor:Number = 1, delay:Boolean = false) {
+		public function LevelShard(Name:String, Ops:Array = null, Modules:Array = null, TimeFactor:Number = 1, InstructionFactor:Number = 1,
+								   delay:Boolean = false) {
 			var ExpectedOps:Vector.<OpcodeValue> = new Vector.<OpcodeValue>;
 			for each (var op:OpcodeValue in Ops ? Ops : [])
 				ExpectedOps.push(op);

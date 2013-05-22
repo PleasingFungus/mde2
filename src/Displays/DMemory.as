@@ -27,6 +27,11 @@ package Displays {
 		}
 		
 		override protected function init():void {
+			if (commentButton)
+				commentButton.setExists(false);
+			if (randomButton)
+				randomButton.setExists(false);
+			
 			super.init();
 			if (U.state.level.commentsEnabled)
 				makeCommentButton();
@@ -101,10 +106,12 @@ package Displays {
 			}
 		}
 		
+		private var commentButton:GraphicButton;
 		protected function makeCommentButton():void {
 			var kludge:DMemory = this;
-			add(new GraphicButton(bg.x + INNER_BORDER + bg.width / 2 - 16, bg.y + INNER_BORDER,
-								  displayComments ? _code_sprite : _comment_sprite, function comment():void { kludge.displayComments = !kludge.displayComments; init(); } ))
+			add(commentButton = new GraphicButton(bg.x + INNER_BORDER + bg.width / 2 - 16, bg.y + INNER_BORDER,
+								  displayComments ? _code_sprite : _comment_sprite, function comment():void { kludge.displayComments = !kludge.displayComments; init(); },
+								  displayComments ? "View expected memory" : "View instruction info"))
 		}
 		
 		private var randomButton:MenuButton;

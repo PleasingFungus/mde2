@@ -93,7 +93,7 @@ package UI {
 		
 		private function checkScroll():void {
 			if (Math.abs(FlxG.mouse.wheelChange()) > 1)
-				moveSlider(FlxG.mouse.wheelChange() * (rail.height - slider.height) / 20 + slider.y);
+				moveSlider(-FlxG.mouse.wheelChange() * (rail.height - slider.height) / 20 + slider.y);
 		}
 		
 		private function getAdjMouse():FlxPoint {

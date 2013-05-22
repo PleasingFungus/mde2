@@ -113,6 +113,10 @@ package LevelStates {
 			makeUI();
 			upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
 			
+			FlxG.camera.scroll.x = (FlxG.width / 2) / 1 - (FlxG.width / 2) / U.zoom;
+			FlxG.camera.scroll.y = (FlxG.height / 2) / 1 - (FlxG.height / 2) / U.zoom;
+			upperLayer.update(); //hack to avoid scroll issues
+			
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
 		

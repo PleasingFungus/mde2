@@ -111,7 +111,7 @@ package Displays {
 			var kludge:DMemory = this;
 			add(commentButton = new GraphicButton(bg.x + INNER_BORDER + bg.width / 2 - 16, bg.y + INNER_BORDER,
 								  displayComments ? _code_sprite : _comment_sprite, function comment():void { kludge.displayComments = !kludge.displayComments; init(); },
-								  displayComments ? "View expected memory" : "View instruction info"))
+								  displayComments ? "View expected memory" : "View instruction info", new Key("C")))
 		}
 		
 		private var randomButton:MenuButton;
@@ -121,7 +121,6 @@ package Displays {
 				U.state.initialMemory = U.state.level.goal.genMem();
 				memory = U.state.memory = U.state.initialMemory.slice();
 				expectedMemory = U.state.level.goal.genExpectedMem();
-				randomButton.setExists(false); //cleanup tooltips
 				init();
 			}, "Generate new example memory", new Key("R"));
 			add(randomButton);

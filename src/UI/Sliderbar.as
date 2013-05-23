@@ -38,8 +38,6 @@ package UI {
 			
 			x = X;
 			y = Y;
-			width = 80;
-			height = 48;
 			
 			valueRange = ValueRange ? ValueRange : new Range(-16, 15);
 			value = InitialValue != C.INT_NULL ? InitialValue : valueRange.initial;
@@ -49,6 +47,9 @@ package UI {
 		
 		public function create():void {
 			members = [];
+			
+			width = 80;
+			height = labelEnabled ? 48 : 20;
 			
 			//slider bit
 			slider = new FlxSprite(-1, y).makeGraphic(8, 20, 0xffa0a0a0, true, "scrollbar");
@@ -115,7 +116,7 @@ package UI {
 			return this;
 		}
 		
-		public function setLabel(enabled:Boolean):Sliderbar {
+		public function setLabeled(enabled:Boolean):Sliderbar {
 			labelEnabled = enabled;
 			create();
 			return this;

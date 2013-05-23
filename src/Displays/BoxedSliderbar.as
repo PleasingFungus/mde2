@@ -17,6 +17,9 @@ package Displays {
 		public var sliderbar:Sliderbar;
 		protected var bg:FlxSprite;
 		protected var maxHeight:int;
+		protected var labelEnabled:Boolean = true;
+		protected var die:Boolean;
+		protected var onDeath:Function;
 		
 		public function BoxedSliderbar(X:int, Y:int, ValueRange:Range = null, OnChange:Function = null, InitialValue:int = C.INT_NULL) {
 			super();
@@ -30,7 +33,9 @@ package Displays {
 		
 		public function init():void {
 			members = [];
-			sliderbar = new Sliderbar(x + INNER_PAD + BORDER_WIDTH, y + INNER_PAD + BORDER_WIDTH, valueRange, onChange, initialValue)
+			sliderbar = new Sliderbar(x + INNER_PAD + BORDER_WIDTH, y + INNER_PAD + BORDER_WIDTH, valueRange, onChange, initialValue);
+			sliderbar.setDieOnClickOutside(die, onDeath);
+			sliderbar.setLabeled(labelEnabled);
 			var height:int = sliderbar.height + (INNER_PAD + BORDER_WIDTH) * 2;
 			if (maxHeight)
 				height = Math.min(height, maxHeight);
@@ -48,7 +53,15 @@ package Displays {
 		}
 		
 		public function setDieOnClickOutside(die:Boolean, onDie:Function = null):BoxedSliderbar {
+			this.die = die;
+			onDeath = onDie;
 			sliderbar.setDieOnClickOutside(die, onDie);
+			return this;
+		}
+		
+		public function setLabeled(enabled:Boolean):BoxedSliderbar {
+			labelEnabled = enabled;
+			init();
 			return this;
 		}
 		

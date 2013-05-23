@@ -27,8 +27,10 @@ package Displays {
 				module.initialize();
 			};
 			
-			super(displayModule.x + displayModule.width / 2, displayModule.y + displayModule.height / 2,
+			super(displayModule.x + displayModule.width / 2, displayModule.y + displayModule.height,
 				  config.valueRange, setValue, config.value);
+			if (U.zoom >= 0.5)
+				setLabeled(false);
 			
 			setDieOnClickOutside(true, function onDie():void {
 				var newValue:int = module.getConfiguration().value;
@@ -45,14 +47,12 @@ package Displays {
 						return true;
 					}, newValue, oldValue).execute();
 			});
-			
-			bg.alpha = 0.75;
 		}
 		
 		override public function draw():void {
 			var z:Number = U.zoom;
 			sliderbar.x = (displayModule.x + displayModule.width / 2 - FlxG.camera.scroll.x) * z - sliderbar.width / 2;
-			sliderbar.y = (displayModule.y + displayModule.height / 2 - FlxG.camera.scroll.y) * z - sliderbar.height / 2;
+			sliderbar.y = (displayModule.y + displayModule.height - FlxG.camera.scroll.y) * z - sliderbar.height;
 			sliderbar.positionElements();
 			bg.x = sliderbar.x - (BORDER_WIDTH + INNER_PAD);
 			bg.y = sliderbar.y - (BORDER_WIDTH + INNER_PAD);

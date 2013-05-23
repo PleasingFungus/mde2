@@ -111,7 +111,6 @@ package Displays {
 				exists = false;
 		}
 		
-		
 		override public function draw():void {
 			page.setLoc(bg.x + RAISED_BORDER_WIDTH * 2, pageTop);
 			super.draw();

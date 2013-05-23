@@ -14,6 +14,7 @@ package UI {
 		public var width:int;
 		public var height:int;
 		public var config:Configuration;
+		public var labelEnabled:Boolean = true;
 		private var textWidth:int;
 		
 		protected var valueRange:Range;
@@ -64,26 +65,28 @@ package UI {
 			add(rightArrow);
 			add(slider);
 			
-			//value display
-			valueText = new FlxText( -1, -1, FlxG.width, " ").setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xffffff);
-			valueText.text = valueRange.nameOf(valueRange.min);
-			textWidth = valueText.textWidth;
-			valueText.text = valueRange.nameOf(valueRange.max);
-			textWidth = Math.max(textWidth, valueText.textWidth);
-			valueText.text = valueRange.nameOf(value);
-			//valueText.alignment = 'center';
-			//valueText.width = textWidth;
-			
-			valueBox = new FlxSprite(valueText.x - TEXT_BORDER, valueText.y - TEXT_BORDER).makeGraphic(textWidth + TEXT_BORDER * 2, valueText.height + TEXT_BORDER * 2, 0xff202020, true);
-			valueBox.framePixels.fillRect(new Rectangle(TEXT_BORDER / 2, TEXT_BORDER / 2, valueBox.width - TEXT_BORDER, valueBox.height - TEXT_BORDER), 0xff666666);
-			
-			add(valueBox);
-			add(valueText);
+			if (labelEnabled) {			
+				//value display
+				valueText = new FlxText( -1, -1, FlxG.width, " ").setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xffffff);
+				valueText.text = valueRange.nameOf(valueRange.min);
+				textWidth = valueText.textWidth;
+				valueText.text = valueRange.nameOf(valueRange.max);
+				textWidth = Math.max(textWidth, valueText.textWidth);
+				valueText.text = valueRange.nameOf(value);
+				//valueText.alignment = 'center';
+				//valueText.width = textWidth;
+				
+				valueBox = new FlxSprite(valueText.x - TEXT_BORDER, valueText.y - TEXT_BORDER).makeGraphic(textWidth + TEXT_BORDER * 2, valueText.height + TEXT_BORDER * 2, 0xff202020, true);
+				valueBox.framePixels.fillRect(new Rectangle(TEXT_BORDER / 2, TEXT_BORDER / 2, valueBox.width - TEXT_BORDER, valueBox.height - TEXT_BORDER), 0xff666666);
+				
+				add(valueBox);
+				add(valueText);
+			}
 			
 			positionElements();
 		}
 		
-		protected function positionElements():void {
+		public function positionElements():void {
 			leftArrow.x = x;
 			rightArrow.x = x + width - rightArrow.width;
 			leftArrow.y = rightArrow.y = y;
@@ -97,16 +100,24 @@ package UI {
 			slider.x = rail.x + rail.width * posFraction;
 			slider.y = y;
 			
-			valueText.x = x + width / 2 - textWidth / 2;
-			valueText.y = y + height - valueText.height - TEXT_BORDER;
-			
-			valueBox.x = valueText.x - TEXT_BORDER;
-			valueBox.y = valueText.y - TEXT_BORDER;
+			if (labelEnabled) {
+				valueText.x = x + width / 2 - textWidth / 2;
+				valueText.y = y + height - valueText.height - TEXT_BORDER;
+				
+				valueBox.x = valueText.x - TEXT_BORDER;
+				valueBox.y = valueText.y - TEXT_BORDER;
+			}
 		}
 		
 		public function setDieOnClickOutside(die:Boolean, onDie:Function = null):Sliderbar {
 			dieOnClickOutside = die;
 			onDeath = onDie;
+			return this;
+		}
+		
+		public function setLabel(enabled:Boolean):Sliderbar {
+			labelEnabled = enabled;
+			create();
 			return this;
 		}
 		
@@ -178,7 +189,8 @@ package UI {
 				var out:* = onChange(value);
 				if (out is int)
 					value = out as int;
-				valueText.text = valueRange.nameOf(value);
+				if (labelEnabled)
+					valueText.text = valueRange.nameOf(value);
 			}
 		}
 		
@@ -188,7 +200,8 @@ package UI {
 			
 			value = v;
 			
-			valueText.text = valueRange.nameOf(v);
+			if (labelEnabled)
+				valueText.text = valueRange.nameOf(v);
 			
 			var fraction:Number = (v - valueRange.min) / valueRange.width;
 			slider.x = rail.x + fraction * (rail.width - slider.width);

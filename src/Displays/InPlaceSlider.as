@@ -12,7 +12,7 @@ package Displays {
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class InPlaceSlider extends Sliderbar {
+	public class InPlaceSlider extends BoxedSliderbar {
 		
 		private var displayModule:DModule;
 		public function InPlaceSlider(DisplayModule:DModule) {
@@ -45,15 +45,19 @@ package Displays {
 						return true;
 					}, newValue, oldValue).execute();
 			});
+			
+			bg.alpha = 0.75;
 		}
 		
-		override public function update():void {
-			super.update();
-			
+		override public function draw():void {
 			var z:Number = U.zoom;
-			x = (displayModule.x + displayModule.width / 2 - FlxG.camera.scroll.x) * z - width / 2;
-			y = (displayModule.y + displayModule.height / 2 - FlxG.camera.scroll.y) * z - height / 2;
-			positionElements();
+			sliderbar.x = (displayModule.x + displayModule.width / 2 - FlxG.camera.scroll.x) * z - sliderbar.width / 2;
+			sliderbar.y = (displayModule.y + displayModule.height / 2 - FlxG.camera.scroll.y) * z - sliderbar.height / 2;
+			sliderbar.positionElements();
+			bg.x = sliderbar.x - (BORDER_WIDTH + INNER_PAD);
+			bg.y = sliderbar.y - (BORDER_WIDTH + INNER_PAD);
+			
+			super.draw();
 		}
 		
 	}

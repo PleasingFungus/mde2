@@ -24,7 +24,7 @@ package Displays {
 															new CustomAction(function setValue(newValue:int, oldValue:int):Boolean { lastNum = U.state.time.clockPeriod = newValue; return true; },
 																			 function setValue(newValue:int, oldValue:int):Boolean { lastNum = U.state.time.clockPeriod = oldValue; return true; },
 																			 U.state.time.clockPeriod, lastNum).execute();
-													 }));
+													 }).setLabel(false));
 			}, "Set system clock period", HKEY);
 			numberText = U.LABEL_FONT.configureFlxText(new FlxText(X, Y + 8, fullWidth, " "), 0x0, 'center');
 			numberText.scrollFactor = new FlxPoint;

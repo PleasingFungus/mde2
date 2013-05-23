@@ -23,6 +23,7 @@ package Displays {
 		public function DMemory(Memory:Vector.<Value>, ExpectedMemory:Vector.<Value> = null) {
 			memory = Memory;
 			expectedMemory = ExpectedMemory;
+			displayComments = U.state.viewingComments;
 			super();
 		}
 		
@@ -110,7 +111,10 @@ package Displays {
 		protected function makeCommentButton():void {
 			var kludge:DMemory = this;
 			add(commentButton = new GraphicButton(bg.x + INNER_BORDER + bg.width / 2 - 16, bg.y + INNER_BORDER,
-								  displayComments ? _code_sprite : _comment_sprite, function comment():void { kludge.displayComments = !kludge.displayComments; init(); },
+								  displayComments ? _code_sprite : _comment_sprite, function comment():void {
+									  U.state.viewingComments = kludge.displayComments = !kludge.displayComments;
+									  init();
+									},
 								  displayComments ? "View expected memory" : "View instruction info", new Key("C")))
 		}
 		

@@ -61,6 +61,7 @@ package LevelStates {
 		
 		
 		public var infobox:Infobox;
+		public var viewingComments:Boolean;
 		private var displayTime:DTime;
 		private var displayDelay:DDelay;
 		private var preserveModule:Boolean;

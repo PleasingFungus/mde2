@@ -13,6 +13,7 @@ package Levels {
 			allowedModules = Shard.allowedModules;
 			writerLimit = 0;
 			commentsEnabled = true;
+			configurableLatchesEnabled = true;
 			info = null;
 		}
 		

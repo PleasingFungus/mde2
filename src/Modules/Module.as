@@ -1,6 +1,7 @@
 package Modules {
 	import Displays.DModule;
 	import flash.geom.Point;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import Layouts.*;
 	import Components.Port;
@@ -134,14 +135,6 @@ package Modules {
 				if (!portLayout.port.isOutput)
 					maxDelay = Math.max(maxDelay, portLayout.port.remainingDelay());
 			return maxDelay;
-		}
-		
-		public function saveString():String {
-			return getSaveValues().join(U.ARG_DELIM);
-		}
-		
-		public function getSaveValues():Array {
-			return [ALL_MODULES.indexOf(Object(this).constructor), x, y];
 		}
 		
 		public function initialize():void {
@@ -312,6 +305,34 @@ package Modules {
 		}
 		
 		
+		
+		public function saveString():String {
+			return getSaveValues().join(U.ARG_DELIM);
+		}
+		
+		public function getSaveValues():Array {
+			return [ALL_MODULES.indexOf(Object(this).constructor), x, y];
+		}
+		
+		public function getBytes():ByteArray {
+			var bytes:ByteArray = getSaveBytes();
+			bytes.position = 0;
+			bytes.writeInt(bytes.length + 4);
+			return bytes;
+		}
+		
+		protected function getSaveBytes():ByteArray {
+			var bytes:ByteArray = new ByteArray();
+			bytes.writeByte(ALL_MODULES.indexOf(Object(this).constructor));
+			bytes.writeByte(x);
+			bytes.writeByte(x >> 8);
+			bytes.writeByte(y);
+			bytes.writeByte(y >> 8);
+			return bytes;
+		}
+		
+		
+		
 		public static function fromString(str:String, allowableTypes:Vector.<Class> = null):Module {
 			if (!str.length) return null;
 			
@@ -334,6 +355,37 @@ package Modules {
 				return new type(x, y, C.safeInt(args[3]))
 			return new type(x, y);
 		}
+		
+		public static function fromBytes(bytes:ByteArray, end:int, allowableTypes:Vector.<Class> = null):Module {
+			var moduleIndex:int = bytes.readByte();
+			var moduleType:Class = ALL_MODULES[moduleIndex];
+			if (!type || (allowableTypes && allowableTypes.indexOf(type) == -1))
+				return null;
+			
+			var x:int = bytes.readByte() | (bytes.readByte() << 8);
+			var y:int = bytes.readByte() | (bytes.readByte() << 8);
+			if (bytes.position == end)
+				return new type(x, y);
+			if (bytes.position == end - 1)
+				return new type(x, y, bytes.readByte());
+			return new type(x, y, bytes, end);
+		}
+		
+		public static function modulesFromBytes(bytes:ByteArray, end:int, allowableTypes:Vector.<Class> = null):Vector.<Module> {
+			var modules:Vector.<Module> = new Vector.<Module>;
+			while (bytes.position < end) {
+				var moduleLength:int = bytes.readInt();
+				var moduleEnd:int = bytes.position + moduleLength;
+				var module:Module = fromBytes(bytes, moduleEnd, allowableTypes);
+				if (module)
+					modules.push(module);
+				bytes.position = moduleEnd;
+			}
+			return modules;
+		}
+		
+		
+		
 		
 		public static function init():void {
 			ModuleCategory.init();

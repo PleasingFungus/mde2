@@ -1,5 +1,6 @@
 package Modules {
 	import Components.Port;
+	import flash.utils.ByteArray;
 	import Values.*;
 	
 	import Layouts.*;

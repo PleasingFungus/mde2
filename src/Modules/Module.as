@@ -317,16 +317,19 @@ package Modules {
 		public function getBytes():ByteArray {
 			var bytes:ByteArray = new ByteArray;
 			var saveBytes:ByteArray = getSaveBytes();
-			bytes.writeInt(saveBytes.length + 4);
+			bytes.writeInt(saveBytes.length + 4 + 1 + 4 + 4);
+			bytes.writeByte(ALL_MODULES.indexOf(Object(this).constructor));
+			bytes.writeInt(x);
+			bytes.writeInt(y);
 			bytes.writeBytes(saveBytes);
 			return bytes;
 		}
 		
 		protected function getSaveBytes():ByteArray {
 			var bytes:ByteArray = new ByteArray();
-			bytes.writeByte(ALL_MODULES.indexOf(Object(this).constructor));
-			bytes.writeInt(x);
-			bytes.writeInt(y);
+			var saveValues:Array = getSaveValues();
+			for each (var value:int in saveValues.slice(3))
+				bytes.writeByte(value);
 			return bytes;
 		}
 		

@@ -315,19 +315,18 @@ package Modules {
 		}
 		
 		public function getBytes():ByteArray {
-			var bytes:ByteArray = getSaveBytes();
-			bytes.position = 0;
-			bytes.writeInt(bytes.length + 4);
+			var bytes:ByteArray = new ByteArray;
+			var saveBytes:ByteArray = getSaveBytes();
+			bytes.writeInt(saveBytes.length + 4);
+			bytes.writeBytes(saveBytes);
 			return bytes;
 		}
 		
 		protected function getSaveBytes():ByteArray {
 			var bytes:ByteArray = new ByteArray();
 			bytes.writeByte(ALL_MODULES.indexOf(Object(this).constructor));
-			bytes.writeByte(x);
-			bytes.writeByte(x >> 8);
-			bytes.writeByte(y);
-			bytes.writeByte(y >> 8);
+			bytes.writeInt(x);
+			bytes.writeInt(y);
 			return bytes;
 		}
 		
@@ -359,16 +358,17 @@ package Modules {
 		public static function fromBytes(bytes:ByteArray, end:int, allowableTypes:Vector.<Class> = null):Module {
 			var moduleIndex:int = bytes.readByte();
 			var moduleType:Class = ALL_MODULES[moduleIndex];
-			if (!type || (allowableTypes && allowableTypes.indexOf(type) == -1))
+			if (!moduleType || (allowableTypes && allowableTypes.indexOf(moduleType) == -1))
 				return null;
 			
-			var x:int = bytes.readByte() | (bytes.readByte() << 8);
-			var y:int = bytes.readByte() | (bytes.readByte() << 8);
+			var x:int = bytes.readInt();
+			var y:int = bytes.readInt();
 			if (bytes.position == end)
-				return new type(x, y);
+				return new moduleType(x, y);
 			if (bytes.position == end - 1)
-				return new type(x, y, bytes.readByte());
-			return new type(x, y, bytes, end);
+				return new moduleType(x, y, bytes.readByte());
+			//return moduleType.fromBytes(x, y, bytes, end);
+			return null; //TODO
 		}
 		
 		public static function modulesFromBytes(bytes:ByteArray, end:int, allowableTypes:Vector.<Class> = null):Vector.<Module> {

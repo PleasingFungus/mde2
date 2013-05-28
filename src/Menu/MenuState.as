@@ -1,5 +1,4 @@
 package Menu {
-	import Displays.Clock;
 	import Displays.Scroller;
 	import Levels.Level;
 	import org.flixel.*;
@@ -17,6 +16,7 @@ package Menu {
 		override public function create():void {
 			C.setPrintReady();
 			U.init();
+			DEBUG.runDebugStuff();
 			
 			if (!U.tutorialState && !DEBUG.SKIP_TUT) {
 				FlxG.switchState(new HowToPlayState); return;

@@ -1,9 +1,8 @@
 <?php
-	function insertLevel($lvlstr) {
+	function insertLevel($hashlvl, $lvlstr) {
 		$colStr = "Hash, LevelStr";
-		$hashlvl = hash("md5", $lvlstr);
 		insert('levels', $colStr, "'" . $hashlvl . "', '" . $lvlstr . "'");
-		echo($hashlvl);
+		die($hashlvl);
 	}
 
 	function insert($table, $colStr, $valStr) {
@@ -29,5 +28,23 @@
 	if (!$lvlstr)
 		die("Must provide a level string!");
 	
-	insertLevel($lvlstr);
+	$hashlvl = hash("md5", $lvlstr);
+	while (true) {	
+		$result = mysql_query("SELECT * FROM levels WHERE Hash='".$hashlvl."'");
+
+		if (!$result) {
+			$message  = 'Invalid query: ' . mysql_error() . "\n";
+			$message .= 'Whole query: ' . $query;
+			die($message);
+		}
+		
+		if ($row = mysql_fetch_assoc($result)) {
+			if ($row['LevelStr'] == $lvlstr)
+				die($hashlvl);
+		} else
+			insertLevel($hashlvl, $lvlstr); //and die
+		
+		$hashlvl = hash("md5", $hashlvl);
+	}
+	
 ?> 

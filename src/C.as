@@ -282,13 +282,13 @@ package
 											 "FIVE", "SIX", "SEVEN", "EIGHT", "NINE"];
 		
 		
-		public static function sendRequest(url:String, args:Object, callback:Function = null):void {
+		public static function sendRequest(url:String, args:Object, callback:Function = null):URLLoader {
 			var loader:URLLoader = new URLLoader;
 			loader.addEventListener(Event.COMPLETE, callback != null ? callback : function _(e : Event):void { });
 				
 			var variables:URLVariables = new URLVariables;
-			for (var key:String in args)
-				variables[key] = args.key;
+			for (var key:String in args) 
+				variables[key] = args[key];
 			
 			var request : URLRequest = new URLRequest(url); 
 			request.method = URLRequestMethod.POST;
@@ -301,6 +301,8 @@ package
 			} catch (error:Error) {
 				log("Request failed: " + error);
 			}
+			
+			return loader;
 		}
 	}
 

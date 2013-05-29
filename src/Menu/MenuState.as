@@ -1,10 +1,12 @@
 package Menu {
 	import Displays.Clock;
 	import Displays.Scroller;
+	import flash.net.URLLoader;
 	import Levels.Level;
 	import org.flixel.*;
 	import UI.*;
 	import LevelStates.LevelState
+	import flash.events.Event;
 	
 	/**
 	 * ...
@@ -112,9 +114,23 @@ package Menu {
 				return false;
 			}
 			
-			//TODO: grab data
+			if (!path.parameters.code) {			
+				FlxG.switchState(new LevelState(level));
+				return true;
+			}
 			
-			FlxG.switchState(new LevelState(level));
+			var loader:URLLoader = C.sendRequest(U.LOOKUP_URL, { 'hash' : path.parameters.code }, function onLoad(e : Event):void {
+				var response:String = loader.data;
+				if (response.indexOf("ERROR") == 0) {
+					addErrorText(response);
+					return;
+				}
+				
+				C.log(response);
+				FlxG.switchState(new LevelState(level, response));
+			});
+			
+			add(U.BODY_FONT.configureFlxText(new FlxText(0, 20, FlxG.width, "Waiting for server...")));
 			return true;
 		}
 		

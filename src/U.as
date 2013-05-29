@@ -135,6 +135,9 @@ package  {
 			return _rect;
 		}
 		
+		public static const INSERT_URL:String = "http://pleasingfungus.com/mde2/insert.php";
+		public static const LOOKUP_URL:String = "http://pleasingfungus.com/mde2/lookup.php";
+		
 		
 		public static const UNCONNECTED_COLOR:uint = 0xff0000;
 		public static const HALFCONNECTED_COLOR:uint = 0xac1616;

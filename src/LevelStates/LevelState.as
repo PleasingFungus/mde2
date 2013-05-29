@@ -91,8 +91,10 @@ package LevelStates {
 		public var initialMemory:Vector.<Value>;
 		
 		public var level:Level;
-		public function LevelState(level:Level) {
+		public var loadData:String;
+		public function LevelState(level:Level, loadData:String = null) {
 			this.level = level;
+			this.loadData = loadData;
 		}
 		
 		override public function create():void {
@@ -107,7 +109,8 @@ package LevelStates {
 			
 			initialMemory = level.goal.genMem();
 			
-			load();
+			load(loadData);
+			loadData = null;
 			level.setLast();
 			recentModules = new Vector.<Class>;
 			

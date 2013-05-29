@@ -4,6 +4,8 @@ package Modules {
 	import Layouts.*;
 	import Layouts.Nodes.*;
 	import flash.geom.Point;
+	import UI.HighlightFormat;
+	import UI.ColorText;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -64,7 +66,7 @@ package Modules {
 			for (var i:int = 0; i < width; i++) {
 				var outPort:PortLayout = layout.ports[i + width];
 				var dataNode:InternalNode = new StandardNode(this, new Point(outPort.offset.x - 2, outPort.offset.y), [layout.ports[i], outPort], [],
-													 outputs[i].getValue /*?*/, "Stored value " + i, true);
+													 outputs[i].getValue /*?*/, width > 1 ? "Stored value " + i : "Stored value", true);
 				//dataNode.type = NodeType.STORAGE;
 				nodes.push(dataNode);
 			}
@@ -79,6 +81,17 @@ package Modules {
 			if (width == 1)
 				return "Stores & outputs a value. Each tick, sets its value to the input."
 			return "Stores & outputs "+width+" values. Each tick, sets its values to the inputs."
+		}
+		
+		override public function getHighlitDescription():HighlightFormat {
+			if (width == 1)
+				return null;
+			return new HighlightFormat( "Stores & outputs {} values. Each tick, sets its values to the inputs.",
+									   ColorText.singleVec(new ColorText(U.CONFIG_COLOR, width.toString())));
+		}
+		
+		override public function drive(port:Port):Value {
+			return values[outputs.indexOf(port)];
 		}
 		
 		override public function updateState():Boolean {

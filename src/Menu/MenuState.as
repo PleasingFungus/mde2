@@ -19,6 +19,7 @@ package Menu {
 		override public function create():void {
 			C.setPrintReady();
 			U.init();
+			DEBUG.runDebugStuff();
 			
 			if (loadFromURL())
 				return;
@@ -126,7 +127,6 @@ package Menu {
 					return;
 				}
 				
-				C.log(response);
 				FlxG.switchState(new LevelState(level, response));
 			});
 			
@@ -134,8 +134,8 @@ package Menu {
 			return true;
 		}
 		
-		private function addErrorText(error:String):void {
-			add(U.BODY_FONT.configureFlxText(new FlxText(0, 0, FlxG.width, error)));
+		private function addErrorText(error:String, y:int=0):void {
+			add(U.BODY_FONT.configureFlxText(new FlxText(0, y, FlxG.width, error)));
 		}
 		
 	}

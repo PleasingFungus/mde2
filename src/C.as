@@ -5,6 +5,7 @@ package
 	import flash.geom.Point;
 	import flash.net.*;
 	import flash.events.Event;
+	import flash.external.ExternalInterface;
 	
 	/**
 	 * ...
@@ -303,6 +304,30 @@ package
 			}
 			
 			return loader;
+		}
+		
+		public static function encodeString(input:String):String {
+			if (ExternalInterface.available)
+				return ExternalInterface.call("encodeURIComponent", input);
+			return null;
+		}
+		
+		public static function decodeString(input:String):String {
+			if (ExternalInterface.available)
+				return ExternalInterface.call("decodeURIComponent", input);
+			return null;
+		}
+		
+		public static function stringToBase64(input:String):String {
+			if (ExternalInterface.available)
+				return ExternalInterface.call("btoa", input);
+			return null;
+		}
+		
+		public static function base64ToString(b64:String):String {
+			if (ExternalInterface.available)
+				return ExternalInterface.call("atob", b64);
+			return null;
 		}
 	}
 

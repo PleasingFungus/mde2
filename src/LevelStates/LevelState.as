@@ -16,6 +16,7 @@ package LevelStates {
 	import UI.ButtonList;
 	import UI.ButtonManager;
 	import UI.ModuleSlider;
+	import UI.ShareButton;
 	import UI.Sliderbar;
 	import UI.TextButton;
 	import Values.FixedValue;
@@ -235,7 +236,7 @@ package LevelStates {
 		}
 		
 		private function makeShareButton():void {
-			addToolbarButton(FlxG.width - 100, _share_sprite, function share():void { /*TODO*/ }, "Share", "Share your machine");
+			upperLayer.add(new ShareButton(FlxG.width - 100, 8));
 		}
 		
 		private function makeSaveButtons():void {
@@ -1297,8 +1298,6 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/x1_8b.png")] private const _z4_sprite:Class;
 		private const ZOOMS:Array = [_z1_sprite, _z2_sprite, _z3_sprite];
 		
-		[Embed(source = "../../lib/art/ui/share.png")] private const _share_sprite:Class;
-		[Embed(source = "../../lib/art/ui/erahs.png")] private const _share_done_sprite:Class;
 		[Embed(source = "../../lib/art/ui/code.png")] private const _data_sprite:Class;
 		[Embed(source = "../../lib/art/ui/info.png")] private const _info_sprite:Class;
 		[Embed(source = "../../lib/art/ui/reset.png")] private const _reset_sprite:Class;

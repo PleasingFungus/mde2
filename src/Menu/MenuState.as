@@ -18,6 +18,9 @@ package Menu {
 			C.setPrintReady();
 			U.init();
 			
+			if (loadFromURL())
+				return;
+			
 			if (!U.tutorialState && !DEBUG.SKIP_TUT) {
 				FlxG.switchState(new HowToPlayState); return;
 			}
@@ -80,6 +83,43 @@ package Menu {
 			FlxG.mouse.show();
 			
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
+		}
+		
+		private function loadFromURL():Boolean {
+			if (U.checkedURL)
+				return false;
+			U.checkedURL = true;
+			
+			var path:QueryString = new QueryString;
+			if (!path.parameters.lvl)
+				return false;
+			
+			try {
+				var levelIndex:int = C.safeInt(path.parameters.lvl);
+			} catch (error:Error) {
+				addErrorText("Bad level index!");
+				return false;
+			}
+			
+			if (levelIndex < 0 || levelIndex > U.levels.length || !U.levels[levelIndex]) {
+				addErrorText("Bad level index!");
+				return false;
+			}
+			
+			var level:Level = U.levels[levelIndex];
+			if (!level.unlocked() && !DEBUG.UNLOCK_ALL) {
+				addErrorText("Level " + levelIndex + " not unlocked!");
+				return false;
+			}
+			
+			//TODO: grab data
+			
+			FlxG.switchState(new LevelState(level));
+			return true;
+		}
+		
+		private function addErrorText(error:String):void {
+			add(U.BODY_FONT.configureFlxText(new FlxText(0, 0, FlxG.width, error)));
 		}
 		
 	}

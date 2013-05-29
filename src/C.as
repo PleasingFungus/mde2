@@ -3,6 +3,8 @@ package
 	import flash.utils.Dictionary;
 	import org.flixel.FlxG;
 	import flash.geom.Point;
+	import flash.net.*;
+	import flash.events.Event;
 	
 	/**
 	 * ...
@@ -278,6 +280,28 @@ package
 		
 		public static const NUMBERS:Array = ["ZERO", "ONE", "TWO", "THREE", "FOUR",
 											 "FIVE", "SIX", "SEVEN", "EIGHT", "NINE"];
+		
+		
+		public static function sendRequest(url:String, args:Object, callback:Function = null):void {
+			var loader:URLLoader = new URLLoader;
+			loader.addEventListener(Event.COMPLETE, callback != null ? callback : function _(e : Event):void { });
+				
+			var variables:URLVariables = new URLVariables;
+			for (var key:String in args)
+				variables[key] = args.key;
+			
+			var request : URLRequest = new URLRequest(url); 
+			request.method = URLRequestMethod.POST;
+			request.data = variables;
+			
+			log("Sending request: " + request);
+			
+			try {
+				loader.load(request); 
+			} catch (error:Error) {
+				log("Request failed: " + error);
+			}
+		}
 	}
 
 }

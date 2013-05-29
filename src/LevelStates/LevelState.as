@@ -191,6 +191,7 @@ package LevelStates {
 		private function makeViewButtons():void {
 			makeDataButton();
 			makeInfoButton();
+			makeShareButton();
 			makeBackButton();
 			if (runningDisplayTest) {
 				upperLayer.add(displayTime);
@@ -200,8 +201,8 @@ package LevelStates {
 		
 		private function makeViewLists():void {
 			LIST_ZOOM == listOpen ? makeZoomList() : makeZoomButton();
-			if (level.delay)
-				LIST_VIEW_MODES == listOpen ? makeViewModeMenu() : makeViewModeButton()
+			//if (level.delay)
+				//LIST_VIEW_MODES == listOpen ? makeViewModeMenu() : makeViewModeButton()
 		}
 		
 		private function makeEditButtons():void {
@@ -228,6 +229,10 @@ package LevelStates {
 			}, "Exit to menu");
 			backButton.fades = true;
 			upperLayer.add(backButton);
+		}
+		
+		private function makeShareButton():void {
+			addToolbarButton(FlxG.width - 100, _share_sprite, function share():void { /*TODO*/ }, "Share", "Share your machine");
 		}
 		
 		private function makeSaveButtons():void {
@@ -257,7 +262,7 @@ package LevelStates {
 		}
 		
 		private function makeZoomButton():void {
-			addToolbarButton(FlxG.width - 100, _zoom_sprite, function openList():void {
+			addToolbarButton(FlxG.width - 140, _zoom_sprite, function openList():void {
 				listOpen = LIST_ZOOM;
 				makeUI();
 			}, "Zoom", "Display zoom controls", new Key("O"));
@@ -281,7 +286,7 @@ package LevelStates {
 					}
 				}, "Set zoom to "+Math.pow(2, -zoomLevel), ControlSet.NUMBER_HOTKEYS[zoomLevel+1]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == U.zoom));
 			
-			var zoomList:ButtonList = new ButtonList(FlxG.width - 105, 3, zoomButtons, function onListClose():void {
+			var zoomList:ButtonList = new ButtonList(FlxG.width - 145, 3, zoomButtons, function onListClose():void {
 				if (listOpen == LIST_ZOOM)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -303,7 +308,7 @@ package LevelStates {
 		}
 		
 		private function makeViewModeButton():void {
-			addToolbarButton(FlxG.width - 140, VIEW_MODE_SPRITES[viewMode], function openList():void {
+			addToolbarButton(FlxG.width - 180, VIEW_MODE_SPRITES[viewMode], function openList():void {
 				listOpen = LIST_VIEW_MODES;
 				makeUI();
 			}, "Views", "Display list of view modes", new Key("Q"));
@@ -1289,6 +1294,8 @@ package LevelStates {
 		[Embed(source = "../../lib/art/ui/x1_8b.png")] private const _z4_sprite:Class;
 		private const ZOOMS:Array = [_z1_sprite, _z2_sprite, _z3_sprite];
 		
+		[Embed(source = "../../lib/art/ui/share.png")] private const _share_sprite:Class;
+		[Embed(source = "../../lib/art/ui/erahs.png")] private const _share_done_sprite:Class;
 		[Embed(source = "../../lib/art/ui/code.png")] private const _data_sprite:Class;
 		[Embed(source = "../../lib/art/ui/info.png")] private const _info_sprite:Class;
 		[Embed(source = "../../lib/art/ui/reset.png")] private const _reset_sprite:Class;

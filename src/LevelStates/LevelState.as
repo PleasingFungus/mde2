@@ -1121,7 +1121,7 @@ package LevelStates {
 			U.save.data[level.name] = savedString;
 		}
 		
-		private function genSaveString():String {
+		public function genSaveString():String {
 			var saveStrings:Vector.<String>  = new Vector.<String>;
 			
 			//save modules

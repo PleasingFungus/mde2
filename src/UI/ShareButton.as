@@ -1,4 +1,6 @@
 package UI {
+	import flash.events.Event;
+	import flash.net.URLLoader;
 	import org.flixel.*;
 	/**
 	 * ...
@@ -11,12 +13,11 @@ package UI {
 		
 		private var button:GraphicButton;
 		private var text:FlxText;
+		//TODO: textfield
 		
 		private var sharingState:int = SHARING_READY;
 		private var sharingError:String;
 		private var sharingCode:String;
-		private var sharingLevel:String;
-		//TODO: textfield
 		public function ShareButton(X:int, Y:int) {
 			this.X = X;
 			this.Y = Y;
@@ -37,7 +38,27 @@ package UI {
 		}
 		
 		private function onClick():void {
-			//TODO
+			if (sharingState == SHARING_WAITING)
+				return;
+			
+			var loader:URLLoader = C.sendRequest("http://pleasingfungus.com/mde2/insert.php",
+												 {'lvl' : U.state.genSaveString()},
+												 function onLoad(e:Event):void {
+				var response:String = loader.data;
+				if (response.indexOf("ERROR") == 0) {
+					sharingState = SHARING_FAILED;
+					sharingError = response;
+					init();
+					return;
+				}
+				
+				sharingState = SHARING_SUCCESS;
+				sharingCode = response;
+				init();
+			});
+			//TODO: add timeout handler
+			//TODO: add http error handler
+			sharingState = SHARING_WAITING;
 		}
 		
 		private const SHARING_READY:int = 0;

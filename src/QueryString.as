@@ -21,6 +21,10 @@
 			return _all;
 		}
 		
+		public function get path():String {
+			return _all.slice(0, Math.max(_all.indexOf("?", _all.length))); //dubious
+		}
+		
 		public function get parameters():Object {
 			return _params;
 		}

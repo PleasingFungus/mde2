@@ -72,6 +72,14 @@ package Levels {
 			predecessors = new Vector.<Level>;
 		}
 		
+		public function get successors():Vector.<Level> {
+			var successors:Vector.<Level> = new Vector.<Level>;
+			for each (var level:Level in U.levels)
+				if (level.predecessors.indexOf(this) != -1)
+					successors.push(level);
+			return successors;
+		}
+		
 		public function setHighScore(modules:int):void {
 			if (modules < fewestModules || !fewestModules) {
 				fewestModules = modules;
@@ -186,13 +194,13 @@ package Levels {
 			
 			var pipeTutorial:Level = new Level("Pipeline Tutorial", new PipelineTutorialGoal, true,
 											   [ConstIn, Adder, Latch, DataWriterT, DataReader, InstructionDecoder, SysDelayClock, And], [OpcodeValue.OP_SAVI]);
-			pipeTutorial.predecessors.push(OP_TUT, D2_TUT);
+			pipeTutorial.predecessors.push(D2_TUT);
 			
 			levels.push(pipeTutorial);
 			
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);
 			var pipe:Level = new ShardLevel("Efficiency!", pipeShard);
-			pipe.predecessors.push(addCPU_D); //dubious
+			pipe.predecessors.push(pipeTutorial, addCPU_D);
 			var pipeJMP:Level = new ShardLevel("Efficient Jump", pipeShard.compositWith( LevelShard.JUMP));
 			pipeJMP.predecessors.push(pipe, cpuJMP);
 			var pipeBranch:Level = new ShardLevel("Efficient Branch", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));

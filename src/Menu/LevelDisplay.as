@@ -1,5 +1,6 @@
 package Menu {
 	import Components.Wire;
+	import Displays.DModule;
 	import Displays.DWire;
 	import flash.geom.Point;
 	import Layouts.PortLayout;
@@ -37,8 +38,8 @@ package Menu {
 			var level:Level = Level.byName(levelName);
 			var levelModule:LevelModule = new LevelModule(X, Y, level);
 			levelModules.push(levelModule);
-			add(levelModule.generateDisplay());
-			
+			var displayModule:DModule = levelModule.generateDisplay();
+			add(displayModule);
 			
 			for each (var predecessor:Level in level.predecessors) {
 				var predecessorModule:LevelModule = levelModules[predecessor.index];
@@ -55,6 +56,11 @@ package Menu {
 				add(new DLevelWire(wire, level.beaten));
 				
 				
+			}
+			
+			if (level == Level.last) {
+				FlxG.camera.scroll.x = displayModule.x + displayModule.width / 2 - FlxG.width / 2;
+				FlxG.camera.scroll.y = displayModule.y + displayModule.height / 2 - FlxG.height / 2;
 			}
 			
 			return levelModule;

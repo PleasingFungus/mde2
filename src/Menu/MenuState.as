@@ -3,6 +3,7 @@ package Menu {
 	import Displays.Scroller;
 	import flash.net.URLLoader;
 	import Levels.Level;
+	import Levels.LevelModule;
 	import org.flixel.*;
 	import UI.*;
 	import LevelStates.LevelState

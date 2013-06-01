@@ -15,7 +15,7 @@ package Levels.ControlTutorials {
 	public class DragSelectTutorial extends Level {
 		
 		public function DragSelectTutorial() {
-			super("Drag-Select Tutorial", new WireTutorialGoal());
+			super(NAME, new WireTutorialGoal());
 			
 			info = "Select modules, and wires, by holding " + ControlSet.DRAG_MODIFY_KEY + " and dragging; once held, pick up & place them by clicking."
 			
@@ -53,6 +53,7 @@ package Levels.ControlTutorials {
 				levelState.addModule(module, false);
 		}
 		
+		public static const NAME:String = "Drag-Select Tutorial";
 	}
 
 }

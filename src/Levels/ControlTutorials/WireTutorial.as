@@ -17,7 +17,7 @@ package Levels.ControlTutorials {
 	public class WireTutorial extends Level {
 		
 		public function WireTutorial() {
-			super("Wire Tutorial", new WireTutorialGoal, false, [], [], [new ConstIn(12, 12, 1), new ConstIn(12, 20, 2), new DataWriter(22, 16)]);
+			super(NAME, new WireTutorialGoal, false, [], [], [new ConstIn(12, 12, 1), new ConstIn(12, 20, 2), new DataWriter(22, 16)]);
 			//info = "Modules are little blocky machines that do things. You interact with them by connecting their input & output 'ports' together with wires."
 			//info += "\n\nOutput ports are on the right of modules & point out. They output values."
 			//info += "\n\nInput ports are on the left & top of modules & point in. The values that you hook into these (with wires) determines what the module does & outputs."
@@ -69,6 +69,7 @@ package Levels.ControlTutorials {
 		[Embed(source = "../../../lib/art/help/output.png")] private const _output:Class;
 		[Embed(source = "../../../lib/art/help/inputs.png")] private const _inputs:Class;
 		
+		public static const NAME:String = "Wire Tutorial";
 	}
 
 }

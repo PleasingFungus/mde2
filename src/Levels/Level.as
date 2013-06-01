@@ -72,6 +72,10 @@ package Levels {
 			predecessors = new Vector.<Level>;
 		}
 		
+		public function get index():int {
+			return U.levels.indexOf(this);
+		}
+		
 		public function get successors():Vector.<Level> {
 			var successors:Vector.<Level> = new Vector.<Level>;
 			for each (var level:Level in U.levels)
@@ -100,13 +104,17 @@ package Levels {
 			return U.save.data[name + SUCCESS_SUFFIX];
 		}
 		
+		public function get beaten():Boolean {
+			return successSave != null;
+		}
+		
 		public function set successSave(save:String):void {
 			U.save.data[name + SUCCESS_SUFFIX] = save;
 		}
 		
 		public function unlocked():Boolean {
 			for each (var predecessor:Level in predecessors)
-				if (!predecessor.successSave)
+				if (!predecessor.beaten)
 					return false;
 			return true;
 		}
@@ -228,6 +236,13 @@ package Levels {
 			columns.push(makeVec([pipe, pipeJMP, pipeBranch, pipeADV, pipeLD, pipeADVLDD, pipeFull]));
 			
 			return levels;
+		}
+		
+		public static function byName(name:String):Level {
+			for each (var level:Level in U.levels)
+				if (level.name == name)
+					return level;
+			return null;
 		}
 		
 		public function loadIntoState(levelState:LevelState, loadFresh:Boolean = false):void {

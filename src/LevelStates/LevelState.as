@@ -115,12 +115,13 @@ package LevelStates {
 			level.setLast();
 			recentModules = new Vector.<Class>;
 			
-			makeUI();
+			makeUI(false);
 			upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
 			
 			FlxG.camera.scroll.x = (FlxG.width / 2) / 1 - (FlxG.width / 2) / U.zoom;
 			FlxG.camera.scroll.y = (FlxG.height / 2) / 1 - (FlxG.height / 2) / U.zoom;
 			upperLayer.update(); //hack to avoid scroll issues
+			addUIActives(); //likewise part of the hack
 			
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
@@ -155,7 +156,7 @@ package LevelStates {
 			displayModules.push(displayModule);
 		}
 		
-		private function makeUI():void {
+		private function makeUI(includeActives:Boolean = true):void {
 			var UIEnabled:Boolean = !upperLayer || upperLayer.visible;
 			upperLayer = new FlxGroup;
 			upperLayer.visible = UIEnabled;
@@ -163,7 +164,8 @@ package LevelStates {
 			new ButtonManager;
 			UIChanged = true;
 			upperLayer.add(new MenuBar(60));
-			addUIActives();
+			if (includeActives)
+				addUIActives();
 			makeViewButtons();
 			
 			if (!editEnabled) {

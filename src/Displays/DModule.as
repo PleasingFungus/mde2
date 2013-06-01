@@ -67,14 +67,14 @@ package Displays {
 			updatePosition();
 		}
 		
-		private function getDetails():String {
+		protected function getDetails():String {
 			var displayName:String = module.renderDetails();
-			if (U.state.level.delay && module.delay)
+			if (U.state && U.state.level.delay && module.delay)
 				displayName += "\n\nD" + module.delay;
 			return displayName;
 		}
 		
-		private function makePort(layout:PortLayout):DPort {
+		protected function makePort(layout:PortLayout):DPort {
 			var displayPort:DPort = new DPort(layout);
 			displayPort.scrollFactor = scrollFactor; //object
 			return displayPort;
@@ -111,7 +111,7 @@ package Displays {
 					(y - U.GRID_DIM >= sr.bottom));
 		}
 		
-		private function getColor():void {
+		protected function getColor():void {
 			var moduleColor:uint;
 			
 			if (selected)

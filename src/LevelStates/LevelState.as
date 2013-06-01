@@ -880,9 +880,9 @@ package LevelStates {
 			level.successSave = genSaveString();
 			level.setHighScore(modulesUsed());
 			
-			if (level == U.levels[0])
+			if (level == Level.ALL[0])
 				U.updateTutState(U.TUT_BEAT_TUT_1);
-			else if (level == U.levels[1])
+			else if (level == Level.ALL[1])
 				U.updateTutState(U.TUT_BEAT_TUT_2);
 			
 			FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 

@@ -59,12 +59,12 @@ package Menu {
 				return false;
 			}
 			
-			if (levelIndex < 0 || levelIndex > U.levels.length || !U.levels[levelIndex]) {
+			if (levelIndex < 0 || levelIndex > Level.ALL.length || !Level.ALL[levelIndex]) {
 				addErrorText("Bad level index!");
 				return false;
 			}
 			
-			var level:Level = U.levels[levelIndex];
+			var level:Level = Level.ALL[levelIndex];
 			if (!level.unlocked() && !DEBUG.UNLOCK_ALL) {
 				addErrorText("Level " + levelIndex + " not unlocked!");
 				return false;

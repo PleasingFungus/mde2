@@ -43,7 +43,7 @@ package LevelStates {
 			if (FlxG.mouse.justPressed() || FlxG.keys.any())
 				FlxG.fade(0xff000000, MenuButton.FADE_TIME, function switchStates():void {
 					if (U.tutorialState == U.TUT_BEAT_TUT_1)
-						FlxG.switchState(new LevelState(U.levels[1]));
+						FlxG.switchState(new LevelState(Level.ALL[1]));
 					else 
 						FlxG.switchState(new MenuState);
 				});

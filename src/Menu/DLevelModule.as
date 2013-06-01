@@ -18,10 +18,10 @@ package Menu {
 		}
 		
 		override protected function getColor():void {
-			if (overlapsPoint(U.mouseFlxLoc, true))
-				color = U.HIGHLIGHTED_COLOR;
-			else if (!levelModule.beaten)
+			if (!levelModule.unlocked)
 				color = 0xff808080;
+			else if (overlapsPoint(U.mouseFlxLoc, true))
+				color = U.HIGHLIGHTED_COLOR;
 			else
 				super.getColor();
 		}
@@ -32,13 +32,7 @@ package Menu {
 		}
 		
 		private function checkClick():void {
-			if (!FlxG.mouse.justPressed())
-				return;
-			
-			if (U.buttonManager.moused)
-				return;
-			
-			if (overlapsPoint(U.mouseFlxLoc, true))
+			if (!U.buttonManager.moused && FlxG.mouse.justPressed() && overlapsPoint(U.mouseFlxLoc, true) && levelModule.unlocked)
 				FlxG.fade(0xff000000, MenuButton.FADE_TIME, switchLevels);
 		}
 		

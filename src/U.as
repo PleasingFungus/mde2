@@ -42,7 +42,6 @@ package  {
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
 		
 		public static var save:FlxSave;
-		public static var levels:Vector.<Level>;
 		
 		public static var state:LevelState;
 		public static var buttonManager:ButtonManager;
@@ -93,9 +92,9 @@ package  {
 			Module.init();
 			LevelShard.init();
 			
-			levels = Level.list();
+			Level.ALL = Level.list();
 			if (DEBUG.ON)
-				Level.validate(levels);
+				Level.validate(Level.ALL);
 			
 			zoom = 1;
 		}

@@ -5,6 +5,7 @@ package UI {
 	import flash.net.URLLoader;
 	import org.flixel.*;
 	import flash.external.ExternalInterface;
+	import Levels.Level;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -150,7 +151,7 @@ package UI {
 				case SHARING_WAITING: return "Waiting...";
 			case SHARING_SUCCESS:
 					var path:String = ExternalInterface.available ? new QueryString().path : "http://pleasingfungus.com/mde2";
-					return path + "?lvl="+U.levels.indexOf(U.state.level)+"&code="+sharingCode;
+					return path + "?lvl="+Level.ALL.indexOf(U.state.level)+"&code="+sharingCode;
 				case SHARING_FAILED: return sharingError;
 				default: return sharingState.toString();
 			}

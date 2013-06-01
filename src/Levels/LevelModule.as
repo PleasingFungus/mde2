@@ -17,11 +17,13 @@ package Levels {
 		
 		public var level:Level;
 		public var beaten:Boolean;
+		public var unlocked:Boolean;
 		public function LevelModule(X:int, Y:int, level:Level) {
 			this.level = level;
-			super(X, Y, level.unlocked() ? level.name : "???", ModuleCategory.MISC, level.predecessors.length, level.successors.length, 0);
+			super(X, Y, level.unlocked() ? level.displayName : "???", ModuleCategory.MISC, level.predecessors.length, level.successors.length, 0);
 			deployed = true;
 			beaten = level.beaten;
+			unlocked = level.unlocked();
 		}
 		
 		override protected function generateLayout():ModuleLayout {

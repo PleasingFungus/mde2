@@ -23,19 +23,31 @@ package Menu {
 		
 		protected function init():void {
 			levelModules = new Vector.<LevelModule>;
-			var wire:LevelModule = addLevel(WireTutorial.NAME, 0, FlxG.height / U.GRID_DIM / 2);
+			
+			var wire:LevelModule = addLevel(Level.L_TutorialWire, 0, FlxG.height / U.GRID_DIM / 2);
 			wire.x += wire.layout.dim.x;
-			var module:LevelModule = addSuccessor(ModuleTutorial.NAME, wire);
-			var drag:LevelModule = addSuccessor(DragSelectTutorial.NAME, module, module.layout.dim.y + MODULE_SPACING.y);
-			addSuccessor(CopyingTutorial.NAME, drag);
+			var module:LevelModule = addSuccessor(Level.L_TutorialModule, wire);
+			var drag:LevelModule = addSuccessor(Level.L_TutorialSelection, module, module.layout.dim.y + MODULE_SPACING.y);
+			addSuccessor(Level.L_TutorialCopying, drag);
+			
+			var accum:LevelModule = addSuccessor(Level.L_Accumulation, module);
+			var singleOp:LevelModule = addSuccessor(Level.L_SingleOp, accum);
+			var doubleOp:LevelModule = addSuccessor(Level.L_DoubleOp, singleOp);
+			
+			var cpuBasic:LevelModule = addSuccessor(Level.L_CPU_Basic, doubleOp);
+			var cpuAdvanced:LevelModule = addSuccessor(Level.L_CPU_Advanced, cpuBasic, -(MODULE_SPACING.y));
+			cpuAdvanced.y -= cpuAdvanced.layout.dim.y;
+			var cpuJump:LevelModule = addSuccessor(Level.L_CPU_Jump, cpuBasic);
+			var cpuBranch:LevelModule = addSuccessor(Level.L_CPU_Branch, cpuJump);
+			var cpuLoad:LevelModule = addSuccessor(Level.L_CPU_Load, cpuBasic, cpuBranch.layout.dim.y + MODULE_SPACING.y);
+			var cpuFull:LevelModule = addSuccessor(Level.L_CPU_Full, cpuBranch);
 		}
 		
-		protected function addSuccessor(levelName:String, predecessor:LevelModule, offY:int = 0):LevelModule {
-			return addLevel(levelName, predecessor.x + predecessor.layout.dim.x + MODULE_SPACING.x, predecessor.y + offY);
+		protected function addSuccessor(level:Level, predecessor:LevelModule, offY:int = 0):LevelModule {
+			return addLevel(level, predecessor.x + predecessor.layout.dim.x + MODULE_SPACING.x, predecessor.y + offY);
 		}
 		
-		protected function addLevel(levelName:String, X:int, Y:int):LevelModule {
-			var level:Level = Level.byName(levelName);
+		protected function addLevel(level:Level, X:int, Y:int):LevelModule {
 			var levelModule:LevelModule = new LevelModule(X, Y, level);
 			levelModules.push(levelModule);
 			var displayModule:DModule = levelModule.generateDisplay();
@@ -53,7 +65,7 @@ package Menu {
 				
 				var wire:Wire = Wire.wireBetween(inputPort.Loc, outputPort.Loc);
 				wire.deployed = true;
-				add(new DLevelWire(wire, level.beaten));
+				add(new DLevelWire(wire, predecessor.beaten));
 				
 				
 			}

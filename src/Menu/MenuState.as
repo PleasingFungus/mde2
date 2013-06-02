@@ -30,17 +30,34 @@ package Menu {
 			}
 			
 			new ButtonManager;
-			add(new LevelDisplay);
-			add(new MenuSidebar);
+			var levelDisplay:LevelDisplay = new LevelDisplay;
+			add(levelDisplay);
+			add(new MenuSidebar(MENU_BAR_WIDTH));
 			
 			lastZoom = U.zoom;
 			U.zoom = 1;
+			setBounds(levelDisplay.bounds);
 			add(new Scroller("menustate"));
 			
 			FlxG.bgColor = U.BG_COLOR;
 			FlxG.mouse.show();
 			
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
+		}
+		
+		protected function setBounds(bounds:FlxRect):void {
+			var screenWidth:int = FlxG.width - MENU_BAR_WIDTH;
+			
+			if (bounds.width < screenWidth) {
+				bounds.x -= (screenWidth - bounds.width) / 2;
+				bounds.width = screenWidth;
+			}
+			if (bounds.height < FlxG.height) {
+				bounds.y -= (FlxG.height - bounds.height) / 2;
+				bounds.height = FlxG.height;
+			}
+			
+			FlxG.camera.bounds = bounds;
 		}
 		
 		private function loadFromURL():Boolean {
@@ -105,6 +122,7 @@ package Menu {
 			U.buttonManager.destroy();
 		}
 		
+		private const MENU_BAR_WIDTH:int = 60;
 	}
 
 }

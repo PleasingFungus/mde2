@@ -1,5 +1,5 @@
 package Menu {
-	import org.flixel.FlxGroup;
+	import org.flixel.*;
 	
 	/**
 	 * ...
@@ -7,13 +7,22 @@ package Menu {
 	 */
 	public class MenuSidebar extends FlxGroup {
 		
-		public function MenuSidebar() {
+		private var bg:FlxSprite;
+		public function MenuSidebar(Width:int, Color:uint = 0xffbcbcbc) {
 			super();
+			add(bg = new FlxSprite().makeGraphic(Width, FlxG.height, Color));
+			bg.scrollFactor.x = bg.scrollFactor.y = 0;
 			//TODO
 		}
 		
-		public function getWidth():int {
-			return 0;
+		override public function update():void {
+			super.update();
+			if (bg.overlapsPoint(FlxG.mouse, true))
+				U.buttonManager.moused = true;
+		}
+		
+		public function get width():int {
+			return bg.width;
 		}
 	}
 

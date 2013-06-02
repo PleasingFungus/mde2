@@ -30,7 +30,6 @@ package Menu {
 			members = [];
 			addModules();
 			addWires();
-			setBounds();
 		}
 		
 		protected function addModules():void {
@@ -132,24 +131,11 @@ package Menu {
 			return index;
 		}
 		
-		protected function setBounds():void {
-			FlxG.camera.bounds = bounds;
-		}
-		
 		public function get bounds():FlxRect {
 			var x:int = min.x;
 			var y:int = min.y;
 			var w:int = max.x - min.x;
 			var h:int = max.y - min.y;
-			
-			if (w < FlxG.width) {
-				x -= (FlxG.width - w) / 2;
-				w = FlxG.width;
-			}
-			if (h < FlxG.height) {
-				y -= (FlxG.height - h) / 2;
-				h = FlxG.height;
-			}
 			
 			return new FlxRect(x, y, w, h);
 		}

@@ -47,6 +47,15 @@ package Menu {
 			var cpuAdvanced:LevelModule = addSuccessor(Level.L_CPU_Advanced, cpuBasic, cpuBranch.layout.dim.y + cpuLoad.layout.dim.y + MODULE_SPACING.y * 2);
 			var cpuFull:LevelModule = addSuccessor(Level.L_CPU_Full, cpuBranch, doubleOp.layout.dim.y + MODULE_SPACING.y);
 			
+			var d0:LevelModule = addSuccessor(Level.L_DTutorial_0, cpuBasic, -(doubleOp.layout.dim.y + MODULE_SPACING.y) * 2);
+			var d1:LevelModule = addSuccessor(Level.L_DTutorial_1, d0);
+			var d2:LevelModule = addSuccessor(Level.L_DTutorial_2, d1);
+			
+			var dcpuBasic:LevelModule = addSuccessor(Level.L_DCPU_Basic, d2);
+			var dcpuJump:LevelModule = addSuccessor(Level.L_DCPU_Branch, dcpuBasic, cpuBranch.y - dcpuBasic.y);
+			var dcpuLoadAdv:LevelModule = addSuccessor(Level.L_DCPU_LoadAdvanced, dcpuBasic, cpuLoad.y - dcpuBasic.y);
+			var dcpuFull:LevelModule = addSuccessor(Level.L_DCPU_Full, dcpuJump, cpuFull.y - dcpuJump.y);
+			
 			FlxG.camera.bounds = bounds;
 		}
 		

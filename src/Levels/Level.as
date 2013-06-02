@@ -144,6 +144,15 @@ package Levels {
 		public static var L_CPU_Branch:Level;
 		public static var L_CPU_Full:Level;
 		
+		public static var L_DTutorial_0:Level;
+		public static var L_DTutorial_1:Level;
+		public static var L_DTutorial_2:Level;
+		
+		public static var L_DCPU_Basic:Level;
+		public static var L_DCPU_LoadAdvanced:Level;
+		public static var L_DCPU_Branch:Level;
+		public static var L_DCPU_Full:Level;
+		
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			
@@ -178,46 +187,46 @@ package Levels {
 			
 			
 			
-			var D0_TUT:Level = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
+			L_DTutorial_0 = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
 										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
-			D0_TUT.useModuleRecord = false;
-			D0_TUT.predecessors.push(L_CPU_Basic);
-			var D1_TUT:Level = new Level("Delay Accum. 1", new MagicAccumDelayTutGoal, true,
+			L_DTutorial_0.useModuleRecord = false;
+			L_DTutorial_0.predecessors.push(L_CPU_Basic);
+			L_DTutorial_1 = new Level("Delay Accum. 1", new MagicAccumDelayTutGoal, true,
 										 [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);
-			D1_TUT.predecessors.push(D0_TUT);
-			var D2_TUT:Level = new Level("Delay Accum. 2", new AccumDelayTutGoal, true,
+			L_DTutorial_1.predecessors.push(L_DTutorial_0);
+			L_DTutorial_2 = new Level("Delay Accum. 2", new AccumDelayTutGoal, true,
 										 [ConstIn, Adder, Latch, DataWriter, SysDelayClock]);
-			D2_TUT.predecessors.push(D1_TUT);
+			L_DTutorial_2.predecessors.push(L_DTutorial_1);
 			
 			var delayShard:LevelShard = LevelShard.CORE.compositWith(LevelShard.DELAY);
-			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", delayShard);
-			addCPU_D.predecessors.push(L_CPU_Basic, D2_TUT);
-			var cpuADVLDD:Level = new ShardLevel("Adv/Load Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
-			cpuADVLDD.predecessors.push(addCPU_D, L_CPU_Advanced, L_CPU_Load);
-			var cpuD_BRANCH:Level = new ShardLevel("Branch Delay", delayShard.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
-			cpuD_BRANCH.predecessors.push(addCPU_D, L_CPU_Branch);
-			var cpuD_FULL:Level = new ShardLevel("Full Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
-			cpuD_FULL.predecessors.push(cpuADVLDD, cpuD_BRANCH);
+			L_DCPU_Basic = new ShardLevel("Add-CPU Delay", delayShard);
+			L_DCPU_Basic.predecessors.push(L_DTutorial_2);
+			L_DCPU_LoadAdvanced = new ShardLevel("Adv/Load Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
+			L_DCPU_LoadAdvanced.predecessors.push(L_DCPU_Basic, L_CPU_Advanced, L_CPU_Load);
+			L_DCPU_Branch = new ShardLevel("Branch Delay", delayShard.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
+			L_DCPU_Branch.predecessors.push(L_DCPU_Basic, L_CPU_Branch);
+			L_DCPU_Full = new ShardLevel("Full Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			L_DCPU_Full.predecessors.push(L_CPU_Full, L_DCPU_LoadAdvanced, L_DCPU_Branch);
 			
 			var pipeTutorial:Level = new Level("Pipeline Tutorial", new PipelineTutorialGoal, true,
 											   [ConstIn, Adder, Latch, DataWriterT, DataReader, InstructionDecoder, SysDelayClock, And], [OpcodeValue.OP_SAVI]);
-			pipeTutorial.predecessors.push(D2_TUT);
+			pipeTutorial.predecessors.push(L_DCPU_Basic);
 			
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);
 			var pipe:Level = new ShardLevel("Efficiency!", pipeShard);
-			pipe.predecessors.push(pipeTutorial, addCPU_D);
+			pipe.predecessors.push(pipeTutorial, L_DCPU_Basic);
 			var pipeJMP:Level = new ShardLevel("Efficient Jump", pipeShard.compositWith( LevelShard.JUMP));
-			pipeJMP.predecessors.push(pipe, cpuD_BRANCH);
+			pipeJMP.predecessors.push(pipe, L_DCPU_Branch);
 			var pipeBranch:Level = new ShardLevel("Efficient Branch", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));
 			pipeBranch.predecessors.push(pipeJMP);
 			var pipeADV:Level = new ShardLevel("Efficient Adv Op", pipeShard.compositWith(LevelShard.ADV));
-			pipeADV.predecessors.push(pipe, cpuADVLDD);
+			pipeADV.predecessors.push(pipe, L_DCPU_LoadAdvanced);
 			var pipeLD:Level = new ShardLevel("Efficient Load", pipeShard.compositWith(LevelShard.LOAD));
-			pipeLD.predecessors.push(pipe, cpuADVLDD);
+			pipeLD.predecessors.push(pipe, L_DCPU_LoadAdvanced);
 			var pipeADVLDD:Level = new ShardLevel("Eff. Adv/Load", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
 			pipeADVLDD.predecessors.push(pipeLD, pipeADV);
 			var pipeFull:Level = new ShardLevel("Full Efficient", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
-			pipeFull.predecessors.push(pipeBranch, pipeADVLDD);
+			pipeFull.predecessors.push(L_DCPU_Full, pipeBranch, pipeADVLDD);
 			
 			pipeTutorial.useTickRecord = pipe.useTickRecord = pipeJMP.useTickRecord = pipeBranch.useTickRecord = true;
 			pipeLD.useTickRecord = pipeADVLDD.useTickRecord = pipeFull.useTickRecord = pipeADV.useTickRecord = true;
@@ -225,8 +234,8 @@ package Levels {
 			levels.push(L_TutorialWire, L_TutorialModule, L_TutorialSelection, L_TutorialCopying,
 					    L_Accumulation, L_SingleOp, L_DoubleOp,
 						L_CPU_Basic, L_CPU_Jump, L_CPU_Branch, L_CPU_Advanced, L_CPU_Load, L_CPU_Full,
-						D0_TUT, D1_TUT, D2_TUT,
-						addCPU_D, cpuADVLDD, cpuD_BRANCH, cpuD_FULL,
+						L_DTutorial_0, L_DTutorial_1, L_DTutorial_2,
+						L_DCPU_Basic, L_DCPU_LoadAdvanced, L_DCPU_Branch, L_DCPU_Full,
 						pipeTutorial,
 						pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD, pipeBranch, pipeFull);
 			

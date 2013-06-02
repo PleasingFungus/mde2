@@ -12,6 +12,9 @@ package Menu {
 			//TODO
 		}
 		
+		public function getWidth():int {
+			return 0;
+		}
 	}
 
 }

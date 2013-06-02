@@ -4,6 +4,7 @@ package Menu {
 	import Displays.DWire;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
 	import Layouts.PortLayout;
 	import Levels.ControlTutorials.*;
 	import Levels.Level;
@@ -17,6 +18,7 @@ package Menu {
 	public class LevelDisplay extends FlxGroup {
 		
 		public var levelModules:Vector.<LevelModule>;
+		private var modulesByName:Dictionary;
 		private var min:Point;
 		private var max:Point;
 		public function LevelDisplay() {
@@ -26,7 +28,14 @@ package Menu {
 		
 		protected function init():void {
 			members = [];
+			addModules();
+			addWires();
+			setBounds();
+		}
+		
+		protected function addModules():void {
 			levelModules = new Vector.<LevelModule>;
+			modulesByName = new Dictionary;
 			min = new Point(int.MAX_VALUE, int.MAX_VALUE);
 			max = new Point(int.MIN_VALUE, int.MIN_VALUE);
 			
@@ -56,7 +65,15 @@ package Menu {
 			var dcpuLoadAdv:LevelModule = addSuccessor(Level.L_DCPU_LoadAdvanced, dcpuBasic, cpuLoad.y - dcpuBasic.y);
 			var dcpuFull:LevelModule = addSuccessor(Level.L_DCPU_Full, dcpuJump, cpuFull.y - dcpuJump.y);
 			
-			FlxG.camera.bounds = bounds;
+			addSuccessor(Level.L_PTutorial, modulesByName[Level.L_DCPU_Basic.name]);
+			
+			addSuccessor(Level.L_PCPU_Basic, modulesByName[Level.L_PTutorial.name]);
+			addSuccessor(Level.L_PCPU_Jump, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_DCPU_Branch.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);
+			addSuccessor(Level.L_PCPU_Branch, modulesByName[Level.L_PCPU_Jump.name]);
+			addSuccessor(Level.L_PCPU_Load, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_DCPU_LoadAdvanced.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);
+			addSuccessor(Level.L_PCPU_Advanced, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_CPU_Advanced.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);
+			addSuccessor(Level.L_PCPU_LoadAdvanced, modulesByName[Level.L_PCPU_Load.name]);
+			addSuccessor(Level.L_PCPU_Full, modulesByName[Level.L_PCPU_Branch.name], modulesByName[Level.L_DCPU_Full.name].y -  modulesByName[Level.L_PCPU_Branch.name].y);
 		}
 		
 		protected function addSuccessor(level:Level, predecessor:LevelModule, offY:int = 0):LevelModule {
@@ -66,23 +83,9 @@ package Menu {
 		protected function addLevel(level:Level, X:int, Y:int):LevelModule {
 			var levelModule:LevelModule = new LevelModule(X, Y, level);
 			levelModules.push(levelModule);
+			modulesByName[level.name] = levelModule;
 			var displayModule:DModule = levelModule.generateDisplay();
 			add(displayModule);
-			
-			for each (var predecessor:Level in level.predecessors) {
-				var predecessorModule:LevelModule = associatedModule(predecessor);
-				
-				var outputPort:PortLayout = predecessorModule.layout.ports[predecessor.successors.indexOf(level) + predecessorModule.inputs.length]; //FIXME
-				var inputPort:PortLayout = levelModule.layout.ports[level.predecessors.indexOf(predecessor)];
-				
-				outputPort.port.connections.push(inputPort.port);
-				inputPort.port.connections.push(outputPort.port);
-				inputPort.port.source = outputPort.port;
-				
-				var wire:Wire = Wire.wireBetween(inputPort.Loc, outputPort.Loc);
-				wire.deployed = true;
-				add(new DLevelWire(wire, predecessor.beaten));
-			}
 			
 			//if (levelModule.unlocked) {
 				min.x = Math.min(min.x, displayModule.x - MODULE_SPACING.x * U.GRID_DIM);
@@ -99,11 +102,38 @@ package Menu {
 			return levelModule;
 		}
 		
-		private function associatedModule(level:Level):LevelModule {
+		protected function addWires():void {
 			for each (var levelModule:LevelModule in levelModules)
-				if (levelModule.level == level)
-					return levelModule;
-			return null;
+				for each (var predecessor:Level in levelModule.level.predecessors)
+					addWireBetween(levelModule, modulesByName[predecessor.name])
+		}
+		protected function addWireBetween(successorModule:LevelModule, predecessorModule:LevelModule):void {
+			
+			
+			var outputPortIndex:int = indexByY(successorModule, predecessorModule.level.successors);
+			var outputPort:PortLayout = predecessorModule.layout.ports[outputPortIndex + predecessorModule.inputs.length];
+			var inputPortIndex:int = indexByY(predecessorModule, successorModule.level.predecessors);
+			var inputPort:PortLayout = successorModule.layout.ports[inputPortIndex];
+			
+			outputPort.port.connections.push(inputPort.port);
+			inputPort.port.connections.push(outputPort.port);
+			inputPort.port.source = outputPort.port;
+			
+			var wire:Wire = Wire.wireBetween(inputPort.Loc, outputPort.Loc);
+			wire.deployed = true;
+			add(new DLevelWire(wire, predecessorModule.level.beaten));
+		}
+		
+		protected function indexByY(module:LevelModule, levels:Vector.<Level>):int {
+			var index:int = 0;
+			for each (var level:Level in levels)
+				if (level != module.level && (modulesByName[level.name] as LevelModule).y < module.y)
+					index += 1
+			return index;
+		}
+		
+		protected function setBounds():void {
+			FlxG.camera.bounds = bounds;
 		}
 		
 		public function get bounds():FlxRect {

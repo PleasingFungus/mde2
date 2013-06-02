@@ -25,11 +25,11 @@ package Menu {
 			if (loadFromURL())
 				return;
 			
-			if (!U.tutorialState && !DEBUG.SKIP_TUT) {
+			if (U.tutorialState == U.TUT_NEW && !DEBUG.SKIP_TUT) {
 				FlxG.switchState(new HowToPlayState); return;
 			}
 			
-			new ButtonManager;
+			add(new ButtonManager);
 			var levelDisplay:LevelDisplay = new LevelDisplay;
 			add(levelDisplay);
 			add(new MenuSidebar(MENU_BAR_WIDTH));
@@ -46,15 +46,17 @@ package Menu {
 		}
 		
 		protected function setBounds(bounds:FlxRect):void {
-			var screenWidth:int = FlxG.width - MENU_BAR_WIDTH;
+			var screenWidth:int = FlxG.width;// - MENU_BAR_WIDTH;
+			var screenHeight:int = FlxG.height - MENU_BAR_WIDTH;
+			bounds.height += MENU_BAR_WIDTH;
 			
 			if (bounds.width < screenWidth) {
 				bounds.x -= (screenWidth - bounds.width) / 2;
 				bounds.width = screenWidth;
 			}
-			if (bounds.height < FlxG.height) {
-				bounds.y -= (FlxG.height - bounds.height) / 2;
-				bounds.height = FlxG.height;
+			if (bounds.height < screenHeight) {
+				bounds.y -= (screenHeight - bounds.height) / 2;
+				bounds.height = screenHeight;
 			}
 			
 			FlxG.camera.bounds = bounds;

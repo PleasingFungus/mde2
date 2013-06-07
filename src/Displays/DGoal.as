@@ -70,15 +70,17 @@ package Displays {
 			}
 			
 			if (level.delay)
-				addBodyText("\nPropagation delay enabled.");
-			if (level.delay)
-				addBodyText("\Wire-drawing disabled.");
+				addBodyText("Propagation delay enabled.");
+			if (!level.canDrawWires)
+				addBodyText("Wire-drawing disabled.");
+			if (!level.canPickupModules)
+				addBodyText("Normal module pickup disabled.");
 			if (level.goal is GeneratedGoal) {
 				var generatedGoal:GeneratedGoal = level.goal as GeneratedGoal;
-				addBodyText("\nTesting: " + generatedGoal.testRuns + " random programs, time limit of " + generatedGoal.allowedTimePerInstr + " ticks per instruction");
+				addBodyText("Testing: " + generatedGoal.testRuns + " random programs, time limit of " + generatedGoal.allowedTimePerInstr + " ticks per instruction");
 			}
 			if (level.writerLimit)
-				addBodyText("\nNumber of data writers allowed: " + level.writerLimit);
+				addBodyText("Number of data writers allowed: " + level.writerLimit);
 			
 		}
 	}

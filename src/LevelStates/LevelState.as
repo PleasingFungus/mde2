@@ -597,7 +597,7 @@ package LevelStates {
 					else if (findMousedModule()) {
 						if (ControlSet.CLICK_MODIFY_KEY.pressed())
 							addEditSliderbar();
-						else
+						else if (level.canPickupModules)
 							pickUpModule();
 					} else if (level.canDrawWires) {
 						currentWire = new Wire(U.pointToGrid(U.mouseLoc))
@@ -816,19 +816,21 @@ package LevelStates {
 					return null;
 				if (ControlSet.CLICK_MODIFY_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration())
 					return Cursor.EDIT;
-				return Cursor.GRAB;
+				if (level.canPickupModules)
+					return Cursor.GRAB;
 			}
 			
-			var blocWireMoused:Boolean = false;
+			var blocMoused:Boolean = false;
 			if (currentBloc) { //implies currentBloc.rooted
 				for each (var dwire:DWire in displayWires)
 					if (currentBloc.wires.indexOf(dwire.wire) != -1 && dwire.overlapsPoint(U.mouseFlxLoc)) {
-						blocWireMoused = true;
+						blocMoused = true;
 						break;
 					}
+				blocMoused = blocMoused || (!level.canPickupModules && mousedModule && currentBloc.modules.indexOf(mousedModule) != -1);
 			} 
 			
-			if (blocWireMoused)
+			if (blocMoused)
 				return Cursor.GRAB;
 			if (level.canDrawWires)
 				return Cursor.PEN;

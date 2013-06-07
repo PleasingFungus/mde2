@@ -28,6 +28,7 @@ package Levels {
 		public var modules:Vector.<Module>;
 		public var canDrawWires:Boolean = true;
 		public var canPlaceModules:Boolean = true;
+		public var canPickupModules:Boolean = true;
 		public var useModuleRecord:Boolean = true;
 		public var useTickRecord:Boolean = false;
 		public var configurableLatchesEnabled:Boolean = false;

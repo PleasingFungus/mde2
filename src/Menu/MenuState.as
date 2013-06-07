@@ -119,11 +119,6 @@ package Menu {
 			super.update();
 		}
 		
-		override public function destroy():void {
-			super.destroy();
-			U.buttonManager.destroy();
-		}
-		
 		private const MENU_BAR_WIDTH:int = 60;
 	}
 

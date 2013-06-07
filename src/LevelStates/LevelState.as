@@ -587,7 +587,7 @@ package LevelStates {
 			else if (currentWire)
 				checkWireControls();
 			else if (currentBloc && !currentBloc.rooted) {
-				//currently delegated
+				//currently delegated to DBloc
 			} else {
 				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
 					if (ControlSet.DRAG_MODIFY_KEY.pressed())

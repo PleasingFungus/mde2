@@ -9,7 +9,9 @@ package Displays {
 	import Layouts.Nodes.InternalNode;
 	import Modules.Module;
 	import org.flixel.*;
+	import UI.ColorText;
 	import UI.FontTuple;
+	import UI.GraphicButton;
 	import UI.HighlightFormat;
 	
 	/**
@@ -27,6 +29,7 @@ package Displays {
 		protected var detailsText:FlxText;
 		protected var symbol:FlxSprite;
 		protected var largeSymbol:FlxSprite;
+		protected var editButton:GraphicButton;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
@@ -63,6 +66,11 @@ package Displays {
 				U.MODULE_FONT_CLOSE.configureFlxText(detailsText, 0x0, 'center');
 				detailsText.scrollFactor = scrollFactor; //object
 			}
+			
+			if (module.getConfiguration() && module.configurableInPlace && !module.FIXED)
+				editButton = new GraphicButton( -1, -1, _edit_large, function onClick():void {
+					//TODO
+				});
 			
 			updatePosition();
 		}
@@ -101,6 +109,8 @@ package Displays {
 			for each (var dWire:DWire in displayConnections)
 				dWire.update();
 			
+			if (editButton)
+				editButton.update();
 		}
 		
 		protected function outsideScreen():Boolean {
@@ -154,6 +164,11 @@ package Displays {
 				detailsText.y = y + (height - detailsText.height) / 2;
 			}
 			
+			if (editButton) {
+				editButton.X = x + width / 2 - editButton.fullWidth / 2;
+				editButton.Y = y + 5;
+			}
+			
 			lastLoc = module.clone();
 		}
 		
@@ -161,6 +176,9 @@ package Displays {
 			for each (var displayNode:DNode in displayNodes)
 				if (displayNode.overlapsPoint(fp))
 					return HighlightFormat.plain(displayNode.node.getLabel());
+			
+			if (editButton && editButton.moused)
+				return new HighlightFormat("{}", ColorText.singleVec(new ColorText(U.CONFIG_COLOR, "Edit")));
 			
 			var format:HighlightFormat = module.getHighlitDescription();
 			if (format) {
@@ -182,6 +200,8 @@ package Displays {
 			
 			drawInternals();
 			drawLabel();
+			if (editButton)
+				editButton.draw();
 		}
 		
 		protected function drawInternals():void {
@@ -208,6 +228,9 @@ package Displays {
 				detailsText.draw();
 			}
 		}
+		
+		[Embed(source = "../../lib/art/ui/edit_2.png")] private const _edit_small:Class;
+		[Embed(source = "../../lib/art/ui/edit_2l.png")] private const _edit_large:Class;
 	}
 
 }

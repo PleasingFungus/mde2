@@ -589,17 +589,14 @@ package LevelStates {
 			else if (currentWire)
 				checkWireControls();
 			else if (currentBloc && !currentBloc.rooted) {
-				//currently delegated
+				//currently delegated to DBloc
 			} else {
 				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
 					if (ControlSet.DRAG_MODIFY_KEY.pressed())
 						midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
-					else if (findMousedModule()) {
-						if (ControlSet.CLICK_MODIFY_KEY.pressed())
-							addEditSliderbar();
-						else if (level.canPickupModules)
-							pickUpModule();
-					} else if (level.canDrawWires) {
+					else if (findMousedModule() && level.canPickupModules)
+						pickUpModule();
+					else if (level.canDrawWires) {
 						currentWire = new Wire(U.pointToGrid(U.mouseLoc))
 						displayWires.push(midLayer.add(new DWire(currentWire)));
 					}
@@ -814,8 +811,6 @@ package LevelStates {
 			if (mousedModule) {
 				if (mousedModule.FIXED)
 					return null;
-				if (ControlSet.CLICK_MODIFY_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration())
-					return Cursor.EDIT;
 				if (level.canPickupModules)
 					return Cursor.GRAB;
 			}

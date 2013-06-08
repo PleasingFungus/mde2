@@ -39,7 +39,7 @@ package Modules {
 		}
 		
 		override public function getConfiguration():Configuration {
-			if (U.state.level.configurableLatchesEnabled)
+			if (U.state && U.state.level.configurableLatchesEnabled)
 				return configuration;
 			return null;
 		}

@@ -201,7 +201,7 @@ package Displays {
 			drawInternals();
 			drawLabel();
 			if (editButton)
-				editButton.draw();
+				drawEditButton();
 		}
 		
 		protected function drawInternals():void {
@@ -229,7 +229,18 @@ package Displays {
 			}
 		}
 		
-		[Embed(source = "../../lib/art/ui/edit_2.png")] private const _edit_small:Class;
+		protected function drawEditButton():void {
+			if (U.zoom < 0.5)
+				return;
+			
+			var appropriateGraphic:Class = U.zoom >= 1 ? _edit_large : _edit_zoomed;
+			if (editButton.rawGraphic != appropriateGraphic)
+				editButton.loadGraphic(appropriateGraphic);
+			editButton.draw();
+		}
+		
+		
+		[Embed(source = "../../lib/art/ui/edit_2m.png")] private const _edit_zoomed:Class;
 		[Embed(source = "../../lib/art/ui/edit_2l.png")] private const _edit_large:Class;
 	}
 

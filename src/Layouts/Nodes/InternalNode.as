@@ -120,7 +120,7 @@ package Layouts.Nodes {
 		
 		public function inputDelay():int {
 			var delay:int = 0;
-			if (U.state.level.delay)
+			if (U.state && U.state.level.delay)
 				for each (var node:Node in connections)
 					delay = Math.max(node.remainingDelay(), delay)
 			return delay;

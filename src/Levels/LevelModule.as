@@ -1,5 +1,9 @@
 package Levels {
 	import Components.Port;
+	import flash.geom.Point;
+	import Layouts.InternalLayout;
+	import Layouts.Nodes.StandardNode;
+	import Layouts.Nodes.WideNode;
 	import Modules.Module;
 	import Modules.ModuleCategory;
 	import Layouts.DefaultLayout;
@@ -28,6 +32,23 @@ package Levels {
 		
 		override protected function generateLayout():ModuleLayout {
 			return new DefaultLayout(this, 2, 5);
+		}
+		
+		override protected function generateInternalLayout():InternalLayout {
+			var nodes:Array = [];
+			if (level.fewestModules && level.useModuleRecord) {
+				var moduleValue:NumericValue = new NumericValue(level.fewestModules);
+				nodes.push(new WideNode(this, new Point(0, -1), [], null, function getValue():Value {
+					return moduleValue;
+				}));
+			}
+			if (level.fewestTicks && level.useTickRecord) {
+				var tickValue:NumericValue = new NumericValue(level.fewestTicks);
+				nodes.push(new WideNode(this, new Point(0, 1), [], null, function getValue():Value {
+					return tickValue;
+				}));
+			}
+			return new InternalLayout(nodes);
 		}
 		
 		override public function generateDisplay():DModule {

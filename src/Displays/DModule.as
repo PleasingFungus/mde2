@@ -29,7 +29,7 @@ package Displays {
 		protected var detailsText:FlxText;
 		protected var symbol:FlxSprite;
 		protected var largeSymbol:FlxSprite;
-		protected var editButton:GraphicButton;
+		protected var editButton:EditButton;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
@@ -68,9 +68,7 @@ package Displays {
 			}
 			
 			if (module.getConfiguration() && module.configurableInPlace && !module.FIXED)
-				editButton = new GraphicButton( -1, -1, _edit_large, function onClick():void {
-					//TODO
-				});
+				editButton = new EditButton(this);
 			
 			updatePosition();
 		}
@@ -201,7 +199,7 @@ package Displays {
 			drawInternals();
 			drawLabel();
 			if (editButton)
-				drawEditButton();
+				editButton.draw();
 		}
 		
 		protected function drawInternals():void {
@@ -228,20 +226,6 @@ package Displays {
 				detailsText.draw();
 			}
 		}
-		
-		protected function drawEditButton():void {
-			if (U.zoom < 0.5)
-				return;
-			
-			var appropriateGraphic:Class = U.zoom >= 1 ? _edit_large : _edit_zoomed;
-			if (editButton.rawGraphic != appropriateGraphic)
-				editButton.loadGraphic(appropriateGraphic);
-			editButton.draw();
-		}
-		
-		
-		[Embed(source = "../../lib/art/ui/edit_2m.png")] private const _edit_zoomed:Class;
-		[Embed(source = "../../lib/art/ui/edit_2l.png")] private const _edit_large:Class;
 	}
 
 }

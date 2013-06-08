@@ -91,7 +91,7 @@ package UI {
 				return;
 			
 			var lastMoused:Boolean = moused;
-			moused = highlight.overlapsPoint(FlxG.mouse, true, camera) && (!U.buttonManager || !U.buttonManager.moused);
+			moused = isMoused();
 			if (moused && U.buttonManager)
 				U.buttonManager.moused = true;
 			if (moused)
@@ -123,6 +123,10 @@ package UI {
 					}
 				}
 			}
+		}
+		
+		protected function isMoused():Boolean {
+			return  highlight.overlapsPoint(FlxG.mouse, true, camera) && (!U.buttonManager || !U.buttonManager.moused);
 		}
 		
 		protected function updateMouseover():void {

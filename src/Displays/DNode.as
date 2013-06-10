@@ -42,7 +42,7 @@ package Displays {
 			var l:Point = node.Loc;
 			x = l.x * U.GRID_DIM;
 			y = l.y * U.GRID_DIM;
-			color = (node.parent.deployed && (!U.state || U.state.viewMode == U.state.VIEW_MODE_NORMAL) && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? U.HIGHLIGHTED_COLOR : node.type.bgColor;
+			color = (node.parent.deployed && U.state && U.state.viewMode == U.state.VIEW_MODE_NORMAL && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? U.HIGHLIGHTED_COLOR : node.type.bgColor;
 			super.draw();
 			
 			var delay:int = node.inputDelay();

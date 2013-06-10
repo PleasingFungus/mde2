@@ -67,7 +67,7 @@ package Displays {
 				detailsText.scrollFactor = scrollFactor; //object
 			}
 			
-			if (module.getConfiguration() && module.configurableInPlace && !module.FIXED)
+			if (module.getConfiguration() && module.configurableInPlace && !module.FIXED && U.state.level.canEditModules)
 				editButton = new EditButton(this);
 			
 			updatePosition();

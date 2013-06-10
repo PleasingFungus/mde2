@@ -21,6 +21,7 @@ package Levels.ControlTutorials {
 			
 			canDrawWires = false;
 			canPickupModules = false;
+			canEditModules = false;
 			useModuleRecord = false;
 		}
 		
@@ -32,7 +33,6 @@ package Levels.ControlTutorials {
 			var modules:Vector.<Module> = new Vector.<Module>;
 			for each (var module:Module in [new ConstIn(12, 0, 1), new ConstIn(10, 8, 2), new DataWriter(18, 6)])
 				modules.push(module);
-			modules[0].configurableInPlace = modules[1].configurableInPlace = false;
 			
 			var wires:Vector.<Wire> = new Vector.<Wire>;
 			wires.push(Wire.wireBetween(modules[0].layout.ports[0].Loc, modules[2].layout.ports[1].Loc));  //const1 to dwriter port

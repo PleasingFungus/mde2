@@ -29,9 +29,9 @@ package Displays {
 		
 		override protected function init():void {
 			if (commentButton)
-				commentButton.setExists(false);
+				commentButton.exists = false;
 			if (randomButton)
-				randomButton.setExists(false);
+				randomButton.exists = false;
 			
 			super.init();
 			if (U.state.level.commentsEnabled)

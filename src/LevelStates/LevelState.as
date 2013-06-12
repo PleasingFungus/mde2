@@ -734,9 +734,9 @@ package LevelStates {
 		
 		
 		private function checkMenuState():void {
-			undoButton.setExists(actionStack.length > 0);
+			undoButton.exists = actionStack.length > 0;
 			undoButton.active = canUndo(); 
-			redoButton.setExists(reactionStack.length > 0);
+			redoButton.exists = reactionStack.length > 0;
 			redoButton.active = canRedo();
 			var undoAlpha:Number = currentWire || currentBloc || currentModule ? 0.3 : 1;
 			undoButton.setAlpha(undoAlpha);
@@ -746,8 +746,8 @@ package LevelStates {
 			
 			if (loadButton) {
 				var successSave:String = findSuccessSave();
-				loadButton.setExists(successSave != savedString && successSave != null);
-				resetButton.setExists(savedString && savedString != RESET_SAVE);
+				loadButton.exists = successSave != savedString && successSave != null;
+				resetButton.exists = savedString && savedString != RESET_SAVE;
 			}
 			
 			checkCursorState();

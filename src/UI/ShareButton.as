@@ -39,7 +39,7 @@ package UI {
 				textField = null;
 			}
 			if (button)
-				button.setExists(false);
+				button.exists = false;
 			
 			members = [];
 			

@@ -133,17 +133,17 @@ package Displays {
 				run();
 			timeText.text = U.state.time.toString();
 			
-			stopButton.setExists(U.state.time.moment > 0);
-			backstepButton.setExists(U.state.time.moment > 0);
+			stopButton.exists = U.state.time.moment > 0;
+			backstepButton.exists = U.state.time.moment > 0;
 			
 			
-			playButton.setExists(playing != 1 || ticksPerSec != 2);
-			fastButton.setExists(playing != 1 || ticksPerSec != 20);
+			playButton.exists = playing != 1 || ticksPerSec != 2;
+			fastButton.exists = playing != 1 || ticksPerSec != 20;
 			
-			rewindButton.setExists((playing != -1 || ticksPerSec != 2) && U.state.time.moment > 0);
-			rFastButton.setExists((playing != -1 || ticksPerSec != 20) && U.state.time.moment > 0);
+			rewindButton.exists = (playing != -1 || ticksPerSec != 2) && U.state.time.moment > 0;
+			rFastButton.exists = (playing != -1 || ticksPerSec != 20) && U.state.time.moment > 0;
 			
-			pauseButton.setExists(playing != 0);
+			pauseButton.exists = playing != 0;
 			if (!playButton.exists)
 				pauseButton.X = playButton.X;
 			else if (!fastButton.exists)

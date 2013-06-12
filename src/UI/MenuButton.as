@@ -123,6 +123,10 @@ package UI {
 					}
 				}
 			}
+			
+			for each (var obj:FlxBasic in associatedObjects)
+				if (obj.exists && obj.active)
+					obj.update();
 		}
 		
 		protected function isMoused():Boolean {
@@ -141,9 +145,9 @@ package UI {
 			}
 			
 			if (!mouseoverText)
-				associatedObjects.push(U.state.upperLayer.add(
+				associatedObjects.push(
 					mouseoverText = new FloatText(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, FlxG.width / 2 - 20, tooltip)))
-				));
+				);
 			if (tooltipCallback != null && tooltip != tooltipCallback()) {
 				tooltip = tooltipCallback();
 				mouseoverText.text.text = tooltip;
@@ -239,6 +243,13 @@ package UI {
 		override public function draw():void {
 			highlight.visible = isHighlighted;
 			super.draw();
+		}
+		
+		override public function postDraw():void {
+			super.postDraw();
+			for each (var obj:FlxBasic in associatedObjects)
+				if (obj.exists && obj.visible)
+					obj.draw();
 		}
 		
 		protected function get isHighlighted():Boolean {

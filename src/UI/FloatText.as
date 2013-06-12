@@ -13,6 +13,7 @@ package UI {
 			text = Text;
 			super( -1, -1);
 			text.scrollFactor.x = text.scrollFactor.y = 0;
+			scrollFactor = text.scrollFactor;
 			init();
 		}
 		

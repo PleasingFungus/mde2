@@ -495,7 +495,7 @@ package LevelStates {
 			var extraWidth:int = 10;
 			var labelText:FlxText = new FlxText(X - extraWidth / 2 - 1, button.Y + button.fullHeight - 2, button.fullWidth + extraWidth, ShortName);
 			U.TOOLBAR_FONT.configureFlxText(labelText, 0xffffff, 'center');
-			upperLayer.add(labelText);
+			labelText.scrollFactor.x = labelText.scrollFactor.y = 0;
 			button.associatedObjects.push(labelText);
 			
 			return button;
@@ -557,9 +557,8 @@ package LevelStates {
 			var members:Array = upperLayer.members.slice(); //copy, to prevent updating new members
 			for (var i:int = members.length - 1; i >= 0; i--) {
 				var b:FlxBasic = members[i];
-				if (b && b.exists && b.active) {
+				if (b && b.exists && b.active)
 					b.update();
-				}
 			}
 		}
 		

@@ -49,13 +49,13 @@ package UI {
 				textField = new FlxInputText(X - extraWidth / 2 - 1 - 120, text.y, 110 * 2 - 8, 8,
 											 " ", 0xffffff, U.TOOLBAR_FONT.id, U.TOOLBAR_FONT.size);
 				textField.text = getText();
-				add(textField);
+				textField.scrollFactor.x = textField.scrollFactor.y = 0;
 				button.associatedObjects.push(textField);
 			} else {
 				var extraWidth:int = 10;
 				text = new FlxText(X - extraWidth / 2 - 1, button.Y + button.fullHeight - 2, button.fullWidth + extraWidth, getText());
 				U.TOOLBAR_FONT.configureFlxText(text, 0xffffff, 'center');
-				add(text);
+				text.scrollFactor.x = text.scrollFactor.y = 0;
 				button.associatedObjects.push(text);
 			}
 			

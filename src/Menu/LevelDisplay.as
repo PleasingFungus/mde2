@@ -86,12 +86,12 @@ package Menu {
 			var displayModule:DModule = levelModule.generateDisplay();
 			add(displayModule);
 			
-			if (levelModule.unlocked) {
+			//if (levelModule.unlocked) {
 				min.x = Math.min(min.x, displayModule.x - MODULE_SPACING.x * U.GRID_DIM);
 				min.y = Math.min(min.y, displayModule.y - MODULE_SPACING.y * U.GRID_DIM);
 				max.x = Math.max(max.x, displayModule.x + displayModule.width + MODULE_SPACING.x * U.GRID_DIM);
 				max.y = Math.max(max.y, displayModule.y + displayModule.height + MODULE_SPACING.y * U.GRID_DIM);
-			}
+			//}
 			
 			if (level == Level.last) {
 				FlxG.camera.scroll.x = displayModule.x + displayModule.width / 2 - FlxG.width / 2;

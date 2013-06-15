@@ -15,6 +15,7 @@ package Levels.BasicTutorials {
 			info += "\n\nSome modules have effects that occur at the end of each tick. Data Writers write to memory; Storage (a new module in this level) changes its value to its input.";
 			info += "\n\nAll end-of-turn effects occur simultaneously; they are only based on state from the beginning of the tick.";
 			writerLimit = 1;
+			useModuleRecord = false;
 		}
 		
 		public static const NAME:String = "Accumulation";

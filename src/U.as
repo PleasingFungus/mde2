@@ -65,6 +65,10 @@ package  {
 		public static const TUT_BEAT_TUT_1:int = 2;
 		public static const TUT_BEAT_TUT_2:int = 3;
 		
+		public static const DEMO:Boolean = true;
+		public static var DEMO_LIMIT:Level;
+		public static var DEMO_PERMITTED:Vector.<Level>;
+		
 		public static function updateTutState(newTutState:int):int {
 			if (newTutState > tutorialState)
 				return U.save.data['tut'] = tutorialState = newTutState;
@@ -95,6 +99,8 @@ package  {
 			Level.ALL = Level.list();
 			if (DEBUG.ON)
 				Level.validate(Level.ALL);
+			DEMO_LIMIT = Level.L_CPU_Basic;
+			DEMO_PERMITTED = Level.ALL.slice(0, Level.ALL.indexOf(DEMO_LIMIT) + 1); //dubious?
 			
 			zoom = 1;
 		}

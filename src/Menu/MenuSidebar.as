@@ -34,6 +34,12 @@ package Menu {
 			howToPlay.Y += (bg.height - howToPlay.fullHeight) / 2;
 			howToPlay.fades = true;
 			add(howToPlay);
+			
+			var credits:GraphicButton = new GraphicButton(FlxG.width - 72, howToPlay.Y, _credits_sprite, function onSelect():void {
+				FlxG.switchState(new CreditsState);
+			}, "Credits").setScroll(0);
+			credits.fades = true;
+			add(credits);
 		}
 		
 		override public function update():void {
@@ -43,6 +49,7 @@ package Menu {
 		}
 		
 		[Embed(source = "../../lib/art/ui/info.png")] private const _info_sprite:Class;
+		[Embed(source = "../../lib/art/ui/smile.png")] private const _credits_sprite:Class;
 	}
 
 }

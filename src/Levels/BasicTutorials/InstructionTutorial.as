@@ -16,6 +16,7 @@ package Levels.BasicTutorials {
 			info += "The other three, the source, target, & destination, have meanings that vary by opcode.\n\n"
 			info += "For this level, for each instruction in memory, just write the opcode, source, target & destination over four lines."
 			writerLimit = 4;
+			useModuleRecord = false;
 		}
 		
 	}

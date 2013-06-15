@@ -243,10 +243,12 @@ package LevelStates {
 		
 		private function makeSaveButtons():void {
 			loadButton = addToolbarButton(170, _success_load_sprite, loadFromSuccess, "Load", "Load last successful machine", new Key("S"));
+			if (LIST_MODULES == listOpen || LIST_CATEGORIES == listOpen) return;
 			resetButton = addToolbarButton(130, _reset_sprite, reset, "Reset", "Erase all placed parts");
 		}
 		
 		private function makeUndoButtons():void {
+			if (LIST_MODULES == listOpen || LIST_CATEGORIES == listOpen) return;
 			undoButton = addToolbarButton(50, _undo_sprite, undo, "Undo", "Undo", new Key("Z"));
 			redoButton = addToolbarButton(90, _redo_sprite, redo, "Redo", "Redo", new Key("Y"));
 		}

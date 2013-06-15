@@ -18,7 +18,9 @@ package Menu {
 		}
 		
 		override protected function getColor():void {
-			if (!levelModule.unlocked)
+			if (U.DEMO && U.DEMO_PERMITTED.indexOf(levelModule.level) == -1)
+				color = 0xff404040;
+			else if (!levelModule.unlocked)
 				color = 0xff808080;
 			else if (overlapsPoint(U.mouseFlxLoc, true))
 				color = U.HIGHLIGHTED_COLOR;

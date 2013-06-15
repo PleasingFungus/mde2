@@ -119,6 +119,8 @@ package Levels {
 		public function unlocked():Boolean {
 			if (DEBUG.UNLOCK_ALL)
 				return true;
+			if (U.DEMO && U.DEMO_PERMITTED.indexOf(this) == -1)
+				return false;
 			for each (var predecessor:Level in predecessors)
 				if (!predecessor.beaten)
 					return false;

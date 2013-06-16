@@ -243,12 +243,10 @@ package LevelStates {
 		
 		private function makeSaveButtons():void {
 			loadButton = addToolbarButton(170, _success_load_sprite, loadFromSuccess, "Load", "Load last successful machine", new Key("S"));
-			if (LIST_MODULES == listOpen || LIST_CATEGORIES == listOpen) return;
 			resetButton = addToolbarButton(130, _reset_sprite, reset, "Reset", "Erase all placed parts");
 		}
 		
 		private function makeUndoButtons():void {
-			if (LIST_MODULES == listOpen || LIST_CATEGORIES == listOpen) return;
 			undoButton = addToolbarButton(50, _undo_sprite, undo, "Undo", "Undo", new Key("Z"));
 			redoButton = addToolbarButton(90, _redo_sprite, redo, "Redo", "Redo", new Key("Y"));
 		}
@@ -498,7 +496,7 @@ package LevelStates {
 			var labelText:FlxText = new FlxText(X - extraWidth / 2 - 1, button.Y + button.fullHeight - 2, button.fullWidth + extraWidth, ShortName);
 			U.TOOLBAR_FONT.configureFlxText(labelText, 0xffffff, 'center');
 			labelText.scrollFactor.x = labelText.scrollFactor.y = 0;
-			button.associatedObjects.push(labelText);
+			button.add(labelText);
 			
 			return button;
 		}

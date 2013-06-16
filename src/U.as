@@ -65,7 +65,7 @@ package  {
 		public static const TUT_BEAT_TUT_1:int = 2;
 		public static const TUT_BEAT_TUT_2:int = 3;
 		
-		public static const DEMO:Boolean = true;
+		public static const DEMO:Boolean = false;
 		public static var DEMO_LIMIT:Level;
 		public static var DEMO_PERMITTED:Vector.<Level>;
 		

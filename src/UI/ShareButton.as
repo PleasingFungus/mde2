@@ -50,13 +50,13 @@ package UI {
 											 " ", 0xffffff, U.TOOLBAR_FONT.id, U.TOOLBAR_FONT.size);
 				textField.text = getText();
 				textField.scrollFactor.x = textField.scrollFactor.y = 0;
-				button.associatedObjects.push(textField);
+				button.add(textField);
 			} else {
 				var extraWidth:int = 10;
 				text = new FlxText(X - extraWidth / 2 - 1, button.Y + button.fullHeight - 2, button.fullWidth + extraWidth, getText());
 				U.TOOLBAR_FONT.configureFlxText(text, 0xffffff, 'center');
 				text.scrollFactor.x = text.scrollFactor.y = 0;
-				button.associatedObjects.push(text);
+				button.add(text);
 			}
 			
 		}

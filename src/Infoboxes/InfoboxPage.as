@@ -1,4 +1,4 @@
-package Displays {
+package Infoboxes {
 	import org.flixel.FlxGroup;
 	import org.flixel.FlxSprite;
 	

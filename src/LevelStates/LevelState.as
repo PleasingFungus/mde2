@@ -1,9 +1,8 @@
 package LevelStates {
-	import Components.Bloc;
 	import flash.utils.Dictionary;
-	import flash.geom.Point;
 	import Helpers.DeleteHelper;
 	import Helpers.KeyHelper;
+	import Modules.Module;
 	import Modules.CustomModule;
 	import Modules.ModuleCategory;
 	import Modules.SysDelayClock;
@@ -11,24 +10,19 @@ package LevelStates {
 	import Actions.*;
 	import Controls.*;
 	import Displays.*;
-	import Modules.Module;
+	import UI.*;
+	import Menu.*;
+	import Infoboxes.*;
 	import Testing.Goals.GeneratedGoal;
-	import UI.ButtonList;
-	import UI.ButtonManager;
-	import UI.ModuleSlider;
-	import UI.ShareButton;
-	import UI.Sliderbar;
-	import UI.TextButton;
 	import Values.FixedValue;
 	import Values.Value;
+	import Components.Bloc;
 	import Components.Carrier;
 	import Components.Wire
-	import UI.GraphicButton;
-	import UI.MenuButton;
-	import flash.display.BitmapData
+	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
 	import flash.geom.Matrix;
-	import Menu.*;
+	import flash.geom.Point;
 	import Levels.Level;
 	
 	/**
@@ -864,14 +858,15 @@ package LevelStates {
 		}
 		
 		private function finishDisplayTest():void {
-			runningDisplayTest = false;
-			
-			if (!level.goal.succeeded) {
-				U.state.time.reset();
-				runningDisplayTest = false;
-				makeUI();
+			if (!runningDisplayTest)
 				return;
-			}
+			
+			runningDisplayTest = false;
+			U.state.time.reset();
+			makeUI();
+			
+			if (!level.goal.succeeded)
+				return;
 			
 			level.successSave = genSaveString();
 			level.setHighScore(modulesUsed());
@@ -881,9 +876,7 @@ package LevelStates {
 			else if (level == Level.ALL[1])
 				U.updateTutState(U.TUT_BEAT_TUT_2);
 			
-			FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
-				FlxG.switchState(new SuccessState(level, modulesUsed()));
-			});
+			upperLayer.add(infobox = new SuccessInfobox(level, modulesUsed()));
 		}
 		
 		

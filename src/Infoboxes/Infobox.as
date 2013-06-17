@@ -1,4 +1,4 @@
-package Displays {
+package Infoboxes {
 	import org.flixel.*;
 	import UI.Scrollbar;
 	import Controls.ControlSet;
@@ -105,7 +105,7 @@ package Displays {
 		}
 		
 		protected function checkControls():void {
-			if (FlxG.mouse.justPressed() && !bg.overlapsPoint(FlxG.mouse, true)) // && tick?
+			if (FlxG.mouse.justPressed() && !bg.overlapsPoint(FlxG.mouse, true))
 				exists = false;
 			if (ControlSet.CANCEL_KEY.justPressed())
 				exists = false;

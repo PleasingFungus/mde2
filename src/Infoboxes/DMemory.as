@@ -1,4 +1,4 @@
-package Displays {
+package Infoboxes {
 	import org.flixel.*;
 	import Controls.ControlSet;
 	import Testing.Goals.GeneratedGoal;

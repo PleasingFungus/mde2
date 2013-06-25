@@ -589,7 +589,7 @@ package LevelStates {
 						midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
 					else if (findMousedModule() && level.canPickupModules)
 						pickUpModule();
-					else if (level.canDrawWires) {
+					else if (level.canDrawWires && findMousedCarrier()) {
 						currentWire = new Wire(U.pointToGrid(U.mouseLoc))
 						displayWires.push(midLayer.add(new DWire(currentWire)));
 					}
@@ -820,7 +820,7 @@ package LevelStates {
 			
 			if (blocMoused)
 				return Cursor.GRAB;
-			if (level.canDrawWires)
+			if (level.canDrawWires && findMousedCarrier())
 				return Cursor.PEN;
 			return null;
 		}
@@ -895,6 +895,14 @@ package LevelStates {
 				if (module.exists)
 					used += module.weight;
 			return used;
+		}
+		
+		private function findMousedCarrier():Carrier {
+			var mousedPoint:Point = U.pointToGrid(U.mouseLoc);
+			if (grid.objTypeAtPoint(mousedPoint) != Vector)
+				return null;
+			
+			return grid.carriersAtPoint(mousedPoint)[0];
 		}
 		
 		private function findMousedWire():DWire {

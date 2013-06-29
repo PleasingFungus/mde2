@@ -636,16 +636,16 @@ package LevelStates {
 			midLayer.add(displayModule);
 			displayModules.push(displayModule);
 			
-			addBlocFromModule(displayModule);
-			
+			currentBloc = addBlocFromModule(displayModule);
 		}
 		
 		private function pickUpModule():void {
 			var mousedModule:Module = findMousedModule();
 			if (mousedModule && !mousedModule.FIXED) {
-				new CustomAction(Module.remove, Module.place, mousedModule, new Point(mousedModule.x, mousedModule.y)).execute();
-				mousedModule.exists = true;
-				addBlocFromModule(associatedDisplayModule(mousedModule));
+				currentBloc = addBlocFromModule(associatedDisplayModule(mousedModule), true);
+				new BlocLiftAction(currentBloc, U.pointToGrid(U.mouseLoc)).execute();
+				currentBloc.mobilize();
+				currentBloc.exists = true;
 			}
 		}
 		
@@ -661,11 +661,11 @@ package LevelStates {
 				}
 		}
 		
-		private function addBlocFromModule(displayModule:DModule):Bloc {
+		private function addBlocFromModule(displayModule:DModule, Rooted:Boolean = false):Bloc {
 			var displayModules:Vector.<DModule> = new Vector.<DModule>;
 			displayModules.push(displayModule);
 			
-			var displayBloc:DBloc = DBloc.fromDisplays(new Vector.<DWire>, displayModules, false);
+			var displayBloc:DBloc = DBloc.fromDisplays(new Vector.<DWire>, displayModules, Rooted);
 			displayBloc.bloc.origin = U.pointToGrid(U.mouseLoc);
 			midLayer.add(displayBloc);
 			
@@ -702,7 +702,7 @@ package LevelStates {
 			undoButton.active = canUndo(); 
 			redoButton.exists = reactionStack.length > 0;
 			redoButton.active = canRedo();
-			var undoAlpha:Number = currentWire || currentBloc ? 0.3 : 1;
+			var undoAlpha:Number = currentWire || (currentBloc && !currentBloc.rooted) ? 0.3 : 1;
 			undoButton.setAlpha(undoAlpha);
 			redoButton.setAlpha(undoAlpha);
 			
@@ -1055,11 +1055,11 @@ package LevelStates {
 		}
 		
 		private function canUndo():Boolean {
-			return actionStack.length > 0 && !currentWire && !currentBloc;
+			return actionStack.length > 0 && !currentWire && (!currentBloc || currentBloc.rooted);
 		}
 		
 		private function canRedo():Boolean {
-			return reactionStack.length > 0 && !currentWire && !currentBloc;
+			return reactionStack.length > 0 && !currentWire && (!currentBloc || currentBloc.rooted);
 		}
 		
 		

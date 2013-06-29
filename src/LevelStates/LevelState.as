@@ -73,7 +73,6 @@ package LevelStates {
 		public var actionStack:Vector.<Action>;
 		public var reactionStack:Vector.<Action>;
 		private var currentWire:Wire;
-		private var currentModule:Module;
 		private var selectionArea:SelectionBox;
 		private var currentBloc:Bloc;
 		
@@ -369,20 +368,7 @@ package LevelStates {
 				for each (moduleType in recentModules) {
 					archetype = Module.getArchetype(moduleType);
 					moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
-						archetype = Module.getArchetype(moduleType);
-						if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
-							if (archetype.getConfiguration())
-								currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
-							else
-								currentModule = new moduleType( -1, -1);
-							currentModule.initialize();
-							
-							modules.push(currentModule);
-							displayModules.push(midLayer.add(currentModule.generateDisplay()));
-							addRecentModule(moduleType);
-							
-							preserveModule = true;
-						}
+						createNewModule(moduleType);
 						
 						if (listOpen == LIST_CATEGORIES) {
 							listOpen = LIST_NONE;
@@ -429,20 +415,7 @@ package LevelStates {
 			for each (moduleType in moduleTypes) {
 				archetype = Module.getArchetype(moduleType);
 				moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
-					archetype = Module.getArchetype(moduleType);
-					if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
-						if (archetype.getConfiguration())
-							currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
-						else
-							currentModule = new moduleType( -1, -1);
-						currentModule.initialize();
-						
-						modules.push(currentModule);
-						displayModules.push(midLayer.add(currentModule.generateDisplay()));
-						addRecentModule(moduleType);
-						
-						preserveModule = true;
-					}
+					createNewModule(moduleType);
 						
 					if (listOpen == LIST_MODULES) {
 						listOpen = LIST_NONE;
@@ -469,6 +442,26 @@ package LevelStates {
 				archetype = Module.getArchetype(moduleType);
 				if (archetype.getConfiguration())
 					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+1], archetype)));
+			}
+		}
+		
+		private function createNewModule(moduleType:Class):void {
+			var archetype:Module = Module.getArchetype(moduleType);
+			if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
+				var newModule:Module;
+				if (archetype.getConfiguration())
+					newModule = new moduleType( -1, -1, archetype.getConfiguration().value);
+				else
+					newModule = new moduleType( -1, -1);
+				newModule.initialize();
+				
+				modules.push(newModule);
+				var displayModule:DModule = newModule.generateDisplay();
+				displayModules.push(midLayer.add(displayModule));
+				currentBloc = addBlocFromModule(displayModule);
+				addRecentModule(moduleType);
+				
+				preserveModule = true;
 			}
 		}
 		
@@ -577,9 +570,7 @@ package LevelStates {
 					}
 					selectionArea = null;
 				}
-			} else if (currentModule)
-				checkModuleControls();
-			else if (currentWire)
+			} else if (currentWire)
 				checkWireControls();
 			else if (currentBloc && !currentBloc.rooted) {
 				//currently delegated to DBloc
@@ -619,41 +610,6 @@ package LevelStates {
 			}
 		}
 		
-		private function checkModuleControls():void {
-			if (ControlSet.DELETE_KEY.justPressed()) {
-				currentModule.exists = false;
-				currentModule = null;
-				return;
-			}
-			
-			if (ControlSet.CANCEL_KEY.justPressed()) {
-				if (U.state.actionStack.length) {
-					var lastAction:Action = actionStack.pop();
-					if (lastAction is CustomAction && (lastAction as CustomAction).param == currentModule)
-						lastAction.revert(); //revert 'pick up' action
-					else {
-						currentModule.exists = false;
-						actionStack.push(lastAction);
-					}
-				} else
-					currentModule.exists = false;
-				currentModule = null;
-				return;
-			}
-			
-			var mousePoint:Point = U.pointToGrid(U.mouseLoc);
-			currentModule.x = mousePoint.x;
-			currentModule.y = mousePoint.y;
-			
-			if (FlxG.mouse.justPressed() && !preserveModule) {
-				if (U.buttonManager.moused) {
-					currentModule.exists = false;
-					currentModule = null;
-				} else if (currentModule.validPosition)
-					placeModule();
-			}
-		}
-		
 		private function checkWireControls():void {
 			if (ControlSet.CANCEL_KEY.justPressed()) {
 				currentWire.exists = false;
@@ -674,20 +630,22 @@ package LevelStates {
 			currentBloc.unravel();
 			currentBloc = null;
 			
-			currentModule = customModule;
 			modules.push(customModule);
 			
-			var displayModule:DModule = currentModule.generateDisplay();
+			var displayModule:DModule = customModule.generateDisplay();
 			midLayer.add(displayModule);
 			displayModules.push(displayModule);
+			
+			addBlocFromModule(displayModule);
+			
 		}
 		
 		private function pickUpModule():void {
 			var mousedModule:Module = findMousedModule();
 			if (mousedModule && !mousedModule.FIXED) {
-				currentModule = mousedModule;
 				new CustomAction(Module.remove, Module.place, mousedModule, new Point(mousedModule.x, mousedModule.y)).execute();
 				mousedModule.exists = true;
+				addBlocFromModule(associatedDisplayModule(mousedModule));
 			}
 		}
 		
@@ -703,10 +661,22 @@ package LevelStates {
 				}
 		}
 		
-		private function placeModule():void {
-			FlxG.camera.shake(0.01 * U.zoom, 0.05);
-			new MoveModuleAction(currentModule, new Point(currentModule.x, currentModule.y));
-			currentModule = null;
+		private function addBlocFromModule(displayModule:DModule):Bloc {
+			var displayModules:Vector.<DModule> = new Vector.<DModule>;
+			displayModules.push(displayModule);
+			
+			var displayBloc:DBloc = DBloc.fromDisplays(new Vector.<DWire>, displayModules, false);
+			displayBloc.bloc.origin = U.pointToGrid(U.mouseLoc);
+			midLayer.add(displayBloc);
+			
+			return displayBloc.bloc;
+		}
+		
+		private function associatedDisplayModule(module:Module):DModule {
+			for each (var displayModule:DModule in displayModules)
+				if (displayModule.module == module)
+					return displayModule;
+			return null;
 		}
 		
 		private function destroyModules():void {
@@ -732,7 +702,7 @@ package LevelStates {
 			undoButton.active = canUndo(); 
 			redoButton.exists = reactionStack.length > 0;
 			redoButton.active = canRedo();
-			var undoAlpha:Number = currentWire || currentBloc || currentModule ? 0.3 : 1;
+			var undoAlpha:Number = currentWire || currentBloc ? 0.3 : 1;
 			undoButton.setAlpha(undoAlpha);
 			redoButton.setAlpha(undoAlpha);
 			
@@ -750,7 +720,7 @@ package LevelStates {
 		}
 		
 		private function canDelete():Boolean {
-			if (currentWire || currentBloc || currentModule || selectionArea || runningDisplayTest)
+			if (currentWire || currentBloc || selectionArea || runningDisplayTest)
 				return false;
 			if (findMousedWire())
 				return true;
@@ -788,7 +758,7 @@ package LevelStates {
 		}
 		
 		private function cursorHidden():Boolean {
-			return listOpen == LIST_NONE && !time.moment && !U.buttonManager.moused && (currentModule || (currentBloc && !currentBloc.rooted));
+			return listOpen == LIST_NONE && !time.moment && !U.buttonManager.moused && currentBloc && !currentBloc.rooted;
 		}
 		
 		private function getCursor():Cursor {
@@ -922,10 +892,7 @@ package LevelStates {
 		}
 		
 		private function ensureNothingHeld():void {
-			if (currentModule) {
-				currentModule.exists = false;
-				currentModule = null;
-			} else if (currentBloc) {
+			if (currentBloc) {
 				currentBloc.unravel();
 				currentBloc = null;
 			}
@@ -1088,11 +1055,11 @@ package LevelStates {
 		}
 		
 		private function canUndo():Boolean {
-			return actionStack.length > 0 && !currentWire && !currentModule;
+			return actionStack.length > 0 && !currentWire && !currentBloc;
 		}
 		
 		private function canRedo():Boolean {
-			return reactionStack.length > 0 && !currentWire && !currentModule;
+			return reactionStack.length > 0 && !currentWire && !currentBloc;
 		}
 		
 		

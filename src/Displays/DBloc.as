@@ -111,6 +111,9 @@ package Displays {
 					var lastAction:Action = U.state.actionStack.pop();
 					if (lastAction is BlocLiftAction && (lastAction as BlocLiftAction).bloc == bloc)
 						lastAction.revert();
+					else if (bloc.modules.length == 1 && bloc.wires.length == 0 &&
+							 lastAction is CustomAction && (lastAction as CustomAction).exec == Module.remove && (lastAction as CustomAction).param == bloc.modules[0])
+						lastAction.revert();
 					else {
 						U.state.actionStack.push(lastAction);
 						bloc.destroy();

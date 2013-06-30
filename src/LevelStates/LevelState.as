@@ -643,9 +643,7 @@ package LevelStates {
 			var mousedModule:Module = findMousedModule();
 			if (mousedModule && !mousedModule.FIXED) {
 				currentBloc = addBlocFromModule(associatedDisplayModule(mousedModule), true);
-				new BlocLiftAction(currentBloc, U.pointToGrid(U.mouseLoc)).execute();
-				currentBloc.mobilize();
-				currentBloc.exists = true;
+				currentBloc.lift();
 			}
 		}
 		

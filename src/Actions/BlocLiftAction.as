@@ -1,5 +1,6 @@
 package Actions {
 	import Components.Bloc;
+	import Components.Wire;
 	import flash.geom.Point;
 	/**
 	 * ...

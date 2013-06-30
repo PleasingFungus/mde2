@@ -3,6 +3,7 @@ package Displays {
 	import Actions.BlocLiftAction;
 	import Actions.CustomAction;
 	import Actions.MoveBlocAction;
+	import Components.Connection;
 	import Components.Wire;
 	import Components.Bloc;
 	import Controls.ControlSet;
@@ -60,9 +61,7 @@ package Displays {
 				}
 				
 				if (moused) {
-					new BlocLiftAction(bloc, U.pointToGrid(U.mouseLoc)).execute();
-					bloc.mobilize();
-					bloc.exists = true;
+					bloc.lift();
 				} else
 					setSelect(false);
 			}
@@ -178,6 +177,28 @@ package Displays {
 				displayWires.push(dWire);
 			for each (var dModule:DModule in this.displayModules)
 				displayModules.push(dModule);
+		}
+		
+		override public function draw():void {
+			super.draw();
+			if (DEBUG.RENDER_BLOC_CONNECTIONS)
+				debugRenderBlocConnections();
+		}
+		
+		private var connectionSprite:FlxSprite;
+		private function debugRenderBlocConnections():void {
+			if (!connectionSprite)
+				connectionSprite = new FlxSprite().makeGraphic(4, 4, 0xb0ff00ff);
+			for each (var connection:Connection in bloc.connections) {
+				connectionSprite.x = connection.point.x * U.GRID_DIM;
+				connectionSprite.y = connection.point.y * U.GRID_DIM;
+				connectionSprite.draw();
+			}
+		}
+		
+		private function makeBlocConnections():void {
+			for each (var connection:Connection in bloc.connections)
+				connection
 		}
 		
 	}

@@ -1,0 +1,162 @@
+CURRENT
+	drag wires with modules/blocs
+		on lift, generate wires for all connections (including 0-lengths) & save prev state of wires
+		
+		1. on module pickup, make a list of all associated wires, save onto the bloc & into the lift action, & detach them
+		1b. render associated wires (just set exists = true?)
+		1c. on cancel or delete, revert associated wires to initial state (along with module)
+		1d. on module place, place wires too
+		2. whenever the module moves, attempt to repath associated wires
+		2b. consistency? (with module, with other wires)
+		2c. merging?
+		2d. 0-len deletion
+		
+		3. handle undo (same functionality as cancel, cached in the action)
+		4. same, but for blocs, for wires that aren't selected
+		5. support wire/modules being dragged away from direct port-port connection, or non-ends of wires (new wire creation)
+
+LATER
+	FIX
+		internals lag behind while moving a module (browser only)
+		delays in tooltips in module menus don't update with config (I-DEMUX doesn't display delay, wide modules only display log of default width, etc)
+		colorization linewrap issue (icomp in adv ops)
+		scrolling while mousing an object creates strange effects (slow mouse shift) until scroll ends (levelstate only, not menustate)
+		tooltips display for objects moused through menubar
+	IMPLEMENT
+		delete key should vanish after use
+			save/load context
+			vanish on delete module
+			vanish on delete wire
+		label time, module records
+		menu bg
+			basic
+			later: vary by section	
+		add confirmation infobox to reset
+		handle failure in load-from-url (load normal menu & display error)
+		playtester credits, special thanks
+		load button on main menu
+		turn off autopause on lose focus
+	FIGURE OUT
+		switch c/v to ctrl-c/ctrl-v
+		more clearly distinguish wire states
+		more clearly distinguish 3 module states (beaten, unlocked, locked)
+		add mem write buffer; multiple writes to same loc @ same turn = unknown value set
+		get a better body font (kelsey)
+		mouseover descriptions for instructions in dmem
+		level info for eff tut
+				You need to make your machines run much faster for this & the following levels. Here's a rough guide to get you started. 
+				(1) Split up the big, slow task of executing an entire instruction into several smaller tasks: e.g. 'read from memory', 'read registers', 'perform arithmetic'...
+				(2) Set up the clock so that you can execute one instruction per clock period (fast!). At the end of each task, store the information you need to execute the next task in the next clock cycle.
+				(3) Let more than one instruction run at once. <TODO>
+				Have fun!
+		some kind of win screen
+		name 
+		better indication of invalid bloc position (esp. when trying to place)
+			flash red?
+MAYBE LATER
+	IMPLEMENT
+		change level structure: 3 modes (basic/delay/pipe), unlock later modes through tuts, mid-tier levels (jump, load, adv) skippable in delay/pipe modes
+		website (www)/devlog (t) buttons on success screen/infobox
+		wipe save button on main menu
+		allow DEBUG_RENDER_COLLIDE without recompile (key toggle)
+		arrow class
+			make
+			highlight on mouse
+			hold to scroll
+		bne
+			opcode, etc
+			3-instruction loop (branch, op, incr)
+		'part cost'
+			module attribute
+			custommodule sums
+			display warning if total for levelstate over threshold
+		node formatting (for colorization)
+		colorize instr1 tut text (talking about opcodes)
+		embed dumb yospos injoke into dmem button icon
+		up/down arrows to scroll scrollbars in infoboxes
+		lines from custom module symbols to ports
+		binary save format
+			idemux
+			custommodule
+			wires
+				switchback format - initial point, dhorizontal, dvert, dhorizontal...
+			levelstate
+				save
+				load
+			test deflate/inflate
+		load button on main menu
+			button on bottom of screen
+				graphic
+				textbox
+			click to send request
+				send request
+				'waiting...' text appears
+			success callback
+				load level
+				load data
+			timeout behavior
+			failure behavior
+		refactor:
+			add miniclosure (paramA, paramB, 'undefined' default, isUndefined) to replace redundant code (customactions, nodeTuple)
+			wires should use potentialConnections() (testing is needed)
+		fixed initial seed for test mem in levels?
+		change jmp over to jmp to?
+		cache generated tests on levels (testing optimization)
+		autoselect last wire placed...?
+		support for click-to-start wiring?
+		switch click from lifting modules to editing them (per current ctrl-click)?
+		label dtime buttons?
+		hints
+			initially hidden
+			button to reveal
+			save/load revealed
+			global 'hints used' counter (on main menu)
+			
+			multiple levels of hints...?
+			hint lock timer...? (real-time, so people can alt-tab if they really want)
+		module colors
+			dmodules draw corresponding border colors
+			categories in lists use colors
+		wire compression by primary points - ends of straight sub-segments
+		sidebar/bottombar on menu
+			config
+				?
+				wipe save?
+			load?	
+		merge end-to-end joined wires (on placement)
+		more levels of different types
+			research historical architectures
+	FIGURE OUT
+		custom module tutorial
+			first level, but with the fixed dwrite's input surrounded by blocker modules - only enough space for a baby custom module
+		fix menu wiring
+			fix L_CPU_BRANCH output ports
+			fix overlapping wires (false grid
+		level info for shards
+		support i-comp edit-in-place
+		internal node revision
+			three types: 'port windows' (current state of port), 'operation results', 'storage' (i.e. latch) - also blank nodes (i.e. dwrite/t)
+		improve statefulness of loadFromSuccess/reset so that I don't have to break re-do after (because .wires, .modules etc aren't preserved)
+		fix module/category hotkey tooltips (must deal with dynamic module description tooltips...) or remove hotkeys
+		disallow simple latches / writers for delay shard levels
+		make info button look more helpful...?
+		"incr/decr current module config" buttons?
+		'get some animations' for values changing? (to reduce confusion)
+		scroll at edge of screen?
+		smart wire draw
+			split into own class
+			debug draw
+			
+			optimize
+			get "minimize turns" to work
+	'clicky' sliderbars (snap to nearest integer range point)
+	select wires by parts
+		select
+		delete/undelete
+		separate on pickup/remerge on undo
+MYSTERIES
+	sometimes crashes after bloc placement + pickup? (trying to remove wires that haven't been properly placed?)
+	killing test on efficency level after fast-forwarding and disabling/re-enabling ui leaves game stuck in displaytest (cnr)
+	arrows in edit-in-place, clock unclickable
+CHECK ON
+	Booleans understandable? (!0 or whatever it is?)

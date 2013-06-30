@@ -26,6 +26,10 @@ package Actions {
 			return super.revert();
 		}
 		
+		override public function get canRedo():Boolean {
+			return false;
+		}
+		
 	}
 
 }

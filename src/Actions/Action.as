@@ -16,9 +16,14 @@ package Actions {
 		}
 		
 		public function revert():Action {
-			U.state.reactionStack.push(this);
+			if (canRedo)
+				U.state.reactionStack.push(this);
 			U.state.save();
 			return this;
+		}
+		
+		public function get canRedo():Boolean {
+			return true;
 		}
 	}
 

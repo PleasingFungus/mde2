@@ -37,7 +37,6 @@ package Actions {
 			
 			if (newLoc.equals(oldLoc)) {
 				execute();
-				U.state.actionStack.pop(); //remove both this & the predecessor from do/undo if placing & removing to same place?
 				return;
 			}
 			

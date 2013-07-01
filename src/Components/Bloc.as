@@ -13,6 +13,8 @@ package Components {
 		public var modules:Vector.<Module>;
 		public var wires:Vector.<Wire>;
 		public var connections:Vector.<Connection>;
+		public var associatedWires:Vector.<Wire>;
+		public var newAssociatedWires:Vector.<Wire>;
 		public var origin:Point;
 		public var rooted:Boolean;
 		public var exists:Boolean;
@@ -84,6 +86,11 @@ package Components {
 				module.exists = true;
 			for each (var wire:Wire in wires)
 				wire.exists = true;
+			for each (wire in associatedWires)
+				if (wire.deployed) {
+					Wire.remove(wire);
+					wire.exists = true;
+				}
 			exists = true;
 		}
 		
@@ -138,8 +145,27 @@ package Components {
 		}
 		
 		public function lift():void {			
+			associatedWires = generateAssociatedWires();
 			new BlocLiftAction(this, U.pointToGrid(U.mouseLoc)).execute();
 			mobilize();
+		}
+		
+		protected function generateAssociatedWires():Vector.<Wire> {
+			var wires:Vector.<Wire> = new Vector.<Wire>;
+			newAssociatedWires = new Vector.<Wire>;
+			for each (var connection:Connection in connections) {
+				if (connection.secondary is Wire) {
+					var wire:Wire = connection.secondary as Wire;
+					if (wire.path[0].equals(connection.point) || wire.path[wire.path.length - 1].equals(connection.point)) {
+						wires.push(wire);
+						continue;
+					}
+				}
+				var newWire:Wire = new Wire(connection.point);
+				wires.push(newWire);
+				newAssociatedWires.push(newWire);
+			}
+			return wires;
 		}
 		
 		

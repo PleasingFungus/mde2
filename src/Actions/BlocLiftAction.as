@@ -28,15 +28,8 @@ package Actions {
 		}
 		
 		override public function revert():Action {
-			for each (var wireHistory:WireHistory in history) {
-				var wire:Wire = wireHistory.wire;
-				wire.path = wireHistory.path;
-				if (wire.path.length > 1)
-					Wire.place(wire);
-				else
-					wire.exists = false;
-			}
-			
+			for each (var wireHistory:WireHistory in history)
+				wireHistory.revert();
 			bloc.place(oldLoc);
 			return super.revert();
 		}

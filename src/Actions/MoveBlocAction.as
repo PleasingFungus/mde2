@@ -1,6 +1,7 @@
 package Actions {
 	import flash.geom.Point;
 	import Components.Bloc;
+	import Components.Wire;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -40,8 +41,11 @@ package Actions {
 				return;
 			}
 			
+			//TODO: path wires
+			for each (var wire:Wire in bloc.associatedWires)
+				Wire.place(wire);
 			bloc.place(newLoc);
-			U.state.actionStack.push(new MigrateBlocAction(bloc, newLoc, oldLoc));
+			U.state.actionStack.push(new MigrateBlocAction(bloc, newLoc, oldLoc, cLastAction.history));
 			U.state.save();
 		}
 		

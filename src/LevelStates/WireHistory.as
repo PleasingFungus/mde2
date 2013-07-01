@@ -14,6 +14,10 @@ package LevelStates {
 			path = wire.path.slice();
 		}
 		
+		public function revert():void {
+			wire.path = path;
+			Wire.place(wire);
+		}
 	}
 
 }

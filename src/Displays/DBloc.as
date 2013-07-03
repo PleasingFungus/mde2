@@ -17,6 +17,7 @@ package Displays {
 	 */
 	public class DBloc extends FlxGroup {
 		
+		private var tick:int;
 		private var displayWires:Vector.<DWire>;
 		private var displayModules:Vector.<DModule>;
 		public var bloc:Bloc;
@@ -39,6 +40,8 @@ package Displays {
 			
 			if (ControlSet.COPY_KEY.justPressed())
 				U.clipboard = bloc.toString();
+			
+			tick++;
 		}
 		
 		protected function checkRootedState():void {
@@ -85,7 +88,7 @@ package Displays {
 		protected function checkUnrootedState():void {
 			if (!FlxG.mouse.justPressed())
 				bloc.moveTo(U.pointToGrid(U.mouseLoc));
-			else {
+			else if (tick) {
 				if (!U.buttonManager.moused && bloc.validPosition(U.pointToGrid(U.mouseLoc))) {
 					FlxG.camera.shake(0.01 * U.zoom, 0.05);
 					new MoveBlocAction(bloc, U.pointToGrid(U.mouseLoc));

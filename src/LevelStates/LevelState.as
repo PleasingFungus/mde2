@@ -59,7 +59,6 @@ package LevelStates {
 		public var viewingComments:Boolean;
 		private var displayTime:DTime;
 		private var displayDelay:DDelay;
-		private var preserveModule:Boolean;
 		private var testText:FlxText;
 		private var testBG:FlxSprite;
 		private var lastRunTime:Number;
@@ -460,8 +459,6 @@ package LevelStates {
 				displayModules.push(midLayer.add(displayModule));
 				currentBloc = addBlocFromModule(displayModule);
 				addRecentModule(moduleType);
-				
-				preserveModule = true;
 			}
 		}
 		
@@ -539,7 +536,6 @@ package LevelStates {
 		
 		private function updateUI():void {
 			UIChanged = false;
-			preserveModule = false;
 			
 			var members:Array = upperLayer.members.slice(); //copy, to prevent updating new members
 			for (var i:int = members.length - 1; i >= 0; i--) {

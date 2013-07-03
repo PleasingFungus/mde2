@@ -2,6 +2,8 @@ package Components {
 	import Components.Wire;
 	import flash.geom.Point;
 	import Layouts.PortLayout;
+	import LevelStates.WireHistory;
+	import Modules.CustomModule;
 	import Modules.Module;
 	import Actions.BlocLiftAction;
 	/**
@@ -16,6 +18,8 @@ package Components {
 		public var associatedWires:Vector.<Wire>;
 		public var newAssociatedWires:Vector.<Wire>;
 		public var origin:Point;
+		public var lastLoc:Point;
+		public var lastRootedLoc:Point;
 		public var rooted:Boolean;
 		public var exists:Boolean;
 		public function Bloc(modules:Vector.<Module>, wires:Vector.<Wire>, Rooted:Boolean = true) {
@@ -26,17 +30,19 @@ package Components {
 			exists = true;
 		}
 		
-		private var wasValid:Boolean;
 		public function validPosition(p:Point):Boolean {
-			moveTo(p)
+			if (!moveTo(p))
+				return false;
+			if (associatedWires)
+				return true;
 			
 			for each (var module:Module in modules)
 				if (!module.validPosition)
-					return wasValid = false;
+					return false;
 			for each (var wire:Wire in wires)
 				if (wire.collides())
-					return wasValid = false;
-			return wasValid = true;
+					return false;
+			return true;
 		}
 		
 		public function place(p:Point):Boolean {
@@ -62,7 +68,7 @@ package Components {
 			
 			rooted = false;
 			exists = false;
-			origin = p;
+			origin = lastRootedLoc = p;
 			return true;
 		}
 		
@@ -95,9 +101,11 @@ package Components {
 		}
 		
 		public function moveTo(p:Point):Boolean {
-			if (origin.equals(p))
+			if (origin.equals(p) || (lastLoc && lastLoc.equals(p)))
 				return false;
-			
+			lastLoc = p;
+				
+			//shift modules/wires			
 			var delta:Point = p.subtract(origin);
 			
 			for each (var module:Module in modules) {
@@ -111,7 +119,86 @@ package Components {
 					wirePoint.y += delta.y;
 				}
 			
+			var oldLoc:Point = origin;
 			origin = p;
+			
+			if (!associatedWires)
+				return true;
+			//attempt path
+			if (attemptPath())
+				return true;
+			
+			for each (module in modules) {
+				module.x -= delta.x;
+				module.y -= delta.y;
+			}
+			for each (wire in wires)
+				for each (wirePoint in wire.path) {
+					wirePoint.x -= delta.x;
+					wirePoint.y -= delta.y;
+				}
+			origin = oldLoc;
+			return false;
+		}
+		
+		protected function attemptPath():Boolean {
+			var module:Module, wire:Wire;
+			var rollbackModules:Vector.<Module> = new Vector.<Module>;
+			var rollbackWires:Vector.<Wire> = new Vector.<Wire>;
+			
+			//build assocwire history
+			var history:Vector.<WireHistory> = new Vector.<WireHistory>;
+			for each (wire in associatedWires)
+				history.push(new WireHistory(wire));
+			
+			function rollback():Boolean {
+				for each (module in rollbackModules) {
+					Module.remove(module);
+					module.exists = true;
+				}
+				for each (wire in rollbackWires) {
+					Wire.remove(wire);
+					wire.exists = true;
+				}
+				return false;
+			}
+			
+			var deltaSinceRoot:Point = origin.subtract(lastRootedLoc);
+			
+			//place modules, wires
+			for each (module in modules) {
+				if (!module.validPosition)
+					return rollback();
+				
+				Module.place(module);
+				rollbackModules.push(module);
+			}
+			
+			for each (wire in wires) {
+				if (!wire.validPosition())
+					return rollback();
+				
+				Wire.place(wire);
+				rollbackWires.push(wire);
+			}
+			
+			//for each assocwire, attempt path, place
+			for (var connectionIndex:int = 0; connectionIndex < connections.length; connectionIndex++) {
+				var connection:Connection = connections[connectionIndex];
+				wire = associatedWires[connectionIndex];
+				var pathSuccess:Boolean = wire.attemptPath(connection.point.clone(), connection.point.add(deltaSinceRoot), true, true);
+				if (!pathSuccess) {
+					rollback();
+					for each (var wireHistory:WireHistory in history)
+						wireHistory.revert();
+					return false;
+				}
+				
+				Wire.place(wire);
+				rollbackWires.push(wire);
+			}
+			
+			rollback();
 			return true;
 		}
 		
@@ -134,14 +221,22 @@ package Components {
 			if (carrier is Wire)
 				return wires.indexOf(carrier) != -1;
 			if (carrier is Port) {
-				for each (var module:Module in modules)
-					for each (var portLayout:PortLayout in module.layout.ports)
-						if (portLayout.port == carrier)
-							return true;
-				return false;
+				if (modules.indexOf((carrier as Port).parent) != -1)
+					return true;
+				return layoutForPort(carrier as Port) != null; //dumb but maybe it's a custommodule?
 			}
 			
 			throw new Error("Unknown carrier type!");
+		}
+		
+		protected function layoutForPort(port:Port):PortLayout {
+			//this is dumb and bad
+			for each (var module:Module in modules)
+				if (module == port.parent || module is CustomModule)
+					for each (var portLayout:PortLayout in module.layout.ports)
+						if (portLayout.port == port)
+							return portLayout;
+			return null;
 		}
 		
 		public function lift():void {			
@@ -228,6 +323,8 @@ package Components {
 			
 			var bloc:Bloc = new Bloc(modules, wires, Rooted);
 			bloc.origin = averageLoc;
+			if (bloc.rooted)
+				bloc.lastRootedLoc = bloc.origin;
 			return bloc;
 		}
 		

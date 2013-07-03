@@ -26,21 +26,28 @@ package Components {
 			exists = true;
 		}
 		
-		public function attemptPathTo(target:Point, smartPathEnabled:Boolean = false):Boolean {
-			if (lastPathEnd && target.equals(lastPathEnd)) return false; //ehh
+		public function attemptPathTo(target:Point, smartPathEnabled:Boolean = false, force:Boolean = false):Boolean {
+			return attemptPath(path[0], target, smartPathEnabled, force);
+		}
+		
+		public function attemptPath(start:Point, end:Point, smartPathEnabled:Boolean = false, force:Boolean = false):Boolean {
+			if (lastPathEnd && end.equals(lastPathEnd) && !force) return true; //ehh
 			
 			var newPath:Vector.<Point>;
 			if (smartPathEnabled)
-				newPath = smartPath(path[0], target);
+				newPath = smartPath(start, end);
 			if (!newPath)
-				newPath = dumbPath(path[0], target);
+				newPath = dumbPath(start, end);
 			path = newPath;
 			
-			while (constrained && path.length > 1 && !validPosition())
+			var pathSucceeded:Boolean = true;
+			while (constrained && path.length > 1 && !validPosition()) {
 				path.pop();
+				pathSucceeded = false;
+			}
 			
 			lastPathEnd = path[path.length - 1];
-			return true;
+			return pathSucceeded;
 		}
 		
 		protected function smartPath(start:Point, target:Point):Vector.<Point> {

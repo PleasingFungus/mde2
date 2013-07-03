@@ -23,7 +23,6 @@ package Actions {
 		
 		override public function execute():Action {
 			bloc.remove(oldLoc);
-			//TODO: path wires
 			for each (var wire:Wire in bloc.associatedWires)
 				Wire.place(wire);
 			bloc.place(newLoc);

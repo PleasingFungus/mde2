@@ -59,7 +59,6 @@ package LevelStates {
 		public var viewingComments:Boolean;
 		private var displayTime:DTime;
 		private var displayDelay:DDelay;
-		private var preserveModule:Boolean;
 		private var testText:FlxText;
 		private var testBG:FlxSprite;
 		private var lastRunTime:Number;
@@ -448,11 +447,12 @@ package LevelStates {
 		private function createNewModule(moduleType:Class):void {
 			var archetype:Module = Module.getArchetype(moduleType);
 			if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
+				var gridLoc:Point = U.pointToGrid(U.mouseLoc);
 				var newModule:Module;
 				if (archetype.getConfiguration())
-					newModule = new moduleType( -1, -1, archetype.getConfiguration().value);
+					newModule = new moduleType(gridLoc.x, gridLoc.y, archetype.getConfiguration().value);
 				else
-					newModule = new moduleType( -1, -1);
+					newModule = new moduleType(gridLoc.x, gridLoc.y);
 				newModule.initialize();
 				
 				modules.push(newModule);
@@ -460,8 +460,6 @@ package LevelStates {
 				displayModules.push(midLayer.add(displayModule));
 				currentBloc = addBlocFromModule(displayModule);
 				addRecentModule(moduleType);
-				
-				preserveModule = true;
 			}
 		}
 		
@@ -539,7 +537,6 @@ package LevelStates {
 		
 		private function updateUI():void {
 			UIChanged = false;
-			preserveModule = false;
 			
 			var members:Array = upperLayer.members.slice(); //copy, to prevent updating new members
 			for (var i:int = members.length - 1; i >= 0; i--) {

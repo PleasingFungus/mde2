@@ -10,14 +10,16 @@ package LevelStates {
 	 */
 	public class Grid {
 		
-		public var horizontalLines:Dictionary;
-		public var verticalLines:Dictionary;
-		public var carriersAtPoints:Dictionary;
+		private var horizontalLines:Dictionary;
+		private var verticalLines:Dictionary;
+		private var modulePoints:Dictionary;
+		private var carrierPoints:Dictionary;
 		
 		public function Grid() {
 			horizontalLines = new Dictionary;
 			verticalLines = new Dictionary;
-			carriersAtPoints = new Dictionary;
+			modulePoints = new Dictionary;
+			carrierPoints = new Dictionary;
 		}
 		
 		
@@ -38,39 +40,52 @@ package LevelStates {
 		}
 		
 		public function carriersAtPoint(p:Point):Vector.<Carrier> {
-			return carriersAtPoints[p.x + U.COORD_DELIM + p.y];
+			return carrierPoints[pointString(p)];
 		}
 		
 		public function addCarrierAtPoint(p:Point, carrier:Carrier):void {
-			var coordStr:String = p.x + U.COORD_DELIM + p.y;
-			var carriers:Vector.<Carrier> = carriersAtPoints[coordStr];
-			if (!carriers) carriers = carriersAtPoints[coordStr] = new Vector.<Carrier>;
+			var coordStr:String = pointString(p);
+			
+			if (modulePoints[coordStr])
+				throw new Error("Can't add a wire inside a module!");
+			
+			var carriers:Vector.<Carrier> = carrierPoints[coordStr];
+			if (!carriers) carriers = carrierPoints[coordStr] = new Vector.<Carrier>;
+
 			carriers.push(carrier);
 		}
 		
 		public function removeCarrierFromPoint(p:Point, carrier:Carrier):void {
-			var coordStr:String = p.x + U.COORD_DELIM + p.y;
-			var carriers:Vector.<Carrier> = carriersAtPoints[coordStr];
-			carriers.splice(carriers.indexOf(carrier), 1);
-			if (!carriers.length) carriersAtPoints[coordStr] = null;
-		}
-		
-		public function objTypeAtPoint(p:Point):Class {
-			var contents:* = carriersAtPoints[p.x + U.COORD_DELIM + p.y];
-			if (!contents)
-				return null;
-			if (contents is Module)
-				return Module;
-			return Vector;
+			var coordStr:String = pointString(p);
+			
+			var carriers:Vector.<Carrier> = carrierPoints[coordStr];
+			if (!carriers)
+				throw new Error("Can't remove a wire where none's present!");
+			
+			var carrierIndex:int = carriers.indexOf(carrier);
+			if (carrierIndex == -1)
+				throw new Error("Can't remove a wire that's not present!");
+			
+			if (carriers.length == 1)
+				carrierPoints[coordStr] = null;
+			else
+				carriers.splice(carrierIndex, 1);
 		}
 		
 		public function setPointContents(p:Point, module:Module):void {
-			carriersAtPoints[p.x + U.COORD_DELIM + p.y] = module;
+			var coordStr:String = pointString(p);
+			if (carrierPoints[coordStr])
+				throw new Error("Can't stomp on wires with a module!");
+			if (module == null && !modulePoints[coordStr])
+				throw new Error("Removing a module that wasn't present!"); //dubious;
+			modulePoints[coordStr] = module;
 		}
 		
 		public function moduleContentsAtPoint(p:Point):Module {
-			return carriersAtPoints[p.x + U.COORD_DELIM + p.y];
+			return modulePoints[pointString(p)];
 		}
+		
+		private function pointString(p:Point):String { return p.x + U.COORD_DELIM + p.y; }
 		
 	}
 

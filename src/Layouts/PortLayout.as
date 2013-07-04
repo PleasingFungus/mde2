@@ -69,12 +69,8 @@ package Layouts {
 		public function get validPosition():Boolean {
 			if (!port.isOutput) return true;
 			
-			var objType:Class = U.state.grid.objTypeAtPoint(Loc);
-			if (objType == null)
-				return true;
-			if (objType == Module)
+			if (U.state.grid.moduleContentsAtPoint(Loc))
 				return false;
-			
 			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(Loc))
 				if (carrier.getSource() && carrier.getSource() != port)
 					return false;

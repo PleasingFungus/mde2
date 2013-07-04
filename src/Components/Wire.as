@@ -49,11 +49,11 @@ package Components {
 			}
 			
 			lastPathEnd = this.end;
-			return pathSucceeded;
+			return pathSucceeded && this.end.equals(end);
 		}
 		
 		protected function smartPath(start:Point, target:Point):Vector.<Point> {
-			if (constrained && U.state.grid.objTypeAtPoint(start) == Module)
+			if (constrained && U.state.grid.moduleContentsAtPoint(start))
 				return null;
 			
 			var manhattan:int = C.manhattan(start, target);
@@ -160,7 +160,7 @@ package Components {
 		protected function dumbPath(start:Point, target:Point):Vector.<Point> {
 			var path:Vector.<Point> = new Vector.<Point>;
 			path.push(start);
-			if (constrained && U.state.grid.objTypeAtPoint(start) == Module)
+			if (constrained && U.state.grid.moduleContentsAtPoint(start))
 				return path;
 			
 			var pathEnd:Point = end;
@@ -173,7 +173,7 @@ package Components {
 					nextPoint = pathEnd.add(nextDelta);
 				}
 				
-				if (constrained && (U.state.grid.lineContents(pathEnd, nextPoint) || U.state.grid.objTypeAtPoint(nextPoint) == Module))
+				if (constrained && (U.state.grid.lineContents(pathEnd, nextPoint) || U.state.grid.moduleContentsAtPoint(nextPoint)))
 					break;
 				
 				path.push(pathEnd = nextPoint);
@@ -186,13 +186,13 @@ package Components {
 		}
 		
 		protected function mayMoveThrough(p:Point, delta:Point):Boolean {
-			var objType:Class = U.state.grid.objTypeAtPoint(p);
-			if (objType == null)
-				return true;
-			if (objType == Module)
+			if (U.state.grid.moduleContentsAtPoint(p))
 				return false;
 			
 			var carriers:Vector.<Carrier> = U.state.grid.carriersAtPoint(p);
+			if (!carriers)
+				return true;
+			
 			for each (var carrier:Carrier in carriers)
 				if (carrier is Port)
 					return false;
@@ -205,7 +205,7 @@ package Components {
 		}
 		
 		public function validPosition():Boolean {
-			if (U.state.grid.objTypeAtPoint(path[0]) == Module || U.state.grid.objTypeAtPoint(path[path.length -1]) == Module)
+			if (U.state.grid.moduleContentsAtPoint(path[0]) || U.state.grid.moduleContentsAtPoint(path[path.length -1]))
 				return false;
 			
 			var source:Port = null;
@@ -275,11 +275,13 @@ package Components {
 		
 		public function getPotentialConnections():Vector.<Carrier> {
 			var potentialConnections:Vector.<Carrier> = new Vector.<Carrier>;
-			for each (var p:Point in path)
-				if (U.state.grid.objTypeAtPoint(p) == Vector)
-					for each (var connection:Carrier in U.state.grid.carriersAtPoint(p))
+			for each (var p:Point in path) {
+				var carriers:Vector.<Carrier> = U.state.grid.carriersAtPoint(p);
+				if (carriers)
+					for each (var connection:Carrier in carriers)
 						if (connection != this && potentialConnections.indexOf(connection) == -1 && (isEndpoint(p) || connection.isEndpoint(p)))
 							potentialConnections.push(connection);
+			}
 			return potentialConnections;
 		}
 		

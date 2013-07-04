@@ -269,13 +269,12 @@ package Modules {
 			iterContainedPoints(function p(X:int, Y:int):void {
 				if (!OK.p) return;
 				var point:Point = new Point(X, Y);
-				var pointContents:Class = U.state.grid.objTypeAtPoint(point);
-				if (pointContents != Module) {
-					if (pointContents != null)
-						OK.p = false;
+				if (U.state.grid.carriersAtPoint(point)) {
+					OK.p = false;
 					return;
 				}
-				OK.p = self == U.state.grid.moduleContentsAtPoint(point);
+				var moduleAtPoint:Module = U.state.grid.moduleContentsAtPoint(point);
+				OK.p = !moduleAtPoint || self == moduleAtPoint;
 			});
 			
 			if (!OK.p)

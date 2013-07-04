@@ -314,8 +314,8 @@ package Displays {
 		
 		protected function drawJoins():void {
 			if (wire.deployed) {
-				drawJoin(wire.path[0]);
-				drawJoin(wire.path[wire.path.length - 1]);
+				drawJoin(wire.start);
+				drawJoin(wire.end);
 			}
 		}
 		

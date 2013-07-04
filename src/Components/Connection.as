@@ -8,11 +8,17 @@ package Components {
 		
 		public var primary:Carrier;
 		public var secondary:Carrier;
-		public var point:Point;
-		public function Connection(Primary:Carrier, Secondary:Carrier, point:Point) {
+		public var meeting:Point;
+		public var origin:Point;
+		public function Connection(Primary:Carrier, Secondary:Carrier, Meeting:Point) {
 			primary = Primary;
 			secondary = Secondary;
-			this.point = point;
+			meeting = Meeting;
+			if (secondary.isEndpoint(meeting) && secondary is Wire) {
+				var wire:Wire = secondary as Wire;
+				origin = meeting.equals(wire.start) ? wire.end : wire.start;
+			} else 
+				origin = meeting;
 		}
 		
 	}

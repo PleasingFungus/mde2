@@ -46,7 +46,7 @@ package Components {
 				pathSucceeded = false;
 			}
 			
-			lastPathEnd = path[path.length - 1];
+			lastPathEnd = this.end;
 			return pathSucceeded;
 		}
 		
@@ -149,7 +149,7 @@ package Components {
 				return path;
 			
 			//try to dumbpath to continue
-			var pathToEnd:Vector.<Point> = dumbPath(path[path.length - 1], target);
+			var pathToEnd:Vector.<Point> = dumbPath(end, target);
 			for (i = 1; i < pathToEnd.length; i++)
 				path.push(pathToEnd[i]);
 			return path;
@@ -161,7 +161,7 @@ package Components {
 			if (constrained && U.state.grid.objTypeAtPoint(start) == Module)
 				return path;
 			
-			var pathEnd:Point = path[path.length - 1];
+			var pathEnd:Point = end;
 			var nextPoint:Point;
 			for (var delta:Point = target.subtract(pathEnd); delta.x || delta.y; delta = target.subtract(pathEnd)) {
 				var nextDelta:Point = delta.x > 0 ? RIGHT_DELTA : LEFT_DELTA;
@@ -281,8 +281,8 @@ package Components {
 		
 		protected function checkForConnections():void {
 			log(this +" adding connections");
-			addConnections(U.state.grid.carriersAtPoint(path[0]));
-			addConnections(U.state.grid.carriersAtPoint(path[path.length - 1]));
+			addConnections(U.state.grid.carriersAtPoint(start));
+			addConnections(U.state.grid.carriersAtPoint(end));
 			checkForEndpoints();
 			//TODO: for each (var connection:Carrier in getPotentialConnections()) { addConnection(connection); joinConnection(connection); }
 		}
@@ -321,11 +321,11 @@ package Components {
 			if (carrier is Wire) {
 				var wire:Wire = carrier as Wire;
 				var point:Point, endpoint:Point;
-				for each (endpoint in [path[0], path[path.length - 1]])
+				for each (endpoint in [start, end])
 					for each (point in wire.path)
 						if (point.equals(endpoint))
 							return endpoint;
-				for each (endpoint in [wire.path[0], wire.path[wire.path.length - 1]])
+				for each (endpoint in [start, end])
 					for each (point in path)
 						if (point.equals(endpoint))
 							return endpoint;
@@ -354,7 +354,7 @@ package Components {
 		}
 		
 		public function isEndpoint(p:Point):Boolean {
-			return path[0].equals(p) || path[path.length - 1].equals(p);
+			return start.equals(p) || end.equals(p);
 		}
 		
 		
@@ -439,7 +439,7 @@ package Components {
 		}
 		
 		public function toString():String {
-			return "WIRE: " + path[0].x + ", " + path[0].y + " -> " + path[path.length - 1].x + ", " + path[path.length -1].y;
+			return "WIRE: " + start.x + ", " + start.y + " -> " + end.x + ", " + end.y;
 		}
 		
 		protected function log(...args):void {
@@ -473,6 +473,14 @@ package Components {
 				throw new Error("Wire failed to path!");
 			w.constrained = true;
 			return w;
+		}
+		
+		public function get start():Point {
+			return path[0];
+		}
+		
+		public function get end():Point {
+			return path[path.length - 1];
 		}
 		
 		private const LEFT_DELTA:Point = new Point( -1, 0);

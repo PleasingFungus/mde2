@@ -14,7 +14,9 @@ package Actions {
 			super();
 			this.bloc = bloc;
 			this.newLoc = newLoc;
-			
+		}
+		
+		public function specialExecute():void {
 			if (!U.state.actionStack.length) {
 				execute();
 				return;
@@ -41,10 +43,10 @@ package Actions {
 				return;
 			}
 			
-			//TODO: path wires
+			bloc.place(newLoc);
 			for each (var wire:Wire in bloc.associatedWires)
 				Wire.place(wire);
-			bloc.place(newLoc);
+			
 			U.state.actionStack.push(new MigrateBlocAction(bloc, newLoc, oldLoc, cLastAction.history));
 			U.state.save();
 		}

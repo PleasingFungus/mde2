@@ -37,9 +37,8 @@ package Layouts {
 			var a:Point = tuple.a.Loc;
 			var b:Point = tuple.b.Loc;
 			for each (var wire:InternalWire in wires) {
-				var wPath:Vector.<Point> = wire.path;
-				if ((wPath[0].equals(a) && wPath[wPath.length - 1].equals(b)) ||
-					(wPath[0].equals(b) && wPath[wPath.length - 1].equals(a)))
+				if ((wire.start.equals(a) && wire.end.equals(b)) ||
+					(wire.start.equals(b) && wire.end.equals(a)))
 					return wire;
 			}
 			

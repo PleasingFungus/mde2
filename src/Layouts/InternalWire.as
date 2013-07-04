@@ -40,7 +40,7 @@ package Layouts {
 		public function update():void { }
 		
 		public function shiftTo(newEnd:Point):void {
-			var delta:Point = newEnd.subtract(path[reversed ? path.length - 1 : 0]);
+			var delta:Point = newEnd.subtract(reversed ? end : start);
 			for each (var p:Point in path) {
 				p.x += delta.x;
 				p.y += delta.y;

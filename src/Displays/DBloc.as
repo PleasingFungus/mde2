@@ -91,7 +91,7 @@ package Displays {
 			else if (tick) {
 				if (!U.buttonManager.moused && bloc.validPosition(U.pointToGrid(U.mouseLoc))) {
 					FlxG.camera.shake(0.01 * U.zoom, 0.05);
-					new MoveBlocAction(bloc, U.pointToGrid(U.mouseLoc));
+					new MoveBlocAction(bloc, U.pointToGrid(U.mouseLoc)).specialExecute();
 					setSelect(true);
 				} else if (U.buttonManager.moused) {
 					bloc.destroy();
@@ -200,10 +200,23 @@ package Displays {
 		private var connectionSprite:FlxSprite;
 		private function debugRenderBlocConnections():void {
 			if (!connectionSprite)
-				connectionSprite = new FlxSprite().makeGraphic(4, 4, 0xb0ff00ff);
+				connectionSprite = new FlxSprite().makeGraphic(4, 4);
+			
+			connectionSprite.color = 0xb0ff00ff;
 			for each (var connection:Connection in bloc.connections) {
-				connectionSprite.x = connection.point.x * U.GRID_DIM;
-				connectionSprite.y = connection.point.y * U.GRID_DIM;
+				connectionSprite.x = connection.meeting.x * U.GRID_DIM;
+				connectionSprite.y = connection.meeting.y * U.GRID_DIM;
+				connectionSprite.draw();
+				
+			}
+			
+			connectionSprite.color = 0xb0ffff00;
+			for each (connection in bloc.connections) {
+				if (connection.origin.equals(connection.meeting))
+					continue;
+				
+				connectionSprite.x = connection.origin.x * U.GRID_DIM;
+				connectionSprite.y = connection.origin.y * U.GRID_DIM;
 				connectionSprite.draw();
 			}
 		}

@@ -186,7 +186,7 @@ package Components {
 			for (var connectionIndex:int = 0; connectionIndex < connections.length; connectionIndex++) {
 				var connection:Connection = connections[connectionIndex];
 				wire = associatedWires[connectionIndex];
-				var pathSuccess:Boolean = wire.attemptPath(connection.point.clone(), connection.point.add(deltaSinceRoot), true, true);
+				var pathSuccess:Boolean = wire.attemptPath(connection.origin.clone(), connection.meeting.add(deltaSinceRoot), true, true);
 				if (!pathSuccess) {
 					rollback();
 					for each (var wireHistory:WireHistory in history)
@@ -194,8 +194,10 @@ package Components {
 					return false;
 				}
 				
-				Wire.place(wire);
-				rollbackWires.push(wire);
+				if (connectionIndex < connections.length - 1) {
+					Wire.place(wire);
+					rollbackWires.push(wire);
+				}
 			}
 			
 			rollback();
@@ -246,21 +248,21 @@ package Components {
 		}
 		
 		protected function generateAssociatedWires():Vector.<Wire> {
-			var wires:Vector.<Wire> = new Vector.<Wire>;
+			var assocWires:Vector.<Wire> = new Vector.<Wire>;
 			newAssociatedWires = new Vector.<Wire>;
 			for each (var connection:Connection in connections) {
 				if (connection.secondary is Wire) {
 					var wire:Wire = connection.secondary as Wire;
-					if (wire.path[0].equals(connection.point) || wire.path[wire.path.length - 1].equals(connection.point)) {
-						wires.push(wire);
+					if (wire.start.equals(connection.meeting) || wire.end.equals(connection.meeting)) { //can be extended
+						assocWires.push(wire);
 						continue;
 					}
 				}
-				var newWire:Wire = new Wire(connection.point);
-				wires.push(newWire);
+				var newWire:Wire = new Wire(connection.meeting);
+				assocWires.push(newWire);
 				newAssociatedWires.push(newWire);
 			}
-			return wires;
+			return assocWires;
 		}
 		
 		

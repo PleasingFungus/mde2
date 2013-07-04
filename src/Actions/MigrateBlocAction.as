@@ -22,18 +22,36 @@ package Actions {
 		}
 		
 		override public function execute():Action {
+			var wireHistory:WireHistory;
+			var associatedWires:Vector.<Wire> = new Vector.<Wire>;
+			for each (wireHistory in history) {
+				Wire.remove(wireHistory.wire);
+				associatedWires.push(wireHistory.wire);
+			}
+			bloc.associatedWires = associatedWires;
+				
 			bloc.remove(oldLoc);
-			for each (var wire:Wire in bloc.associatedWires)
-				Wire.place(wire);
 			bloc.place(newLoc);
+			for each (wireHistory in history)
+				Wire.place(wireHistory.wire);
 			return super.execute();
 		}
 		
 		override public function revert():Action {
+			var wireHistory:WireHistory;
+			var associatedWires:Vector.<Wire> = new Vector.<Wire>;
+			for each (wireHistory in history) {
+				Wire.remove(wireHistory.wire);
+				associatedWires.push(wireHistory.wire);
+			}
+			bloc.associatedWires = associatedWires;
+			
 			bloc.remove(newLoc);
-			for each (var wireHistory:WireHistory in history)
-				wireHistory.revert();
 			bloc.place(oldLoc);
+			for each (wireHistory in history) {
+				wireHistory.revert();
+				Wire.place(wireHistory.wire);
+			}
 			return super.revert();
 		}
 		

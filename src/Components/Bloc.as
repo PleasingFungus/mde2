@@ -102,7 +102,7 @@ package Components {
 		
 		public function moveTo(p:Point):Boolean {
 			if (origin.equals(p) || (lastLoc && lastLoc.equals(p)))
-				return false;
+				return true;
 			lastLoc = p;
 				
 			//shift modules/wires			

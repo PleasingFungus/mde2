@@ -185,8 +185,8 @@ package Displays {
 		override public function draw():void {
 			super.draw();
 			checkAssociatedWires();
-			if (DEBUG.RENDER_BLOC_CONNECTIONS)
-				debugRenderBlocConnections();
+			//if (DEBUG.RENDER_BLOC_CONNECTIONS)
+				//debugRenderBlocConnections();
 		}
 		
 		private function checkAssociatedWires():void {
@@ -197,34 +197,29 @@ package Displays {
 			bloc.newAssociatedWires = null;
 		}
 		
-		private var connectionSprite:FlxSprite;
-		private function debugRenderBlocConnections():void {
-			if (!connectionSprite)
-				connectionSprite = new FlxSprite().makeGraphic(4, 4);
-			
-			connectionSprite.color = 0xb0ff00ff;
-			for each (var connection:Connection in bloc.connections) {
-				connectionSprite.x = connection.meeting.x * U.GRID_DIM;
-				connectionSprite.y = connection.meeting.y * U.GRID_DIM;
-				connectionSprite.draw();
-				
-			}
-			
-			connectionSprite.color = 0xb0ffff00;
-			for each (connection in bloc.connections) {
-				if (connection.origin.equals(connection.meeting))
-					continue;
-				
-				connectionSprite.x = connection.origin.x * U.GRID_DIM;
-				connectionSprite.y = connection.origin.y * U.GRID_DIM;
-				connectionSprite.draw();
-			}
-		}
-		
-		private function makeBlocConnections():void {
-			for each (var connection:Connection in bloc.connections)
-				connection
-		}
+		//private var connectionSprite:FlxSprite;
+		//private function debugRenderBlocConnections():void {
+			//if (!connectionSprite)
+				//connectionSprite = new FlxSprite().makeGraphic(4, 4);
+			//
+			//connectionSprite.color = 0xb0ff00ff;
+			//for each (var connection:Connection in bloc.connections) {
+				//connectionSprite.x = connection.meeting.x * U.GRID_DIM;
+				//connectionSprite.y = connection.meeting.y * U.GRID_DIM;
+				//connectionSprite.draw();
+				//
+			//}
+			//
+			//connectionSprite.color = 0xb0ffff00;
+			//for each (connection in bloc.connections) {
+				//if (connection.origin.equals(connection.meeting))
+					//continue;
+				//
+				//connectionSprite.x = connection.origin.x * U.GRID_DIM;
+				//connectionSprite.y = connection.origin.y * U.GRID_DIM;
+				//connectionSprite.draw();
+			//}
+		//}
 		
 	}
 

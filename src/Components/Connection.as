@@ -6,19 +6,19 @@ package Components {
 	 */
 	public class Connection {
 		
-		public var primary:Carrier;
-		public var secondary:Carrier;
-		public var meeting:Point;
+		public var carrier:Carrier;
+		public var points:Vector.<Point>;
 		public var origin:Point;
-		public function Connection(Primary:Carrier, Secondary:Carrier, Meeting:Point) {
-			primary = Primary;
-			secondary = Secondary;
-			meeting = Meeting;
-			if (secondary.isEndpoint(meeting) && secondary is Wire) {
-				var wire:Wire = secondary as Wire;
-				origin = meeting.equals(wire.start) ? wire.end : wire.start;
+		public function Connection(carrier:Carrier, point:Point) {
+			this.carrier = carrier;
+			points = new Vector.<Point>;
+			points.push(point);
+			
+			if (carrier.isEndpoint(point) && carrier is Wire) {
+				var wire:Wire = carrier as Wire;
+				origin = point.equals(wire.start) ? wire.end : wire.start;
 			} else 
-				origin = meeting;
+				origin = point;
 		}
 		
 	}

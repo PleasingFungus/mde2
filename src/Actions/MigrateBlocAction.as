@@ -3,6 +3,7 @@ package Actions {
 	import flash.geom.Point;
 	import Components.Bloc;
 	import Components.WireHistory;
+	import Components.AssociatedWire;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -22,20 +23,11 @@ package Actions {
 		}
 		
 		override public function execute():Action {
-			var wireHistory:WireHistory;
-
-			bloc.connections = bloc.findConnections();
-			var associatedWires:Vector.<Wire> = new Vector.<Wire>;
-			for each (wireHistory in history) {
-				Wire.remove(wireHistory.wire);
-				associatedWires.push(wireHistory.wire);
-			}
-			bloc.associatedWires = associatedWires;
-				
+			bloc.generateAssociatedWires();
+			for each (var assocWire:AssociatedWire in bloc.allAssociatedWires)
+				history.push(new WireHistory(assocWire.wire));
 			bloc.remove(oldLoc);
 			bloc.place(newLoc);
-			for each (wireHistory in history)
-				Wire.place(wireHistory.wire);
 			return super.execute();
 		}
 		
@@ -43,7 +35,7 @@ package Actions {
 			var wireHistory:WireHistory;
 			for each (wireHistory in history)
 				Wire.remove(wireHistory.wire);
-			bloc.associatedWires = null;
+			bloc.singlyAssociatedWires = bloc.multiplyAssociatedWires = null;
 			
 			bloc.remove(newLoc);
 			bloc.place(oldLoc);

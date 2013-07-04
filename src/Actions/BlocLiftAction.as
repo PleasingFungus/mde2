@@ -1,4 +1,5 @@
 package Actions {
+	import Components.AssociatedWire;
 	import Components.Bloc;
 	import Components.Wire;
 	import flash.geom.Point;
@@ -19,11 +20,11 @@ package Actions {
 		}
 		
 		override public function execute():Action {
-			bloc.associatedWires = bloc.generateAssociatedWires();
+			bloc.generateAssociatedWires();
 			
 			history = new Vector.<WireHistory>;
-			for each (var wire:Wire in bloc.associatedWires)
-				history.push(new WireHistory(wire));
+			for each (var assocWire:AssociatedWire in bloc.allAssociatedWires)
+					history.push(new WireHistory(assocWire.wire));
 			
 			bloc.remove(oldLoc);
 			bloc.mobilize();
@@ -33,7 +34,7 @@ package Actions {
 		override public function revert():Action {
 			for each (var wireHistory:WireHistory in history)
 				wireHistory.revert();
-			bloc.associatedWires = null;
+			bloc.singlyAssociatedWires = bloc.multiplyAssociatedWires = null;
 			bloc.place(oldLoc);
 			return super.revert();
 		}

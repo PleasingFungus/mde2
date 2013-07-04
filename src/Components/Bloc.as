@@ -14,8 +14,9 @@ package Components {
 		
 		public var modules:Vector.<Module>;
 		public var wires:Vector.<Wire>;
-		public var connections:Vector.<Connection>;
-		public var associatedWires:Vector.<Wire>;
+		protected var connections:Vector.<Connection>;
+		public var singlyAssociatedWires:Vector.<AssociatedWire>;
+		public var multiplyAssociatedWires:Vector.<AssociatedWire>;
 		public var newAssociatedWires:Vector.<Wire>;
 		public var origin:Point;
 		public var lastLoc:Point;
@@ -32,7 +33,7 @@ package Components {
 		public function validPosition(p:Point):Boolean {
 			if (!moveTo(p))
 				return false;
-			if (associatedWires)
+			if (singlyAssociatedWires) //already did a full test
 				return true;
 			
 			for each (var module:Module in modules)
@@ -56,7 +57,11 @@ package Components {
 			for each (var module:Module in modules)
 				module.register();
 			
-			connections = findConnections();
+			if (singlyAssociatedWires != null) {
+				for each (var assocWire:AssociatedWire in allAssociatedWires)
+					Wire.place(assocWire.wire);
+				singlyAssociatedWires = multiplyAssociatedWires = null;
+			}
 			
 			exists = true;
 			return true;
@@ -97,11 +102,10 @@ package Components {
 				module.exists = true;
 			for each (var wire:Wire in wires)
 				wire.exists = true;
-			for each (wire in associatedWires)
-				if (wire.deployed) {
-					Wire.remove(wire);
-					wire.exists = true;
-				}
+			for each (var associatedWire:AssociatedWire in allAssociatedWires) {
+				Wire.remove(associatedWire.wire);
+				associatedWire.wire.exists = true;
+			}
 			exists = true;
 		}
 		
@@ -119,42 +123,43 @@ package Components {
 			}
 			
 			for each (var wire:Wire in wires)
-				for each (var wirePoint:Point in wire.path) {
-					wirePoint.x += delta.x;
-					wirePoint.y += delta.y;
-				}
+				wire.shift(delta);
 			
 			var oldLoc:Point = origin;
 			origin = p;
 			
-			if (!associatedWires)
+			if (!singlyAssociatedWires)
 				return true;
+			
+			for each (var associatedWire:AssociatedWire in multiplyAssociatedWires)
+				associatedWire.wire.shift(delta);
+			
 			//attempt path
 			if (attemptPath())
 				return true;
 			
+			delta = new Point( -delta.x, -delta.y);
 			for each (module in modules) {
-				module.x -= delta.x;
-				module.y -= delta.y;
+				module.x += delta.x;
+				module.y += delta.y;
 			}
 			for each (wire in wires)
-				for each (wirePoint in wire.path) {
-					wirePoint.x -= delta.x;
-					wirePoint.y -= delta.y;
-				}
+				wire.shift(delta);
+			for each (associatedWire in multiplyAssociatedWires)
+				associatedWire.wire.shift(delta);
 			origin = oldLoc;
 			return false;
 		}
 		
 		protected function attemptPath():Boolean {
-			var module:Module, wire:Wire;
+			var module:Module, wire:Wire, associatedWire:AssociatedWire;
 			var rollbackModules:Vector.<Module> = new Vector.<Module>;
 			var rollbackWires:Vector.<Wire> = new Vector.<Wire>;
 			
 			//build assocwire history
 			var history:Vector.<WireHistory> = new Vector.<WireHistory>;
-			for each (wire in associatedWires)
-				history.push(new WireHistory(wire));
+			for each (associatedWire in singlyAssociatedWires)
+				history.push(new WireHistory(associatedWire.wire));
 			
 			function rollback():Boolean {
 				for each (module in rollbackModules) {
@@ -187,11 +192,18 @@ package Components {
 				rollbackWires.push(wire);
 			}
 			
+			for each (associatedWire in multiplyAssociatedWires) {
+				if (!associatedWire.wire.validPosition())
+					return rollback();
+				
+				Wire.place(associatedWire.wire);
+				rollbackWires.push(associatedWire.wire);
+			}
+			
 			//for each assocwire, attempt path, place
-			for (var connectionIndex:int = 0; connectionIndex < connections.length; connectionIndex++) {
-				var connection:Connection = connections[connectionIndex];
-				wire = associatedWires[connectionIndex];
-				var pathSuccess:Boolean = wire.attemptPath(connection.origin.clone(), connection.meeting.add(deltaSinceRoot), true, true);
+			for each (associatedWire in singlyAssociatedWires) {
+				var pathSuccess:Boolean = associatedWire.wire.attemptPath(associatedWire.connection.origin.clone(),
+																		  associatedWire.connection.points[0].add(deltaSinceRoot), true, true);
 				if (!pathSuccess) {
 					rollback();
 					for each (var wireHistory:WireHistory in history)
@@ -199,28 +211,84 @@ package Components {
 					return false;
 				}
 				
-				if (connectionIndex < connections.length - 1) {
-					Wire.place(wire);
-					rollbackWires.push(wire);
-				}
+				Wire.place(associatedWire.wire);
+				rollbackWires.push(associatedWire.wire);
 			}
 			
 			rollback();
 			return true;
 		}
 		
+		
+		
+		public function generateAssociatedWires():void {
+		//2. to gen, make an empty list of associates (containing a ConnectedCarrier & a wire ref apiece). foreach ConnectedCarrier
+			singlyAssociatedWires = new Vector.<AssociatedWire>;
+			multiplyAssociatedWires = new Vector.<AssociatedWire>;
+			newAssociatedWires = new Vector.<Wire>;
+			
+			connections = findConnections();
+			
+			function generateAssociatedWire(connection:Connection):void {
+				var wire:Wire = new Wire(connection.points[0]);
+				singlyAssociatedWires.push(new AssociatedWire(wire, connection));
+				newAssociatedWires.push(wire);
+			}
+			
+			for each (var connection:Connection in connections) {
+				//i. if it's a port, assert only one connection loc, then gen a new wire.
+				if (connection.carrier is Port) {
+					if (connection.points.length > 1)
+						throw new Error("Port connected at multiple locations!");
+					generateAssociatedWire(connection);
+					continue;
+				}
+				
+				if (connection.carrier is Wire) {
+					var wire:Wire = connection.carrier as Wire;
+					if (connection.points.length > 1) {
+						//just add it to the list of associates directly.
+						Wire.remove(wire); //dubious !
+						multiplyAssociatedWires.push(new AssociatedWire(wire, connection));
+					} else if (wire.isEndpoint(connection.points[0])) {
+						Wire.remove(wire);
+						singlyAssociatedWires.push(new AssociatedWire(wire, connection));
+					} else
+						//if there's only one connection loc, gen a new wire.
+						generateAssociatedWire(connection);
+					continue;
+				}
+				
+				throw new Error("Unknown carrier type!");
+			}
+		}
+		
+		//1. for each port & wire in the bloc, note down all the distinct things that they connect to (universally), and the distinct points at which each is connected.
+			//list of Connections; each has an externally associated carrier & a list of connection points. no primary carrier; that's irrelevant.
 		public function findConnections():Vector.<Connection> {
 			var connections:Vector.<Connection> = new Vector.<Connection>;
 			var carrier:Carrier;
+			
+			function addConnection(carrier:Carrier, loc:Point):void {
+				for each (var connection:Connection in connections)
+					if (connection.carrier == carrier) {
+						connection.points.push(loc);
+						return;
+					}
+				connections.push(new Connection(carrier, loc));
+			}
+			
 			for each (var module:Module in modules)
 				for each (var portLayout:PortLayout in module.layout.ports)
 					for each (carrier in portLayout.port.connections)
 						if (!carrierIncluded(carrier))
-							connections.push(new Connection(portLayout.port, carrier, portLayout.Loc));
+							addConnection(carrier, portLayout.Loc);
+			
 			for each (var wire:Wire in wires)
 				for each (carrier in wire.connections)
 					if (!carrierIncluded(carrier))
-						connections.push(new Connection(wire, carrier, wire.connectionLoc(carrier)));
+						addConnection(carrier, wire.connectionLoc(carrier));
+			
 			return connections;
 		}
 		
@@ -248,26 +316,6 @@ package Components {
 		
 		public function lift():void {	
 			new BlocLiftAction(this, U.pointToGrid(U.mouseLoc)).execute();
-		}
-		
-		public function generateAssociatedWires():Vector.<Wire> {
-			connections = findConnections();
-			
-			var assocWires:Vector.<Wire> = new Vector.<Wire>;
-			newAssociatedWires = new Vector.<Wire>;
-			for each (var connection:Connection in connections) {
-				if (connection.secondary is Wire) {
-					var wire:Wire = connection.secondary as Wire;
-					if (wire.start.equals(connection.meeting) || wire.end.equals(connection.meeting)) { //can be extended
-						assocWires.push(wire);
-						continue;
-					}
-				}
-				var newWire:Wire = new Wire(connection.meeting);
-				assocWires.push(newWire);
-				newAssociatedWires.push(newWire);
-			}
-			return assocWires;
 		}
 		
 		
@@ -348,6 +396,13 @@ package Components {
 			return new Bloc(modules, wires);
 		}
 		
+		public function get allAssociatedWires():Vector.<AssociatedWire> {
+			var allAssociatedWires:Vector.<AssociatedWire> = new Vector.<AssociatedWire>;
+			for each (var wireList:Vector.<AssociatedWire> in [singlyAssociatedWires, multiplyAssociatedWires])
+				for each (var assocWire:AssociatedWire in wireList)
+					allAssociatedWires.push(assocWire);
+			return allAssociatedWires;
+		}
 	}
 
 }

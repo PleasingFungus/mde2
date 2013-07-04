@@ -43,7 +43,8 @@ package Actions {
 				return;
 			}
 			
-			new MigrateBlocAction(bloc, newLoc, oldLoc, cLastAction.history).execute();
+			bloc.place(newLoc);
+			U.state.actionStack.push(new MigrateBlocAction(bloc, newLoc, oldLoc, cLastAction.history));
 		}
 		
 		override public function execute():Action {

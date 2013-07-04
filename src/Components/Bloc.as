@@ -209,7 +209,7 @@ package Components {
 			return true;
 		}
 		
-		protected function findConnections():Vector.<Connection> {
+		public function findConnections():Vector.<Connection> {
 			var connections:Vector.<Connection> = new Vector.<Connection>;
 			var carrier:Carrier;
 			for each (var module:Module in modules)

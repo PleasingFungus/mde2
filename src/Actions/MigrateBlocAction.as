@@ -23,6 +23,8 @@ package Actions {
 		
 		override public function execute():Action {
 			var wireHistory:WireHistory;
+
+			bloc.connections = bloc.findConnections();
 			var associatedWires:Vector.<Wire> = new Vector.<Wire>;
 			for each (wireHistory in history) {
 				Wire.remove(wireHistory.wire);

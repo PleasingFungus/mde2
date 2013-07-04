@@ -25,7 +25,6 @@ package Components {
 		public function Bloc(modules:Vector.<Module>, wires:Vector.<Wire>, Rooted:Boolean = true) {
 			this.modules = modules;
 			this.wires = wires;
-			connections = findConnections();
 			rooted = Rooted;
 			exists = true;
 		}
@@ -247,11 +246,13 @@ package Components {
 			return null;
 		}
 		
-		public function lift():void {			
+		public function lift():void {	
 			new BlocLiftAction(this, U.pointToGrid(U.mouseLoc)).execute();
 		}
 		
 		public function generateAssociatedWires():Vector.<Wire> {
+			connections = findConnections();
+			
 			var assocWires:Vector.<Wire> = new Vector.<Wire>;
 			newAssociatedWires = new Vector.<Wire>;
 			for each (var connection:Connection in connections) {

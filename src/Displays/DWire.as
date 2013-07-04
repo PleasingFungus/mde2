@@ -98,6 +98,9 @@ package Displays {
 			if (outsideScreen())
 				return;
 			
+			if (cachedLines && wire.cacheInvalid)
+				cachedLines = null;
+			
 			if (!cacheValid()) {
 				if (!canBuildCache()) {
 					drawDynamic();
@@ -153,6 +156,7 @@ package Displays {
 			for each (var point:Point in wire.path)
 				cachedPath.push(point.clone());
 			*/
+			wire.cacheInvalid = false;
 		}
 		
 		protected function breakSublineAt(end:int, delta:Point, lastDelta:Point):Boolean {

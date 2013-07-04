@@ -2,7 +2,7 @@ package Components {
 	import Components.Wire;
 	import flash.geom.Point;
 	import Layouts.PortLayout;
-	import LevelStates.WireHistory;
+	import Components.WireHistory;
 	import Modules.CustomModule;
 	import Modules.Module;
 	import Actions.BlocLiftAction;
@@ -46,6 +46,9 @@ package Components {
 		}
 		
 		public function place(p:Point):Boolean {
+			if (rooted)
+				return false;
+			
 			moveTo(p);
 			rooted = true;
 			
@@ -61,6 +64,9 @@ package Components {
 		}
 		
 		public function remove(p:Point):Boolean {
+			if (!rooted)
+				return false;
+			
 			for each (var module:Module in modules)
 				module.deregister();
 			for each (var wire:Wire in wires)
@@ -242,12 +248,10 @@ package Components {
 		}
 		
 		public function lift():void {			
-			associatedWires = generateAssociatedWires();
 			new BlocLiftAction(this, U.pointToGrid(U.mouseLoc)).execute();
-			mobilize();
 		}
 		
-		protected function generateAssociatedWires():Vector.<Wire> {
+		public function generateAssociatedWires():Vector.<Wire> {
 			var assocWires:Vector.<Wire> = new Vector.<Wire>;
 			newAssociatedWires = new Vector.<Wire>;
 			for each (var connection:Connection in connections) {

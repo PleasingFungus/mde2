@@ -107,8 +107,11 @@ package Displays {
 			for each (var dWire:DWire in displayConnections)
 				dWire.update();
 			
-			if (editButton)
-				editButton.update();
+			if (editButton) {
+				editButton.exists = module.deployed;
+				if (editButton.active && editButton.exists)
+					editButton.update();
+			}
 		}
 		
 		protected function outsideScreen():Boolean {
@@ -198,7 +201,7 @@ package Displays {
 			
 			drawInternals();
 			drawLabel();
-			if (editButton)
+			if (editButton && editButton.visible && editButton.exists)
 				editButton.draw();
 		}
 		

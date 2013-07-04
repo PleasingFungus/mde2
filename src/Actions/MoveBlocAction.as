@@ -43,12 +43,7 @@ package Actions {
 				return;
 			}
 			
-			bloc.place(newLoc);
-			for each (var wire:Wire in bloc.associatedWires)
-				Wire.place(wire);
-			
-			U.state.actionStack.push(new MigrateBlocAction(bloc, newLoc, oldLoc, cLastAction.history));
-			U.state.save();
+			new MigrateBlocAction(bloc, newLoc, oldLoc, cLastAction.history).execute();
 		}
 		
 		override public function execute():Action {

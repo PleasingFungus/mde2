@@ -193,7 +193,7 @@ package Displays {
 			if (!bloc.newAssociatedWires)
 				return;
 			for each (var wire:Wire in bloc.newAssociatedWires)
-				U.state.midLayer.add(new DWire(wire));
+				U.state.addDisplayWireFor(wire);
 			bloc.newAssociatedWires = null;
 		}
 		

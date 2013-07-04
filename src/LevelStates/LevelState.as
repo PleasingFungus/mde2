@@ -893,6 +893,10 @@ package LevelStates {
 			}
 		}
 		
+		public function addDisplayWireFor(wire:Wire):void {
+			displayWires.push(midLayer.add(new DWire(wire)));
+		}
+		
 		
 		private function forceScroll(group:FlxGroup = null):void {
 			group = group ? group : upperLayer;

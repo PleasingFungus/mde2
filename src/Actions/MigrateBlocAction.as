@@ -2,7 +2,7 @@ package Actions {
 	import Components.Wire;
 	import flash.geom.Point;
 	import Components.Bloc;
-	import LevelStates.WireHistory;
+	import Components.WireHistory;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg

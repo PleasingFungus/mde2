@@ -14,6 +14,7 @@ package Components {
 		public var FIXED:Boolean;
 		public var source:Port;
 		public var connections:Vector.<Carrier>;
+		public var cacheInvalid:Boolean;
 		
 		private var lastPathEnd:Point; //microoptimization in attemptPathTo
 		protected var constrained:Boolean = true;
@@ -39,6 +40,7 @@ package Components {
 			if (!newPath)
 				newPath = dumbPath(start, end);
 			path = newPath;
+			cacheInvalid = true;
 			
 			var pathSucceeded:Boolean = true;
 			while (constrained && path.length > 1 && !validPosition()) {
@@ -249,7 +251,7 @@ package Components {
 		}
 		
 		protected function register():Boolean {
-			if (path.length < 2) {
+			if (deployed || path.length < 2) {
 				exists = false;
 				return false;
 			}
@@ -365,7 +367,7 @@ package Components {
 		}
 		
 		protected function deregister():Boolean {
-			if (FIXED || path.length < 2)
+			if (FIXED || !deployed || path.length < 2)
 				return false;
 			
 			for each (var p:Point in path)

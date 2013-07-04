@@ -20,6 +20,7 @@ package Components {
 			wire.path = new Vector.<Point>;
 			for each (var point:Point in path)
 				wire.path.push(point.clone());
+			wire.cacheInvalid = true;
 			Wire.place(wire);
 		}
 	}

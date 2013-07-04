@@ -251,7 +251,9 @@ package Components {
 		}
 		
 		protected function register():Boolean {
-			if (deployed || path.length < 2) {
+			if (deployed)
+				return false;
+			if (path.length < 2) {
 				exists = false;
 				return false;
 			}

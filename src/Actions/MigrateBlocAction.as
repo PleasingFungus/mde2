@@ -39,19 +39,16 @@ package Actions {
 		
 		override public function revert():Action {
 			var wireHistory:WireHistory;
-			var associatedWires:Vector.<Wire> = new Vector.<Wire>;
-			for each (wireHistory in history) {
+			for each (wireHistory in history)
 				Wire.remove(wireHistory.wire);
-				associatedWires.push(wireHistory.wire);
-			}
-			bloc.associatedWires = associatedWires;
+			bloc.associatedWires = null;
 			
 			bloc.remove(newLoc);
 			bloc.place(oldLoc);
-			for each (wireHistory in history) {
+			
+			for each (wireHistory in history)
 				wireHistory.revert();
-				Wire.place(wireHistory.wire);
-			}
+			
 			return super.revert();
 		}
 		

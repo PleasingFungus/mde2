@@ -18,8 +18,9 @@ package  {
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
 	public class U {
-		public static const VERSION:String = "0.01";
+		public static const VERSION:String = "0.10";
 		
+		public static const BINARY_SAVES:Boolean = true;
 		public static const BLIT_ENABLED:Boolean = false;
 		public static var PLAIN_BG:Boolean = false;
 		

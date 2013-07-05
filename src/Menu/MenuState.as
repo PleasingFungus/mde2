@@ -1,5 +1,4 @@
 package Menu {
-	import Displays.Clock;
 	import Displays.Scroller;
 	import flash.net.URLLoader;
 	import Levels.Level;

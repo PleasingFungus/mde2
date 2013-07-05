@@ -2,6 +2,7 @@ package Modules {
 	import Components.Port;
 	import Displays.DModule;
 	import Displays.DClockModule;
+	import flash.utils.ByteArray;
 	import Values.Value;
 	import Values.NumericValue;
 	import UI.ColorText;

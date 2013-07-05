@@ -1,6 +1,7 @@
 package Modules {
 	import Displays.DModule;
 	import flash.geom.Point;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import Layouts.*;
 	import Components.Port;
@@ -133,14 +134,6 @@ package Modules {
 				if (!portLayout.port.isOutput)
 					maxDelay = Math.max(maxDelay, portLayout.port.remainingDelay());
 			return maxDelay;
-		}
-		
-		public function saveString():String {
-			return getSaveValues().join(U.ARG_DELIM);
-		}
-		
-		public function getSaveValues():Array {
-			return [ALL_MODULES.indexOf(Object(this).constructor), x, y];
 		}
 		
 		public function initialize():void {
@@ -310,6 +303,41 @@ package Modules {
 		}
 		
 		
+		
+		public function saveString():String {
+			return getSaveValues().join(U.ARG_DELIM);
+		}
+		
+		public function getSaveValues():Array {
+			return [ALL_MODULES.indexOf(Object(this).constructor), x, y];
+		}
+		
+		public function getBytes():ByteArray {
+			var bytes:ByteArray = new ByteArray;
+			var saveBytes:ByteArray = getSaveBytes();
+			var length:int = 4 + 1 + 4 + 4 + saveBytes.length;
+			bytes.writeInt(length);
+			bytes.writeByte(ALL_MODULES.indexOf(Object(this).constructor));
+			bytes.writeInt(x);
+			bytes.writeInt(y);
+			bytes.writeBytes(saveBytes);
+			if (bytes.length != length)
+				throw new Error("Error in length generation!");
+			
+			bytes.position = 0;
+			return bytes;
+		}
+		
+		protected function getSaveBytes():ByteArray {
+			var bytes:ByteArray = new ByteArray();
+			var saveValues:Array = getSaveValues();
+			for each (var value:int in saveValues.slice(3))
+				bytes.writeByte(value);
+			return bytes;
+		}
+		
+		
+		
 		public static function fromString(str:String, allowableTypes:Vector.<Class> = null):Module {
 			if (!str.length) return null;
 			
@@ -332,6 +360,42 @@ package Modules {
 				return new type(x, y, C.safeInt(args[3]))
 			return new type(x, y);
 		}
+		
+		public static function fromBytes(bytes:ByteArray, end:int, allowableTypes:Vector.<Class> = null):Module {
+			var moduleIndex:int = bytes.readByte();
+			var moduleType:Class = ALL_MODULES[moduleIndex];
+			if (!moduleType || (allowableTypes && allowableTypes.indexOf(moduleType) == -1))
+				return null;
+			
+			var x:int = bytes.readInt();
+			var y:int = bytes.readInt();
+			if (bytes.position == end)
+				return new moduleType(x, y);
+			if (bytes.position == end - 1)
+				return new moduleType(x, y, bytes.readByte());
+			if (moduleType == InstructionDemux)
+				return InstructionDemux.fromBytes(x, y, bytes, end);
+			if (moduleType == CustomModule)
+				return CustomModule.fromBytes(x, y, bytes, end, allowableTypes);
+			throw new Error("Unknown 'special module' type!");
+		}
+		
+		public static function modulesFromBytes(bytes:ByteArray, end:int, allowableTypes:Vector.<Class> = null):Vector.<Module> {
+			var modules:Vector.<Module> = new Vector.<Module>;
+			while (bytes.position < end) {
+				var moduleLength:int = bytes.readInt();
+				var moduleEnd:int = bytes.position - 4 + moduleLength;
+				var module:Module = fromBytes(bytes, moduleEnd, allowableTypes);
+				if (module)
+					modules.push(module);
+				if (bytes.position != moduleEnd)
+					throw new Error("Unread data in module load!");
+			}
+			return modules;
+		}
+		
+		
+		
 		
 		public static function init():void {
 			ModuleCategory.init();

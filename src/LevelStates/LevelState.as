@@ -1,4 +1,5 @@
 package LevelStates {
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import Helpers.DeleteHelper;
 	import Helpers.KeyHelper;
@@ -1086,6 +1087,42 @@ package LevelStates {
 		}
 		
 		public function genSaveString():String {
+			if (U.BINARY_SAVES)
+				return genBinarySave();
+			else
+				return genOldFormatSave();
+		}
+		
+		private function genBinarySave():String {
+			var moduleBytes:ByteArray = new ByteArray;
+			for each (var module:Module in modules)
+				if (module.exists && !module.FIXED)
+					moduleBytes.writeBytes(module.getBytes());
+			
+			var wireBytes:ByteArray = new ByteArray;
+			for each (var wire:Wire in wires)
+				if (wire.exists)
+					wireBytes.writeBytes(wire.getBytes());
+			
+			var miscBytes:ByteArray = new ByteArray;
+			if (level.delay)
+				miscBytes.writeInt(time.clockPeriod);
+			
+			var saveBytes:ByteArray = new ByteArray;
+			saveBytes.writeInt(4 + moduleBytes.length);
+			saveBytes.writeBytes(moduleBytes);
+			saveBytes.writeInt(4 + wireBytes.length);
+			saveBytes.writeBytes(wireBytes);
+			saveBytes.writeInt(4 + miscBytes.length);
+			saveBytes.writeBytes(miscBytes);
+			
+			saveBytes.deflate();
+			
+			var b64:String = Base64.encodeByteArray(saveBytes);
+			return b64;
+		}
+		
+		private function genOldFormatSave():String {
 			var saveStrings:Vector.<String>  = new Vector.<String>;
 			
 			//save modules
@@ -1130,35 +1167,70 @@ package LevelStates {
 			if (saveString == null)
 				saveString = findSuccessSave();
 			if (saveString) {
-				var saveArray:Array = saveString.split(U.MAJOR_SAVE_DELIM);
-				
-				//ordering is key
-				//misc info first
-				var miscStringsString:String = saveArray[2];
-				if (miscStringsString.length) {
-					var miscStrings:Array = miscStringsString.split(U.SAVE_DELIM);
-					if (level.delay)
-						time.clockPeriod = C.safeInt(miscStrings[0]);
-				}
-				
-				//load wires
-				var wireStrings:String = saveArray[1];
-				if (wireStrings.length)
-					for each (var wireString:String in wireStrings.split(U.SAVE_DELIM))
-						addWire(Wire.fromString(wireString), false);
-				
-				//load modules
-				var moduleStrings:String = saveArray[0];
-				if (moduleStrings.length)
-					for each (var moduleString:String in moduleStrings.split(U.SAVE_DELIM))
-						addModule(Module.fromString(moduleString), false);
-				
+				if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1)
+					loadBinary(saveString);
+				else
+					loadOldFormat(saveString);
 				savedString = saveString;
 			}
 			
 			level.loadIntoState(this, saveString == RESET_SAVE || !saveString);
 			
 			makeUI();
+		}
+		
+		private function loadBinary(saveString:String):void {
+			var bytes:ByteArray = Base64.decodeToByteArray(saveString);
+			
+			bytes.inflate();
+			
+			var moduleSectionLength:int = bytes.readInt();
+			var moduleSectionEnd:int = bytes.position - 4 + moduleSectionLength;
+			var newModules:Vector.<Module> = Module.modulesFromBytes(bytes, moduleSectionEnd);
+			if (bytes.position != moduleSectionEnd)
+				throw new Error("Unread data in module load!");
+			
+			var wireSectionLength:int = bytes.readInt();
+			var wireSectionEnd:int = bytes.position - 4 + wireSectionLength;
+			var newWires:Vector.<Wire> = Wire.wiresFromBytes(bytes, wireSectionEnd);
+			if (bytes.position != wireSectionEnd)
+				throw new Error("Unread data in wire load!");
+			
+			var miscLength:int = bytes.readInt();
+			if (level.delay)
+				time.clockPeriod = bytes.readInt();
+			if (bytes.position != bytes.length)
+				throw new Error("Trailing data in save!");
+			
+			for each (var wire:Wire in newWires)
+				addWire(wire, false);
+			for each (var module:Module in newModules)
+				addModule(module, false);
+		}
+		
+		private function loadOldFormat(saveString:String):void {			
+			var saveArray:Array = saveString.split(U.MAJOR_SAVE_DELIM);
+			
+			//ordering is key
+			//misc info first
+			var miscStringsString:String = saveArray[2];
+			if (miscStringsString.length) {
+				var miscStrings:Array = miscStringsString.split(U.SAVE_DELIM);
+				if (level.delay)
+					time.clockPeriod = C.safeInt(miscStrings[0]);
+			}
+			
+			//load wires
+			var wireStrings:String = saveArray[1];
+			if (wireStrings.length)
+				for each (var wireString:String in wireStrings.split(U.SAVE_DELIM))
+					addWire(Wire.fromString(wireString), false);
+			
+			//load modules
+			var moduleStrings:String = saveArray[0];
+			if (moduleStrings.length)
+				for each (var moduleString:String in moduleStrings.split(U.SAVE_DELIM))
+					addModule(Module.fromString(moduleString), false);
 		}
 		
 		private function loadFromSuccess():void {

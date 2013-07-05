@@ -1,5 +1,6 @@
 package Modules {
 	import Components.Port;
+	import flash.utils.ByteArray;
 	import Values.*;
 	
 	import Layouts.*;
@@ -79,13 +80,6 @@ package Modules {
 			return "Outputs the value of the input corresponding to the control value."
 		}
 		
-		override public function getSaveValues():Array {
-			var values:Array = super.getSaveValues();
-			for each (var op:OpcodeValue in expectedOps)
-				values.push(op.toNumber());
-			return values;
-		}
-		
 		override public function drive(port:Port):Value {
 			var control:Value = controls[0].getValue();
 			if (control.unknown || control.unpowered)
@@ -110,6 +104,20 @@ package Modules {
 				return C.INT_NULL;
 			
 			return index;
+		}
+		
+		override public function getSaveValues():Array {
+			var values:Array = super.getSaveValues();
+			for each (var op:OpcodeValue in expectedOps)
+				values.push(op.toNumber());
+			return values;
+		}
+		
+		public static function fromBytes(x:int, y:int, bytes:ByteArray, end:int):InstructionDemux {
+			var opIntValues:Array = [];
+			while (bytes.position < end)
+				opIntValues.push(bytes.readByte());
+			return new InstructionDemux(x, y, opIntValues);
 		}
 		
 		[Embed(source = "../../lib/art/modules/symbol_i_multiplex_24.png")] private const _symbol:Class;

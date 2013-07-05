@@ -39,7 +39,7 @@ package Actions {
 			var oldLoc:Point = cLastAction.oldLoc;
 			
 			if (newLoc.equals(oldLoc)) {
-				execute();
+				bloc.place(newLoc);
 				return;
 			}
 			

@@ -21,6 +21,7 @@ package  {
 		public static const VERSION:String = "0.10";
 		
 		public static const BINARY_SAVES:Boolean = true;
+		public static const ASSOC_WIRES:Boolean = false;
 		public static const BLIT_ENABLED:Boolean = false;
 		public static var PLAIN_BG:Boolean = false;
 		

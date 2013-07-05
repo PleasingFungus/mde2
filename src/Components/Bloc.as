@@ -237,6 +237,9 @@ package Components {
 		
 		
 		public function generateAssociatedWires():void {
+			if (!U.ASSOC_WIRES)
+				return;
+			
 		//2. to gen, make an empty list of associates (containing a ConnectedCarrier & a wire ref apiece). foreach ConnectedCarrier
 			singlyAssociatedWires = new Vector.<AssociatedWire>;
 			multiplyAssociatedWires = new Vector.<AssociatedWire>;

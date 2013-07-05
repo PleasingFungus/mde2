@@ -1085,6 +1085,8 @@ package LevelStates {
 		}
 		
 		public function genSaveString():String {
+			if (DEBUG.ON)
+				C.log(genBinarySave().length, genOldFormatSave().length);
 			if (U.BINARY_SAVES)
 				return genBinarySave();
 			else
@@ -1114,7 +1116,7 @@ package LevelStates {
 			saveBytes.writeInt(4 + miscBytes.length);
 			saveBytes.writeBytes(miscBytes);
 			
-			//TODO: test deflate?
+			saveBytes.deflate();
 			
 			var b64:String = Base64.encodeByteArray(saveBytes);
 			return b64;
@@ -1180,7 +1182,7 @@ package LevelStates {
 		private function loadBinary(saveString:String):void {
 			var bytes:ByteArray = Base64.decodeToByteArray(saveString);
 			
-			//TODO: test inflate
+			bytes.inflate();
 			
 			var moduleSectionLength:int = bytes.readInt();
 			var moduleSectionEnd:int = bytes.position - 4 + moduleSectionLength;

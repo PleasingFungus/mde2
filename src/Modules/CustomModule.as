@@ -2,6 +2,7 @@ package Modules {
 	import Components.Port;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.ByteArray;
 	import Layouts.DefaultLayout;
 	import Layouts.InternalLayout;
 	import Layouts.PortLayout;
@@ -226,7 +227,7 @@ package Modules {
 			if (!selection.length)
 				return null;
 			
-			if (U.state.level.writerLimit) {
+			if (U.state && U.state.level.writerLimit) {
 				var writerCount:int = U.state.numMemoryWriters();
 				for each (module in selection)
 					writerCount += module.writesToMemory;
@@ -286,6 +287,18 @@ package Modules {
 			for (var i:int = ESCAPE_TABLE.length - 1; i >= 0; i--)
 				s = C.replaceAllLinear(s, ESCAPE_CHAR+i, ESCAPE_TABLE[i])
 			return s;
+		}
+		
+		override protected function getSaveBytes():ByteArray {
+			var byteArray:ByteArray = new ByteArray;
+			for each (var module:Module in modules)
+				byteArray.writeBytes(module.getBytes());
+			return byteArray;
+		}
+		
+		public static function fromBytes(x:int, y:int, bytes:ByteArray, end:int, allowableTypes:Vector.<Class> = null):CustomModule {
+			var modules:Vector.<Module> = Module.modulesFromBytes(bytes, end, allowableTypes);
+			return new CustomModule(modules, x, y);
 		}
 		
 		private static var CONNECTION_DELIM:String = "|";

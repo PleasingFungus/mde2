@@ -316,11 +316,14 @@ package Modules {
 		public function getBytes():ByteArray {
 			var bytes:ByteArray = new ByteArray;
 			var saveBytes:ByteArray = getSaveBytes();
-			bytes.writeInt(saveBytes.length + 4 + 1 + 4 + 4);
+			var length:int = 4 + 1 + 4 + 4 + saveBytes.length;
+			bytes.writeInt(length);
 			bytes.writeByte(ALL_MODULES.indexOf(Object(this).constructor));
 			bytes.writeInt(x);
 			bytes.writeInt(y);
 			bytes.writeBytes(saveBytes);
+			if (bytes.length != length)
+				throw new Error("Error in length generation!");
 			return bytes;
 		}
 		
@@ -369,15 +372,18 @@ package Modules {
 				return new moduleType(x, y);
 			if (bytes.position == end - 1)
 				return new moduleType(x, y, bytes.readByte());
-			//return moduleType.fromBytes(x, y, bytes, end);
-			return null; //TODO
+			if (moduleType == InstructionDemux)
+				return InstructionDemux.fromBytes(x, y, bytes, end);
+			if (moduleType == CustomModule)
+				return CustomModule.fromBytes(x, y, bytes, end, allowableTypes);
+			throw new Error("Unknown 'special module' type!");
 		}
 		
 		public static function modulesFromBytes(bytes:ByteArray, end:int, allowableTypes:Vector.<Class> = null):Vector.<Module> {
 			var modules:Vector.<Module> = new Vector.<Module>;
 			while (bytes.position < end) {
 				var moduleLength:int = bytes.readInt();
-				var moduleEnd:int = bytes.position + moduleLength;
+				var moduleEnd:int = bytes.position - 4 + moduleLength;
 				var module:Module = fromBytes(bytes, moduleEnd, allowableTypes);
 				if (module)
 					modules.push(module);

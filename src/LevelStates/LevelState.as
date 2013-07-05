@@ -1085,8 +1085,6 @@ package LevelStates {
 		}
 		
 		public function genSaveString():String {
-			if (DEBUG.ON)
-				C.log(genBinarySave().length, genOldFormatSave().length);
 			if (U.BINARY_SAVES)
 				return genBinarySave();
 			else

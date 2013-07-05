@@ -95,11 +95,11 @@ package Displays {
 		}
 		
 		override public function draw():void {
-			if (outsideScreen())
-				return;
-			
 			if (cachedLines && wire.cacheInvalid)
 				cachedLines = null;
+			
+			if (outsideScreen())
+				return;
 			
 			if (!cacheValid()) {
 				if (!canBuildCache()) {
@@ -127,7 +127,7 @@ package Displays {
 		}
 		
 		public function outsideScreen():Boolean {
-			return !boundingBox.intersects(U.screenRect());
+			return wire.path.length && !boundingBox.intersects(U.screenRect());
 		}
 		
 		protected function canBuildCache():Boolean {
@@ -339,7 +339,7 @@ package Displays {
 		
 		private var _bounds:Rectangle
 		protected function get boundingBox():Rectangle {
-			if (_bounds && wire.deployed)
+			if (_bounds && cachedLines)
 				return _bounds;
 			
 			var topLeft:Point = new Point(int.MAX_VALUE, int.MAX_VALUE);

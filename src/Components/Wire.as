@@ -468,19 +468,24 @@ package Components {
 			
 			var deltas:Vector.<int> = new Vector.<int>;
 			var switchbackPoint:Point = path[0];
+			
+			function addDeltaTo(p:Point):void {
+				var lastDelta:Point = p.subtract(switchbackPoint);
+				if (!deltas.length && lastDelta.y)
+					deltas.push(0);
+				deltas.push(lastDelta.x ? lastDelta.x : lastDelta.y);
+				switchbackPoint = p;
+			}
+			
 			for (var i:int = 1; i < path.length; i++) {
 				var currentPoint:Point = path[i];
 				var delta:Point = currentPoint.subtract(switchbackPoint);
 				if (delta.x && delta.y) {
 					var lastPoint:Point = path[i - 1];
-					var lastDelta:Point = lastPoint.subtract(switchbackPoint);
-					if (!deltas.length && lastDelta.y)
-						deltas.push(0);
-					deltas.push(lastDelta.x ? lastDelta.x : lastDelta.y);
-					switchbackPoint = lastPoint;
+					addDeltaTo(lastPoint);
 				}
 			}
-			deltas.push(path[path.length - 1].subtract(switchbackPoint).length);
+			addDeltaTo(path[path.length - 1]);
 			
 			var length:int = 4 + 4 + 4 + deltas.length * 4;
 			bytes.writeInt(length);
@@ -492,7 +497,24 @@ package Components {
 			if (bytes.length != length)
 				throw new Error("Error in calculating length!");
 			
+			if (DEBUG.ON) {
+				bytes.position = 4;
+				var loadWire:Wire = fromBytes(bytes, bytes.length);
+				if (!equals(loadWire))
+					throw new Error("Bad byte generation!");
+			}
+			
+			bytes.position = 0;
 			return bytes;
+		}
+		
+		public function equals(wire:Wire):Boolean {
+			if (!wire.path.length == path.length)
+				return false;
+			for (var i:int = 0; i < path.length; i++)
+				if (!path[i].equals(wire.path[i]))
+					return false;
+			return true;
 		}
 		
 		public static function fromString(str:String):Wire {
@@ -527,6 +549,18 @@ package Components {
 				horizontal = !horizontal;
 			}
 			return wire;
+		}
+		
+		public static function wiresFromBytes(bytes:ByteArray, end:int):Vector.<Wire> {
+			var wires:Vector.<Wire> = new Vector.<Wire>;
+			while (bytes.position < end) {
+				var wireByteLength:int = bytes.readInt();
+				var wireEnd:int = bytes.position - 4 + wireByteLength;
+				wires.push(fromBytes(bytes, wireEnd));
+				if (bytes.position != wireEnd)
+					throw new Error("Unread data in wire load!");
+			}
+			return wires;
 		}
 		
 		private const LEFT_DELTA:Point = new Point( -1, 0);

@@ -324,6 +324,8 @@ package Modules {
 			bytes.writeBytes(saveBytes);
 			if (bytes.length != length)
 				throw new Error("Error in length generation!");
+			
+			bytes.position = 0;
 			return bytes;
 		}
 		
@@ -387,7 +389,8 @@ package Modules {
 				var module:Module = fromBytes(bytes, moduleEnd, allowableTypes);
 				if (module)
 					modules.push(module);
-				bytes.position = moduleEnd;
+				if (bytes.position != moduleEnd)
+					throw new Error("Unread data in module load!");
 			}
 			return modules;
 		}

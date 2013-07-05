@@ -1,5 +1,6 @@
 package Components {
 	import flash.geom.Point;
+	import flash.utils.ByteArray;
 	import Layouts.PortLayout;
 	import Modules.Module;
 	/**
@@ -431,6 +432,20 @@ package Components {
 			return this;
 		}
 		
+		
+		
+		public static function wireBetween(Start:Point, End:Point):Wire {
+			var w:Wire = new Wire(Start);
+			w.constrained = false;
+			if (!w.attemptPathTo(End, true))
+				throw new Error("Wire failed to path!");
+			w.constrained = true;
+			return w;
+		}
+		
+		
+		
+		
 		public function toString():String {
 			return "WIRE: " + path[0].x + ", " + path[0].y + " -> " + path[path.length - 1].x + ", " + path[path.length -1].y;
 		}
@@ -447,6 +462,39 @@ package Components {
 			return pointStrings.join(U.POINT_DELIM);
 		}
 		
+		public function getBytes():ByteArray {
+			//format: byte-length (int), start (int, int), h-delta (int), v-delta (int) ...
+			var bytes:ByteArray = new ByteArray;
+			
+			var deltas:Vector.<int> = new Vector.<int>;
+			var switchbackPoint:Point = path[0];
+			for (var i:int = 1; i < path.length; i++) {
+				var currentPoint:Point = path[i];
+				var delta:Point = currentPoint.subtract(switchbackPoint);
+				if (delta.x && delta.y) {
+					var lastPoint:Point = path[i - 1];
+					var lastDelta:Point = lastPoint.subtract(switchbackPoint);
+					if (!deltas.length && lastDelta.y)
+						deltas.push(0);
+					deltas.push(lastDelta.x ? lastDelta.x : lastDelta.y);
+					switchbackPoint = lastPoint;
+				}
+			}
+			deltas.push(path[path.length - 1].subtract(switchbackPoint).length);
+			
+			var length:int = 4 + 4 + 4 + deltas.length * 4;
+			bytes.writeInt(length);
+			bytes.writeInt(path[0].x);
+			bytes.writeInt(path[0].y);
+			for each (var deltaV:int in deltas)
+				bytes.writeInt(deltaV);
+			
+			if (bytes.length != length)
+				throw new Error("Error in calculating length!");
+			
+			return bytes;
+		}
+		
 		public static function fromString(str:String):Wire {
 			if (!str.length) return null;
 			var path:Vector.<Point> = new Vector.<Point>;
@@ -459,13 +507,26 @@ package Components {
 			return wire;
 		}
 		
-		public static function wireBetween(Start:Point, End:Point):Wire {
-			var w:Wire = new Wire(Start);
-			w.constrained = false;
-			if (!w.attemptPathTo(End, true))
-				throw new Error("Wire failed to path!");
-			w.constrained = true;
-			return w;
+		public static function fromBytes(bytes:ByteArray, end:int):Wire {
+			var start:Point = new Point(bytes.readInt(), bytes.readInt());
+			var wire:Wire = new Wire(start);
+			var horizontal:Boolean = true;
+			while (bytes.position < end) {
+				var delta:int = bytes.readInt();
+				var absoluteDelta:int = Math.abs(delta);
+				var switchbackPoint:Point = wire.path[wire.path.length - 1];
+				
+				for (var absd:int = 1; absd <= absoluteDelta; absd++) {
+					var del:int = (delta > 0 ? 1 : -1) * absd;
+					if (horizontal)
+						wire.path.push(new Point(switchbackPoint.x + del, switchbackPoint.y));
+					else
+						wire.path.push(new Point(switchbackPoint.x, switchbackPoint.y + del));
+				}
+				
+				horizontal = !horizontal;
+			}
+			return wire;
 		}
 		
 		private const LEFT_DELTA:Point = new Point( -1, 0);

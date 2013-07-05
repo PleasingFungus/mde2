@@ -337,9 +337,10 @@ package Displays {
 				}
 		}
 		
-		private var _bounds:Rectangle
+		private var _bounds:Rectangle;
+		private var boundLoc:Point;
 		protected function get boundingBox():Rectangle {
-			if (_bounds && cachedLines)
+			if (_bounds && cachedLines && boundLoc.equals(wire.path[0]))
 				return _bounds;
 			
 			var topLeft:Point = new Point(int.MAX_VALUE, int.MAX_VALUE);
@@ -358,6 +359,7 @@ package Displays {
 			else if (!height)
 				height = getWidth();
 			_bounds = new Rectangle(topLeft.x * U.GRID_DIM, topLeft.y * U.GRID_DIM, width, height);
+			boundLoc = wire.path[0].clone();
 			return _bounds;
 		}
 		

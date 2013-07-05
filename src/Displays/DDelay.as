@@ -62,17 +62,14 @@ package Displays {
 		}
 		
 		override public function update():void {
-			visible = U.state.VIEW_MODE_DELAY == U.state.viewMode;
-			if (visible) {
-				checkMouse();
-				if (!findExtMatch()) {
-					if (exists) {
-						generate();
-						makeExtLists();
-					}
-				} else if (U.state.time.moment != lastTime) {
+			checkMouse();
+			if (!findExtMatch()) {
+				if (exists) {
 					generate();
+					makeExtLists();
 				}
+			} else if (U.state.time.moment != lastTime) {
+				generate();
 			}
 			super.update();
 		}

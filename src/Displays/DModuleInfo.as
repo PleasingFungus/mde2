@@ -21,27 +21,24 @@ package Displays {
 		
 		override public function update():void {
 			if (!renderBuddy)
-				U.state.upperLayer.add(renderBuddy = new FloatText(U.LABEL_FONT.configureFlxText(new HighlightText( -1, -1, 300, " ", new Vector.<ColorText>), 0xffffff)));
-			renderBuddy.visible = U.state.VIEW_MODE_NORMAL == U.state.viewMode;
-			if (renderBuddy.visible)
-				checkMouse();
+				U.state.upperLayer.add(
+					renderBuddy = new FloatText(
+						U.LABEL_FONT.configureFlxText(
+							new HighlightText( -1, -1, 300, " ", new Vector.<ColorText>),
+							0xffffff)
+						)
+					);
+			
+			var mousedDModule:DModule = U.state.findMousedDModule();
+			renderBuddy.visible = mousedDModule != null;
+			if (mousedDModule)
+				mousedDModule.descriptionAt(U.mouseFlxLoc).update(renderBuddy.text as HighlightText);
+			
 			super.update();
 		}
 		
-		private function checkMouse():void {
-			var mousedModule:Module = U.state.findMousedModule();
-			renderBuddy.visible = mousedModule != null;
-			if (mousedModule)
-				//second iteration to avoid repeating checks on constraints from findMousedModule
-				for each (var dModule:DModule in displayModules)
-					if (dModule.module == mousedModule) {
-						dModule.descriptionAt(U.mouseFlxLoc).update(renderBuddy.text as HighlightText);
-						break;
-					}
-		}
-		
 		override public function draw():void {
-			if (!renderBuddy) return;
+			if (!renderBuddy || !renderBuddy.visible) return;
 			position();
 			super.draw();
 		}

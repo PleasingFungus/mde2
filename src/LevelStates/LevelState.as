@@ -41,7 +41,6 @@ package LevelStates {
 		
 		private var displayWires:Vector.<DWire>;
 		private var displayModules:Vector.<DModule>;
-		public var viewMode:int = VIEW_MODE_NORMAL;
 		private var listOpen:int;
 		private var UIChanged:Boolean;
 		public var editEnabled:Boolean = true;
@@ -59,7 +58,6 @@ package LevelStates {
 		public var infobox:Infobox;
 		public var viewingComments:Boolean;
 		private var displayTime:DTime;
-		private var displayDelay:DDelay;
 		private var testText:FlxText;
 		private var testBG:FlxSprite;
 		private var lastRunTime:Number;
@@ -108,13 +106,17 @@ package LevelStates {
 			level.setLast();
 			recentModules = new Vector.<Class>;
 			
-			makeUI(false);
-			upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
+			makeUI(false); //don't add UI actives yet...
+			upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem())); //because we won't be updating while the infobox is up...
 			
 			FlxG.camera.scroll.x = (FlxG.width / 2) / 1 - (FlxG.width / 2) / U.zoom;
 			FlxG.camera.scroll.y = (FlxG.height / 2) / 1 - (FlxG.height / 2) / U.zoom;
-			upperLayer.update(); //hack to avoid scroll issues
-			addUIActives(); //likewise part of the hack
+			upperLayer.update(); //and some UI members need a single-frame update to position themselves properly
+			var temp:Array = upperLayer.members; //but now we don't have the UI actives in the right place (first) in the upper layer, so...
+			upperLayer.members = []; //reset the list...
+			addUIActives(); //add the UI actives...
+			for each (var member:FlxBasic in temp)
+				upperLayer.add(member); //then add the other UI members back.
 			
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
@@ -156,9 +158,9 @@ package LevelStates {
 			
 			new ButtonManager;
 			UIChanged = true;
-			upperLayer.add(new MenuBar(60));
 			if (includeActives)
 				addUIActives();
+			upperLayer.add(new MenuBar(60));
 			makeViewButtons();
 			
 			if (!editEnabled) {
@@ -180,11 +182,6 @@ package LevelStates {
 			upperLayer.add(deleteHint = new DeleteHelper);
 			upperLayer.add(new DCurrent(displayWires, displayModules));
 			upperLayer.add(new DModuleInfo(displayModules));
-			if (level.delay) {
-				if (!displayDelay)
-					midLayer.add(displayDelay = new DDelay(modules, displayModules));
-				displayDelay.interactive = false; //TODO
-			}
 		}
 		
 		private function makeViewButtons():void {
@@ -306,35 +303,35 @@ package LevelStates {
 			addToolbarButton(FlxG.width / 2 - 16, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite, finishDisplayTest, "End Test", "Finish the test!", new Key("T"));
 		}
 		
-		private function makeViewModeButton():void {
-			addToolbarButton(FlxG.width - 180, VIEW_MODE_SPRITES[viewMode], function openList():void {
-				listOpen = LIST_VIEW_MODES;
-				makeUI();
-			}, "Views", "Display list of view modes", new Key("Q"));
-		}
+		//private function makeViewModeButton():void {
+			//addToolbarButton(FlxG.width - 180, VIEW_MODE_SPRITES[viewMode], function openList():void {
+				//listOpen = LIST_VIEW_MODES;
+				//makeUI();
+			//}, "Views", "Display list of view modes", new Key("Q"));
+		//}
 		
-		private function makeViewModeMenu():void {
-			ensureNothingHeld();
-			
-			var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
-			for each (var newMode:int in [VIEW_MODE_NORMAL, VIEW_MODE_DELAY]) {
-				modeSelectButtons.push(new GraphicButton( -1, -1, VIEW_MODE_SPRITES[newMode], function selectMode(newMode:int):void {
-					viewMode = newMode;
-					if (LIST_VIEW_MODES == listOpen ) {
-						listOpen = LIST_NONE;
-						makeUI();
-					}
-				}, "Enter "+VIEW_MODE_NAMES[newMode]+" view mode", ControlSet.NUMBER_HOTKEYS[newMode+1]).setParam(newMode).setSelected(newMode == viewMode));
-			}
-			
-			var modeList:ButtonList = new ButtonList(FlxG.width - 145, 3, modeSelectButtons, function onListClose():void {
-				if (listOpen == LIST_VIEW_MODES)
-					listOpen = LIST_NONE;
-				makeUI();
-			});
-			modeList.setSpacing(4);
-			upperLayer.add(modeList);
-		}
+		//private function makeViewModeMenu():void {
+			//ensureNothingHeld();
+			//
+			//var modeSelectButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+			//for each (var newMode:int in [VIEW_MODE_NORMAL, VIEW_MODE_DELAY]) {
+				//modeSelectButtons.push(new GraphicButton( -1, -1, VIEW_MODE_SPRITES[newMode], function selectMode(newMode:int):void {
+					//viewMode = newMode;
+					//if (LIST_VIEW_MODES == listOpen ) {
+						//listOpen = LIST_NONE;
+						//makeUI();
+					//}
+				//}, "Enter "+VIEW_MODE_NAMES[newMode]+" view mode", ControlSet.NUMBER_HOTKEYS[newMode+1]).setParam(newMode).setSelected(newMode == viewMode));
+			//}
+			//
+			//var modeList:ButtonList = new ButtonList(FlxG.width - 145, 3, modeSelectButtons, function onListClose():void {
+				//if (listOpen == LIST_VIEW_MODES)
+					//listOpen = LIST_NONE;
+				//makeUI();
+			//});
+			//modeList.setSpacing(4);
+			//upperLayer.add(modeList);
+		//}
 		
 		private function makeModuleCatButton():void {
 			addToolbarButton(10, _module_sprite, function openList():void {
@@ -528,7 +525,6 @@ package LevelStates {
 			super.update();
 			checkControls();
 			checkTime();
-			checkDDelay();
 			forceScroll();
 			
 			if (currentGrid.saveString != savedString) {
@@ -681,13 +677,20 @@ package LevelStates {
 				new CustomAction(Module.remove, Module.place, mousedModule).execute();
 		}
 		
-		public function findMousedModule():Module {
+		public function findMousedDModule():DModule {
 			if (U.buttonManager.moused)
 				return null;
 			
 			for each (var dModule:DModule in displayModules)
 				if (dModule.module.exists && dModule.module.deployed && dModule.overlapsPoint(U.mouseFlxLoc))
-					return dModule.module;
+					return dModule;
+			return null;
+		}
+		
+		public function findMousedModule():Module {
+			var dModule:DModule = findMousedDModule();
+			if (dModule)
+				return dModule.module;
 			return null;
 		}
 		
@@ -816,11 +819,6 @@ package LevelStates {
 			
 			if (runningDisplayTest && (level.goal.stateValid(this) || time.moment >= level.goal.timeLimit))
 				finishDisplayTest();
-		}
-		
-		private function checkDDelay():void {
-			if (displayDelay && !displayDelay.exists)
-				midLayer.add(displayDelay = new DDelay(modules, displayModules));
 		}
 		
 		private function finishDisplayTest():void {
@@ -1304,9 +1302,6 @@ package LevelStates {
 				FlxG.mouse.show();
 			U.buttonManager.destroy();
 		}
-		
-		public const VIEW_MODE_NORMAL:int = 0;
-		public const VIEW_MODE_DELAY:int = 1;
 		
 		private const LIST_NONE:int = 0;
 		private const LIST_CATEGORIES:int = 2;

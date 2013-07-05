@@ -23,9 +23,7 @@ package Displays {
 		}
 		
 		override public function update():void {
-			visible = U.state.VIEW_MODE_NORMAL == U.state.viewMode;
-			if (visible)
-				checkMouse();
+			checkMouse();
 			super.update();
 		}
 		

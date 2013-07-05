@@ -3,6 +3,9 @@ package
 	import flash.utils.Dictionary;
 	import org.flixel.FlxG;
 	import flash.geom.Point;
+	import flash.net.*;
+	import flash.events.Event;
+	import flash.external.ExternalInterface;
 	
 	/**
 	 * ...
@@ -278,6 +281,54 @@ package
 		
 		public static const NUMBERS:Array = ["ZERO", "ONE", "TWO", "THREE", "FOUR",
 											 "FIVE", "SIX", "SEVEN", "EIGHT", "NINE"];
+		
+		
+		public static function sendRequest(url:String, args:Object, callback:Function = null):URLLoader {
+			var loader:URLLoader = new URLLoader;
+			loader.addEventListener(Event.COMPLETE, callback != null ? callback : function _(e : Event):void { });
+				
+			var variables:URLVariables = new URLVariables;
+			for (var key:String in args) 
+				variables[key] = args[key];
+			
+			var request : URLRequest = new URLRequest(url); 
+			request.method = URLRequestMethod.POST;
+			request.data = variables;
+			
+			log("Sending request: " + request);
+			
+			try {
+				loader.load(request); 
+			} catch (error:Error) {
+				log("Request failed: " + error);
+			}
+			
+			return loader;
+		}
+		
+		public static function encodeString(input:String):String {
+			if (ExternalInterface.available)
+				return ExternalInterface.call("encodeURIComponent", input);
+			return null;
+		}
+		
+		public static function decodeString(input:String):String {
+			if (ExternalInterface.available)
+				return ExternalInterface.call("decodeURIComponent", input);
+			return null;
+		}
+		
+		public static function stringToBase64(input:String):String {
+			if (ExternalInterface.available)
+				return ExternalInterface.call("btoa", input);
+			return null;
+		}
+		
+		public static function base64ToString(b64:String):String {
+			if (ExternalInterface.available)
+				return ExternalInterface.call("atob", b64);
+			return null;
+		}
 	}
 
 }

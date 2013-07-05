@@ -30,7 +30,7 @@ package Displays {
 			offset.x = width / 2;
 			offset.y = height / 2;
 			
-			if (U.state.level.delay) {
+			if (U.state && U.state.level.delay) {
 				delayFiller = new FlxSprite( -1, -1).makeGraphic(width - BORDER_WIDTH * 2, height - BORDER_WIDTH * 2);
 				delayFiller.color = U.UNKNOWN_COLOR;
 				delayFiller.offset.x = offset.x - BORDER_WIDTH;
@@ -42,7 +42,7 @@ package Displays {
 			var l:Point = node.Loc;
 			x = l.x * U.GRID_DIM;
 			y = l.y * U.GRID_DIM;
-			color = (node.parent.deployed && U.state.viewMode == U.state.VIEW_MODE_NORMAL && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? U.HIGHLIGHTED_COLOR : node.type.bgColor;
+			color = (node.parent.deployed && U.state && U.state.viewMode == U.state.VIEW_MODE_NORMAL && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? U.HIGHLIGHTED_COLOR : node.type.bgColor;
 			super.draw();
 			
 			var delay:int = node.inputDelay();

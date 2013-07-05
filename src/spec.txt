@@ -1,0 +1,121 @@
+
+fun long-term bonuses
+	floats
+	omega processor (1 instruction, turing-complete)
+	more conditional branch uses
+		ifs - fake/bad code in branch-not-taken?
+	bne
+	boolean ops
+	
+	
+reader & printer - memory is punch cards?
+theme
+	overall
+		renaissance italy? (wood, paper, blueprints, marble?)
+		golden age muslim? (colorful stone, octagons/other geometry, symbolic script)
+	flows
+		water (sand?) - values 'carried along' regularly - no power = dry/empty, red = flows off edge, unknown = mud?
+		light / arcing electricity - sets of mirrors/tesla coils at joins - dotted lines to indicate paths when power not flowing - unknown=?
+		fuck's sake, roads, use camels or shit if you want, but flows between buildings = roads. use a metaphor people understand.
+	goal
+		calculate the names of God?
+		war machines?
+	
+	art style
+		map - medieval style?
+		roads, buildings, warehouses, etc
+		heavily stylized/simplified?
+		
+	memory: heaven
+	values: solidified wisdom of the lord
+		unpowered = inert, unknown = corrupted
+	sheik retrieves wisdom from heaven (memory) (dread)
+		scholar interprets particularly complex wisdom (instructions) (caliph? madrassa?)
+	manipulated / stored as a solid - an ore or metal - so smithing, forging, combination
+	sent back to heaven as a sacrifice or prayer (?)
+	internal wires = corridors, exterior = paths, nodes = rooms
+	'blocking' control wires = corridor guards (pikes, swords?)
+	'code monastery'
+	not = curmudgeon (only contradicts what other people say!)
+	'out' is just a corridor
+	sysclock should be a muzzein-tower - day/night cycle based on 5x clock period?
+	dwriter: sacred cave/temple
+		'one-way, targeted journey'
+		cannon?
+		beam-me-up device?
+		caravannaserai w/departure board
+			but then what's the reader? same w/arrival board?
+	reader = observatory
+	
+	level select = inverted map of levant + egypt + mecca area - in the style of roger of sicily's map?
+	
+	double grid-dim, starting line width again? (default to 1/2, old 1/2 = new 1/4th, etc)
+		no - current 1x can barely work in, new 1x would be impossible!
+	
+	the will of the lord
+	player is individual - caravan attacked by bandits, wandered in desert, discovered sacred cave filled with rows of tablets of the lord's values
+	angel manifests - demands that the player take a tablet and return with '2'
+	abandoned buildings - labor to use them to produce '2'
+	earthquake - buildings collapse - must do it on one's own! (the mercy of the lord owing to his love for thy people to give thee a second chance)
+	as game goes on, accumulate followers - the numinous emanations of the angel of the lord put a rightous fear in them, owing to which they follow thy will
+	eventually, at the moment of triumph, the caliph's men sweep in, and all is laid to ruin just as the final city of god neared completion
+	forced into hiding - thy followers filled with uncertainty - must deal with new delay
+	player gender ambiguous
+	'trials of the lord'
+	pre-placed sacred cave entrances based on writer limit? (pre-placed writers?) how do readers interact/manifest?
+		
+	must build a city of god - by thy industry a place where the lord's will is executed as it is recieved
+	
+	narrative through dinfo, tooltips, maybe between-chapter big comic-type things (where would those come from?)
+		concern - don't want to impinge on teaching concepts / explaining goals with obtuse language
+	
+	octagons look reasonably cool, but will require collision changes - end of need for corner protection (no longer need to register points?)
+	
+	alt metaphor - crates of goods?
+		+ = full, - = empty (to be filled on dest)
+		caravans to / from mem
+		'bribe' for amount to travel/travelled (address)
+		selection? blocking?
+	
+	metaphor as purely visual metaphor - all text as at present (barring improvements), but desert buildings instead of grey blocks, etc
+	
+	map:
+		spots on map
+		mouse to see name
+			ADV: and best time
+			ADV: and best parts
+			SUPER ADV: and 
+		click to select level
+			name/details appear except when mousing another level (similar to ddelay code)
+			last level starts selected
+			SUPER ADV: caravan moves along roads from last level to new one; settles into camp at dest
+		click again to play
+			hint: 'click to play' appears below selected level
+		basic/delay/speed levels linked somehow; on same spot on map
+			how does this interact with plan bundling?
+		can click something to the side of selected level to toggle between level versions 
+		ADV: unlocked spots connected by road
+			how to handle AND?
+		SUPER ADV: on first return to menu after beating level, roads from level to new unlocks draw out
+		ADV: pines appear on beaten tutorial levels; 1-3 palm trees on beaten normal levels
+		ADV: map bg (roger of sicily's map, pixelized & localized)
+		
+	map zones
+		basic
+			tutorial
+			optional control tutorials
+			cpu
+		delay
+			tutorials
+			cpu
+		pipeline
+			tutorials
+			cpu
+			
+		egypt -> alexandria, syria -> damascus, palestine -> jerusalem?
+	
+	more literal - cool glowy circuit theme? (pcb)
+		how to make modules distinctive?
+		level theme?
+	
+	clouds as bg?

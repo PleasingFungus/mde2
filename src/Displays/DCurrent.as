@@ -38,11 +38,12 @@ package Displays {
 			}
 			
 			for each (var dModule:DModule in dModules)
-				for each (var dPort:DPort in dModule.displayPorts)
-					if (dPort.nearPoint(U.mouseFlxLoc, U.GRID_DIM / 2 / U.zoom)) {
-						buildDisplay(moused = dPort, carrier = dPort.port);
-						break;
-					}
+				if (dModule.exists)
+					for each (var dPort:DPort in dModule.displayPorts)
+						if (dPort.nearPoint(U.mouseFlxLoc, U.GRID_DIM / 2 / U.zoom)) {
+							buildDisplay(moused = dPort, carrier = dPort.port);
+							break;
+						}
 			
 			if (!moused)
 				for each (var dWire:DWire in dWires)

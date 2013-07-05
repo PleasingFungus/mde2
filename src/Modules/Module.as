@@ -27,7 +27,7 @@ package Modules {
 		public var controls:Vector.<Port>;
 		
 		protected var configuration:Configuration;
-		public var configurableInPlace:Boolean;
+		public var configurableInPlace:Boolean = true;
 		public var delay:int;
 		public var writesToMemory:int = 0;
 		public var weight:int = 1;
@@ -48,7 +48,6 @@ package Modules {
 			layout = generateLayout();
 			internalLayout = generateInternalLayout();
 			
-			configurableInPlace = true;
 			initialize();
 		}
 		

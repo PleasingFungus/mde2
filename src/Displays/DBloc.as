@@ -3,6 +3,7 @@ package Displays {
 	import Actions.BlocLiftAction;
 	import Actions.CustomAction;
 	import Actions.MoveBlocAction;
+	import Components.Connection;
 	import Components.Wire;
 	import Components.Bloc;
 	import Controls.ControlSet;
@@ -16,6 +17,7 @@ package Displays {
 	 */
 	public class DBloc extends FlxGroup {
 		
+		private var tick:int;
 		private var displayWires:Vector.<DWire>;
 		private var displayModules:Vector.<DModule>;
 		public var bloc:Bloc;
@@ -38,6 +40,8 @@ package Displays {
 			
 			if (ControlSet.COPY_KEY.justPressed())
 				U.clipboard = bloc.toString();
+			
+			tick++;
 		}
 		
 		protected function checkRootedState():void {
@@ -60,9 +64,7 @@ package Displays {
 				}
 				
 				if (moused) {
-					new BlocLiftAction(bloc, U.pointToGrid(U.mouseLoc)).execute();
-					bloc.mobilize();
-					bloc.exists = true;
+					bloc.lift();
 				} else
 					setSelect(false);
 			}
@@ -86,7 +88,7 @@ package Displays {
 		protected function checkUnrootedState():void {
 			if (!FlxG.mouse.justPressed())
 				bloc.moveTo(U.pointToGrid(U.mouseLoc));
-			else {
+			else if (tick) {
 				if (!U.buttonManager.moused && bloc.validPosition(U.pointToGrid(U.mouseLoc))) {
 					FlxG.camera.shake(0.01 * U.zoom, 0.05);
 					new MoveBlocAction(bloc, U.pointToGrid(U.mouseLoc));
@@ -110,6 +112,9 @@ package Displays {
 				if (U.state.actionStack.length) {
 					var lastAction:Action = U.state.actionStack.pop();
 					if (lastAction is BlocLiftAction && (lastAction as BlocLiftAction).bloc == bloc)
+						lastAction.revert();
+					else if (bloc.modules.length == 1 && bloc.wires.length == 0 &&
+							 lastAction is CustomAction && (lastAction as CustomAction).exec == Module.remove && (lastAction as CustomAction).param == bloc.modules[0])
 						lastAction.revert();
 					else {
 						U.state.actionStack.push(lastAction);
@@ -175,6 +180,37 @@ package Displays {
 				displayWires.push(dWire);
 			for each (var dModule:DModule in this.displayModules)
 				displayModules.push(dModule);
+		}
+		
+		override public function draw():void {
+			super.draw();
+			checkAssociatedWires();
+			if (DEBUG.RENDER_BLOC_CONNECTIONS)
+				debugRenderBlocConnections();
+		}
+		
+		private function checkAssociatedWires():void {
+			if (!bloc.newAssociatedWires)
+				return;
+			for each (var wire:Wire in bloc.newAssociatedWires)
+				U.state.midLayer.add(new DWire(wire));
+			bloc.newAssociatedWires = null;
+		}
+		
+		private var connectionSprite:FlxSprite;
+		private function debugRenderBlocConnections():void {
+			if (!connectionSprite)
+				connectionSprite = new FlxSprite().makeGraphic(4, 4, 0xb0ff00ff);
+			for each (var connection:Connection in bloc.connections) {
+				connectionSprite.x = connection.point.x * U.GRID_DIM;
+				connectionSprite.y = connection.point.y * U.GRID_DIM;
+				connectionSprite.draw();
+			}
+		}
+		
+		private function makeBlocConnections():void {
+			for each (var connection:Connection in bloc.connections)
+				connection
 		}
 		
 	}

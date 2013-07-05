@@ -42,7 +42,6 @@ package  {
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
 		
 		public static var save:FlxSave;
-		public static var levels:Vector.<Level>;
 		
 		public static var state:LevelState;
 		public static var buttonManager:ButtonManager;
@@ -66,6 +65,10 @@ package  {
 		public static const TUT_BEAT_TUT_1:int = 2;
 		public static const TUT_BEAT_TUT_2:int = 3;
 		
+		public static const DEMO:Boolean = false;
+		public static var DEMO_LIMIT:Level;
+		public static var DEMO_PERMITTED:Vector.<Level>;
+		
 		public static function updateTutState(newTutState:int):int {
 			if (newTutState > tutorialState)
 				return U.save.data['tut'] = tutorialState = newTutState;
@@ -75,6 +78,7 @@ package  {
 		
 		
 		private static var initialized:Boolean = false;
+		public static var checkedURL:Boolean = false;
 		
 		public static function init():void {			
 			if (initialized)
@@ -92,9 +96,11 @@ package  {
 			Module.init();
 			LevelShard.init();
 			
-			levels = Level.list();
+			Level.ALL = Level.list();
 			if (DEBUG.ON)
-				Level.validate(levels);
+				Level.validate(Level.ALL);
+			DEMO_LIMIT = Level.L_CPU_Basic;
+			DEMO_PERMITTED = Level.ALL.slice(0, Level.ALL.indexOf(DEMO_LIMIT) + 1); //dubious?
 			
 			zoom = 1;
 		}
@@ -133,6 +139,9 @@ package  {
 			_rect.height = FlxG.height / zoom;
 			return _rect;
 		}
+		
+		public static const INSERT_URL:String = "http://pleasingfungus.com/mde2/insert.php";
+		public static const LOOKUP_URL:String = "http://pleasingfungus.com/mde2/lookup.php";
 		
 		
 		public static const UNCONNECTED_COLOR:uint = 0xff0000;

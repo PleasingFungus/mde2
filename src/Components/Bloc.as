@@ -1,7 +1,9 @@
 package Components {
 	import Components.Wire;
 	import flash.geom.Point;
+	import Layouts.PortLayout;
 	import Modules.Module;
+	import Actions.BlocLiftAction;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -10,12 +12,16 @@ package Components {
 		
 		public var modules:Vector.<Module>;
 		public var wires:Vector.<Wire>;
+		public var connections:Vector.<Connection>;
+		public var associatedWires:Vector.<Wire>;
+		public var newAssociatedWires:Vector.<Wire>;
 		public var origin:Point;
 		public var rooted:Boolean;
 		public var exists:Boolean;
 		public function Bloc(modules:Vector.<Module>, wires:Vector.<Wire>, Rooted:Boolean = true) {
 			this.modules = modules;
 			this.wires = wires;
+			connections = findConnections();
 			rooted = Rooted;
 			exists = true;
 		}
@@ -41,6 +47,8 @@ package Components {
 				Wire.place(wire);
 			for each (var module:Module in modules)
 				module.register();
+			
+			connections = findConnections();
 			
 			exists = true;
 			return true;
@@ -78,6 +86,11 @@ package Components {
 				module.exists = true;
 			for each (var wire:Wire in wires)
 				wire.exists = true;
+			for each (wire in associatedWires)
+				if (wire.deployed) {
+					Wire.remove(wire);
+					wire.exists = true;
+				}
 			exists = true;
 		}
 		
@@ -100,6 +113,59 @@ package Components {
 			
 			origin = p;
 			return true;
+		}
+		
+		protected function findConnections():Vector.<Connection> {
+			var connections:Vector.<Connection> = new Vector.<Connection>;
+			var carrier:Carrier;
+			for each (var module:Module in modules)
+				for each (var portLayout:PortLayout in module.layout.ports)
+					for each (carrier in portLayout.port.connections)
+						if (!carrierIncluded(carrier))
+							connections.push(new Connection(portLayout.port, carrier, portLayout.Loc));
+			for each (var wire:Wire in wires)
+				for each (carrier in wire.connections)
+					if (!carrierIncluded(carrier))
+						connections.push(new Connection(wire, carrier, wire.connectionLoc(carrier)));
+			return connections;
+		}
+		
+		protected function carrierIncluded(carrier:Carrier):Boolean {
+			if (carrier is Wire)
+				return wires.indexOf(carrier) != -1;
+			if (carrier is Port) {
+				for each (var module:Module in modules)
+					for each (var portLayout:PortLayout in module.layout.ports)
+						if (portLayout.port == carrier)
+							return true;
+				return false;
+			}
+			
+			throw new Error("Unknown carrier type!");
+		}
+		
+		public function lift():void {			
+			associatedWires = generateAssociatedWires();
+			new BlocLiftAction(this, U.pointToGrid(U.mouseLoc)).execute();
+			mobilize();
+		}
+		
+		protected function generateAssociatedWires():Vector.<Wire> {
+			var wires:Vector.<Wire> = new Vector.<Wire>;
+			newAssociatedWires = new Vector.<Wire>;
+			for each (var connection:Connection in connections) {
+				if (connection.secondary is Wire) {
+					var wire:Wire = connection.secondary as Wire;
+					if (wire.path[0].equals(connection.point) || wire.path[wire.path.length - 1].equals(connection.point)) {
+						wires.push(wire);
+						continue;
+					}
+				}
+				var newWire:Wire = new Wire(connection.point);
+				wires.push(newWire);
+				newAssociatedWires.push(newWire);
+			}
+			return wires;
 		}
 		
 		

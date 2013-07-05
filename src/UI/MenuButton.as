@@ -91,7 +91,7 @@ package UI {
 				return;
 			
 			var lastMoused:Boolean = moused;
-			moused = highlight.overlapsPoint(FlxG.mouse, true, camera) && (!U.buttonManager || !U.buttonManager.moused);
+			moused = isMoused();
 			if (moused && U.buttonManager)
 				U.buttonManager.moused = true;
 			if (moused)
@@ -123,6 +123,14 @@ package UI {
 					}
 				}
 			}
+			
+			for each (var obj:FlxBasic in associatedObjects)
+				if (obj.exists && obj.active)
+					obj.update();
+		}
+		
+		protected function isMoused():Boolean {
+			return  highlight.overlapsPoint(FlxG.mouse, true, camera) && (!U.buttonManager || !U.buttonManager.moused);
 		}
 		
 		protected function updateMouseover():void {
@@ -137,9 +145,9 @@ package UI {
 			}
 			
 			if (!mouseoverText)
-				associatedObjects.push(U.state.upperLayer.add(
+				associatedObjects.push(
 					mouseoverText = new FloatText(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, FlxG.width / 2 - 20, tooltip)))
-				));
+				);
 			if (tooltipCallback != null && tooltip != tooltipCallback()) {
 				tooltip = tooltipCallback();
 				mouseoverText.text.text = tooltip;
@@ -237,18 +245,19 @@ package UI {
 			super.draw();
 		}
 		
+		override public function postDraw():void {
+			super.postDraw();
+			for each (var obj:FlxBasic in associatedObjects)
+				if (obj.exists && obj.visible)
+					obj.draw();
+		}
+		
 		protected function get isHighlighted():Boolean {
 			return selected || (moused && !disabled);
 		}
 		
 		protected function forceRender():void {
 			super.draw();
-		}
-		
-		public function setExists(e:Boolean):void {
-			exists = e;
-			for each (var associate:FlxBasic in associatedObjects)
-				associate.exists = e;
 		}
 		
 		public static const FADE_TIME:Number = 0.27; //deep wisdom of the elder sages (trial & error)

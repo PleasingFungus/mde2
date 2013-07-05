@@ -1,6 +1,7 @@
 package Modules {
 	import flash.geom.Point;
 	import Layouts.InternalLayout
+	import Layouts.ModuleLayout;
 	import Layouts.Nodes.PortNode;
 	import Layouts.Nodes.InternalNode;
 	import Layouts.PortLayout;
@@ -24,6 +25,12 @@ package Modules {
 			super(X, Y, "Number", ModuleCategory.MISC, 0, 1, 0);
 			abbrev = "In";
 			symbol = _symbol
+		}
+		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = super.generateLayout();
+			layout.ports[0].offset.y += 1;
+			return layout;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {

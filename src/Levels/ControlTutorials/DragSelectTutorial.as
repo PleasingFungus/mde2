@@ -15,11 +15,13 @@ package Levels.ControlTutorials {
 	public class DragSelectTutorial extends Level {
 		
 		public function DragSelectTutorial() {
-			super("Drag-Select Tutorial", new WireTutorialGoal());
+			super(NAME, new WireTutorialGoal());
 			
 			info = "Select modules, and wires, by holding " + ControlSet.DRAG_MODIFY_KEY + " and dragging; once held, pick up & place them by clicking."
 			
 			canDrawWires = false;
+			canPickupModules = false;
+			canEditModules = false;
 			useModuleRecord = false;
 		}
 		
@@ -29,15 +31,11 @@ package Levels.ControlTutorials {
 				return;
 			
 			var modules:Vector.<Module> = new Vector.<Module>;
-			for each (var module:Module in [new ConstIn(10, 0, 1), new Adder(16, 2), new DataWriter(22, 14)])
+			for each (var module:Module in [new ConstIn(12, 0, 1), new ConstIn(10, 8, 2), new DataWriter(18, 6)])
 				modules.push(module);
 			
 			var wires:Vector.<Wire> = new Vector.<Wire>;
-			for each (var wire:Wire in [Wire.wireBetween(modules[0].layout.ports[0].Loc, modules[1].layout.ports[0].Loc),  //const to adder input 1
-									    Wire.wireBetween(modules[1].layout.ports[0].Loc, modules[1].layout.ports[1].Loc),  //adder input 1 to adder input 2
-									    Wire.wireBetween(modules[1].layout.ports[2].Loc, modules[2].layout.ports[0].Loc),  //adder to dwrite value
-									    Wire.wireBetween(modules[2].layout.ports[1].Loc, modules[1].layout.ports[1].Loc)]) //adder input 2 to dwrite line
-				wires.push(wire);
+			wires.push(Wire.wireBetween(modules[0].layout.ports[0].Loc, modules[2].layout.ports[1].Loc));  //const1 to dwriter port
 			
 			modules[0].x -= 4;
 			modules[0].y -= 6;
@@ -45,14 +43,14 @@ package Levels.ControlTutorials {
 			modules[2].y -= 2;
 			
 			wires[0].shift(new Point( -4, -6));
-			wires[2].shift(new Point(6, -2));
 			
-			for each (wire in wires)
+			for each (var wire:Wire in wires)
 				levelState.addWire(wire, false);
 			for each (module in modules)
 				levelState.addModule(module, false);
 		}
 		
+		public static const NAME:String = "Drag-Select Tutorial";
 	}
 
 }

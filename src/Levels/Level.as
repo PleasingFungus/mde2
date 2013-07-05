@@ -26,8 +26,12 @@ package Levels {
 		public var fewestModules:int;
 		public var fewestTicks:int;
 		public var modules:Vector.<Module>;
+		
 		public var canDrawWires:Boolean = true;
 		public var canPlaceModules:Boolean = true;
+		public var canPickupModules:Boolean = true;
+		public var canEditModules:Boolean = true;
+		
 		public var useModuleRecord:Boolean = true;
 		public var useTickRecord:Boolean = false;
 		public var configurableLatchesEnabled:Boolean = false;
@@ -72,6 +76,18 @@ package Levels {
 			predecessors = new Vector.<Level>;
 		}
 		
+		public function get index():int {
+			return Level.ALL.indexOf(this);
+		}
+		
+		public function get successors():Vector.<Level> {
+			var successors:Vector.<Level> = new Vector.<Level>;
+			for each (var level:Level in Level.ALL)
+				if (level.predecessors.indexOf(this) != -1)
+					successors.push(level);
+			return successors;
+		}
+		
 		public function setHighScore(modules:int):void {
 			if (modules < fewestModules || !fewestModules) {
 				fewestModules = modules;
@@ -92,13 +108,21 @@ package Levels {
 			return U.save.data[name + SUCCESS_SUFFIX];
 		}
 		
+		public function get beaten():Boolean {
+			return successSave != null;
+		}
+		
 		public function set successSave(save:String):void {
 			U.save.data[name + SUCCESS_SUFFIX] = save;
 		}
 		
 		public function unlocked():Boolean {
+			if (DEBUG.UNLOCK_ALL)
+				return true;
+			if (U.DEMO && U.DEMO_PERMITTED.indexOf(this) == -1)
+				return false;
 			for each (var predecessor:Level in predecessors)
-				if (!predecessor.successSave)
+				if (!predecessor.beaten)
 					return false;
 			return true;
 		}
@@ -112,115 +136,131 @@ package Levels {
 		private const TICK_SUFFIX:String = "-ticks";
 		
 		
+		public static var L_TutorialWire:Level;
+		public static var L_TutorialModule:Level;
+		public static var L_TutorialSelection:Level;
+		public static var L_TutorialCopying:Level;
+		
+		public static var L_Accumulation:Level;
+		public static var L_SingleOp:Level;
+		public static var L_DoubleOp:Level;
+		
+		public static var L_CPU_Basic:Level;
+		public static var L_CPU_Advanced:Level;
+		public static var L_CPU_Load:Level;
+		public static var L_CPU_Jump:Level;
+		public static var L_CPU_Branch:Level;
+		public static var L_CPU_Full:Level;
+		
+		public static var L_DTutorial_0:Level;
+		public static var L_DTutorial_1:Level;
+		public static var L_DTutorial_2:Level;
+		
+		public static var L_DCPU_Basic:Level;
+		public static var L_DCPU_LoadAdvanced:Level;
+		public static var L_DCPU_Branch:Level;
+		public static var L_DCPU_Full:Level;
+		
+		public static var L_PTutorial:Level;
+		
+		public static var L_PCPU_Basic:Level;
+		public static var L_PCPU_Advanced:Level;
+		public static var L_PCPU_Load:Level;
+		public static var L_PCPU_LoadAdvanced:Level;
+		public static var L_PCPU_Jump:Level;
+		public static var L_PCPU_Branch:Level;
+		public static var L_PCPU_Full:Level;
 		
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			
-			columns = new Vector.<Vector.<Level>>;
+			L_TutorialWire = new WireTutorial;
+			(L_TutorialModule = new ModuleTutorial).predecessors.push(L_TutorialWire);
+			(L_TutorialSelection = new DragSelectTutorial).predecessors.push(L_TutorialModule);
+			(L_TutorialCopying = new CopyingTutorial).predecessors.push(L_TutorialSelection);
 			
-			var WIRE_TUT:Level = new WireTutorial;
-			var MOD_TUT:Level = new ModuleTutorial;
-			var SEL_TUT:Level = new DragSelectTutorial;
-			var COPY_TUT:Level = new CopyingTutorial;
-			
-			MOD_TUT.predecessors.push(WIRE_TUT);
-			SEL_TUT.predecessors.push(MOD_TUT);
-			COPY_TUT.predecessors.push(SEL_TUT);
-			levels.push(WIRE_TUT, MOD_TUT, SEL_TUT, COPY_TUT);
+			(L_Accumulation = new AccumTutorial).predecessors.push(L_TutorialModule);
+			(L_SingleOp = new OpTutorial).predecessors.push(L_Accumulation);
+			(L_DoubleOp = new Op2Tutorial).predecessors.push(L_SingleOp);
 			
 			
-			var ACC_TUT:Level = new AccumTutorial;
-			var OP_TUT:Level = new OpTutorial;
-			var ISEL_TUT:Level = new Op2Tutorial;
+			L_CPU_Basic = new ShardLevel("Add-CPU", LevelShard.CORE);
+			L_CPU_Basic.info = "CPU instructions reference 'registers'. These are a set of 8 values, numbered 0-7, stored however you like.";
+			L_CPU_Basic.info += " The only requirement is that you are able to store values to, and on later ticks retrieve values from, locations numbered 0 - 7.";
+			L_CPU_Basic.info += "\n\nExample: a hypothetical MOVE instruction, which tells you to 'Set the DESTINATION register to the SOURCE register.";
+			L_CPU_Basic.info += "\n\nThis means you must set the register at the number indicated by the DESTINATION of the instruction to the value of the register at the number indicated by the SOURCE of the instruction.";
+			L_CPU_Basic.info += "\n\nE.g., MOV R7 = R4: set the value held in register 7 to the value held in register 4."
+			L_CPU_Basic.info += "\n\nHave fun!";
+			L_CPU_Basic.predecessors.push(L_DoubleOp);
+			L_CPU_Advanced = new ShardLevel("Advanced Ops", LevelShard.CORE.compositWith(LevelShard.ADV));
+			L_CPU_Advanced.predecessors.push(L_CPU_Basic);
+			L_CPU_Load = new ShardLevel("Load", LevelShard.CORE.compositWith(LevelShard.LOAD));
+			L_CPU_Load.predecessors.push(L_CPU_Basic);
+			L_CPU_Jump = new ShardLevel("Jump! Jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
+			L_CPU_Jump.predecessors.push(L_CPU_Basic);
+			L_CPU_Branch = new ShardLevel("Branch!", LevelShard.CORE.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
+			L_CPU_Branch.predecessors.push(L_CPU_Jump);
+			L_CPU_Full = new ShardLevel("Full!", LevelShard.CORE.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			L_CPU_Full.predecessors.push(L_CPU_Advanced, L_CPU_Load, L_CPU_Branch);
 			
-			ACC_TUT.predecessors.push(MOD_TUT);
-			OP_TUT.predecessors.push(ACC_TUT);
-			ISEL_TUT.predecessors.push(OP_TUT);
-			levels.push(ACC_TUT, OP_TUT, ISEL_TUT);
 			
-			var addCPU:Level = new ShardLevel("Add-CPU", LevelShard.CORE);
-			addCPU.info = "CPU instructions reference 'registers'. These are a set of 8 values, numbered 0-7, stored however you like.";
-			addCPU.info += " The only requirement is that you are able to store values to, and on later ticks retrieve values from, locations numbered 0 - 7.";
-			addCPU.info += "\n\nExample: a hypothetical MOVE instruction, which tells you to 'Set the DESTINATION register to the SOURCE register.";
-			addCPU.info += "\n\nThis means you must set the register at the number indicated by the DESTINATION of the instruction to the value of the register at the number indicated by the SOURCE of the instruction.";
-			addCPU.info += "\n\nE.g., MOV R7 = R4: set the value held in register 7 to the value held in register 4."
-			addCPU.info += "\n\nHave fun!";
-			addCPU.predecessors.push(ISEL_TUT);
-			var cpuADV:Level = new ShardLevel("Advanced Ops", LevelShard.CORE.compositWith(LevelShard.ADV));
-			cpuADV.predecessors.push(addCPU);
-			var cpuLD:Level = new ShardLevel("Load", LevelShard.CORE.compositWith(LevelShard.LOAD));
-			cpuLD.predecessors.push(addCPU);
-			var cpuJMP:Level = new ShardLevel("Jump! Jump!", LevelShard.CORE.compositWith(LevelShard.JUMP));
-			cpuJMP.predecessors.push(addCPU);
-			var cpuBRANCH:Level = new ShardLevel("Branch!", LevelShard.CORE.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
-			cpuBRANCH.predecessors.push(cpuJMP);
-			var cpuFULL:Level = new ShardLevel("Full!", LevelShard.CORE.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
-			cpuFULL.predecessors.push(cpuADV, cpuLD, cpuBRANCH);
 			
-			levels.push(addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD, cpuFULL);
-			
-			var D0_TUT:Level = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
+			L_DTutorial_0 = new Level("Delay Tutorial", new WireTutorialGoal(15), true,
 										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
-			D0_TUT.useModuleRecord = false;
-			D0_TUT.predecessors.push(ACC_TUT);
-			var D1_TUT:Level = new Level("Delay Accum. 1", new MagicAccumDelayTutGoal, true,
+			L_DTutorial_0.useModuleRecord = false;
+			L_DTutorial_0.predecessors.push(L_CPU_Basic);
+			L_DTutorial_1 = new Level("Delay Accum. 1", new MagicAccumDelayTutGoal, true,
 										 [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);
-			D1_TUT.predecessors.push(D0_TUT);
-			var D2_TUT:Level = new Level("Delay Accum. 2", new AccumDelayTutGoal, true,
+			L_DTutorial_1.predecessors.push(L_DTutorial_0);
+			L_DTutorial_2 = new Level("Delay Accum. 2", new AccumDelayTutGoal, true,
 										 [ConstIn, Adder, Latch, DataWriter, SysDelayClock]);
-			D2_TUT.predecessors.push(D1_TUT);
-			
-			levels.push(D0_TUT, D1_TUT, D2_TUT);
+			L_DTutorial_2.predecessors.push(L_DTutorial_1);
 			
 			var delayShard:LevelShard = LevelShard.CORE.compositWith(LevelShard.DELAY);
-			var addCPU_D:Level = new ShardLevel("Add-CPU Delay", delayShard);
-			addCPU_D.predecessors.push(addCPU, D2_TUT);
-			var cpuADVLDD:Level = new ShardLevel("Adv/Load Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
-			cpuADVLDD.predecessors.push(addCPU_D, cpuADV, cpuLD);
-			var cpuD_BRANCH:Level = new ShardLevel("Branch Delay", delayShard.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
-			cpuD_BRANCH.predecessors.push(addCPU_D, cpuBRANCH);
-			var cpuD_FULL:Level = new ShardLevel("Full Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
-			cpuD_FULL.predecessors.push(cpuADVLDD, cpuBRANCH);
+			L_DCPU_Basic = new ShardLevel("Add-CPU Delay", delayShard);
+			L_DCPU_Basic.predecessors.push(L_DTutorial_2);
+			L_DCPU_LoadAdvanced = new ShardLevel("Adv/Load Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
+			L_DCPU_LoadAdvanced.predecessors.push(L_DCPU_Basic, L_CPU_Advanced, L_CPU_Load);
+			L_DCPU_Branch = new ShardLevel("Branch Delay", delayShard.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
+			L_DCPU_Branch.predecessors.push(L_DCPU_Basic, L_CPU_Branch);
+			L_DCPU_Full = new ShardLevel("Full Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			L_DCPU_Full.predecessors.push(L_CPU_Full, L_DCPU_LoadAdvanced, L_DCPU_Branch);
 			
-			levels.push(addCPU_D, cpuADVLDD, cpuD_BRANCH, cpuD_FULL);
-			
-			var pipeTutorial:Level = new Level("Pipeline Tutorial", new PipelineTutorialGoal, true,
+			L_PTutorial = new Level("Pipeline Tutorial", new PipelineTutorialGoal, true,
 											   [ConstIn, Adder, Latch, DataWriterT, DataReader, InstructionDecoder, SysDelayClock, And], [OpcodeValue.OP_SAVI]);
-			pipeTutorial.predecessors.push(OP_TUT, D2_TUT);
-			
-			levels.push(pipeTutorial);
+			L_PTutorial.predecessors.push(L_DCPU_Basic);
 			
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);
-			var pipe:Level = new ShardLevel("Efficiency!", pipeShard);
-			pipe.predecessors.push(addCPU_D); //dubious
-			var pipeJMP:Level = new ShardLevel("Efficient Jump", pipeShard.compositWith( LevelShard.JUMP));
-			pipeJMP.predecessors.push(pipe, cpuJMP);
-			var pipeBranch:Level = new ShardLevel("Efficient Branch", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));
-			pipeBranch.predecessors.push(pipeJMP);
-			var pipeADV:Level = new ShardLevel("Efficient Adv Op", pipeShard.compositWith(LevelShard.ADV));
-			pipeADV.predecessors.push(pipe, cpuADVLDD);
-			var pipeLD:Level = new ShardLevel("Efficient Load", pipeShard.compositWith(LevelShard.LOAD));
-			pipeLD.predecessors.push(pipe, cpuADVLDD);
-			var pipeADVLDD:Level = new ShardLevel("Eff. Adv/Load", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
-			pipeADVLDD.predecessors.push(pipeLD, pipeADV);
-			var pipeFull:Level = new ShardLevel("Full Efficient", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
-			pipeFull.predecessors.push(pipeBranch, pipeADVLDD);
+			L_PCPU_Basic = new ShardLevel("Efficiency!", pipeShard);
+			L_PCPU_Basic.predecessors.push(L_PTutorial);
+			L_PCPU_Jump = new ShardLevel("Efficient Jump", pipeShard.compositWith( LevelShard.JUMP));
+			L_PCPU_Jump.predecessors.push(L_PCPU_Basic, L_DCPU_Branch);
+			L_PCPU_Branch = new ShardLevel("Efficient Branch", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));
+			L_PCPU_Branch.predecessors.push(L_PCPU_Jump);
+			L_PCPU_Advanced = new ShardLevel("Efficient Adv Op", pipeShard.compositWith(LevelShard.ADV));
+			L_PCPU_Advanced.predecessors.push(L_PCPU_Basic, L_DCPU_LoadAdvanced);
+			L_PCPU_Load = new ShardLevel("Efficient Load", pipeShard.compositWith(LevelShard.LOAD));
+			L_PCPU_Load.predecessors.push(L_PCPU_Basic, L_DCPU_LoadAdvanced);
+			L_PCPU_LoadAdvanced = new ShardLevel("Eff. Adv/Load", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
+			L_PCPU_LoadAdvanced.predecessors.push(L_PCPU_Load, L_PCPU_Advanced);
+			L_PCPU_Full = new ShardLevel("Full Efficient", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			L_PCPU_Full.predecessors.push(L_DCPU_Full, L_PCPU_Branch, L_PCPU_LoadAdvanced);
 			
-			pipeTutorial.useTickRecord = pipe.useTickRecord = pipeJMP.useTickRecord = pipeBranch.useTickRecord = true;
-			pipeLD.useTickRecord = pipeADVLDD.useTickRecord = pipeFull.useTickRecord = pipeADV.useTickRecord = true;
+			L_PTutorial.useTickRecord = L_PCPU_Basic.useTickRecord = L_PCPU_Jump.useTickRecord = L_PCPU_Branch.useTickRecord = true;
+			L_PCPU_Advanced.useTickRecord = L_PCPU_Load.useTickRecord = L_PCPU_LoadAdvanced.useTickRecord = L_PCPU_Full.useTickRecord = true;
 			
-			levels.push(pipe, pipeJMP, pipeADV, pipeLD, pipeADVLDD, pipeBranch, pipeFull);
-			
-			columns.push(makeVec([WIRE_TUT, MOD_TUT, SEL_TUT, COPY_TUT]));
-			columns.push(makeVec([ACC_TUT, OP_TUT, ISEL_TUT]));
-			columns.push(makeVec([addCPU, cpuJMP, cpuBRANCH, cpuADV, cpuLD, cpuFULL]));
-			columns.push(makeVec([D0_TUT, D1_TUT, D2_TUT]));
-			columns.push(makeVec([addCPU_D, cpuADVLDD, cpuD_BRANCH, cpuD_FULL]));
-			columns.push(makeVec([pipeTutorial]));
-			columns.push(makeVec([pipe, pipeJMP, pipeBranch, pipeADV, pipeLD, pipeADVLDD, pipeFull]));
+			levels.push(L_TutorialWire, L_TutorialModule, L_TutorialSelection, L_TutorialCopying,
+					    L_Accumulation, L_SingleOp, L_DoubleOp,
+						L_CPU_Basic, L_CPU_Jump, L_CPU_Branch, L_CPU_Advanced, L_CPU_Load, L_CPU_Full,
+						L_DTutorial_0, L_DTutorial_1, L_DTutorial_2,
+						L_DCPU_Basic, L_DCPU_LoadAdvanced, L_DCPU_Branch, L_DCPU_Full,
+						L_PTutorial,
+						L_PCPU_Basic, L_PCPU_Jump, L_PCPU_Advanced, L_PCPU_Load, L_PCPU_LoadAdvanced, L_PCPU_Branch, L_PCPU_Full);
 			
 			return levels;
 		}
+		
+		public static var ALL:Vector.<Level>;
 		
 		public function loadIntoState(levelState:LevelState, loadFresh:Boolean = false):void {
 			for each (var module:Module in modules) {
@@ -246,7 +286,7 @@ package Levels {
 		public static function load():void {
 			var lastLevelName:String = U.save.data['lastLevel'];
 			C.log("Loading last level " + lastLevelName);
-			for each (var level:Level in U.levels)
+			for each (var level:Level in Level.ALL)
 				if (level.name == lastLevelName) {
 					last = level;
 					C.log("Last level: " + level);
@@ -254,7 +294,6 @@ package Levels {
 				}
 		}
 		
-		public static var columns:Vector.<Vector.<Level>>;
 		public static var last:Level;
 	}
 

@@ -35,7 +35,10 @@ package LevelStates {
 			add(U.BODY_FONT.configureFlxText(new FlxText(20, 100, FlxG.width - 40, timeInfo))); 
 			var setModuleRecord:Boolean = partsCount == level.fewestModules;
 			if (level.useModuleRecord)
-				add(U.BODY_FONT.configureFlxText(new FlxText(20, 140, FlxG.width - 40, "Modules used: " + partsCount + (setModuleRecord ? " (Best!)" : " (Best: " + level.fewestModules+")"))));
+				add(U.BODY_FONT.configureFlxText(new FlxText(20, 140, FlxG.width - 40, "Modules used: " + partsCount + (setModuleRecord ? " (Best!)" : " (Best: " + level.fewestModules + ")"))));
+			
+			if (U.DEMO && level == U.DEMO_LIMIT)
+				add(U.BODY_FONT.configureFlxText(new FlxText(20, 180, FlxG.width - 40, "This is the end of the demo! I hope you've enjoyed it. For more games, go to pleasingfungus.com, or follow development at pleasing.tumblr.com. Thanks for playing!")));
 		}
 		
 		override public function update():void {
@@ -43,7 +46,7 @@ package LevelStates {
 			if (FlxG.mouse.justPressed() || FlxG.keys.any())
 				FlxG.fade(0xff000000, MenuButton.FADE_TIME, function switchStates():void {
 					if (U.tutorialState == U.TUT_BEAT_TUT_1)
-						FlxG.switchState(new LevelState(U.levels[1]));
+						FlxG.switchState(new LevelState(Level.ALL[1]));
 					else 
 						FlxG.switchState(new MenuState);
 				});

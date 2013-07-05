@@ -16,6 +16,7 @@ package Levels.BasicTutorials {
 			info = "Instructions are made up of four numbers. The first number, the opcode, says what type of instruction it is. "
 			info += "The other three, the source, target, & destination, have meanings that vary by opcode.\n\n"
 			info += "Every level has a fixed set of instruction types, but several permutations will be generated to test your solution.";
+			useModuleRecord = false;
 		}
 		
 	}

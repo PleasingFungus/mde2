@@ -9,7 +9,9 @@ package Displays {
 	import Layouts.Nodes.InternalNode;
 	import Modules.Module;
 	import org.flixel.*;
+	import UI.ColorText;
 	import UI.FontTuple;
+	import UI.GraphicButton;
 	import UI.HighlightFormat;
 	
 	/**
@@ -27,6 +29,7 @@ package Displays {
 		protected var detailsText:FlxText;
 		protected var symbol:FlxSprite;
 		protected var largeSymbol:FlxSprite;
+		protected var editButton:EditButton;
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
@@ -64,17 +67,20 @@ package Displays {
 				detailsText.scrollFactor = scrollFactor; //object
 			}
 			
+			if (module.getConfiguration() && module.configurableInPlace && !module.FIXED && U.state.level.canEditModules)
+				editButton = new EditButton(this);
+			
 			updatePosition();
 		}
 		
-		private function getDetails():String {
+		protected function getDetails():String {
 			var displayName:String = module.renderDetails();
-			if (U.state.level.delay && module.delay)
+			if (U.state && U.state.level.delay && module.delay)
 				displayName += "\n\nD" + module.delay;
 			return displayName;
 		}
 		
-		private function makePort(layout:PortLayout):DPort {
+		protected function makePort(layout:PortLayout):DPort {
 			var displayPort:DPort = new DPort(layout);
 			displayPort.scrollFactor = scrollFactor; //object
 			return displayPort;
@@ -101,6 +107,8 @@ package Displays {
 			for each (var dWire:DWire in displayConnections)
 				dWire.update();
 			
+			if (editButton)
+				editButton.update();
 		}
 		
 		protected function outsideScreen():Boolean {
@@ -111,7 +119,7 @@ package Displays {
 					(y - U.GRID_DIM >= sr.bottom));
 		}
 		
-		private function getColor():void {
+		protected function getColor():void {
 			var moduleColor:uint;
 			
 			if (selected)
@@ -154,6 +162,11 @@ package Displays {
 				detailsText.y = y + (height - detailsText.height) / 2;
 			}
 			
+			if (editButton) {
+				editButton.X = x + width / 2 - editButton.fullWidth / 2;
+				editButton.Y = y + 5;
+			}
+			
 			lastLoc = module.clone();
 		}
 		
@@ -161,6 +174,9 @@ package Displays {
 			for each (var displayNode:DNode in displayNodes)
 				if (displayNode.overlapsPoint(fp))
 					return HighlightFormat.plain(displayNode.node.getLabel());
+			
+			if (editButton && editButton.moused)
+				return new HighlightFormat("{}", ColorText.singleVec(new ColorText(U.CONFIG_COLOR, "Edit")));
 			
 			var format:HighlightFormat = module.getHighlitDescription();
 			if (format) {
@@ -182,6 +198,8 @@ package Displays {
 			
 			drawInternals();
 			drawLabel();
+			if (editButton)
+				editButton.draw();
 		}
 		
 		protected function drawInternals():void {

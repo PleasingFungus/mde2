@@ -70,7 +70,7 @@ package Modules {
 			for (var i:int = 0; i < width; i++) {
 				var outPort:PortLayout = layout.ports[i + width + 1];
 				var dataNode:InternalNode = new StandardNode(this, new Point(outPort.offset.x - 3, outPort.offset.y), [layout.ports[i], outPort], [],
-													 outputs[i].getValue /*?*/, "Stored value " + i, true);
+													 outputs[i].getValue /*?*/, width > 1 ? "Stored value " + i : "Stored value", true);
 				//dataNode.type = NodeType.STORAGE;
 				nodes.push(dataNode);
 				tuples.push(new NodeTuple(layout.ports[i], dataNode, writeOK));

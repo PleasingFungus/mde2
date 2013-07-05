@@ -120,7 +120,7 @@ package Components {
 		}
 		
 		public function get stable():Boolean {
-			var _stable:Boolean = (!U.state.level.delay || !parent.delay || isOutput ||
+			var _stable:Boolean = (!U.state || !U.state.level.delay || !parent.delay || isOutput ||
 								   !source || source.lastChanged == -1 ||
 								   remainingDelay() <= 0);
 			return _stable

@@ -1,6 +1,7 @@
 package Actions {
 	import flash.geom.Point;
 	import Components.Bloc;
+	import Components.Wire;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -37,12 +38,14 @@ package Actions {
 			
 			if (newLoc.equals(oldLoc)) {
 				execute();
-				U.state.actionStack.pop(); //remove both this & the predecessor from do/undo if placing & removing to same place?
 				return;
 			}
 			
+			//TODO: path wires
+			for each (var wire:Wire in bloc.associatedWires)
+				Wire.place(wire);
 			bloc.place(newLoc);
-			U.state.actionStack.push(new MigrateBlocAction(bloc, newLoc, oldLoc));
+			U.state.actionStack.push(new MigrateBlocAction(bloc, newLoc, oldLoc, cLastAction.history));
 			U.state.save();
 		}
 		

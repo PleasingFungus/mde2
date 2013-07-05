@@ -1,5 +1,6 @@
 package Components {
 	import flash.geom.Point;
+	import Layouts.PortLayout;
 	import Modules.Module;
 	/**
 	 * ...
@@ -300,6 +301,30 @@ package Components {
 				addConnection(connection);
 				joinConnection(connection);
 			}
+		}
+		
+		public function connectionLoc(carrier:Carrier):Point {
+			if (carrier is Port) {
+				var port:Port = carrier as Port;
+				for each (var portLayout:PortLayout in port.parent.layout.ports)
+					if (portLayout.port == port)
+						return portLayout.Loc;
+				throw new Error("Port not in parent!");
+			}
+			if (carrier is Wire) {
+				var wire:Wire = carrier as Wire;
+				var point:Point, endpoint:Point;
+				for each (endpoint in [path[0], path[path.length - 1]])
+					for each (point in wire.path)
+						if (point.equals(endpoint))
+							return endpoint;
+				for each (endpoint in [wire.path[0], wire.path[wire.path.length - 1]])
+					for each (point in path)
+						if (point.equals(endpoint))
+							return endpoint;
+				throw new Error("No known connection!");
+			}
+			throw new Error("Unknown carrier type!");
 		}
 		
 		private function joinConnection(connection:Carrier):void {

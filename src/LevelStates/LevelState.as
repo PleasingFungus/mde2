@@ -1,9 +1,8 @@
 package LevelStates {
-	import Components.Bloc;
 	import flash.utils.Dictionary;
-	import flash.geom.Point;
 	import Helpers.DeleteHelper;
 	import Helpers.KeyHelper;
+	import Modules.Module;
 	import Modules.CustomModule;
 	import Modules.ModuleCategory;
 	import Modules.SysDelayClock;
@@ -11,23 +10,19 @@ package LevelStates {
 	import Actions.*;
 	import Controls.*;
 	import Displays.*;
-	import Modules.Module;
+	import UI.*;
+	import Menu.*;
+	import Infoboxes.*;
 	import Testing.Goals.GeneratedGoal;
-	import UI.ButtonList;
-	import UI.ButtonManager;
-	import UI.ModuleSlider;
-	import UI.Sliderbar;
-	import UI.TextButton;
 	import Values.FixedValue;
 	import Values.Value;
+	import Components.Bloc;
 	import Components.Carrier;
 	import Components.Wire
-	import UI.GraphicButton;
-	import UI.MenuButton;
-	import flash.display.BitmapData
+	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
 	import flash.geom.Matrix;
-	import Menu.*;
+	import flash.geom.Point;
 	import Levels.Level;
 	
 	/**
@@ -64,7 +59,6 @@ package LevelStates {
 		public var viewingComments:Boolean;
 		private var displayTime:DTime;
 		private var displayDelay:DDelay;
-		private var preserveModule:Boolean;
 		private var testText:FlxText;
 		private var testBG:FlxSprite;
 		private var lastRunTime:Number;
@@ -78,7 +72,6 @@ package LevelStates {
 		public var actionStack:Vector.<Action>;
 		public var reactionStack:Vector.<Action>;
 		private var currentWire:Wire;
-		private var currentModule:Module;
 		private var selectionArea:SelectionBox;
 		private var currentBloc:Bloc;
 		
@@ -91,8 +84,10 @@ package LevelStates {
 		public var initialMemory:Vector.<Value>;
 		
 		public var level:Level;
-		public function LevelState(level:Level) {
+		public var loadData:String;
+		public function LevelState(level:Level, loadData:String = null) {
 			this.level = level;
+			this.loadData = loadData;
 		}
 		
 		override public function create():void {
@@ -107,16 +102,18 @@ package LevelStates {
 			
 			initialMemory = level.goal.genMem();
 			
-			load();
+			load(loadData);
+			loadData = null;
 			level.setLast();
 			recentModules = new Vector.<Class>;
 			
-			makeUI();
+			makeUI(false);
 			upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
 			
 			FlxG.camera.scroll.x = (FlxG.width / 2) / 1 - (FlxG.width / 2) / U.zoom;
 			FlxG.camera.scroll.y = (FlxG.height / 2) / 1 - (FlxG.height / 2) / U.zoom;
 			upperLayer.update(); //hack to avoid scroll issues
+			addUIActives(); //likewise part of the hack
 			
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
@@ -151,7 +148,7 @@ package LevelStates {
 			displayModules.push(displayModule);
 		}
 		
-		private function makeUI():void {
+		private function makeUI(includeActives:Boolean = true):void {
 			var UIEnabled:Boolean = !upperLayer || upperLayer.visible;
 			upperLayer = new FlxGroup;
 			upperLayer.visible = UIEnabled;
@@ -159,7 +156,8 @@ package LevelStates {
 			new ButtonManager;
 			UIChanged = true;
 			upperLayer.add(new MenuBar(60));
-			addUIActives();
+			if (includeActives)
+				addUIActives();
 			makeViewButtons();
 			
 			if (!editEnabled) {
@@ -191,6 +189,7 @@ package LevelStates {
 		private function makeViewButtons():void {
 			makeDataButton();
 			makeInfoButton();
+			makeShareButton();
 			makeBackButton();
 			if (runningDisplayTest) {
 				upperLayer.add(displayTime);
@@ -200,8 +199,8 @@ package LevelStates {
 		
 		private function makeViewLists():void {
 			LIST_ZOOM == listOpen ? makeZoomList() : makeZoomButton();
-			if (level.delay)
-				LIST_VIEW_MODES == listOpen ? makeViewModeMenu() : makeViewModeButton()
+			//if (level.delay)
+				//LIST_VIEW_MODES == listOpen ? makeViewModeMenu() : makeViewModeButton()
 		}
 		
 		private function makeEditButtons():void {
@@ -228,6 +227,10 @@ package LevelStates {
 			}, "Exit to menu");
 			backButton.fades = true;
 			upperLayer.add(backButton);
+		}
+		
+		private function makeShareButton():void {
+			upperLayer.add(new ShareButton(FlxG.width - 100, 8));
 		}
 		
 		private function makeSaveButtons():void {
@@ -257,7 +260,7 @@ package LevelStates {
 		}
 		
 		private function makeZoomButton():void {
-			addToolbarButton(FlxG.width - 100, _zoom_sprite, function openList():void {
+			addToolbarButton(FlxG.width - 140, _zoom_sprite, function openList():void {
 				listOpen = LIST_ZOOM;
 				makeUI();
 			}, "Zoom", "Display zoom controls", new Key("O"));
@@ -281,7 +284,7 @@ package LevelStates {
 					}
 				}, "Set zoom to "+Math.pow(2, -zoomLevel), ControlSet.NUMBER_HOTKEYS[zoomLevel+1]).setParam(zoomLevel).setSelected(Math.pow(2, -zoomLevel) == U.zoom));
 			
-			var zoomList:ButtonList = new ButtonList(FlxG.width - 105, 3, zoomButtons, function onListClose():void {
+			var zoomList:ButtonList = new ButtonList(FlxG.width - 145, 3, zoomButtons, function onListClose():void {
 				if (listOpen == LIST_ZOOM)
 					listOpen = LIST_NONE;
 				makeUI();
@@ -303,7 +306,7 @@ package LevelStates {
 		}
 		
 		private function makeViewModeButton():void {
-			addToolbarButton(FlxG.width - 140, VIEW_MODE_SPRITES[viewMode], function openList():void {
+			addToolbarButton(FlxG.width - 180, VIEW_MODE_SPRITES[viewMode], function openList():void {
 				listOpen = LIST_VIEW_MODES;
 				makeUI();
 			}, "Views", "Display list of view modes", new Key("Q"));
@@ -364,20 +367,7 @@ package LevelStates {
 				for each (moduleType in recentModules) {
 					archetype = Module.getArchetype(moduleType);
 					moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
-						archetype = Module.getArchetype(moduleType);
-						if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
-							if (archetype.getConfiguration())
-								currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
-							else
-								currentModule = new moduleType( -1, -1);
-							currentModule.initialize();
-							
-							modules.push(currentModule);
-							displayModules.push(midLayer.add(currentModule.generateDisplay()));
-							addRecentModule(moduleType);
-							
-							preserveModule = true;
-						}
+						createNewModule(moduleType);
 						
 						if (listOpen == LIST_CATEGORIES) {
 							listOpen = LIST_NONE;
@@ -424,20 +414,7 @@ package LevelStates {
 			for each (moduleType in moduleTypes) {
 				archetype = Module.getArchetype(moduleType);
 				moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
-					archetype = Module.getArchetype(moduleType);
-					if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
-						if (archetype.getConfiguration())
-							currentModule = new moduleType( -1, -1, archetype.getConfiguration().value);
-						else
-							currentModule = new moduleType( -1, -1);
-						currentModule.initialize();
-						
-						modules.push(currentModule);
-						displayModules.push(midLayer.add(currentModule.generateDisplay()));
-						addRecentModule(moduleType);
-						
-						preserveModule = true;
-					}
+					createNewModule(moduleType);
 						
 					if (listOpen == LIST_MODULES) {
 						listOpen = LIST_NONE;
@@ -467,6 +444,25 @@ package LevelStates {
 			}
 		}
 		
+		private function createNewModule(moduleType:Class):void {
+			var archetype:Module = Module.getArchetype(moduleType);
+			if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
+				var gridLoc:Point = U.pointToGrid(U.mouseLoc);
+				var newModule:Module;
+				if (archetype.getConfiguration())
+					newModule = new moduleType(gridLoc.x, gridLoc.y, archetype.getConfiguration().value);
+				else
+					newModule = new moduleType(gridLoc.x, gridLoc.y);
+				newModule.initialize();
+				
+				modules.push(newModule);
+				var displayModule:DModule = newModule.generateDisplay();
+				displayModules.push(midLayer.add(displayModule));
+				currentBloc = addBlocFromModule(displayModule);
+				addRecentModule(moduleType);
+			}
+		}
+		
 		private function addRecentModule(moduleType:Class):void {
 			if (recentModules.indexOf(moduleType) >= 0)
 				recentModules.splice(recentModules.indexOf(moduleType), 1);
@@ -484,8 +480,8 @@ package LevelStates {
 			var extraWidth:int = 10;
 			var labelText:FlxText = new FlxText(X - extraWidth / 2 - 1, button.Y + button.fullHeight - 2, button.fullWidth + extraWidth, ShortName);
 			U.TOOLBAR_FONT.configureFlxText(labelText, 0xffffff, 'center');
-			upperLayer.add(labelText);
-			button.associatedObjects.push(labelText);
+			labelText.scrollFactor.x = labelText.scrollFactor.y = 0;
+			button.add(labelText);
 			
 			return button;
 		}
@@ -541,14 +537,12 @@ package LevelStates {
 		
 		private function updateUI():void {
 			UIChanged = false;
-			preserveModule = false;
 			
 			var members:Array = upperLayer.members.slice(); //copy, to prevent updating new members
 			for (var i:int = members.length - 1; i >= 0; i--) {
 				var b:FlxBasic = members[i];
-				if (b && b.exists && b.active) {
+				if (b && b.exists && b.active)
 					b.update();
-				}
 			}
 		}
 		
@@ -573,22 +567,17 @@ package LevelStates {
 					}
 					selectionArea = null;
 				}
-			} else if (currentModule)
-				checkModuleControls();
-			else if (currentWire)
+			} else if (currentWire)
 				checkWireControls();
 			else if (currentBloc && !currentBloc.rooted) {
-				//currently delegated
+				//currently delegated to DBloc
 			} else {
 				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
 					if (ControlSet.DRAG_MODIFY_KEY.pressed())
 						midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
-					else if (findMousedModule()) {
-						if (ControlSet.CLICK_MODIFY_KEY.pressed())
-							addEditSliderbar();
-						else
-							pickUpModule();
-					} else if (level.canDrawWires) {
+					else if (findMousedModule() && level.canPickupModules)
+						pickUpModule();
+					else if (level.canDrawWires && findMousedCarrier()) {
 						currentWire = new Wire(U.pointToGrid(U.mouseLoc))
 						displayWires.push(midLayer.add(new DWire(currentWire)));
 					}
@@ -618,41 +607,6 @@ package LevelStates {
 			}
 		}
 		
-		private function checkModuleControls():void {
-			if (ControlSet.DELETE_KEY.justPressed()) {
-				currentModule.exists = false;
-				currentModule = null;
-				return;
-			}
-			
-			if (ControlSet.CANCEL_KEY.justPressed()) {
-				if (U.state.actionStack.length) {
-					var lastAction:Action = actionStack.pop();
-					if (lastAction is CustomAction && (lastAction as CustomAction).param == currentModule)
-						lastAction.revert(); //revert 'pick up' action
-					else {
-						currentModule.exists = false;
-						actionStack.push(lastAction);
-					}
-				} else
-					currentModule.exists = false;
-				currentModule = null;
-				return;
-			}
-			
-			var mousePoint:Point = U.pointToGrid(U.mouseLoc);
-			currentModule.x = mousePoint.x;
-			currentModule.y = mousePoint.y;
-			
-			if (FlxG.mouse.justPressed() && !preserveModule) {
-				if (U.buttonManager.moused) {
-					currentModule.exists = false;
-					currentModule = null;
-				} else if (currentModule.validPosition)
-					placeModule();
-			}
-		}
-		
 		private function checkWireControls():void {
 			if (ControlSet.CANCEL_KEY.justPressed()) {
 				currentWire.exists = false;
@@ -673,20 +627,20 @@ package LevelStates {
 			currentBloc.unravel();
 			currentBloc = null;
 			
-			currentModule = customModule;
 			modules.push(customModule);
 			
-			var displayModule:DModule = currentModule.generateDisplay();
+			var displayModule:DModule = customModule.generateDisplay();
 			midLayer.add(displayModule);
 			displayModules.push(displayModule);
+			
+			currentBloc = addBlocFromModule(displayModule);
 		}
 		
 		private function pickUpModule():void {
 			var mousedModule:Module = findMousedModule();
 			if (mousedModule && !mousedModule.FIXED) {
-				currentModule = mousedModule;
-				new CustomAction(Module.remove, Module.place, mousedModule, new Point(mousedModule.x, mousedModule.y)).execute();
-				mousedModule.exists = true;
+				currentBloc = addBlocFromModule(associatedDisplayModule(mousedModule), true);
+				currentBloc.lift();
 			}
 		}
 		
@@ -702,10 +656,22 @@ package LevelStates {
 				}
 		}
 		
-		private function placeModule():void {
-			FlxG.camera.shake(0.01 * U.zoom, 0.05);
-			new MoveModuleAction(currentModule, new Point(currentModule.x, currentModule.y));
-			currentModule = null;
+		private function addBlocFromModule(displayModule:DModule, Rooted:Boolean = false):Bloc {
+			var displayModules:Vector.<DModule> = new Vector.<DModule>;
+			displayModules.push(displayModule);
+			
+			var displayBloc:DBloc = DBloc.fromDisplays(new Vector.<DWire>, displayModules, Rooted);
+			displayBloc.bloc.origin = U.pointToGrid(U.mouseLoc);
+			midLayer.add(displayBloc);
+			
+			return displayBloc.bloc;
+		}
+		
+		private function associatedDisplayModule(module:Module):DModule {
+			for each (var displayModule:DModule in displayModules)
+				if (displayModule.module == module)
+					return displayModule;
+			return null;
 		}
 		
 		private function destroyModules():void {
@@ -727,11 +693,11 @@ package LevelStates {
 		
 		
 		private function checkMenuState():void {
-			undoButton.setExists(actionStack.length > 0);
+			undoButton.exists = actionStack.length > 0;
 			undoButton.active = canUndo(); 
-			redoButton.setExists(reactionStack.length > 0);
+			redoButton.exists = reactionStack.length > 0;
 			redoButton.active = canRedo();
-			var undoAlpha:Number = currentWire || currentBloc || currentModule ? 0.3 : 1;
+			var undoAlpha:Number = currentWire || (currentBloc && !currentBloc.rooted) ? 0.3 : 1;
 			undoButton.setAlpha(undoAlpha);
 			redoButton.setAlpha(undoAlpha);
 			
@@ -739,8 +705,8 @@ package LevelStates {
 			
 			if (loadButton) {
 				var successSave:String = findSuccessSave();
-				loadButton.setExists(successSave != savedString && successSave != null);
-				resetButton.setExists(savedString && savedString != RESET_SAVE);
+				loadButton.exists = successSave != savedString && successSave != null;
+				resetButton.exists = savedString && savedString != RESET_SAVE;
 			}
 			
 			checkCursorState();
@@ -749,7 +715,7 @@ package LevelStates {
 		}
 		
 		private function canDelete():Boolean {
-			if (currentWire || currentBloc || currentModule || selectionArea || runningDisplayTest)
+			if (currentWire || currentBloc || selectionArea || runningDisplayTest)
 				return false;
 			if (findMousedWire())
 				return true;
@@ -787,7 +753,7 @@ package LevelStates {
 		}
 		
 		private function cursorHidden():Boolean {
-			return listOpen == LIST_NONE && !time.moment && !U.buttonManager.moused && (currentModule || (currentBloc && !currentBloc.rooted));
+			return listOpen == LIST_NONE && !time.moment && !U.buttonManager.moused && currentBloc && !currentBloc.rooted;
 		}
 		
 		private function getCursor():Cursor {
@@ -803,23 +769,23 @@ package LevelStates {
 			if (mousedModule) {
 				if (mousedModule.FIXED)
 					return null;
-				if (ControlSet.CLICK_MODIFY_KEY.pressed() && mousedModule.configurableInPlace && mousedModule.getConfiguration())
-					return Cursor.EDIT;
-				return Cursor.GRAB;
+				if (level.canPickupModules)
+					return Cursor.GRAB;
 			}
 			
-			var blocWireMoused:Boolean = false;
+			var blocMoused:Boolean = false;
 			if (currentBloc) { //implies currentBloc.rooted
 				for each (var dwire:DWire in displayWires)
 					if (currentBloc.wires.indexOf(dwire.wire) != -1 && dwire.overlapsPoint(U.mouseFlxLoc)) {
-						blocWireMoused = true;
+						blocMoused = true;
 						break;
 					}
+				blocMoused = blocMoused || (!level.canPickupModules && mousedModule && currentBloc.modules.indexOf(mousedModule) != -1);
 			} 
 			
-			if (blocWireMoused)
+			if (blocMoused)
 				return Cursor.GRAB;
-			if (level.canDrawWires)
+			if (level.canDrawWires && findMousedCarrier())
 				return Cursor.PEN;
 			return null;
 		}
@@ -857,26 +823,26 @@ package LevelStates {
 		}
 		
 		private function finishDisplayTest():void {
-			runningDisplayTest = false;
-			
-			if (!level.goal.succeeded) {
-				U.state.time.reset();
-				runningDisplayTest = false;
-				makeUI();
+			if (!runningDisplayTest)
 				return;
-			}
+			
+			runningDisplayTest = false;
+			U.state.time.reset();
+			editEnabled = true;
+			makeUI();
+			
+			if (!level.goal.succeeded)
+				return;
 			
 			level.successSave = genSaveString();
 			level.setHighScore(modulesUsed());
 			
-			if (level == U.levels[0])
+			if (level == Level.ALL[0])
 				U.updateTutState(U.TUT_BEAT_TUT_1);
-			else if (level == U.levels[1])
+			else if (level == Level.ALL[1])
 				U.updateTutState(U.TUT_BEAT_TUT_2);
 			
-			FlxG.fade(0xff000000, MenuButton.FADE_TIME*2, function switchStates():void { 
-				FlxG.switchState(new SuccessState(level, modulesUsed()));
-			});
+			upperLayer.add(infobox = new SuccessInfobox(level, modulesUsed()));
 		}
 		
 		
@@ -896,6 +862,14 @@ package LevelStates {
 			return used;
 		}
 		
+		private function findMousedCarrier():Carrier {
+			var mousedPoint:Point = U.pointToGrid(U.mouseLoc);
+			if (grid.objTypeAtPoint(mousedPoint) != Vector)
+				return null;
+			
+			return grid.carriersAtPoint(mousedPoint)[0];
+		}
+		
 		private function findMousedWire():DWire {
 			if (U.buttonManager.moused)
 				return null;
@@ -913,10 +887,7 @@ package LevelStates {
 		}
 		
 		private function ensureNothingHeld():void {
-			if (currentModule) {
-				currentModule.exists = false;
-				currentModule = null;
-			} else if (currentBloc) {
+			if (currentBloc) {
 				currentBloc.unravel();
 				currentBloc = null;
 			}
@@ -1079,11 +1050,11 @@ package LevelStates {
 		}
 		
 		private function canUndo():Boolean {
-			return actionStack.length > 0 && !currentWire && !currentModule;
+			return actionStack.length > 0 && !currentWire && (!currentBloc || currentBloc.rooted);
 		}
 		
 		private function canRedo():Boolean {
-			return reactionStack.length > 0 && !currentWire && !currentModule;
+			return reactionStack.length > 0 && !currentWire && (!currentBloc || currentBloc.rooted);
 		}
 		
 		
@@ -1112,7 +1083,7 @@ package LevelStates {
 			U.save.data[level.name] = savedString;
 		}
 		
-		private function genSaveString():String {
+		public function genSaveString():String {
 			var saveStrings:Vector.<String>  = new Vector.<String>;
 			
 			//save modules

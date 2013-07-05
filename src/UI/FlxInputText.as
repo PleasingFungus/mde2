@@ -46,19 +46,15 @@ package UI {
 
 		//@desc If this is set to true, text typed is forced to be uppercase
 		public var forceUpperCase:Boolean = false;
-		
-		protected var _fixedheight:Boolean = false;
-		protected var initialHeight:Number;
 
 		//@desc Same parameters as FlxText
 		public function FlxInputText(X:Number, Y:Number, Width:uint, Height:uint, Text:String,
 									 Color:uint = 0x000000, Font:String = null, Size:uint = 8,
-									 Justification:String = null, multiline:Boolean = false,
-									 changeListener:Function = null) {
+									 Justification:String = null) {
 			super(X, Y, Width, Text);
 			setFormat(Font, Size, Color, Justification);
-			_textField.height = initialHeight = Height;
-			multiline = true;
+			_textField.height = Height;
+			_textField.multiline = _textField.wordWrap = false;
 			
 			_textField.selectable = true;
 			_textField.type = TextFieldType.INPUT;
@@ -72,12 +68,7 @@ package UI {
 			//_textField.visible = false;
 			calcFrame();
 
-			//_textField.addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			_textField.addEventListener(Event.REMOVED_FROM_STAGE, onInputFieldRemoved);
-			_textField.addEventListener(Event.CHANGE, onTextChange);
 			FlxG.stage.addChild(_textField);
-			
-			this.changeListener = changeListener;
 		}
 
 		//@desc Boolean flag in case render() is called BEFORE onEnterFrame() (_textField would be always hidden)
@@ -94,54 +85,9 @@ package UI {
 		
 		public function die():void {
 			FlxG.stage.removeChild(_textField);
-			onInputFieldRemoved(null);
-		}
-
-		private function onInputFieldRemoved(event:Event):void
-		{
-			//Clean up after ourselves
-			//_textField.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
-			_textField.removeEventListener(Event.REMOVED, onInputFieldRemoved);
-			_textField.removeEventListener(Event.CHANGE, onTextChange);
 		}
 		
 		protected var frameListener:Function;
-
-		/*private function onEnterFrame(event:Event):void
-		{
-			if(nextFrameHide)
-			_textField.visible=false;
-			nextFrameHide = true;
-		} */
-		
-		protected var changeListener:Function;
-
-		private function onTextChange(event:Event):void
-		{
-			if (_fixedheight)
-				while (_textField.textHeight >= initialHeight)
-					_textField.text = _textField.text.slice(0, _textField.text.length - 1);
-			
-			if(forceUpperCase)
-			_textField.text = _textField.text.toUpperCase();
-
-			if(filterMode != NO_FILTER) {
-				var pattern:RegExp;
-				switch(filterMode) {
-					case ONLY_ALPHA: pattern = /[^a-zA-Z]*/g; break;
-					case ONLY_NUMERIC: pattern = /[^0-9]*/g; break;
-					case ONLY_ALPHANUMERIC: pattern = /[^a-zA-Z0-9]*/g; break;
-					case CUSTOM_FILTER: pattern = customFilterPattern; break;
-					default:
-					throw new Error("FlxInputText: Unknown filterMode ("+filterMode+")");
-			}
-				_textField.text = _textField.text.replace(pattern, "");
-			}
-			
-			if (changeListener != null) {
-				changeListener(event);
-			}
-		}
 
 		//@desc Text field background color
 		public function set backgroundColor(Color:uint):void { _textField.backgroundColor = Color; }
@@ -166,10 +112,6 @@ package UI {
 		public function setMaxLength(Length:uint):void
 		{
 			_textField.maxChars = Length;
-		}
-		
-		public function fixedHeight():void {
-			_fixedheight = !_fixedheight;
 		}
 
 		//@desc Get the text the user has typed

@@ -33,7 +33,7 @@ package Actions {
 		
 		override public function revert():Action {
 			for each (var wireHistory:WireHistory in history)
-				wireHistory.revert();
+				wireHistory.revertAndPlace();
 			bloc.singlyAssociatedWires = bloc.multiplyAssociatedWires = null;
 			bloc.place(oldLoc);
 			return super.revert();

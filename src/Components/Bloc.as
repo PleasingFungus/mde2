@@ -135,8 +135,11 @@ package Components {
 				associatedWire.wire.shift(delta);
 			
 			//attempt path
-			if (attemptPath())
+			var pathSuccess:Boolean = attemptPath();
+			verifyNotPlaced();
+			if (pathSuccess)
 				return true;
+			
 			
 			delta = new Point( -delta.x, -delta.y);
 			for each (module in modules) {
@@ -149,6 +152,18 @@ package Components {
 				associatedWire.wire.shift(delta);
 			origin = oldLoc;
 			return false;
+		}
+		
+		private function verifyNotPlaced():void {
+			for each (var module:Module in modules)
+				if (module.deployed)
+					throw new Error("Module not retracted!");
+			for each (var wire:Wire in wires)
+				if (wire.deployed)
+					throw new Error("Wire not retracted!");
+			for each (var associatedWire:AssociatedWire in allAssociatedWires)
+				if (associatedWire.wire.deployed)
+					throw new Error("Associated wire not retracted!");
 		}
 		
 		protected function attemptPath():Boolean {
@@ -207,7 +222,7 @@ package Components {
 				if (!pathSuccess) {
 					rollback();
 					for each (var wireHistory:WireHistory in history)
-						wireHistory.revert();
+						wireHistory.revertBasic();
 					return false;
 				}
 				

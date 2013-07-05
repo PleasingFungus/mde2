@@ -16,11 +16,15 @@ package Components {
 				path.push(point.clone());
 		}
 		
-		public function revert():void {
+		public function revertBasic():void {
 			wire.path = new Vector.<Point>;
 			for each (var point:Point in path)
 				wire.path.push(point.clone());
 			wire.cacheInvalid = true;
+		}
+		
+		public function revertAndPlace():void {
+			revertBasic();
 			Wire.place(wire);
 		}
 	}

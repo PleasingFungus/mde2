@@ -8,7 +8,7 @@ package Components {
 	 */
 	public class Wire implements Carrier {
 		
-		public var path:Vector.<Point>;
+		private var _path:Vector.<Point>;
 		public var deployed:Boolean;
 		public var exists:Boolean;
 		public var FIXED:Boolean;
@@ -437,6 +437,8 @@ package Components {
 		}
 		
 		public function shift(delta:Point):Wire {
+			if (deployed)
+				throw new Error("Cannot modify path of a deployed wire!");
 			for each (var p:Point in path) {
 				p.x += delta.x;
 				p.y += delta.y;
@@ -479,6 +481,16 @@ package Components {
 				throw new Error("Wire failed to path!");
 			w.constrained = true;
 			return w;
+		}
+		
+		public function get path():Vector.<Point> {
+			return _path;
+		}
+		
+		public function set path(p:Vector.<Point>):void {
+			if (deployed)
+				throw new Error("Cannot modify path of a deployed wire!");
+			_path = p;
 		}
 		
 		public function get start():Point {

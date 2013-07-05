@@ -41,7 +41,7 @@ package Actions {
 			bloc.place(oldLoc);
 			
 			for each (wireHistory in history)
-				wireHistory.revert();
+				wireHistory.revertAndPlace();
 			
 			return super.revert();
 		}

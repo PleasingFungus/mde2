@@ -1,5 +1,6 @@
 package Layouts {
 	import Components.Port;
+	import Components.Wire;
 	import flash.geom.Point;
 	import Modules.Module;
 	import Components.Carrier;
@@ -72,7 +73,8 @@ package Layouts {
 			if (U.state.grid.moduleContentsAtPoint(Loc))
 				return false;
 			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(Loc))
-				if (carrier.getSource() && carrier.getSource() != port)
+				if ((carrier.getSource() && carrier.getSource() != port)
+					|| !carrier.isEndpoint(Loc))
 					return false;
 			return true;
 		}

@@ -79,7 +79,7 @@ package Components {
 		}
 		
 		public function isEndpoint(p:Point):Boolean {
-			return false; //not implemented
+			return true; //not implemented
 		}
 		
 		

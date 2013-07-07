@@ -38,10 +38,14 @@ package Displays {
 			}
 		}
 		
-		override public function draw():void {
+		public function updatePosition():void {
+			node.updatePosition();
 			var l:Point = node.Loc;
 			x = l.x * U.GRID_DIM;
 			y = l.y * U.GRID_DIM;
+		}
+		
+		override public function draw():void {
 			color = (node.parent.deployed && U.state && !U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc)) ? U.HIGHLIGHTED_COLOR : node.type.bgColor;
 			super.draw();
 			

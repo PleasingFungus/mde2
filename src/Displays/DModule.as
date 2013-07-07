@@ -147,7 +147,7 @@ package Displays {
 				displayPort.updatePosition(baseX, baseY);
 			
 			for each (var displayNode:DNode in displayNodes)
-				displayNode.node.updatePosition();
+				displayNode.updatePosition();
 			
 			
 			if (symbol) {

@@ -1107,6 +1107,7 @@ package LevelStates {
 				miscBytes.writeInt(time.clockPeriod);
 			
 			var saveBytes:ByteArray = new ByteArray;
+			saveBytes.writeInt(U.SAVE_VERSION);
 			saveBytes.writeInt(4 + moduleBytes.length);
 			saveBytes.writeBytes(moduleBytes);
 			saveBytes.writeInt(4 + wireBytes.length);
@@ -1165,11 +1166,10 @@ package LevelStates {
 			if (saveString == null)
 				saveString = findSuccessSave();
 			if (saveString) {
-				if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1)
-					loadBinary(saveString);
+				if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
+					savedString = loadBinary(saveString);
 				else
-					loadOldFormat(saveString);
-				savedString = saveString;
+					savedString = loadOldFormat(saveString);
 			}
 			
 			level.loadIntoState(this, saveString == RESET_SAVE || !saveString);
@@ -1177,10 +1177,16 @@ package LevelStates {
 			makeUI();
 		}
 		
-		private function loadBinary(saveString:String):void {
+		private function loadBinary(saveString:String):String {
 			var bytes:ByteArray = Base64.decodeToByteArray(saveString);
 			
 			bytes.inflate();
+			
+			var saveVersion:int = bytes.readInt();
+			if (saveVersion != U.SAVE_VERSION) {
+				C.log("Save version mismatch: save version " + saveVersion + " does not match game save version " + U.SAVE_VERSION + "!");
+				return null;
+			}
 			
 			var moduleSectionLength:int = bytes.readInt();
 			var moduleSectionEnd:int = bytes.position - 4 + moduleSectionLength;
@@ -1204,9 +1210,11 @@ package LevelStates {
 				addWire(wire, false);
 			for each (var module:Module in newModules)
 				addModule(module, false);
+			
+			return saveString;
 		}
 		
-		private function loadOldFormat(saveString:String):void {			
+		private function loadOldFormat(saveString:String):String {			
 			var saveArray:Array = saveString.split(U.MAJOR_SAVE_DELIM);
 			
 			//ordering is key
@@ -1229,6 +1237,8 @@ package LevelStates {
 			if (moduleStrings.length)
 				for each (var moduleString:String in moduleStrings.split(U.SAVE_DELIM))
 					addModule(Module.fromString(moduleString), false);
+			
+			return saveString;
 		}
 		
 		private function loadFromSuccess():void {

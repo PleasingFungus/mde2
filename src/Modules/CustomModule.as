@@ -1,4 +1,5 @@
 package Modules {
+	import Components.ConnectionQuad;
 	import Components.Port;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -290,14 +291,39 @@ package Modules {
 		}
 		
 		override protected function getSaveBytes():ByteArray {
+			var moduleBytes:Vector.<ByteArray> = new Vector.<ByteArray>;
+			var moduleLength:int = 4;
+			for each (var module:Module in modules) {
+				var bytes:ByteArray = module.getBytes();
+				moduleBytes.push(bytes);
+				moduleLength += bytes.length;
+			}
 			var byteArray:ByteArray = new ByteArray;
-			for each (var module:Module in modules)
-				byteArray.writeBytes(module.getBytes());
+			byteArray.writeInt(moduleLength);
+			for each (bytes in moduleBytes)
+				byteArray.writeBytes(bytes);
+			
+			for each (module in modules)
+				for each (var portLayout:PortLayout in module.layout.ports)
+					if (portLayout.port.source != portLayout.port && portLayout.port.source &&
+						modules.indexOf(portLayout.port.source.parent) != -1)
+						byteArray.writeBytes(new ConnectionQuad(portLayout.port, portLayout.port.source).toBytes(modules));
+			
 			return byteArray;
 		}
 		
 		public static function fromBytes(x:int, y:int, bytes:ByteArray, end:int, allowableTypes:Vector.<Class> = null):CustomModule {
-			var modules:Vector.<Module> = Module.modulesFromBytes(bytes, end, allowableTypes);
+			var moduleLength:int = bytes.readInt();
+			var moduleEnd:int = bytes.position - 4 + moduleLength;
+			var modules:Vector.<Module> = Module.modulesFromBytes(bytes, moduleEnd, allowableTypes);
+			if (bytes.position != moduleEnd)
+				throw new Error("Unexpected position in module reading for custom module");
+			
+			while (bytes.position < end)
+				ConnectionQuad.fromBytes(bytes, modules).connect();
+			if (bytes.position != end)
+				throw new Error("Unexpected position in connection reading for custom module");
+			
 			return new CustomModule(modules, x, y);
 		}
 		

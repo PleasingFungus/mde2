@@ -18,7 +18,8 @@ package  {
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
 	public class U {
-		public static const VERSION:String = "0.10";
+		public static const VERSION:String = "0.71";
+		public static const SAVE_VERSION:int = 4;
 		
 		public static const BINARY_SAVES:Boolean = true;
 		public static const ASSOC_WIRES:Boolean = false;

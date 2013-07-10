@@ -68,14 +68,14 @@ package Layouts {
 		}
 		
 		public function get validPosition():Boolean {
-			if (!port.isOutput) return true;
-			
 			if (U.state.grid.moduleContentsAtPoint(Loc))
 				return false;
+			
 			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(Loc))
-				if ((carrier.getSource() && carrier.getSource() != port)
+				if ((port.isOutput &&carrier.getSource() && carrier.getSource() != port)
 					|| !carrier.isEndpoint(Loc))
 					return false;
+			
 			return true;
 		}
 		

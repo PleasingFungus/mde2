@@ -92,7 +92,7 @@ package Displays {
 				if (!U.buttonManager.moused && bloc.validPosition(U.pointToGrid(U.mouseLoc))) {
 					FlxG.camera.shake(0.01 * U.zoom, 0.05);
 					new MoveBlocAction(bloc, U.pointToGrid(U.mouseLoc)).specialExecute();
-					setSelect(true);
+					setSelect(false);
 				} else if (U.buttonManager.moused) {
 					bloc.destroy();
 					setSelect(false);

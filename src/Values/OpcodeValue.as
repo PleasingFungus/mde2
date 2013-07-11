@@ -23,15 +23,35 @@ package Values {
 		
 		private function generateHighlitDescription():void {
 			var colorStrings:Vector.<ColorText> = new Vector.<ColorText>;
-			var escapedString:String = description;
-			for each (var keyword:ColorText in [U.SOURCE, U.TARGET, U.DESTINATION]) {
-				var keywordIndex:int = escapedString.indexOf(keyword.text.toUpperCase());
-				while (keywordIndex != -1) {
-					escapedString = escapedString.slice(0, keywordIndex) + HighlightText.FORMAT_MARK + escapedString.slice(keywordIndex + keyword.text.length);
-					colorStrings.push(keyword);
-					keywordIndex = escapedString.indexOf(keyword.text.toUpperCase());
+			var keywords:Array = [U.SOURCE, U.TARGET, U.DESTINATION];
+			var splitStrings:Array = [description];
+			for each (var keyword:ColorText in keywords) {
+				var newSplit:Array = [];
+				for each (var splitString:String in splitStrings) {
+					var subSplitStrings:Array = splitString.split(keyword.text.toUpperCase());
+					for each (var subSplitString:String in subSplitStrings) {
+						newSplit.push(subSplitString);
+						newSplit.push(keyword.text.toUpperCase());
+					}
+					if (newSplit.length && keyword.text.toUpperCase() == newSplit[newSplit.length - 1])
+						newSplit.pop();
 				}
+				splitStrings = newSplit;
 			}
+			
+			var escapedString:String = '';
+			for each (splitString in splitStrings) {
+				var matchedKeyword:Boolean = false;
+				for each (keyword in keywords)
+					if (keyword.text.toUpperCase() == splitString) {
+						escapedString += "{}";
+						colorStrings.push(keyword);
+						matchedKeyword = true;
+					}
+				if (!matchedKeyword)
+					escapedString += splitString;
+			}
+			
 			highlitDescription = new HighlightFormat(verboseName + ": " + escapedString, colorStrings);
 		}
 		

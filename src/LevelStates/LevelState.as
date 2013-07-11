@@ -580,7 +580,7 @@ package LevelStates {
 					}
 				}
 				
-				if (ControlSet.DELETE_KEY.justPressed() && !currentBloc) {
+				if (ControlSet.DELETE_KEY.pressed() && !currentBloc) {
 					destroyModules();
 					destroyWires();
 				}

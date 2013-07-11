@@ -16,11 +16,11 @@ package Controls {
 		public static const DRAG_MODIFY_KEY:Key = new Key("SHIFT");
 		public static const CLICK_MODIFY_KEY:Key = new Key("CONTROL");
 		
-		public static const DELETE_KEY:Key = new Key("DELETE");
 		public static const HOME_KEY:Key = new Key("H");
 		public static const COPY_KEY:Key = new Key("C");
 		public static const PASTE_KEY:Key = new Key("V");
 		public static const CUT_KEY:Key = new Key("X");
+		public static const DELETE_KEY:Key = new HybridKey([CUT_KEY, new Key("DELETE")]);
 		public static const CUSTOM_KEY:Key = new Key("W");
 		
 		

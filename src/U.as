@@ -3,6 +3,12 @@ package  {
 	import Controls.ControlSet;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.net.URLVariables;
+	import flash.net.URLRequestMethod;
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import Levels.LevelShard;
 	import Modules.*;
 	import org.flixel.*;
@@ -106,11 +112,29 @@ package  {
 			DEMO_PERMITTED = Level.ALL.slice(0, Level.ALL.indexOf(DEMO_LIMIT) + 1); //dubious?
 			
 			zoom = 1;
+			
+			if (!DEBUG.ON)
+				sendStartupInfo();
 		}
 		
 		public static function load():void {
 			ControlSet.load();
 			Level.load();
+		}
+		
+		private static function sendStartupInfo():void {
+			var loader:URLLoader = new URLLoader;
+			
+			var variables:URLVariables = new URLVariables();  
+			variables.version = VERSION;
+			
+			var request:URLRequest = new URLRequest("http://pleasingfungus.com/mde2/startup.php"); 
+			request.method = URLRequestMethod.POST;  
+			request.data = variables;
+			
+			loader.load(request);
+			
+			C.log("Sent startup request: " + request);
 		}
 		
 		

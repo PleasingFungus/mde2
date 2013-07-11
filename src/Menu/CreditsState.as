@@ -19,6 +19,9 @@ package Menu {
 			var me:FlxText = U.BODY_FONT.configureFlxText(new FlxText(15, title.y + title.height + 20, FlxG.width - 25, "Developer: Nicholas Feinberg")); 
 			add(me);
 			
+			var ver:FlxText = U.BODY_FONT.configureFlxText(new FlxText(FlxG.width - 120, FlxG.height - 80, 110, "Version: "+U.VERSION)); 
+			add(ver);
+			
 			var contButton:MenuButton = new TextButton(FlxG.width / 2 - 30, FlxG.height - 50, "Back", function cont():void {
 				FlxG.switchState(new MenuState);
 			}).setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xffffff);

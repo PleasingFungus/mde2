@@ -24,7 +24,7 @@ package  {
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
 	public class U {
-		public static const VERSION:String = "0.723-PLAYTEST";
+		public static const VERSION:String = "0.731";
 		public static const SAVE_VERSION:int = 4;
 		
 		public static const BINARY_SAVES:Boolean = true;
@@ -135,6 +135,15 @@ package  {
 			loader.load(request);
 			
 			C.log("Sent startup request: " + request);
+		}
+		
+		
+		public static function displayVersion():String {
+			if (DEBUG.ON)
+				return VERSION + "-DEBUG";
+			if (VERSION.slice(0,2) == '0.')
+				return VERSION + "-PLAYTEST";
+			return VERSION;
 		}
 		
 		

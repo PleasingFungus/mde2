@@ -19,7 +19,7 @@ package Menu {
 			var me:FlxText = U.BODY_FONT.configureFlxText(new FlxText(15, title.y + title.height + 20, FlxG.width - 25, "Developer: Nicholas Feinberg")); 
 			add(me);
 			
-			var ver:FlxText = U.BODY_FONT.configureFlxText(new FlxText(FlxG.width - 120, FlxG.height - 80, 110, "Version: "+U.VERSION)); 
+			var ver:FlxText = U.BODY_FONT.configureFlxText(new FlxText(FlxG.width - 120, FlxG.height - 80, 110, "Version: "+U.displayVersion())); 
 			add(ver);
 			
 			var contButton:MenuButton = new TextButton(FlxG.width / 2 - 30, FlxG.height - 50, "Back", function cont():void {

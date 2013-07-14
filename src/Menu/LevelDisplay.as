@@ -41,12 +41,13 @@ package Menu {
 			var wire:LevelModule = addLevel(Level.L_TutorialWire, 0, FlxG.height / U.GRID_DIM / 2);
 			wire.x += wire.layout.dim.x;
 			var module:LevelModule = addSuccessor(Level.L_TutorialModule, wire);
-			var drag:LevelModule = addSuccessor(Level.L_TutorialSelection, module, module.layout.dim.y + MODULE_SPACING.y);
+			var drag:LevelModule = addSuccessor(Level.L_TutorialSelection, module, module.layout.dim.y + MODULE_SPACING.y * 2);
 			addSuccessor(Level.L_TutorialCopying, drag);
 			
 			var accum:LevelModule = addSuccessor(Level.L_Accumulation, module);
-			var singleOp:LevelModule = addSuccessor(Level.L_SingleOp, accum);
-			var doubleOp:LevelModule = addSuccessor(Level.L_DoubleOp, singleOp);
+			var singleOp:LevelModule = addSuccessor(Level.L_SingleOp, accum, (accum.layout.dim.y + MODULE_SPACING.y)/2);
+			var double:LevelModule = addSuccessor(Level.L_Double, accum, -(singleOp.layout.dim.y + MODULE_SPACING.y)/2);
+			var doubleOp:LevelModule = addSuccessor(Level.L_DoubleOp, singleOp, -(singleOp.layout.dim.y + MODULE_SPACING.y)/2);
 			
 			var cpuBasic:LevelModule = addSuccessor(Level.L_CPU_Basic, doubleOp);
 			var cpuJump:LevelModule = addSuccessor(Level.L_CPU_Jump, cpuBasic, -(doubleOp.layout.dim.y + MODULE_SPACING.y));

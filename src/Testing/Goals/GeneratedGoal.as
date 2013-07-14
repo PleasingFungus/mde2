@@ -60,18 +60,19 @@ package Testing.Goals {
 			C.log("Run " + currentRun + " start");
 			
 			currentRun += 1;
-			currentTest = new testClass(expectedOps, minInstructions);
-			timeLimit = currentTest.expectedExecutions * allowedTimePerInstr;
-			if (!timeLimit) throw new Error("Time limit must be > 0!");
-			var mem:Vector.<Value> = currentTest.initialMemory;
+			var mem:Vector.<Value> = genMem();
 			C.log("Memory generated");
 			
 			levelState.initialMemory = mem;
 			super.runTestStep(levelState);
 			if (succeeded) {
-				timePerInstr.push(U.state.time.moment / currentTest.expectedExecutions);
+				timePerInstr.push(U.state.time.moment / executionCount);
 				totalTicks += U.state.time.moment;
 			}
+		}
+		
+		protected function get executionCount():int {
+			return currentTest.expectedExecutions;
 		}
 		
 		override public function getProgress():String {

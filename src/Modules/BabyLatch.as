@@ -25,6 +25,7 @@ package Modules {
 			symbol = _symbol;
 			delay = 1;
 			storesData = true;
+			configurableInPlace = false;
 		}
 		
 		override public function initialize():void {

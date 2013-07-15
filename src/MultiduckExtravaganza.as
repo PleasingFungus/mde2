@@ -34,6 +34,7 @@ package
 			U.load();
 		}
 
+		override protected function onFocusLost(FlashEvent:Event=null):void { }
 	}
 
 }

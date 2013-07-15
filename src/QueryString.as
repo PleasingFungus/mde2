@@ -22,7 +22,7 @@
 		}
 		
 		public function get path():String {
-			return _all.slice(0, Math.max(_all.indexOf("?", _all.length))); //dubious
+			return _all.slice(0, Math.max(_all.indexOf("?", _all.length + 1)));
 		}
 		
 		public function get parameters():Object {

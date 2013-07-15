@@ -130,7 +130,7 @@ package UI {
 		}
 		
 		protected function isMoused():Boolean {
-			return  highlight.overlapsPoint(FlxG.mouse, true, camera) && (!U.buttonManager || !U.buttonManager.moused);
+			return highlight.overlapsPoint(FlxG.mouse, true, camera) && (!U.buttonManager || !U.buttonManager.moused);
 		}
 		
 		protected function updateMouseover():void {

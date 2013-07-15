@@ -132,14 +132,14 @@ package UI {
 			var out:*;
 			var adjMouse:FlxPoint = getAdjMouse();
 			var barMoused:Boolean = adjMouse.x >= rail.x && adjMouse.x <= rail.x + rail.width && adjMouse.y >= slider.y && adjMouse.y <= slider.y + slider.height && (!U.buttonManager || !U.buttonManager.moused);
-			if ((barMoused || leftArrow.overlapsPoint(U.mouseFlxLoc, true) || rightArrow.overlapsPoint(U.mouseFlxLoc, true)) && U.buttonManager)
+			if ((barMoused || leftArrow.overlapsPoint(FlxG.mouse, true) || rightArrow.overlapsPoint(FlxG.mouse, true)) && U.buttonManager)
 				U.buttonManager.moused = true
 			
 			if (FlxG.mouse.justPressed()) {
 				if (barMoused) {
 					barClicked = true;
 					moveSlider();
-				} else if (leftArrow.overlapsPoint(U.mouseFlxLoc, true)) {
+				} else if (leftArrow.overlapsPoint(FlxG.mouse, true)) {
 					if (config)
 						forceValue(config.decrement());
 					else if (onChange != null) {
@@ -147,7 +147,7 @@ package UI {
 						forceValue(out is int ? out as int : value - 1);
 					} else
 						forceValue(value - 1);
-				} else if (rightArrow.overlapsPoint(U.mouseFlxLoc, true)) {
+				} else if (rightArrow.overlapsPoint(FlxG.mouse, true)) {
 					if (config)
 						forceValue(config.increment());
 					else if (onChange != null) {

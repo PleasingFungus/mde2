@@ -72,8 +72,7 @@ package Layouts {
 				return false;
 			
 			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(Loc))
-				if ((port.isOutput &&carrier.getSource() && carrier.getSource() != port)
-					|| !carrier.isEndpoint(Loc))
+				if (port.isOutput && carrier.getSource() && carrier.getSource() != port)
 					return false;
 			
 			return true;

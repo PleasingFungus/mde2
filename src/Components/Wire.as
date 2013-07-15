@@ -214,12 +214,8 @@ package Components {
 				var carriers:Vector.<Carrier> = U.state.grid.carriersAtPoint(p);
 				if (!carriers)
 					continue;
-					
-				var pointIsEndpoint:Boolean = isEndpoint(p);
+				
 				for each (var carrier:Carrier in carriers) {
-					if (!pointIsEndpoint && !carrier.isEndpoint(p))
-						continue;
-					
 					var carrierSource:Port = carrier.getSource();
 					if (carrierSource) {
 						if (!source)

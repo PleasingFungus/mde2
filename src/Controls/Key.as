@@ -9,6 +9,7 @@ package Controls {
 		
 		public var key:String;
 		public var modified:Boolean;
+		public var enabled:Boolean = true;
 		public function Key(key:String, modified:Boolean = false) {
 			this.key = key;
 			this.modified = modified;
@@ -34,7 +35,6 @@ package Controls {
 				return key;
 			return num.toString();
 		}
-		
 		
 		
 		public static const DIGITS_BY_NAME:Array = ["ZERO", "ONE", "TWO", "THREE", "FOUR",

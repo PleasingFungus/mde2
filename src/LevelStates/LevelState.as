@@ -51,9 +51,9 @@ package LevelStates {
 		private var redoButton:GraphicButton;
 		private var loadButton:MenuButton;
 		private var resetButton:MenuButton;
+		private var clickWireEnabled:Boolean;
 		
 		private var deleteHint:KeyHelper;
-		
 		
 		public var infobox:Infobox;
 		public var viewingComments:Boolean;
@@ -544,6 +544,8 @@ package LevelStates {
 		}
 		
 		private function checkControls():void {
+			if (!ControlSet.DELETE_KEY.enabled && !ControlSet.DELETE_KEY.pressed())
+				ControlSet.DELETE_KEY.enabled = true;
 			checkBuildControls();
 			if (UIEnableKey.justPressed())
 				upperLayer.visible = !upperLayer.visible
@@ -580,7 +582,7 @@ package LevelStates {
 					}
 				}
 				
-				if (ControlSet.DELETE_KEY.pressed() && !currentBloc) {
+				if (ControlSet.DELETE_KEY.enabled && ControlSet.DELETE_KEY.pressed() && !currentBloc) {
 					destroyModules();
 					destroyWires();
 				}

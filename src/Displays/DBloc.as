@@ -76,6 +76,8 @@ package Displays {
 				new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
 				setSelect(false);
 				U.buttonManager.moused = true; //clunky - avoid other things being deleted
+				if (ControlSet.DELETE_KEY.justPressed())
+					ControlSet.DELETE_KEY.enabled = false;
 			}
 			
 			if (ControlSet.CUT_KEY.justPressed()) {
@@ -106,6 +108,8 @@ package Displays {
 				ControlSet.PASTE_KEY.justPressed() || ControlSet.CUT_KEY.justPressed()) {
 				bloc.destroy();
 				setSelect(false);
+				if (ControlSet.DELETE_KEY.justPressed())
+					ControlSet.DELETE_KEY.enabled = false;
 			}
 			
 			if (ControlSet.CANCEL_KEY.justPressed()) {

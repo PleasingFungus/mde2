@@ -20,8 +20,8 @@ package Controls {
 		public static const COPY_KEY:Key = new Key("C");
 		public static const PASTE_KEY:Key = new Key("V");
 		public static const CUT_KEY:Key = new Key("X");
-		public static const DELETE_KEY:Key = new HybridKey([CUT_KEY, new Key("DELETE")]);
 		public static const CUSTOM_KEY:Key = new Key("W");
+		public static const DELETE_KEY:Key = new HybridKey([CUT_KEY, new Key("DELETE")]);
 		
 		
 		

@@ -7,6 +7,8 @@ package Values {
 		
 		private var value:Number;
 		public function NumericValue(value:Number) {
+			if (value != int(value))
+				throw new Error("Unexpected float!");
 			this.value = value;
 		}
 		

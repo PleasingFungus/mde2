@@ -41,7 +41,7 @@ package Modules {
 				return U.V_UNPOWERED;
 			if (inputB.toNumber() == 0)
 				return U.V_UNKNOWN;
-			return new NumericValue(inputA.toNumber() / inputB.toNumber());
+			return new NumericValue(int(inputA.toNumber() / inputB.toNumber()));
 		}
 		
 		override public function renderDetails():String {

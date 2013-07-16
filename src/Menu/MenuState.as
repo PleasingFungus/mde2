@@ -66,12 +66,21 @@ package Menu {
 				return false;
 			U.checkedURL = true;
 			
-			var path:QueryString = new QueryString;
-			if (!path.parameters.lvl)
+			var lvl:String, code:String;
+			if (DEBUG.FORCE_LOAD_LEVEL) {
+				lvl = DEBUG.FORCE_LEVEL;
+				code = DEBUG.FORCE_CODE;
+			} else {
+				var path:QueryString = new QueryString;
+				lvl = path.parameters.lvl;
+				code = path.parameters.code;
+			}
+			
+			if (!lvl)
 				return false;
 			
 			try {
-				var levelIndex:int = C.safeInt(path.parameters.lvl);
+				var levelIndex:int = C.safeInt(lvl);
 			} catch (error:Error) {
 				addErrorText("Bad level index!");
 				return false;
@@ -88,12 +97,12 @@ package Menu {
 				return false;
 			}
 			
-			if (!path.parameters.code) {			
+			if (!code) {			
 				FlxG.switchState(new LevelState(level));
 				return true;
 			}
 			
-			var loader:URLLoader = C.sendRequest(U.LOOKUP_URL, { 'hash' : path.parameters.code }, function onLoad(e : Event):void {
+			var loader:URLLoader = C.sendRequest(U.LOOKUP_URL, { 'hash' : code }, function onLoad(e : Event):void {
 				var response:String = loader.data;
 				if (response.indexOf("ERROR") == 0) {
 					addErrorText(response);

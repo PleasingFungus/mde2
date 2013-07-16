@@ -194,12 +194,8 @@ package Components {
 			if (!carriers)
 				return true;
 			
-			for each (var carrier:Carrier in carriers)
-				if (carrier is Port)
-					return false;
-			
-			var otherWire:Wire = U.state.grid.lineContents(p, p.add(delta));
-			if (otherWire)
+			var otherCarrier:Carrier = U.state.grid.lineContents(p, p.add(delta));
+			if (otherCarrier)
 				return false;
 			
 			return true;
@@ -215,7 +211,11 @@ package Components {
 				if (!carriers)
 					continue;
 				
+				var pIsEndpoint:Boolean = isEndpoint(p);
 				for each (var carrier:Carrier in carriers) {
+					if (!pIsEndpoint && !carrier.isEndpoint(p))
+						continue;
+					
 					var carrierSource:Port = carrier.getSource();
 					if (carrierSource) {
 						if (!source)

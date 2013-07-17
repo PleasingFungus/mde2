@@ -8,20 +8,26 @@ package Values {
 	public class InstructionValue extends Value {
 		
 		public var operation:OpcodeValue;
-		public var sourceArg:NumericValue;
-		public var targetArg:NumericValue;
-		public var destArg:NumericValue;
+		public var sourceArg:Value;
+		public var targetArg:Value;
+		public var destArg:Value;
 		public var comment:String;
 		public var commentFormat:HighlightFormat;
 		public function InstructionValue(Operation:OpcodeValue, SourceArg:int, TargetArg:int, DestArg:int,
 										 Comment:String = null, CommentFormat:HighlightFormat = null) {
 			operation = Operation;
-			sourceArg = new NumericValue(SourceArg);
-			targetArg = new NumericValue(TargetArg);
-			destArg = new NumericValue(DestArg);
+			sourceArg = numberToValue(SourceArg);
+			targetArg = numberToValue(TargetArg);
+			destArg = numberToValue(DestArg);
 			
 			comment = Comment;
 			commentFormat = CommentFormat;
+		}
+		
+		private function numberToValue(n:int):Value {
+			if (n == C.INT_NULL)
+				return U.V_UNKNOWN;
+			return new NumericValue(n);
 		}
 		
 		override public function toString():String {

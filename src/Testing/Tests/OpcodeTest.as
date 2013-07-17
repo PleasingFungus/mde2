@@ -19,7 +19,7 @@ package Testing.Tests {
 				var line:int = C.randomRange(8, U.MAX_MEM);
 				if (line < 8)
 					throw Error("!!!");
-				var value:int = C.randomRange(U.MIN_INT, U.MAX_INT + 1);
+				var value:int = C.randomRange(U.MIN_INT, U.MAX_INT);
 				saves.push(new InstructionValue(OpcodeValue.OP_SAVI, value, line, C.INT_NULL));
 			}
 			

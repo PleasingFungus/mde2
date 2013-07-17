@@ -22,7 +22,7 @@ package Testing.Tests {
 		}
 		
 		override protected function genFirstValue():AbstractArg {
-			firstValue = C.randomRange(U.MIN_INT, U.MAX_INT + 1);
+			firstValue = C.randomRange(U.MIN_INT, U.MAX_INT);
 			return new AbstractArg(firstValue);
 		}
 		

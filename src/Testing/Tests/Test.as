@@ -293,18 +293,19 @@ package Testing.Tests {
 			} else {
 				loopCount = C.randomRange(2, 5);
 				if (instructionType == InstructionType.DIV)
-					applicand = FlxG.random() < 0.5 ? C.randomRange( -16, 0) : C.randomRange(1, 16);
+					applicand = FlxG.random() < 0.5 ? C.randomRange( -16, -1) : C.randomRange(1, 16);
 				else if (instructionType == InstructionType.MUL) {
 					//applicand = C.randomIntChoice(C.factorsOf(value.value)); //TODO
 					instructionType = InstructionType.ADD;
 					loopCount = C.randomRange(3, 7);
-					applicand = FlxG.random() < 0.5 ? C.randomRange( -256, 0) : C.randomRange(1, 256);
+					applicand = FlxG.random() < 0.5 ? C.randomRange( -256, -1) : C.randomRange(1, 256);
 				} else
 					throw new Error("Unexpected instruction type: " + instructionType);
 			}
 			loopExecutions = loopCount * 4 + 1;
 			
-				//incr loop (loopCount = 0; end if loopCount == loopLimit; loopCount++) or decr loop (loopCount = loopLimit; end if loopCount == 0; loopCount--)
+				//incr loop (loopCount = 0; end if loopCount == loopLimit; loopCount++)
+				//or decr loop (loopCount = loopLimit; end if loopCount == 0; loopCount--)
 			var increment:int = C.randomRange(1, 4);
 			var loopLimit:int = loopCount * increment;
 			var loopBackwards:Boolean = expectedOps.indexOf(OpcodeValue.OP_SUB) != -1 && FlxG.random() < 0.5;

@@ -37,7 +37,7 @@ package Testing.Types {
 			var value:int = valueAbstr.value;
 			if (!value) {
 				var order:int = int(FlxG.random() * 2);
-				return new MulAbstraction(order ? C.randomRange(U.MIN_INT, U.MAX_INT + 1) : 0, order ? 0 : C.randomRange(U.MIN_INT, U.MAX_INT + 1));
+				return new MulAbstraction(order ? C.randomRange(U.MIN_INT, U.MAX_INT) : 0, order ? 0 : C.randomRange(U.MIN_INT, U.MAX_INT));
 			}
 			
 			var factors:Array = C.factorsOf(Math.abs(value));

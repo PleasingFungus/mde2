@@ -25,10 +25,9 @@ package Modules {
 			getConfiguration();
 			if (U.state)
 				configuration.setValue(CompareValue);
-
 			setByConfig();
+			
 			delay = 1;
-			configurableInPlace = false; //TODO: FIXME
 		}
 		
 		override public function generateSymbolDisplay():FlxSprite {
@@ -52,7 +51,9 @@ package Modules {
 		}
 		
 		override protected function generateLayout():ModuleLayout {
-			var layout:ModuleLayout = new DefaultLayout(this, 1, 5);
+			var layout:ModuleLayout = new DefaultLayout(this, 3, 5);
+			layout.ports[0].offset.y += 2;
+			layout.ports[1].offset.y += 2;
 			return layout;
 		}
 		

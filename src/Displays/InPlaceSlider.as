@@ -22,7 +22,7 @@ package Displays {
 			var config:Configuration = module.getConfiguration();
 			var oldValue:int = config.value;
 			var setValue:Function = function setValue(v:int):void {
-				module.getConfiguration().value = v;
+				module.getConfiguration().setValue(v);
 				module.setByConfig();
 				module.initialize();
 			};

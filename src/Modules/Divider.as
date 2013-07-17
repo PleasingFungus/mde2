@@ -21,6 +21,8 @@ package Modules {
 		
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = super.generateLayout();
+			layout.ports[0].port.name = "Numerator";
+			layout.ports[1].port.name = "Divisor";
 			layout.ports[layout.ports.length - 1].offset.y += 2;
 			return layout;
 		}

@@ -22,7 +22,7 @@ package Modules {
 			abbrev = "I=";
 			symbol = _symbol;
 			
-			configuration = new OpConfiguration;
+			getConfiguration();
 			if (U.state)
 				configuration.setValue(CompareValue);
 

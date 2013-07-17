@@ -382,7 +382,6 @@ package LevelStates {
 				makeUI();
 			});
 			moduleList.setSpacing(4);
-			upperLayer.add(moduleList);
 			
 			moduleSliders = new Vector.<ModuleSlider>;
 			for (i = 0; i < recentModules.length; i++ ) {
@@ -391,6 +390,8 @@ package LevelStates {
 				if (archetype.getConfiguration())
 					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+ModuleCategory.ALL.length+1], archetype)));
 			}
+			
+			upperLayer.add(moduleList);
 		}
 		
 		private function makeModuleList():void {
@@ -430,7 +431,6 @@ package LevelStates {
 				makeUI();
 			});
 			moduleList.setSpacing(4);
-			upperLayer.add(moduleList);
 			
 			//make some sliders
 			moduleSliders = new Vector.<ModuleSlider>;
@@ -440,6 +440,8 @@ package LevelStates {
 				if (archetype.getConfiguration())
 					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+1], archetype)));
 			}
+			
+			upperLayer.add(moduleList);
 		}
 		
 		private function createNewModule(moduleType:Class):void {

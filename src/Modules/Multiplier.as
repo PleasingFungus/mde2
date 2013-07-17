@@ -1,5 +1,6 @@
 package Modules {
 	import Components.Port;
+	import Values.FixedValue;
 	import Values.NumericValue;
 	import Values.Value;
 	
@@ -39,6 +40,8 @@ package Modules {
 				return U.V_UNKNOWN;
 			if (inputA.unpowered || inputB.unpowered)
 				return U.V_UNPOWERED;
+			if (inputA == FixedValue.NULL || inputB == FixedValue.NULL)
+				return FixedValue.NULL;
 			return new NumericValue(inputA.toNumber() * inputB.toNumber());
 		}
 		

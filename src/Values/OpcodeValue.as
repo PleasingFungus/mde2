@@ -88,7 +88,7 @@ package Values {
 		public static const OP_SAVI:OpcodeValue = new OpcodeValue("SETM", 12, "Set memory at the TARGET value to the SOURCE value.", "Set Memory");
 		public static const OP_LD:OpcodeValue = new OpcodeValue("LD", 13, "Set the DESTINATION register to the value of memory at the value of the TARGET register.", "Load");
 		public static const OP_ADDM:OpcodeValue = new OpcodeValue("ADDM", 14, "Set memory at the TARGET value to the sum of the SOURCE value and the DESTINATION value.", "Add Memory");
-		public static const OPS:Array = [OP_NOOP, OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_SET, OP_JMP, OP_SAV, OP_BEQ, OP_SAVI, OP_ADDM];
+		public static const OPS:Array = [OP_NOOP, OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_SET, OP_JMP, OP_SAV, OP_BEQ, OP_SAVI, OP_LD, OP_ADDM];
 	}
 
 }

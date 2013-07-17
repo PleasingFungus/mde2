@@ -81,7 +81,7 @@ package Values {
 		public static const OP_SUB:OpcodeValue = new OpcodeValue("SUB", 2, "Subtract the TARGET register from the SOURCE register, and store the difference in the DESTINATION register.", "Subtract");
 		public static const OP_MUL:OpcodeValue = new OpcodeValue("MUL", 3, "Multiply the SOURCE register with the TARGET register, and store the product in the DESTINATION register.", "Multiply");
 		public static const OP_DIV:OpcodeValue = new OpcodeValue("DIV", 4, "Divide the SOURCE register by the TARGET register, and store the quotient in the DESTINATION register.", "Divide");
-		public static const OP_SET:OpcodeValue = new OpcodeValue("SET", 5, "Set the TARGET register to the SOURCE value.", "Set");
+		public static const OP_SET:OpcodeValue = new OpcodeValue("SET", 5, "Set the DESTINATION register to the SOURCE value.", "Set");
 		public static const OP_JMP:OpcodeValue = new OpcodeValue("JMP", 6, "Jump over the DESTINATION value, to the instruction after.", "Jump");
 		public static const OP_SAV:OpcodeValue = new OpcodeValue("SAV", 7, "Set memory at the value of the TARGET register to the value of the SOURCE register.", "Save");
 		public static const OP_BEQ:OpcodeValue = new OpcodeValue("BEQ", 8, "Jump over the DESTINATION value if the SOURCE register equals the TARGET register.", "Branch");

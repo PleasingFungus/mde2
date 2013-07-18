@@ -94,6 +94,8 @@ package Components {
 				return cachedValue;
 			
 			var curValue:Value = findValue();
+			if (U.state.level.delay)
+				updateDelay(curValue);
 			return curValue;
 		}
 		
@@ -152,15 +154,15 @@ package Components {
 			cachedValue = null;
 		}
 		
-		public function updateDelay():void {
-			var value:Value = getValue();
-			if (!value.eq(lastValue)) {
-				U.state.time.deltas.push(new DelayDelta(U.state.time.moment, this,
-													    lastValue, lastChanged));
-				
-				lastValue = value;
-				lastChanged = U.state.time.moment;
-			}
+		public function updateDelay(value:Value):void {
+			if (value.eq(lastValue))
+				return;
+			
+			U.state.time.deltas.push(new DelayDelta(U.state.time.moment, this,
+													lastValue, lastChanged));
+			
+			lastValue = value;
+			lastChanged = U.state.time.moment;
 		}
 		
 		public function getLastChanged():int {

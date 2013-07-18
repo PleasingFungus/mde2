@@ -146,11 +146,6 @@ package Modules {
 		public function updateState():Boolean { return false; }
 		public function setByConfig():void { }
 		
-		public function updateDelays():void {
-			for each (var port:Port in outputs)
-				port.updateDelay();
-		}
-		
 		public function lastMinuteInit():void {
 			for each (var port:Port in outputs)
 				port.lastMinuteInit();

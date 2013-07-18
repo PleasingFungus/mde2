@@ -50,7 +50,7 @@ package Infoboxes {
 			add(U.BODY_FONT.configureFlxText(new FlxText(LINE_NO_START, Y + 10, 60,
 															  "Line"), U.LINE_NUM.color, 'left'));
 			add(U.BODY_FONT.configureFlxText(new FlxText(COL_1_START, Y, COL_WIDTH,
-															  "Current Memory"), 0xffffff, 'center'));
+															  U.state.editEnabled ? "Example Memory" : "Current Memory"), 0xffffff, 'center'));
 			add(U.BODY_FONT.configureFlxText(new FlxText(COL_2_START, Y, COL_WIDTH - TITLE_SPACING,
 															  "Expected Memory"), 0xffffff, 'center'));
 			

@@ -407,7 +407,7 @@ package LevelStates {
 			moduleButtons.push(new TextButton( -1, -1, "<Back>", function goBack():void {
 				listOpen = LIST_CATEGORIES;
 				makeUI();
-			}));
+			}, null, new Key("Q")));
 			
 			var i:int = 1;
 			for each (moduleType in moduleTypes) {

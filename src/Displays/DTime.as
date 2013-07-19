@@ -112,7 +112,7 @@ package Displays {
 				ticksPerSec = 20;
 				playing = -1;
 				derock = 0;
-			}, "Reverse at 10x speed", new Key("N"));
+			}, "Reverse at 10x speed", new Key("B"));
 			add(rFastButton);
 			
 			var min:int = int.MAX_VALUE;

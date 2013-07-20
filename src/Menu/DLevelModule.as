@@ -22,7 +22,7 @@ package Menu {
 				color = 0xff404040;
 			else if (!levelModule.unlocked)
 				color = 0xff808080;
-			else if (overlapsPoint(U.mouseFlxLoc, true))
+			else if (!U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc, true))
 				color = U.HIGHLIGHTED_COLOR;
 			else
 				super.getColor();

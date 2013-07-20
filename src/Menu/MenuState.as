@@ -124,7 +124,11 @@ package Menu {
 			if (FlxG.camera.fading)
 				return;
 			
-			super.update();
+			for (var i:int = members.length - 1; i >= 0; i--) {
+				var basic:FlxBasic = members[i];
+				if (basic && basic.exists && basic.active)
+					basic.update();
+			}
 		}
 		
 		private const MENU_BAR_WIDTH:int = 60;

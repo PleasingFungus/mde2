@@ -1,4 +1,5 @@
 package Displays {
+	import Controls.ControlSet;
 	import Controls.Key;
 	import flash.geom.Rectangle;
 	import org.flixel.*;
@@ -50,7 +51,7 @@ package Displays {
 			add(timeBox);
 			add(timeText);
 			
-			stepButton = new GraphicButton(timeBox.x, y, _step_sprite, U.state.time.step, "Step forward 1 tick", new Key("L"));
+			stepButton = new GraphicButton(timeBox.x, y, _step_sprite, U.state.time.step, "Step forward 1 tick", ControlSet.TICK);
 			stepButton.X -= stepButton.fullWidth;
 			add(stepButton);
 			
@@ -63,7 +64,7 @@ package Displays {
 				ticksPerSec = 2;
 				startPlaying();
 				derock = 0;
-			}, "Play at 1x speed", new Key("SPACE"));
+			}, "Play at 1x speed", ControlSet.PLAY);
 			playButton.X -= playButton.fullWidth;
 			add(playButton);
 			
@@ -73,7 +74,7 @@ package Displays {
 				ticksPerSec = 20;
 				startPlaying();
 				derock = 0;
-			}, "Play at 10x speed", new Key("N"));
+			}, "Play at 10x speed", ControlSet.FAST);
 			fastButton.X -= fastButton.fullWidth;
 			add(fastButton);
 			
@@ -82,17 +83,17 @@ package Displays {
 				
 				playing = 0;
 				derock = 0;
-			}, "Pause", new Key("SPACE"));
+			}, "Pause", ControlSet.PAUSE);
 			pauseButton.exists = false;
 			add(pauseButton);
 			
 			stopButton = new GraphicButton(timeBox.x + timeBox.width, stepButton.Y, _stop_sprite, function reset():void {
 				U.state.time.reset();
 				playing = 0;
-			}, "Reset time to 0", new Key("BACKSPACE"));
+			}, "Reset time to 0", ControlSet.STOP);
 			add(stopButton);
 			
-			backstepButton = new GraphicButton(stopButton.X + stopButton.fullWidth, stopButton.Y, _backstep_sprite, U.state.time.backstep, "Step back 1 tick", new Key("K"));
+			backstepButton = new GraphicButton(stopButton.X + stopButton.fullWidth, stopButton.Y, _backstep_sprite, U.state.time.backstep, "Step back 1 tick", ControlSet.BACKTICK);
 			add(backstepButton);
 			
 			rewindButton = new GraphicButton(backstepButton.X + backstepButton.fullWidth, backstepButton.Y, _back_sprite, function back():void {
@@ -102,7 +103,7 @@ package Displays {
 				ticksPerSec = 2;
 				timeSinceToggle = 0;
 				derock = 0;
-			}, "Reverse at 1x speed", new Key("M"));
+			}, "Reverse at 1x speed", ControlSet.PLAYBACK);
 			add(rewindButton);
 			rewindButton.exists = false;
 			
@@ -112,7 +113,7 @@ package Displays {
 				ticksPerSec = 20;
 				playing = -1;
 				derock = 0;
-			}, "Reverse at 10x speed", new Key("B"));
+			}, "Reverse at 10x speed", ControlSet.BACKFAST);
 			add(rFastButton);
 			
 			var min:int = int.MAX_VALUE;

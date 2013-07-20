@@ -1,4 +1,5 @@
 package UI {
+	import Controls.ControlSet;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
@@ -43,7 +44,7 @@ package UI {
 			
 			members = [];
 			
-			add(button = new GraphicButton(X, Y, SPRITES[sharingState], onClick, "Share your machine"));
+			add(button = new GraphicButton(X, Y, SPRITES[sharingState], onClick, "Share your machine", ControlSet.SHARE));
 			
 			if (sharingState == SHARING_SUCCESS) {
 				textField = new FlxInputText(X - extraWidth / 2 - 1 - 120, text.y, 110 * 2 - 8, 8,

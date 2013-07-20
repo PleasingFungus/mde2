@@ -45,7 +45,7 @@ package LevelStates {
 		private var UIChanged:Boolean;
 		public var editEnabled:Boolean = true;
 		
-		private var UIEnableKey:Key = new Key("U");
+		private var UIEnableKey:Key = ControlSet.UI_ENABLE;
 		
 		private var undoButton:GraphicButton;
 		private var redoButton:GraphicButton;
@@ -232,25 +232,25 @@ package LevelStates {
 		}
 		
 		private function makeSaveButtons():void {
-			loadButton = addToolbarButton(170, _success_load_sprite, loadFromSuccess, "Load", "Load last successful machine", new Key("S"));
+			loadButton = addToolbarButton(170, _success_load_sprite, loadFromSuccess, "Load", "Load last successful machine");
 			resetButton = addToolbarButton(130, _reset_sprite, reset, "Reset", "Erase all placed parts");
 		}
 		
 		private function makeUndoButtons():void {
-			undoButton = addToolbarButton(50, _undo_sprite, undo, "Undo", "Undo", new Key("Z"));
-			redoButton = addToolbarButton(90, _redo_sprite, redo, "Redo", "Redo", new Key("Y"));
+			undoButton = addToolbarButton(50, _undo_sprite, undo, "Undo", "Undo", ControlSet.UNDO);
+			redoButton = addToolbarButton(90, _redo_sprite, redo, "Redo", "Redo",  ControlSet.REDO);
 		}
 		
 		private function makeDataButton():void {
 			addToolbarButton(FlxG.width - 180, _data_sprite, function _():void {
 				upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
-			}, "Memory", runningDisplayTest ? "View memory" : "View example memory", new Key("E"));
+			}, "Memory", runningDisplayTest ? "View memory" : "View example memory", ControlSet.MEMORY);
 		}
 		
 		private function makeInfoButton():void {
 			addToolbarButton(FlxG.width - 220, _info_sprite, function _():void {
 				upperLayer.add(infobox = new DGoal(level));
-			}, "Info", "Level info", new Key("I"));
+			}, "Info", "Level info", ControlSet.HELP);
 		}
 		
 		private function makeClockButton():void {
@@ -261,7 +261,7 @@ package LevelStates {
 			addToolbarButton(FlxG.width - 140, _zoom_sprite, function openList():void {
 				listOpen = LIST_ZOOM;
 				makeUI();
-			}, "Zoom", "Display zoom controls", new Key("O"));
+			}, "Zoom", "Display zoom controls", ControlSet.ZOOM);
 		}
 		
 		private function makeZoomList():void {
@@ -296,11 +296,11 @@ package LevelStates {
 				addToolbarButton(FlxG.width / 2 - 16, _test_sprite, function _():void {
 					level.goal.startRun();
 					lastRunTime = elapsed;
-				}, "Test", "Test your machine!", new Key("T"));
+				}, "Test", "Test your machine!", ControlSet.TEST);
 		}
 		
 		private function makeEndTestButton():void {
-			addToolbarButton(FlxG.width / 2 - 16, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite, finishDisplayTest, "End Test", "Finish the test!", new Key("T"));
+			addToolbarButton(FlxG.width / 2 - 16, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite, finishDisplayTest, "End Test", "Finish the test!", ControlSet.TEST);
 		}
 		
 		//private function makeViewModeButton():void {
@@ -338,12 +338,18 @@ package LevelStates {
 				ensureNothingHeld();
 				listOpen = LIST_CATEGORIES;
 				makeUI();
-			}, "Modules", "Choose modules", new Key("FIVE"));
+			}, "Modules", "Choose modules", ControlSet.MODULES_BACK);
 		}
 		
 		private function makeModuleCatList():void {
 			//build a list of buttons for allowed modules/names
 			var moduleButtons:Vector.<MenuButton> = new Vector.<MenuButton>;
+			
+			moduleButtons.push(new TextButton( -1, -1, "<Close>", function close():void {
+				listOpen = LIST_NONE;
+				makeUI();
+			}, null, ControlSet.MODULES_BACK));
+			
 			var i:int = 1;
 			for each (var category:ModuleCategory in ModuleCategory.ALL) {
 				var allowed:Boolean = false;
@@ -384,11 +390,12 @@ package LevelStates {
 			moduleList.setSpacing(4);
 			
 			moduleSliders = new Vector.<ModuleSlider>;
-			for (i = 0; i < recentModules.length; i++ ) {
+			for (i = recentModules.length - 1; i >= 0; i-- ) {
 				moduleType = recentModules[i];
 				var archetype:Module = Module.getArchetype(moduleType);
 				if (archetype.getConfiguration())
-					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+ModuleCategory.ALL.length+1], archetype)));
+					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width,
+																	   moduleButtons[i+ModuleCategory.ALL.length+2], archetype)));
 			}
 			
 			upperLayer.add(moduleList);
@@ -407,7 +414,7 @@ package LevelStates {
 			moduleButtons.push(new TextButton( -1, -1, "<Back>", function goBack():void {
 				listOpen = LIST_CATEGORIES;
 				makeUI();
-			}, null, new Key("Q")));
+			}, null, ControlSet.MODULES_BACK));
 			
 			var i:int = 1;
 			for each (moduleType in moduleTypes) {

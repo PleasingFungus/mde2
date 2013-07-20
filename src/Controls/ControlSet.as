@@ -16,13 +16,33 @@ package Controls {
 		public static const DRAG_MODIFY_KEY:Key = new Key("SHIFT");
 		public static const CLICK_MODIFY_KEY:Key = new Key("CONTROL");
 		
-		public static const HOME_KEY:Key = new Key("H");
+		public static const HOME_KEY:Key = new Key("EIGHT"); //for scrolling
+		public static const UI_ENABLE:Key = new Key("NINE");
+		
 		public static const COPY_KEY:Key = new Key("C");
 		public static const PASTE_KEY:Key = new Key("V");
 		public static const CUT_KEY:Key = new Key("X");
-		public static const CUSTOM_KEY:Key = new Key("W");
+		public static const CUSTOM_KEY:Key = new Key("W"); //for making a custom module
 		public static const DELETE_KEY:Key = new HybridKey([CUT_KEY, new Key("DELETE")]);
+		public static const MODULES_BACK:Key = new Key("Q");
 		
+		public static const UNDO:Key = new Key("Z");
+		public static const REDO:Key = new Key("Y");
+		
+		public static const FAST:Key = new Key("E");
+		public static const PLAY:Key = new Key("R");
+		public static const TICK:Key = new Key("T");
+		public static const STOP:Key = new Key("Y");
+		public static const BACKTICK:Key = new Key("U");
+		public static const PLAYBACK:Key = new Key("I");
+		public static const BACKFAST:Key = new Key("O");
+		public static const PAUSE:Key = new Key("SPACE");
+		
+		public static const TEST:Key = new Key("P");
+		public static const HELP:Key = new Key("H");
+		public static const MEMORY:Key = new Key("J");
+		public static const ZOOM:Key = new Key("K");
+		public static const SHARE:Key = new Key("L");
 		
 		
 		

@@ -160,8 +160,6 @@ package Components {
 			
 			//try to dumbpath to continue
 			var pathToEnd:Vector.<Point> = pather.dumbPath(path[path.length - 1], target);
-			if (!pathToEnd[0].equals(path[path.length -1]) || pathToEnd[1].subtract(pathToEnd[0]).length != 1)
-				throw new Error("!");
 			for (i = 1; i < pathToEnd.length; i++)
 				path.push(pathToEnd[i]);
 			return path;

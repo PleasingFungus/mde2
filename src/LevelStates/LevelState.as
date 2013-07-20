@@ -259,7 +259,10 @@ package LevelStates {
 		}
 		
 		private function makeClockButton():void {
-			upperLayer.add(new DClock(210, 10));
+			var clock:DClock = new DClock(210, 10);
+			var extraWidth:int = 10;
+			clock.add(makeToolbarText(clock.X - 10 / 2 - 1, clock.Y + clock.fullHeight - 2, clock.fullWidth + extraWidth, "Period"));
+			upperLayer.add(clock);
 		}
 		
 		private function makeZoomButton():void {
@@ -490,12 +493,17 @@ package LevelStates {
 			upperLayer.add(button);
 			
 			var extraWidth:int = 10;
-			var labelText:FlxText = new FlxText(X - extraWidth / 2 - 1, button.Y + button.fullHeight - 2, button.fullWidth + extraWidth, ShortName);
-			U.TOOLBAR_FONT.configureFlxText(labelText, 0xffffff, 'center');
-			labelText.scrollFactor.x = labelText.scrollFactor.y = 0;
+			var labelText:FlxText = makeToolbarText(X - extraWidth / 2 - 1, button.Y + button.fullHeight - 2, button.fullWidth + extraWidth, ShortName);
 			button.add(labelText);
 			
 			return button;
+		}
+		
+		private function makeToolbarText(X:int, Y:int, Width:int, Text:String):FlxText {
+			var text:FlxText = new FlxText(X, Y, Width, Text);
+			U.TOOLBAR_FONT.configureFlxText(text, 0xffffff, 'center');
+			text.scrollFactor.x = text.scrollFactor.y = 0;
+			return text;
 		}
 		
 		

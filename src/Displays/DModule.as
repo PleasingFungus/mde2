@@ -175,12 +175,14 @@ package Displays {
 		}
 		
 		public function descriptionAt(fp:FlxPoint):HighlightFormat {
-			for each (var displayNode:DNode in displayNodes)
-				if (displayNode.overlapsPoint(fp))
-					return HighlightFormat.plain(displayNode.node.getLabel());
-			
-			if (editButton && editButton.moused)
-				return new HighlightFormat("{}", ColorText.singleVec(new ColorText(U.CONFIG_COLOR, "Edit")));
+			if (U.zoom >= 0.5) {
+				for each (var displayNode:DNode in displayNodes)
+					if (displayNode.overlapsPoint(fp))
+						return HighlightFormat.plain(displayNode.node.getLabel());
+				
+				if (editButton && editButton.moused)
+					return new HighlightFormat("{}", ColorText.singleVec(new ColorText(U.CONFIG_COLOR, "Edit")));
+			}
 			
 			var format:HighlightFormat = module.getHighlitDescription();
 			if (format) {

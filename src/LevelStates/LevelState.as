@@ -51,7 +51,7 @@ package LevelStates {
 		private var redoButton:GraphicButton;
 		private var loadButton:MenuButton;
 		private var resetButton:MenuButton;
-		private var clickWireEnabled:Boolean;
+		private var wireBeingDragged:Boolean;
 		
 		private var deleteHint:KeyHelper;
 		
@@ -581,6 +581,7 @@ package LevelStates {
 					else if (level.canDrawWires && findMousedCarrier()) {
 						currentWire = new Wire(U.pointToGrid(U.mouseLoc))
 						displayWires.push(midLayer.add(new DWire(currentWire)));
+						wireBeingDragged = false;
 					}
 				}
 				
@@ -612,11 +613,21 @@ package LevelStates {
 			if (ControlSet.CANCEL_KEY.justPressed()) {
 				currentWire.exists = false;
 				currentWire = null;
-			} else if (FlxG.mouse.pressed()) {
+				return;
+			}
+			
+			if (FlxG.mouse.pressed() || wireBeingDragged) {
 				currentWire.attemptPathTo(U.pointToGrid(U.mouseLoc), true)
-			} else {
-				new CustomAction(Wire.place, Wire.remove, currentWire).execute();
-				currentWire = null;
+				if (currentWire.path.length > 1)
+					wireBeingDragged = true;
+			}
+			
+			if (FlxG.mouse.justReleased()) {
+				if (wireBeingDragged) {
+					new CustomAction(Wire.place, Wire.remove, currentWire).execute();
+					currentWire = null;
+				} else
+					wireBeingDragged = true;
 			}
 		}
 		

@@ -2,8 +2,10 @@ package Infoboxes {
 	import org.flixel.*;
 	import Controls.ControlSet;
 	import Testing.Goals.GeneratedGoal;
+	import UI.FloatText;
 	import UI.MenuButton;
 	import UI.GraphicButton;
+	import UI.TextTooltipParasite;
 	import Values.FixedValue;
 	import Values.InstructionValue;
 	import Values.Value;
@@ -39,6 +41,15 @@ package Infoboxes {
 			if (U.state.level.goal.randomizedMemory && U.state.editEnabled)
 				makeRandomButton();
 			
+			var timeString:String = "Allowed ticks total: " + U.state.level.goal.timeLimit;
+			if (U.state.level.goal is GeneratedGoal)
+				timeString += " (over " + (U.state.level.goal.timeLimit / (U.state.level.goal as GeneratedGoal).allowedTimePerInstr) + " expected instruction executions)";
+			timeString += ".";
+			var timeText:FlxText = U.BODY_FONT.configureFlxText(new FlxText(bg.x, bg.y + bg.height + 2, bg.width, timeString), 0xffffff, 'center', 0x1);
+			add(timeText);
+			
+			
+			
 			var LINE_NO_START:int = bg.x + INNER_BORDER;
 			var COL_1_START:int = bg.x + INNER_BORDER * 2;
 			var COL_2_START:int = bg.x + INNER_BORDER * 4 + COL_WIDTH;
@@ -73,7 +84,7 @@ package Infoboxes {
 					skip = false;
 					
 					page.add(U.BODY_FONT.configureFlxText(new FlxText(LINE_NO_START, Y, COL_WIDTH, memLine + "."), U.LINE_NUM.color));
-					page.add(makeTextFor(memValue, COL_1_START, Y, 'right'));
+					addMemText(memValue, COL_1_START, Y, 'right');
 					
 					if (displayComments) {
 						if (comment && (memValue as InstructionValue).commentFormat) {
@@ -84,18 +95,25 @@ package Infoboxes {
 							page.add(U.BODY_FONT.configureFlxText(new FlxText(COL_2_START, Y, COL_WIDTH, comment)));
 						}
 					} else
-						page.add(makeTextFor(expValue, COL_2_START, Y));
+						addMemText(expValue, COL_2_START, Y);
 					Y += ROW_HEIGHT * 1.5;
 				} else
 					skip = true;
 			}
+		}
+		
+		private function addMemText(value:Value, X:int, Y:int, Align:String = 'left'):void {
+			var text:FlxText = makeTextFor(value, X, Y, Align);
+			page.add(text);
+			if (!(value is InstructionValue))
+				return;
 			
-			var timeString:String = "Allowed ticks total: " + U.state.level.goal.timeLimit;
-			if (U.state.level.goal is GeneratedGoal)
-				timeString += " (over " + (U.state.level.goal.timeLimit / (U.state.level.goal as GeneratedGoal).allowedTimePerInstr) + " expected instruction executions)";
-			timeString += ".";
-			var timeText:FlxText = U.BODY_FONT.configureFlxText(new FlxText(bg.x, bg.y + bg.height + 2, bg.width, timeString), 0xffffff, 'center', 0x1);
-			add(timeText);
+			var tooltip:FlxText = (value as InstructionValue).operation.highlitDescription.makeHighlightText(X, Y, COL_WIDTH);
+			U.BODY_FONT.configureFlxText(tooltip);
+			var floatingTooltip:FloatText = new FloatText(tooltip);
+			floatingTooltip.alpha = 0.9;
+			add(new TextTooltipParasite(text, floatingTooltip));
+			add(floatingTooltip);
 		}
 		
 		private function makeTextFor(value:Value, X:int, Y:int, Align:String = 'left'):FlxText {

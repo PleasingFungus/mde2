@@ -1,11 +1,15 @@
 package  
 {
+	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	import org.flixel.FlxG;
 	import flash.geom.Point;
 	import flash.net.*;
 	import flash.events.Event;
 	import flash.external.ExternalInterface;
+	import org.flixel.FlxPoint;
+	import org.flixel.FlxRect;
+	import org.flixel.FlxText;
 	
 	/**
 	 * ...
@@ -220,6 +224,33 @@ package
 			for each (var str:String in strings)
 				vec.push(str);
 			return vec;
+		}
+		
+		//only supports single-line text
+		public static function textOverlapsPoint(text:FlxText, p:Point):Boolean {
+			var bounds:Rectangle = new Rectangle;
+			
+			bounds.y = text.y;
+			bounds.height = text.height;
+			bounds.width = text.textWidth;
+			
+			switch (text.alignment) {
+				case 'left': 
+					bounds.x = text.x;
+					break;
+				case 'right': 
+					bounds.x = text.x + text.width - bounds.width;
+					break;
+				case 'center':
+					bounds.x = text.x + (text.width - bounds.width) / 2;
+					break;
+				case 'justify': default:
+					bounds.x = text.x;
+					bounds.width = text.width;
+					break;
+			}
+			
+			return bounds.containsPoint(p);
 		}
 		
 		public static function eratosthenes(lim:int):Array {

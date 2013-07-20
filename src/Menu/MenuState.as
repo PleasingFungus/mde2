@@ -28,6 +28,12 @@ package Menu {
 				FlxG.switchState(new HowToPlayState); return;
 			}
 			
+			buildMenu();
+			
+			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
+		}
+		
+		private function buildMenu():void {
 			add(new ButtonManager);
 			var levelDisplay:LevelDisplay = new LevelDisplay;
 			add(levelDisplay);
@@ -40,8 +46,6 @@ package Menu {
 			
 			FlxG.bgColor = U.BG_COLOR;
 			FlxG.mouse.show();
-			
-			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
 		
 		protected function setBounds(bounds:FlxRect):void {
@@ -105,6 +109,8 @@ package Menu {
 			var loader:URLLoader = C.sendRequest(U.LOOKUP_URL, { 'hash' : code }, function onLoad(e : Event):void {
 				var response:String = loader.data;
 				if (response.indexOf("ERROR") == 0) {
+					members = [];
+					buildMenu();
 					addErrorText(response);
 					return;
 				}
@@ -116,8 +122,10 @@ package Menu {
 			return true;
 		}
 		
-		private function addErrorText(error:String, y:int=0):void {
-			add(U.BODY_FONT.configureFlxText(new FlxText(0, y, FlxG.width, error)));
+		private function addErrorText(error:String, y:int = 0):void {
+			var t:FlxText = U.BODY_FONT.configureFlxText(new FlxText(0, y, FlxG.width, error), 0xffffff, null, 0x1);
+			t.scrollFactor.x = t.scrollFactor.y = 0;
+			add(t);
 		}
 		
 		override public function update():void {

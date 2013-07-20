@@ -26,5 +26,5 @@
 	while ($row = mysql_fetch_assoc($result)) {
 		die($row['LevelStr']);
 	}
-	die("ERROR: No result found matching hash ".$hashlvl);
+	die("ERROR: No level found matching hash ".$hashlvl);
 ?> 

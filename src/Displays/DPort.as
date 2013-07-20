@@ -59,7 +59,7 @@ package Displays {
 		}
 		
 		protected function getColor():uint {
-			if (!U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc))
+			if (!U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc) && U.state)
 				return U.HIGHLIGHTED_COLOR;
 			
 			if (!port.getSource())

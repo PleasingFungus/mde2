@@ -612,9 +612,9 @@ package LevelStates {
 			if (ControlSet.CANCEL_KEY.justPressed()) {
 				currentWire.exists = false;
 				currentWire = null;
-			} else if (FlxG.mouse.pressed())
+			} else if (FlxG.mouse.pressed()) {
 				currentWire.attemptPathTo(U.pointToGrid(U.mouseLoc), true)
-			else {
+			} else {
 				new CustomAction(Wire.place, Wire.remove, currentWire).execute();
 				currentWire = null;
 			}

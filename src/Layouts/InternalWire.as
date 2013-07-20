@@ -2,6 +2,8 @@ package Layouts {
 	import Components.Wire;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import Components.InternalWirePather;
+	import Components.Pather;
 	
 	/**
 	 * ...
@@ -13,8 +15,8 @@ package Layouts {
 		public var controlTruncated:Boolean;
 		public var getValue:Function;
 		public var getConnected:Function;
-		protected var endpoint:Point;
-		protected var bounds:Rectangle;
+		public var endpoint:Point;
+		public var bounds:Rectangle;
 		public var reversed:Boolean;
 		public var dashed:Boolean;
 		public var truncatedByControlWireFromEnd:Boolean;
@@ -33,8 +35,8 @@ package Layouts {
 			getValue = GetValue;
 		}
 		
-		override protected function mayMoveThrough(p:Point, delta:Point):Boolean {
-			return p.equals(endpoint) || bounds.containsPoint(p);
+		override protected function makePather():Pather {
+			return new InternalWirePather(this);
 		}
 		
 		public function update():void { }

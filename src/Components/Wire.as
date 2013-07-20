@@ -10,6 +10,7 @@ package Components {
 	public class Wire implements Carrier {
 		
 		private var _path:Vector.<Point>;
+		protected var pather:Pather;
 		public var deployed:Boolean;
 		public var exists:Boolean;
 		public var FIXED:Boolean;
@@ -18,7 +19,7 @@ package Components {
 		public var cacheInvalid:Boolean;
 		
 		private var lastPathEnd:Point; //microoptimization in attemptPathTo
-		protected var constrained:Boolean = true;
+		public var constrained:Boolean = true;
 		
 		public function Wire(Start:Point) {
 			path = new Vector.<Point>;
@@ -26,6 +27,11 @@ package Components {
 			
 			connections = new Vector.<Carrier>;
 			exists = true;
+			pather = makePather();
+		}
+		
+		protected function makePather():Pather {
+			return new WirePather(this);
 		}
 		
 		public function attemptPathTo(target:Point, smartPathEnabled:Boolean = false, force:Boolean = false):Boolean {
@@ -39,7 +45,7 @@ package Components {
 			if (smartPathEnabled)
 				newPath = smartPath(start, end);
 			if (!newPath)
-				newPath = dumbPath(start, end);
+				newPath = pather.dumbPath(start, end);
 			path = newPath;
 			cacheInvalid = true;
 			
@@ -82,7 +88,7 @@ package Components {
 					var nextPoint:Point = curPoint.add(delta);
 				
 					if (constrained && (U.state.grid.lineContents(curPoint, nextPoint) ||
-										(!nextPoint.equals(target) && !mayMoveThrough(nextPoint, delta))))
+										(!nextPoint.equals(target) && !pather.validTransition(curPoint, nextPoint))))
 						continue;
 					
 					var alreadyFound:Boolean = false;
@@ -140,7 +146,8 @@ package Components {
 			
 			var reversedPath:Vector.<Point> = new Vector.<Point>;
 			do {
-				reversedPath.push(curNode.point);
+				var p:Point = curNode.point;
+				reversedPath.push(p);
 				curNode = curNode.parent;
 			} while (curNode);
 			
@@ -152,53 +159,12 @@ package Components {
 				return path;
 			
 			//try to dumbpath to continue
-			var pathToEnd:Vector.<Point> = dumbPath(end, target);
+			var pathToEnd:Vector.<Point> = pather.dumbPath(path[path.length - 1], target);
+			if (!pathToEnd[0].equals(path[path.length -1]) || pathToEnd[1].subtract(pathToEnd[0]).length != 1)
+				throw new Error("!");
 			for (i = 1; i < pathToEnd.length; i++)
 				path.push(pathToEnd[i]);
 			return path;
-		}
-		
-		protected function dumbPath(start:Point, target:Point):Vector.<Point> {
-			var path:Vector.<Point> = new Vector.<Point>;
-			path.push(start);
-			if (constrained && U.state.grid.moduleContentsAtPoint(start))
-				return path;
-			
-			var pathEnd:Point = end;
-			var nextPoint:Point;
-			for (var delta:Point = target.subtract(pathEnd); delta.x || delta.y; delta = target.subtract(pathEnd)) {
-				var nextDelta:Point = delta.x > 0 ? RIGHT_DELTA : LEFT_DELTA;
-				nextPoint = pathEnd.add(nextDelta);
-				if ((!delta.x || !mayMoveThrough(nextPoint, nextDelta)) && delta.y) {
-					nextDelta = delta.y > 0 ? DOWN_DELTA : UP_DELTA;
-					nextPoint = pathEnd.add(nextDelta);
-				}
-				
-				if (constrained && (U.state.grid.lineContents(pathEnd, nextPoint) || U.state.grid.moduleContentsAtPoint(nextPoint)))
-					break;
-				
-				path.push(pathEnd = nextPoint);
-				
-				if (!mayMoveThrough(nextPoint, nextDelta))
-					break;
-			}
-			
-			return path;
-		}
-		
-		protected function mayMoveThrough(p:Point, delta:Point):Boolean {
-			if (U.state.grid.moduleContentsAtPoint(p))
-				return false;
-			
-			var carriers:Vector.<Carrier> = U.state.grid.carriersAtPoint(p);
-			if (!carriers)
-				return true;
-			
-			var otherCarrier:Carrier = U.state.grid.lineContents(p, p.add(delta));
-			if (otherCarrier)
-				return false;
-			
-			return true;
 		}
 		
 		public function validPosition():Boolean {
@@ -232,8 +198,7 @@ package Components {
 			for (var i:int = 0; i < path.length - 2; i++) {
 				var p:Point = path[i];
 				var next:Point = path[i + 1];
-				var delta:Point = next.subtract(p);
-				if (!mayMoveThrough(next, delta))
+				if (!pather.validTransition(p, next))
 					return true;
 			}
 			

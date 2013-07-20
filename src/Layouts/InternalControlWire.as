@@ -42,7 +42,7 @@ package Layouts {
 					return wire;
 			}
 			
-			return null;
+			throw new Error("No dependent found!");
 		}
 		
 	}

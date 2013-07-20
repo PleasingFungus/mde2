@@ -5,21 +5,21 @@ package Levels {
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class LevelHint {
+	public class LevelHint extends FlxSprite {
 		
-		public var graphic:Class;
-		public var position:Point;
 		public var checkVanish:Function;
-		public function LevelHint(Graphic:Class, Position:Point, CheckVanish:Function  = null) {
-			graphic = Graphic;
-			position = Position;
+		public function LevelHint(X:int, Y:int, Graphic:Class, CheckVanish:Function = null) {
+			super(X, Y, Graphic);
 			checkVanish = CheckVanish;
 		}
 		
-		public function instantiate():FlxSprite {
-			return new FlxSprite(position.x, position.y, graphic);
+		override public function update():void {
+			super.update();
+			if (checkVanish != null && checkVanish()) {
+				U.state.level.hintDone = true;
+				exists = false;
+			}
 		}
-		
 	}
 
 }

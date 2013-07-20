@@ -21,6 +21,7 @@ package Levels {
 		public var displayName:String;
 		public var info:String;
 		public var hints:Vector.<String>;
+		public var hintDone:Boolean; //not related to 'hints' per se
 		
 		public var goal:LevelGoal;
 		public var fewestModules:int;
@@ -127,9 +128,9 @@ package Levels {
 			return true;
 		}
 		
-		public function specialInfo():Vector.<FlxSprite> {
-			return null;
-		}
+		public function specialInfo():Vector.<FlxSprite> { return null;	}
+		
+		public function makeHint():LevelHint { return null }
 		
 		private const SUCCESS_SUFFIX:String = '-succ';
 		private const MODULE_SUFFIX:String = "-modules";
@@ -211,12 +212,12 @@ package Levels {
 										 [Adder, DataWriter], [], [new ConstIn(12, 16, 1)]);
 			L_DTutorial_0.useModuleRecord = false;
 			L_DTutorial_0.predecessors.push(L_CPU_Basic);
-			L_DTutorial_1 = new Level("Delay Accum. 1", new MagicAccumDelayTutGoal, true,
-										 [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);
+			L_DTutorial_1 = new DelayAccumTutorial();
 			L_DTutorial_1.predecessors.push(L_DTutorial_0);
 			L_DTutorial_2 = new Level("Delay Accum. 2", new AccumDelayTutGoal, true,
 										 [ConstIn, Adder, Latch, DataWriter, SysDelayClock]);
 			L_DTutorial_2.predecessors.push(L_DTutorial_1);
+			L_DTutorial_2.useModuleRecord = false;
 			
 			var delayShard:LevelShard = LevelShard.CORE.compositWith(LevelShard.DELAY);
 			L_DCPU_Basic = new ShardLevel("Add-CPU Delay", delayShard);

@@ -1,6 +1,7 @@
 package Levels.ControlTutorials {
 	import Controls.ControlSet;
 	import Levels.Level;
+	import Levels.LevelHint;
 	import Modules.*;
 	import Testing.Goals.WireTutorialGoal;
 	
@@ -18,8 +19,15 @@ package Levels.ControlTutorials {
 			useModuleRecord = false;
 		}
 		
+		override public function makeHint():LevelHint {
+			if (hintDone || !U.state.editEnabled)
+				return null;
+			return new LevelHint(12, 65, arrow_up, function done():Boolean { return U.state.modules.length > 1; } );
+		}
+		
 		public static const NAME:String = "Module Tutorial";
 		
+		[Embed(source = "../../../lib/art/help/uppointarrow.png")] private const arrow_up:Class;
 	}
 
 }

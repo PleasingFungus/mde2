@@ -3,6 +3,7 @@ package LevelStates {
 	import flash.utils.Dictionary;
 	import Helpers.DeleteHelper;
 	import Helpers.KeyHelper;
+	import Levels.LevelHint;
 	import Modules.Module;
 	import Modules.CustomModule;
 	import Modules.ModuleCategory;
@@ -162,6 +163,10 @@ package LevelStates {
 				addUIActives();
 			upperLayer.add(new MenuBar(60));
 			makeViewButtons();
+			
+			var hint:LevelHint = level.makeHint();
+			if (hint)
+				upperLayer.add(hint);
 			
 			if (!editEnabled) {
 				ensureNothingHeld();

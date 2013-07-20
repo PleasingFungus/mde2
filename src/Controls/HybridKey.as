@@ -6,7 +6,7 @@ package Controls {
 	public class HybridKey extends Key {
 		
 		public var keys:Vector.<Key>;
-		public function HybridKey(Keys:Array) {
+		public function HybridKey(...Keys) {
 			keys = new Vector.<Key>;
 			for each (var key:Key in Keys)
 				keys.push(key);
@@ -38,6 +38,12 @@ package Controls {
 			return keys[0].toString(); //eh
 		}
 		
+		public static function fromStrings(...strings):HybridKey {
+			var key:HybridKey = new HybridKey(new Key(strings[0]));
+			for (var i:int = 1; i < strings.length; i++)
+				key.keys.push(new Key(strings[i]));
+			return key;
+		}
 	}
 
 }

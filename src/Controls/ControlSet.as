@@ -5,10 +5,10 @@ package Controls {
 	 */
 	public class ControlSet {
 		
-		public static const LEFT_KEY:Key = new Key("LEFT");
-		public static const UP_KEY:Key = new Key("UP");
-		public static const RIGHT_KEY:Key = new Key("RIGHT");
-		public static const DOWN_KEY:Key = new Key("DOWN");
+		public static const LEFT_KEY:Key = HybridKey.fromStrings("LEFT", "A");
+		public static const UP_KEY:Key = HybridKey.fromStrings("UP", "W");
+		public static const RIGHT_KEY:Key = HybridKey.fromStrings("RIGHT", "D");
+		public static const DOWN_KEY:Key = HybridKey.fromStrings("DOWN", "S");
 		public static const DIRECTION_KEYS:Array = [LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY];
 		
 		public static const CONFIRM_KEY:Key = new Key("ENTER");
@@ -23,7 +23,7 @@ package Controls {
 		public static const PASTE_KEY:Key = new Key("V");
 		public static const CUT_KEY:Key = new Key("X");
 		public static const CUSTOM_KEY:Key = new Key("W"); //for making a custom module
-		public static const DELETE_KEY:Key = new HybridKey([CUT_KEY, new Key("DELETE")]);
+		public static const DELETE_KEY:Key = new HybridKey(CUT_KEY, new Key("DELETE"));
 		public static const MODULES_BACK:Key = new Key("Q");
 		
 		public static const UNDO:Key = new Key("Z");

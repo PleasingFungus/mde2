@@ -45,7 +45,7 @@ package Displays {
 			
 			if (!moused)
 				for each (var dWire:DWire in dWires)
-					if (dWire.wire.exists && !dWire.outsideScreen() && dWire.overlapsPoint(U.mouseFlxLoc)) {
+					if (dWire.wire.exists && dWire.wire.deployed && !dWire.outsideScreen() && dWire.overlapsPoint(U.mouseFlxLoc)) {
 						buildDisplay(moused = dWire, carrier = dWire.wire);
 						break;
 					}

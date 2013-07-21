@@ -176,6 +176,10 @@ package Displays {
 			timeSinceToggle = 0;
 		}
 		
+		public function stop():void {
+			startPlaying(0);
+		}
+		
 		public function get isPlaying():Boolean { return playing != 0; }
 		
 		private const width:int = 274;

@@ -862,6 +862,7 @@ package LevelStates {
 			
 			runningDisplayTest = false;
 			U.state.time.reset();
+			displayTime.stop();
 			editEnabled = true;
 			makeUI();
 			

@@ -87,8 +87,8 @@ package Components {
 				for each (var delta:Point in deltas) {
 					var nextPoint:Point = curPoint.add(delta);
 				
-					if (constrained && (U.state.grid.lineContents(curPoint, nextPoint) ||
-										(!nextPoint.equals(target) && !pather.validTransition(curPoint, nextPoint))))
+					if (constrained && ((!target.equals(nextPoint) && !pather.validPoint(nextPoint))
+										|| !pather.validTransition(curPoint, nextPoint)))
 						continue;
 					
 					var alreadyFound:Boolean = false;

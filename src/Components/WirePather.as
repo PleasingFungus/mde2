@@ -15,19 +15,21 @@ package Components {
 			return !(wire.constrained && U.state.grid.moduleContentsAtPoint(p));
 		}
 		
-		override public function validTransition(a:Point, b:Point):Boolean {
-			if (U.state.grid.moduleContentsAtPoint(a))
-				return false;
-			
-			var carriers:Vector.<Carrier> = U.state.grid.carriersAtPoint(a);
-			if (!carriers)
+		override public function validPoint(p:Point):Boolean {
+			if (!wire.constrained)
 				return true;
 			
-			var otherCarrier:Carrier = U.state.grid.lineContents(a, b);
-			if (otherCarrier)
+			if (U.state.grid.moduleContentsAtPoint(p))
 				return false;
 			
-			return true;
+			var carriers:Vector.<Carrier> = U.state.grid.carriersAtPoint(p);
+			return !carriers;
+		}
+		
+		override public function validTransition(a:Point, b:Point):Boolean {
+			if (!wire.constrained)
+				return true;
+			return !U.state.grid.lineContents(a, b);
 		}
 		
 	}

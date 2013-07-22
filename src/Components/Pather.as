@@ -11,6 +11,7 @@ package Components {
 		}
 		
 		public function validTarget(p:Point):Boolean { return true; }
+		public function validPoint(p:Point):Boolean { return true; }
 		public function validTransition(a:Point, b:Point):Boolean { return true; }
 		
 		public function dumbPath(start:Point, end:Point):Vector.<Point> {
@@ -24,11 +25,11 @@ package Components {
 			for (var delta:Point = end.subtract(current); delta.x || delta.y; delta = end.subtract(current)) {
 				var nextDelta:Point = delta.x > 0 ? RIGHT_DELTA : LEFT_DELTA;
 				next = current.add(nextDelta);
-				var valid:Boolean = validTransition(current, next);
+				var valid:Boolean = (end.equals(next) || validPoint(next)) && validTransition(current, next);
 				if ((!delta.x || !valid) && delta.y) {
 					nextDelta = delta.y > 0 ? DOWN_DELTA : UP_DELTA;
 					next = current.add(nextDelta);
-					valid = validTransition(current, next);
+					valid = (end.equals(next) || validPoint(next)) && validTransition(current, next);
 				}
 				
 				if (!valid)

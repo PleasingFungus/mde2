@@ -28,6 +28,8 @@ package Layouts {
 			endpoint = End;
 			bounds = Bounds;
 			attemptPathTo(End);
+			if (!end.equals(End))
+				throw new Error("Internal wire pathing failure!");
 			endpoint = null;
 			bounds = null; //not guaranteed to be well-defined after init
 			

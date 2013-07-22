@@ -87,7 +87,7 @@ package Components {
 				for each (var delta:Point in deltas) {
 					var nextPoint:Point = curPoint.add(delta);
 				
-					if (constrained && ((!target.equals(nextPoint) && !pather.validPoint(nextPoint))
+					if (constrained && ((!target.equals(nextPoint) && !pather.validPoint(nextPoint, delta))
 										|| !pather.validTransition(curPoint, nextPoint)))
 						continue;
 					

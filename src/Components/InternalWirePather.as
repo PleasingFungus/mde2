@@ -14,9 +14,9 @@ package Components {
 		}
 		
 		
-		override public function validTransition(a:Point, _:Point):Boolean {
-			return true//a.equals(iWire.endpoint) || iWire.bounds.containsPoint(a);
-		}
+		//override public function validTransition(cur:Point, next:Point):Boolean {
+			//return next.equals(iWire.endpoint) || cur.equals(iWire.endpoint) || iWire.bounds.containsPoint(cur);
+		//}
 	}
 
 }

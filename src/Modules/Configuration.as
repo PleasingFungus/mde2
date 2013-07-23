@@ -13,7 +13,7 @@ package Modules {
 		}
 		
 		public function setValue(v:int):int {
-			return value = v;
+			return value = Math.min(Math.max(v, valueRange.min), valueRange.max);
 		}
 		
 		public function increment():int {

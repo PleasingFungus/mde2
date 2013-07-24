@@ -1224,23 +1224,32 @@ package LevelStates {
 				return null;
 			}
 			
+			//find lengths of all sections
 			var moduleSectionLength:int = bytes.readInt();
 			var moduleSectionEnd:int = bytes.position - 4 + moduleSectionLength;
-			var newModules:Vector.<Module> = Module.modulesFromBytes(bytes, moduleSectionEnd);
-			if (bytes.position != moduleSectionEnd)
-				throw new Error("Unread data in module load!");
 			
+			bytes.position = moduleSectionEnd;
 			var wireSectionLength:int = bytes.readInt();
 			var wireSectionEnd:int = bytes.position - 4 + wireSectionLength;
-			var newWires:Vector.<Wire> = Wire.wiresFromBytes(bytes, wireSectionEnd);
-			if (bytes.position != wireSectionEnd)
-				throw new Error("Unread data in wire load!");
 			
-			var miscLength:int = bytes.readInt();
+			bytes.position = wireSectionEnd;
+			var miscLength:int = bytes.readInt(); //currently unused; added for future-compat
+			//load misc data (first, so that clocks are constrained correctly)
 			if (level.delay)
 				time.clockPeriod = bytes.readInt();
 			if (bytes.position != bytes.length)
 				throw new Error("Trailing data in save!");
+			
+			//load modules & wires, then add them (wires first, for historical reasons; may or may not still be needed)
+			bytes.position = 4+4;
+			var newModules:Vector.<Module> = Module.modulesFromBytes(bytes, moduleSectionEnd);
+			if (bytes.position != moduleSectionEnd)
+				throw new Error("Unread data in module load!");
+			
+			bytes.position += 4;
+			var newWires:Vector.<Wire> = Wire.wiresFromBytes(bytes, wireSectionEnd);
+			if (bytes.position != wireSectionEnd)
+				throw new Error("Unread data in wire load!");
 			
 			for each (var wire:Wire in newWires)
 				addWire(wire, false);

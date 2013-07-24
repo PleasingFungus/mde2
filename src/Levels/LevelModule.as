@@ -8,7 +8,7 @@ package Levels {
 	import Modules.ModuleCategory;
 	import Layouts.DefaultLayout;
 	import Layouts.ModuleLayout;
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import Values.Value;
 	import Menu.DLevelModule;
 	import Displays.DModule;
@@ -37,13 +37,13 @@ package Levels {
 		override protected function generateInternalLayout():InternalLayout {
 			var nodes:Array = [];
 			if (level.fewestModules && level.useModuleRecord) {
-				var moduleValue:NumericValue = new NumericValue(level.fewestModules);
+				var moduleValue:IntegerValue = new IntegerValue(level.fewestModules);
 				nodes.push(new WideNode(this, new Point(0, -1), [], null, function getValue():Value {
 					return moduleValue;
 				}));
 			}
 			if (level.fewestTicks && level.useTickRecord) {
-				var tickValue:NumericValue = new NumericValue(level.fewestTicks);
+				var tickValue:IntegerValue = new IntegerValue(level.fewestTicks);
 				nodes.push(new WideNode(this, new Point(0, 1), [], null, function getValue():Value {
 					return tickValue;
 				}));
@@ -59,8 +59,8 @@ package Levels {
 			return beaten ? BEATEN_VALUE : UNBEATEN_VALUE;
 		}
 		
-		private const BEATEN_VALUE:Value = new NumericValue(1);
-		private const UNBEATEN_VALUE:Value = new NumericValue(0);
+		private const BEATEN_VALUE:Value = new IntegerValue(1);
+		private const UNBEATEN_VALUE:Value = new IntegerValue(0);
 	}
 
 }

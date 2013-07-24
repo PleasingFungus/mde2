@@ -1,7 +1,7 @@
 package Testing.Goals {
 	import LevelStates.LevelState;
 	import Values.Value;
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import org.flixel.FlxG;
 	/**
 	 * ...
@@ -21,9 +21,9 @@ package Testing.Goals {
 			var baseMem:Vector.<Value> = generateBlankMemory();
 			expectedMem = baseMem.slice();
 			for (var i:int = 0; i < 5; i++) {
-				currentValues.push(new NumericValue(C.randomRange(U.MIN_INT, U.MAX_INT/* + 1*/)));
+				currentValues.push(new IntegerValue(C.randomRange(U.MIN_INT, U.MAX_INT/* + 1*/)));
 				baseMem[i] = currentValues[i];
-				expectedMem[i] = new NumericValue(currentValues[i].toNumber() * 2);
+				expectedMem[i] = new IntegerValue(currentValues[i].toNumber() * 2);
 			}
 			timeLimit = 10;
 			

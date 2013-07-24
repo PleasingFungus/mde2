@@ -1,6 +1,6 @@
 package Testing.Goals {
 	import Testing.Tests.RegfileTest;
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import Values.OpcodeValue;
 	import Values.Value;
 	/**

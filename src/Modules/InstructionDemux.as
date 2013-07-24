@@ -21,7 +21,7 @@ package Modules {
 			expectedOps = new Vector.<OpcodeValue>;
 			if (opIntValues && opIntValues.length)
 				for each (var opIntValue:int in opIntValues)
-					expectedOps.push(OpcodeValue.fromValue(new NumericValue(opIntValue)));
+					expectedOps.push(OpcodeValue.fromValue(new IntegerValue(opIntValue)));
 			else if (U.state)
 				expectedOps = U.state.level.expectedOps.slice();
 			

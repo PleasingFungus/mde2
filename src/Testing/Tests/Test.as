@@ -448,7 +448,7 @@ package Testing.Tests {
 				memory[i] = instructions[i].toMemValue();
 			
 			for each (var memorandum:AbstractArg in dataMemory)
-				memory[memorandum.address] = new NumericValue(memorandum.value);
+				memory[memorandum.address] = new IntegerValue(memorandum.value);
 			
 			return memory;
 		}
@@ -456,7 +456,7 @@ package Testing.Tests {
 		protected function genExpectedMemory():Vector.<Value> {
 			var memory:Vector.<Value> = initialMemory.slice();
 			for (var i:int = saveTargets.length - 1; i >= 0; i--)
-				memory[saveTargets[i].address] = new NumericValue(saveTargets[i].value);
+				memory[saveTargets[i].address] = new IntegerValue(saveTargets[i].value);
 			return memory;
 		}
 		

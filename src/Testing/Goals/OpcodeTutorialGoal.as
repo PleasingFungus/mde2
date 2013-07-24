@@ -1,7 +1,7 @@
 package Testing.Goals {
 	import Testing.Tests.OpcodeTest;
 	import Values.InstructionValue;
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import Values.OpcodeValue;
 	import LevelStates.LevelState;
 	/**

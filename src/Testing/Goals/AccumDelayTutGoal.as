@@ -1,6 +1,6 @@
 package Testing.Goals {
 	import Values.Value;
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -15,7 +15,7 @@ package Testing.Goals {
 			
 			expectedMemory = generateBlankMemory();
 			for (var i:int = 0; i < 4; i++)
-				expectedMemory[i] = new NumericValue(i);
+				expectedMemory[i] = new IntegerValue(i);
 		}
 	}
 

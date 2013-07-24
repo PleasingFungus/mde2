@@ -43,7 +43,7 @@ package Testing.Tests {
 			for (var strIndex:String in registers) {
 				var index:int = int(strIndex);
 				var value:int = registers[strIndex];
-				memory[index + U.MIN_MEM] = new NumericValue(value);
+				memory[index + U.MIN_MEM] = new IntegerValue(value);
 			}
 			return memory;
 		}

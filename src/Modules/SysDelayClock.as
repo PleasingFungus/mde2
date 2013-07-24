@@ -4,7 +4,7 @@ package Modules {
 	import Displays.DClockModule;
 	import flash.utils.ByteArray;
 	import Values.Value;
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import UI.ColorText;
 	import UI.HighlightFormat;
 	import Layouts.PortLayout;
@@ -100,8 +100,8 @@ package Modules {
 			return values;
 		}
 		
-		public const EDGE:Value = new NumericValue(1);
-		public const NO_EDGE:Value = new NumericValue(0);
+		public const EDGE:Value = new IntegerValue(1);
+		public const NO_EDGE:Value = new IntegerValue(0);
 		
 		
 		[Embed(source = "../../lib/art/modules/symbol_clk_24.png")] private const _symbol:Class;

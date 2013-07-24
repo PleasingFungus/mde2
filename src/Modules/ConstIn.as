@@ -7,7 +7,7 @@ package Modules {
 	import Layouts.PortLayout;
 	import UI.ColorText;
 	import UI.HighlightFormat;
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import Values.Value;
 	import Components.Port;
 	
@@ -18,7 +18,7 @@ package Modules {
 	public class ConstIn extends Module {
 		
 		public var initialValue:int;
-		public var value:NumericValue;
+		public var value:IntegerValue;
 		public function ConstIn(X:int, Y:int, InitialValue:int = 0) {
 			configuration = new Configuration(new Range( -32, 31, InitialValue));
 			setByConfig();
@@ -67,7 +67,7 @@ package Modules {
 		}
 		
 		override public function initialize():void {
-			value = new NumericValue(initialValue);
+			value = new IntegerValue(initialValue);
 		}
 		
 		[Embed(source = "../../lib/art/modules/symbol_num_24.png")] private const _symbol:Class;

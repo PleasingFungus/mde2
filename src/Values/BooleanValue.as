@@ -28,8 +28,8 @@ package Values {
 		public static const TRUE:BooleanValue = new BooleanValue(true);
 		public static const FALSE:BooleanValue = new BooleanValue(false);
 		
-		public static const NUMERIC_TRUE:NumericValue = new NumericValue(1);
-		public static const NUMERIC_FALSE:NumericValue = new NumericValue(0);
+		public static const NUMERIC_TRUE:IntegerValue = new IntegerValue(1);
+		public static const NUMERIC_FALSE:IntegerValue = new IntegerValue(0);
 	}
 
 }

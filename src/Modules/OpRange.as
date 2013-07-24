@@ -1,5 +1,5 @@
 package Modules {
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import Values.OpcodeValue;
 	/**
 	 * ...
@@ -12,7 +12,7 @@ package Modules {
 		}
 		
 		override public function nameOf(value:int):String {
-			return OpcodeValue.fromValue(new NumericValue(value)).toString();
+			return OpcodeValue.fromValue(new IntegerValue(value)).toString();
 		}
 	}
 

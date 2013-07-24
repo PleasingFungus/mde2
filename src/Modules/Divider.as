@@ -1,7 +1,7 @@
 package Modules {
 	import Components.Port;
 	import Values.FixedValue;
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import Values.Value;
 	
 	import Layouts.*;
@@ -46,7 +46,7 @@ package Modules {
 				return U.V_UNKNOWN;
 			if (inputA == FixedValue.NULL || inputB == FixedValue.NULL)
 				return FixedValue.NULL;
-			return new NumericValue(int(inputA.toNumber() / inputB.toNumber()));
+			return IntegerValue.fromNumber(int(inputA.toNumber() / inputB.toNumber()));
 		}
 		
 		override public function renderDetails():String {

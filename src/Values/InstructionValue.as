@@ -27,7 +27,7 @@ package Values {
 		private function numberToValue(n:int):Value {
 			if (n == C.INT_NULL)
 				return U.V_UNKNOWN;
-			return new NumericValue(n);
+			return new IntegerValue(n);
 		}
 		
 		override public function toString():String {

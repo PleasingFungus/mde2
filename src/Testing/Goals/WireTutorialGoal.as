@@ -1,5 +1,5 @@
 package Testing.Goals {
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import Values.Value;
 	import LevelStates.LevelState;
 	/**
@@ -16,7 +16,7 @@ package Testing.Goals {
 			timeLimit = timeLimit = TimeLimit;
 			
 			expectedMemory = generateBlankMemory();
-			expectedMemory[1] = new NumericValue(2);
+			expectedMemory[1] = new IntegerValue(2);
 		}
 		
 	}

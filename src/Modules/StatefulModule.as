@@ -1,5 +1,5 @@
 package Modules {
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import Values.Value;
 	/**
 	 * ...
@@ -17,7 +17,7 @@ package Modules {
 		
 		override public function initialize():void {
 			super.initialize();
-			value = new NumericValue(initialValue);
+			value = IntegerValue.fromNumber(initialValue);
 			lastMomentStored = -1;
 		}
 		

@@ -2,7 +2,7 @@ package Testing.Goals {
 	import Modules.Module;
 	import Testing.Instructions.Instruction;
 	import Values.FixedValue;
-	import Values.NumericValue;
+	import Values.IntegerValue;
 	import Values.OpcodeValue;
 	import Values.Value;
 	import LevelStates.LevelState;

@@ -1,4 +1,5 @@
 package UI {
+	import Controls.ControlSet;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import org.flixel.*;
@@ -22,6 +23,8 @@ package UI {
 		protected var rail:FlxSprite;
 		
 		protected var barClicked:Boolean;
+		protected var keyHoldTime:Number;
+		protected var lastKeyDirection:Number;
 		protected var tick:int;
 		
 		public function Scrollbar(X:int, Y:int, Height:int) {
@@ -55,11 +58,15 @@ package UI {
 			add(upArrow)
 			add(downArrow);
 			add(slider);
+			
+			keyHoldTime = 0;
+			lastKeyDirection = 0;
 		}
 		
 		override public function update():void {
 			super.update();
 			checkClick();
+			checkKeys();
 			checkScroll();
 			tick++;
 		}
@@ -91,6 +98,32 @@ package UI {
 			}
 		}
 		
+		private function checkKeys():void {
+			if (ControlSet.UP_KEY.pressed())
+				keyscroll( -1);
+			else if (ControlSet.DOWN_KEY.pressed())
+				keyscroll(1);
+			else
+				keyHoldTime = lastKeyDirection = 0;
+		}
+		
+		private function keyscroll(direction:int):void {
+			var magnitude:Number;
+			if (lastKeyDirection != direction) {
+				lastKeyDirection = direction;
+				keyHoldTime = 0;
+				magnitude = 3;
+			} else {
+				keyHoldTime += FlxG.elapsed;
+				if (keyHoldTime < DEROCK_TIME)
+					return;
+				magnitude = 1;
+			}
+			
+			var delta:Number = direction * magnitude * (rail.height - slider.height) / 20;
+			moveSlider(delta + slider.y);
+		}
+		
 		private function checkScroll():void {
 			if (Math.abs(FlxG.mouse.wheelChange()) > 1)
 				moveSlider(-FlxG.mouse.wheelChange() * (rail.height - slider.height) / 20 + slider.y);
@@ -114,6 +147,8 @@ package UI {
 		public function set scrollFraction(fraction:Number):void {
 			slider.y = rail.y + (rail.height - slider.height) * fraction;
 		}
+		
+		private const DEROCK_TIME:Number = 1 / 3;
 		
 		[Embed(source = "../../lib/art/ui/upscrollarrow.png")] private const _up_arrow:Class;
 		[Embed(source = "../../lib/art/ui/downscrollarrow.png")] private const _down_arrow:Class;

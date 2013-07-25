@@ -16,9 +16,11 @@ package Displays {
 		private var lastNum:int;
 		public function DClock(X:int, Y:int) {
 			lastNum = U.state.time.clockPeriod;
+			var min:int = 2;
+			var max:int = 63;
 			super(X, Y, _clock_sprite, function onClick():void {
-				U.state.upperLayer.add(new BoxedSliderbar(X - fullWidth + 6, Y + fullWidth, new Range(2, 63, U.state.time.clockPeriod),
-													 function setClockPeriod(v:int):void { U.state.time.clockPeriod = v },
+				U.state.upperLayer.add(new BoxedSliderbar(X - fullWidth + 6, Y + fullWidth, new Range(min, max, U.state.time.clockPeriod),
+													 function setClockPeriod(v:int):void { U.state.time.clockPeriod = Math.min(Math.max(v, min), max); },
 													 U.state.time.clockPeriod).setDieOnClickOutside(true, function setNum():void {
 														if (lastNum != U.state.time.clockPeriod)
 															new CustomAction(function setValue(newValue:int, oldValue:int):Boolean { lastNum = U.state.time.clockPeriod = newValue; return true; },

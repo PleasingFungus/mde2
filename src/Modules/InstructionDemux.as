@@ -23,7 +23,9 @@ package Modules {
 				for each (var opIntValue:int in opIntValues)
 					expectedOps.push(OpcodeValue.fromValue(new IntegerValue(opIntValue)));
 			else if (U.state)
-				expectedOps = U.state.level.expectedOps.slice();
+				for each (var op:OpcodeValue in OpcodeValue.OPS)
+					if (U.state.level.expectedOps.indexOf(op) != -1)
+						expectedOps.push(op);
 			
 			width = expectedOps.length ? expectedOps.length : 1;
 			super(X, Y, "Instruction Multiplexer", ModuleCategory.CONTROL, width, 1, 1);

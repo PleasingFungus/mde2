@@ -1,5 +1,7 @@
 package Testing.Abstractions {
 	import Testing.Types.InstructionType;
+	import UI.HighlightFormat;
+	import UI.ColorText;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -12,6 +14,11 @@ package Testing.Abstractions {
 		
 		override public function toString():String {
 			return type.name + " " + value;
+		}
+		
+		override public function toFormat():HighlightFormat {
+			return new HighlightFormat(type.name + " {}",
+									   ColorText.singleVec(new ColorText(U.DESTINATION.color, value.toString())));
 		}
 		
 	}

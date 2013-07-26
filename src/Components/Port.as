@@ -94,7 +94,7 @@ package Components {
 				return cachedValue;
 			
 			var curValue:Value = findValue();
-			if (U.state.level.delay)
+			if (U.state && U.state.level.delay)
 				updateDelay(curValue);
 			return curValue;
 		}

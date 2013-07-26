@@ -46,15 +46,6 @@ package LevelStates {
 			
 			for each (module in U.state.modules)
 				module.clearCachedValues();
-			
-			if (U.state.level.delay) {
-				for each (module in U.state.modules)
-					module.cacheValues();
-				for each (module in U.state.modules)
-					module.updateDelays();
-				for each (module in U.state.modules)
-					module.clearCachedValues();
-			}
 		}
 		
 		public function backstep():Boolean {

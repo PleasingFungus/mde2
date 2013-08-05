@@ -1216,6 +1216,8 @@ package LevelStates {
 					);
 					
 					saveString = null;
+					if (DEBUG.ON)
+						throw error;
 				}
 				
 			C.sendRequest(

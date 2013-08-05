@@ -1202,10 +1202,26 @@ package LevelStates {
 			if (saveString == null)
 				saveString = findSuccessSave();
 			if (saveString) {
-				if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
-					savedString = loadBinary(saveString);
-				else
-					savedString = loadOldFormat(saveString);
+				try {
+					if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
+						savedString = loadBinary(saveString);
+					else
+						savedString = loadOldFormat(saveString);
+				} catch (error:Error) {
+					C.log("Error in loading!");
+					C.log(error);
+					C.sendRequest(
+						"http://pleasingfungus.com/mde2/insert.php",
+						{'lvl' : U.save.data[level.name]}
+					);
+					
+					saveString = null;
+				}
+				
+			C.sendRequest(
+				"http://pleasingfungus.com/mde2/insert.php",
+				{'lvl' : U.save.data[level.name]}
+			);
 			}
 			
 			level.loadIntoState(this, saveString == RESET_SAVE || !saveString);

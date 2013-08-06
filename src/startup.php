@@ -30,7 +30,7 @@
 	}
 	
 	$con = mysql_connect("mysql51-014.wc1.dfw1.stabletransit.com",
-						 "676583_mde2",
+						 "676583_mde3",
 						 "C00||3\/3l5");
 	if (!$con)
 	  die('ERROR: Could not connect: ' . mysql_error());

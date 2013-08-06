@@ -1,4 +1,5 @@
 package LevelStates {
+	import flash.events.IOErrorEvent;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import Helpers.DeleteHelper;
@@ -26,6 +27,9 @@ package LevelStates {
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import Levels.Level;
+	
+	import flash.events.Event;
+	import flash.net.URLLoader;
 	
 	/**
 	 * ...
@@ -1203,6 +1207,7 @@ package LevelStates {
 				saveString = findSuccessSave();
 			if (saveString) {
 				try {
+					throw new Error("Butts!");
 					if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
 						savedString = loadBinary(saveString);
 					else
@@ -1210,20 +1215,25 @@ package LevelStates {
 				} catch (error:Error) {
 					C.log("Error in loading!");
 					C.log(error);
-					C.sendRequest(
-						"http://pleasingfungus.com/mde2/insert.php",
-						{'lvl' : U.save.data[level.name]}
+					
+					var loader:URLLoader = C.sendRequest(
+						"http://pleasingfungus.com/mde2/error.php",
+						{'lvl' : U.save.data[level.name],
+						 'version' : U.VERSION,
+						 'error' : error.message +"\n\n" + error.getStackTrace() },
+						 function onLoad(e : Event):void {
+							var response:String = loader.data;
+							C.log(response);
+						 }
 					);
+					loader.addEventListener(IOErrorEvent.IO_ERROR, function onIOError(e:Event):void {
+						C.log(e);
+					});
 					
 					saveString = null;
 					if (DEBUG.ON)
 						throw error;
 				}
-				
-			C.sendRequest(
-				"http://pleasingfungus.com/mde2/insert.php",
-				{'lvl' : U.save.data[level.name]}
-			);
 			}
 			
 			level.loadIntoState(this, saveString == RESET_SAVE || !saveString);

@@ -11,7 +11,7 @@ package Levels.BasicTutorials {
 	public class OpTutorial extends Level {
 		
 		public function OpTutorial() {
-			super("One Instruction", new OpcodeTutorialGoal, false, [ConstIn, Adder, BabyLatch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
+			super("One Instruction", new OpcodeTutorialGoal, false, [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			info = "From this level onward, your goal will be to go through memory, starting at 0, and execute every instruction there.\n\n"
 			info = "Instructions are made up of four numbers. The first number, the opcode, says what type of instruction it is. "
 			info += "The other three, the source, target, & destination, have meanings that vary by opcode.\n\n"

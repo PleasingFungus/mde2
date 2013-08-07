@@ -3,7 +3,7 @@ package Displays {
 	import Components.Port;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import Modules.BabyLatch;
+	import Modules.Latch;
 	import org.flixel.*;
 	import Components.Wire;
 	import Components.Carrier;

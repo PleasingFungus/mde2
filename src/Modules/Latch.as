@@ -1,22 +1,18 @@
 package Modules {
 	import Components.Port;
-	import Layouts.Nodes.InternalNode;
-	import Layouts.Nodes.NodeType;
-	import Layouts.Nodes.WideNode;
 	import Values.*
 	import Layouts.*;
-	import Layouts.Nodes.StandardNode;
-	import Layouts.Nodes.NodeTuple;
+	import Layouts.Nodes.*;
 	import flash.geom.Point;
-	import UI.ColorText;
 	import UI.HighlightFormat;
+	import UI.ColorText;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
 	public class Latch extends Module {
 		
-		public var values:Vector.<Value>
+		public var values:Vector.<Value>;
 		public var width:int;
 		protected var lastMomentStored:int;
 		public function Latch(X:int, Y:int, Width:int = 1) {
@@ -24,13 +20,12 @@ package Modules {
 			configuration = new Configuration(new Range(1, 8, Width));
 			setByConfig();
 			
-			super(X, Y, "Storage", ModuleCategory.STORAGE, Width, Width, 1);
-			abbrev = "L";
+			super(X, Y, "Basic Storage", ModuleCategory.STORAGE, Width, Width, 0);
+			abbrev = "l";
 			symbol = _symbol;
-			
-			delay = 2;
-			configurableInPlace = false;
+			delay = 1;
 			storesData = true;
+			configurableInPlace = false;
 		}
 		
 		override public function initialize():void {
@@ -44,6 +39,12 @@ package Modules {
 			lastMomentStored = -1;
 		}
 		
+		override public function getConfiguration():Configuration {
+			if (U.state && U.state.level.configurableLatchesEnabled)
+				return configuration;
+			return null;
+		}
+		
 		override public function setByConfig():void {
 			width = configuration.value;
 		}
@@ -55,34 +56,21 @@ package Modules {
 		}
 		
 		override protected function generateLayout():ModuleLayout {
-			var layout:ModuleLayout = new DefaultLayout(this, 2, 5);
+			var layout:ModuleLayout = new DefaultLayout(this, 2, 3);
 			for (var i:int = 0; i < layout.ports.length; i++)
-				if (layout.ports[i].port != controls[0])
-					layout.ports[i].offset.y += 1;
-				else
-					layout.ports[i].offset.x -= 1;
+				layout.ports[i].offset.y -= 1;
 			return layout;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
 			var nodes:Array = [];
-			var tuples:Array = [];
 			for (var i:int = 0; i < width; i++) {
-				var outPort:PortLayout = layout.ports[i + width + 1];
-				var dataNode:InternalNode = new StandardNode(this, new Point(outPort.offset.x - 3, outPort.offset.y), [layout.ports[i], outPort], [],
+				var outPort:PortLayout = layout.ports[i + width];
+				var dataNode:InternalNode = new StandardNode(this, new Point(outPort.offset.x - 2, outPort.offset.y), [layout.ports[i], outPort], [],
 													 outputs[i].getValue /*?*/, width > 1 ? "Stored value " + i : "Stored value", true);
 				//dataNode.type = NodeType.STORAGE;
 				nodes.push(dataNode);
-				tuples.push(new NodeTuple(layout.ports[i], dataNode, writeOK));
 			}
-			
-			var valueText:String = width == 1 ? "value" : "values";
-			var controlText:String = "Stored " +valueText + " will be set to input " + valueText;
-			controls[0].name = name + " write?";
-			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[width].offset.x, layout.ports[width].offset.y + 2), [layout.ports[width]],
-															tuples, controls[0].getValue, controlText);
-			//controlNode.type = NodeType.TOGGLE;
-			nodes.push(controlNode);
 			return new InternalLayout(nodes);
 		}
 		
@@ -92,14 +80,14 @@ package Modules {
 		
 		override public function getDescription():String {
 			if (width == 1)
-				return "Stores & outputs a value. Each tick, sets its value to the input if the control is "+BooleanValue.TRUE+"."
-			return "Stores & outputs "+width+" values. Each tick, sets its values to the inputs if the control is "+BooleanValue.TRUE+"."
+				return "Stores & outputs a value. Each tick, sets its value to the input."
+			return "Stores & outputs "+width+" values. Each tick, sets its values to the inputs."
 		}
 		
 		override public function getHighlitDescription():HighlightFormat {
 			if (width == 1)
 				return null;
-			return new HighlightFormat( "Stores & outputs {} values. Each tick, sets its values to the inputs if the control is "+BooleanValue.TRUE+".",
+			return new HighlightFormat( "Stores & outputs {} values. Each tick, sets its values to the inputs.",
 									   ColorText.singleVec(new ColorText(U.CONFIG_COLOR, width.toString())));
 		}
 		
@@ -117,9 +105,6 @@ package Modules {
 		}
 		
 		protected function statefulUpdate():Boolean {
-			if (!writeOK())
-				return false;
-			
 			var changed:Boolean = false;
 			for (var i:int = 0; i < width; i++) {
 				var input:Value = inputs[i].getValue();
@@ -139,15 +124,7 @@ package Modules {
 			lastMomentStored = -1;
 		}
 		
-		
-		
-		protected function writeOK():Boolean {
-			var control:Value = controls[0].getValue();
-			return control != U.V_UNKNOWN && control != U.V_UNPOWERED && control.toNumber() != 0;
-		}
-		
-		[Embed(source = "../../lib/art/modules/symbol_box_24.png")] private const _symbol:Class;
-		
+		[Embed(source = "../../lib/art/modules/symbol_box_unlocked_24.png")] private const _symbol:Class;
 	}
 
 }

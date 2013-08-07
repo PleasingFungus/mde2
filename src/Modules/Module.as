@@ -399,7 +399,7 @@ package Modules {
 												Equals, null, null, null, null,
 												Mux, Demux, InstructionMux, InstructionDemux,
 												Or, Output, And, Not, null, DataWriter,
-												InstructionComparator, null, BabyLatch, SysDelayClock,
+												InstructionComparator, null, Latch, SysDelayClock,
 												MagicWriter, DataReader, DataWriterT, InstructionDecoder,
 												CustomModule, Subtractor, Multiplier, Divider]) {
 				ALL_MODULES.push(moduleClass);

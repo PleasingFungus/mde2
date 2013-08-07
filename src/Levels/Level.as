@@ -84,7 +84,7 @@ package Levels {
 		public function get successors():Vector.<Level> {
 			var successors:Vector.<Level> = new Vector.<Level>;
 			for each (var level:Level in Level.ALL)
-				if (level.predecessors.indexOf(this) != -1)
+				if (level && level.predecessors.indexOf(this) != -1)
 					successors.push(level);
 			return successors;
 		}
@@ -159,9 +159,6 @@ package Levels {
 		public static var L_DTutorial_2:Level;
 		
 		public static var L_DCPU_Basic:Level;
-		public static var L_DCPU_LoadAdvanced:Level;
-		public static var L_DCPU_Branch:Level;
-		public static var L_DCPU_Full:Level;
 		
 		public static var L_PTutorial:Level;
 		
@@ -222,12 +219,6 @@ package Levels {
 			var delayShard:LevelShard = LevelShard.CORE.compositWith(LevelShard.DELAY);
 			L_DCPU_Basic = new ShardLevel("Add-CPU Delay", delayShard);
 			L_DCPU_Basic.predecessors.push(L_DTutorial_2);
-			L_DCPU_LoadAdvanced = new ShardLevel("Adv/Load Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
-			L_DCPU_LoadAdvanced.predecessors.push(L_DCPU_Basic, L_CPU_Advanced, L_CPU_Load);
-			L_DCPU_Branch = new ShardLevel("Branch Delay", delayShard.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
-			L_DCPU_Branch.predecessors.push(L_DCPU_Basic, L_CPU_Branch);
-			L_DCPU_Full = new ShardLevel("Full Delay", delayShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
-			L_DCPU_Full.predecessors.push(L_CPU_Full, L_DCPU_LoadAdvanced, L_DCPU_Branch);
 			
 			L_PTutorial = new Level("Pipeline Tutorial", new PipelineTutorialGoal, true,
 											   [ConstIn, Adder, Latch, DataWriterT, DataReader, InstructionDecoder, SysDelayClock, And], [OpcodeValue.OP_SAVI]);
@@ -237,17 +228,17 @@ package Levels {
 			L_PCPU_Basic = new ShardLevel("Efficiency!", pipeShard);
 			L_PCPU_Basic.predecessors.push(L_PTutorial);
 			L_PCPU_Jump = new ShardLevel("Efficient Jump", pipeShard.compositWith( LevelShard.JUMP));
-			L_PCPU_Jump.predecessors.push(L_PCPU_Basic, L_DCPU_Branch);
+			L_PCPU_Jump.predecessors.push(L_PCPU_Basic, L_CPU_Branch);
 			L_PCPU_Branch = new ShardLevel("Efficient Branch", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));
 			L_PCPU_Branch.predecessors.push(L_PCPU_Jump);
 			L_PCPU_Advanced = new ShardLevel("Efficient Adv Op", pipeShard.compositWith(LevelShard.ADV));
-			L_PCPU_Advanced.predecessors.push(L_PCPU_Basic, L_DCPU_LoadAdvanced);
+			L_PCPU_Advanced.predecessors.push(L_PCPU_Basic, L_CPU_Advanced);
 			L_PCPU_Load = new ShardLevel("Efficient Load", pipeShard.compositWith(LevelShard.LOAD));
-			L_PCPU_Load.predecessors.push(L_PCPU_Basic, L_DCPU_LoadAdvanced);
+			L_PCPU_Load.predecessors.push(L_PCPU_Basic, L_CPU_Load);
 			L_PCPU_LoadAdvanced = new ShardLevel("Eff. Adv/Load", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
 			L_PCPU_LoadAdvanced.predecessors.push(L_PCPU_Load, L_PCPU_Advanced);
 			L_PCPU_Full = new ShardLevel("Full Efficient", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
-			L_PCPU_Full.predecessors.push(L_DCPU_Full, L_PCPU_Branch, L_PCPU_LoadAdvanced);
+			L_PCPU_Full.predecessors.push(L_CPU_Full, L_PCPU_Branch, L_PCPU_LoadAdvanced);
 			
 			L_PTutorial.useTickRecord = L_PCPU_Basic.useTickRecord = L_PCPU_Jump.useTickRecord = L_PCPU_Branch.useTickRecord = true;
 			L_PCPU_Advanced.useTickRecord = L_PCPU_Load.useTickRecord = L_PCPU_LoadAdvanced.useTickRecord = L_PCPU_Full.useTickRecord = true;
@@ -256,7 +247,7 @@ package Levels {
 					    L_Accumulation, L_SingleOp, L_DoubleOp,
 						L_CPU_Basic, L_CPU_Jump, L_CPU_Branch, L_CPU_Advanced, L_CPU_Load, L_CPU_Full,
 						L_DTutorial_0, L_DTutorial_1, L_DTutorial_2,
-						L_DCPU_Basic, L_DCPU_LoadAdvanced, L_DCPU_Branch, L_DCPU_Full,
+						L_DCPU_Basic, null, null, null,
 						L_PTutorial,
 						L_PCPU_Basic, L_PCPU_Jump, L_PCPU_Advanced, L_PCPU_Load, L_PCPU_LoadAdvanced, L_PCPU_Branch, L_PCPU_Full,
 						L_Double);
@@ -291,7 +282,7 @@ package Levels {
 			var lastLevelName:String = U.save.data['lastLevel'];
 			C.log("Loading last level " + lastLevelName);
 			for each (var level:Level in Level.ALL)
-				if (level.name == lastLevelName) {
+				if (level && level.name == lastLevelName) {
 					last = level;
 					C.log("Last level: " + level);
 					break;

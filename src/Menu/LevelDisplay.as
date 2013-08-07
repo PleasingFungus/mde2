@@ -61,19 +61,16 @@ package Menu {
 			var d2:LevelModule = addSuccessor(Level.L_DTutorial_2, d1);
 			
 			var dcpuBasic:LevelModule = addSuccessor(Level.L_DCPU_Basic, d2);
-			var dcpuJump:LevelModule = addSuccessor(Level.L_DCPU_Branch, dcpuBasic, cpuBranch.y - dcpuBasic.y);
-			var dcpuLoadAdv:LevelModule = addSuccessor(Level.L_DCPU_LoadAdvanced, dcpuBasic, cpuLoad.y - dcpuBasic.y);
-			var dcpuFull:LevelModule = addSuccessor(Level.L_DCPU_Full, dcpuJump, cpuFull.y - dcpuJump.y);
 			
 			addSuccessor(Level.L_PTutorial, modulesByName[Level.L_DCPU_Basic.name]);
 			
 			addSuccessor(Level.L_PCPU_Basic, modulesByName[Level.L_PTutorial.name]);
-			addSuccessor(Level.L_PCPU_Jump, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_DCPU_Branch.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);
+			addSuccessor(Level.L_PCPU_Jump, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_CPU_Branch.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);
 			addSuccessor(Level.L_PCPU_Branch, modulesByName[Level.L_PCPU_Jump.name]);
-			addSuccessor(Level.L_PCPU_Load, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_DCPU_LoadAdvanced.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);
+			addSuccessor(Level.L_PCPU_Load, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_CPU_Load.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);
 			addSuccessor(Level.L_PCPU_Advanced, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_CPU_Advanced.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);
 			addSuccessor(Level.L_PCPU_LoadAdvanced, modulesByName[Level.L_PCPU_Load.name]);
-			addSuccessor(Level.L_PCPU_Full, modulesByName[Level.L_PCPU_Branch.name], modulesByName[Level.L_DCPU_Full.name].y -  modulesByName[Level.L_PCPU_Branch.name].y);
+			addSuccessor(Level.L_PCPU_Full, modulesByName[Level.L_PCPU_Branch.name], modulesByName[Level.L_CPU_Full.name].y -  modulesByName[Level.L_PCPU_Branch.name].y);
 		}
 		
 		protected function addSuccessor(level:Level, predecessor:LevelModule, offY:int = 0):LevelModule {

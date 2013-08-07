@@ -10,7 +10,7 @@ package Levels {
 		
 		public function DelayAccumTutorial() {
 			super("Delay Accum. 1", new MagicAccumDelayTutGoal, true,
-				  [ConstIn, Adder, Latch, MagicWriter, SysDelayClock]);
+				  [ConstIn, Adder, Latch, MagicWriter]);
 			useModuleRecord = false;
 		}
 		

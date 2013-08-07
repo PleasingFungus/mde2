@@ -20,7 +20,7 @@ package Modules {
 			configuration = new Configuration(new Range(1, 8, Width));
 			setByConfig();
 			
-			super(X, Y, "Basic Storage", ModuleCategory.STORAGE, Width, Width, 0);
+			super(X, Y, "Storage", ModuleCategory.STORAGE, Width, Width, 0);
 			abbrev = "l";
 			symbol = _symbol;
 			delay = 1;

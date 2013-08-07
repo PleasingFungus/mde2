@@ -400,7 +400,7 @@ package Modules {
 												Mux, Demux, InstructionMux, InstructionDemux,
 												Or, Output, And, Not, null, DataWriter,
 												InstructionComparator, null, Latch, SysDelayClock,
-												MagicWriter, DataReader, DataWriterT, InstructionDecoder,
+												MagicWriter, DataReader, InstructionDecoder,
 												CustomModule, Subtractor, Multiplier, Divider]) {
 				ALL_MODULES.push(moduleClass);
 				if (!moduleClass || moduleClass == CustomModule)

@@ -214,7 +214,7 @@ package LevelStates {
 			makeSaveButtons();
 			makeUndoButtons();
 			makeTestButtons();
-			if (level.delay && level.allowedModules.indexOf(SysDelayClock) != -1)
+			if (level.delay)
 				makeClockButton();
 		}
 		

@@ -212,7 +212,7 @@ package Levels {
 			L_DTutorial_1 = new DelayAccumTutorial();
 			L_DTutorial_1.predecessors.push(L_DTutorial_0);
 			L_DTutorial_2 = new Level("Delay Accum. 2", new AccumDelayTutGoal, true,
-										 [ConstIn, Adder, Latch, DataWriter, SysDelayClock]);
+										 [ConstIn, Adder, Latch, DataWriter]);
 			L_DTutorial_2.predecessors.push(L_DTutorial_1);
 			L_DTutorial_2.useModuleRecord = false;
 			
@@ -221,7 +221,7 @@ package Levels {
 			L_DCPU_Basic.predecessors.push(L_DTutorial_2);
 			
 			L_PTutorial = new Level("Pipeline Tutorial", new PipelineTutorialGoal, true,
-											   [ConstIn, Adder, Latch, DataWriterT, DataReader, InstructionDecoder, SysDelayClock, And], [OpcodeValue.OP_SAVI]);
+											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI]);
 			L_PTutorial.predecessors.push(L_DCPU_Basic);
 			
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);

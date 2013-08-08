@@ -109,7 +109,7 @@ package Displays {
 				dWire.update();
 			
 			if (editButton) {
-				editButton.exists = module.deployed;
+				editButton.exists = module.deployed && U.state.editEnabled;
 				if (editButton.active && editButton.exists)
 					editButton.update();
 			}

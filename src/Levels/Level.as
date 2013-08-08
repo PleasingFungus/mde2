@@ -265,10 +265,11 @@ package Levels {
 		}
 		
 		public static function validate(levels:Vector.<Level>):void {
-			for each (var level:Level in levels) {
-				FlxG.globalSeed = 0.5;
-				level.goal.genMem();
-			}
+			for each (var level:Level in levels) 
+				if (level) {
+					FlxG.globalSeed = 0.5;
+					level.goal.genMem();
+				}
 		}
 		
 		private static function makeVec(levels:Array):Vector.<Level> {

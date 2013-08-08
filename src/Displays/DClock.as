@@ -16,7 +16,7 @@ package Displays {
 		private var lastNum:int;
 		public function DClock(X:int, Y:int) {
 			lastNum = U.state.time.clockPeriod;
-			var min:int = 2;
+			var min:int = 1;
 			var max:int = 63;
 			super(X, Y, _clock_sprite, function onClick():void {
 				U.state.upperLayer.add(new BoxedSliderbar(X - fullWidth + 6, Y + fullWidth, new Range(min, max, U.state.time.clockPeriod),

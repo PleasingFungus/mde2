@@ -11,7 +11,7 @@ package LevelStates {
 		
 		public var moment:int;
 		public var deltas:Vector.<Delta>;
-		public var clockPeriod:int = 2;
+		public var clockPeriod:int = 1;
 		public function Time() {
 			init();
 		}

@@ -1207,7 +1207,6 @@ package LevelStates {
 				saveString = findSuccessSave();
 			if (saveString) {
 				try {
-					throw new Error("Butts!");
 					if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
 						savedString = loadBinary(saveString);
 					else

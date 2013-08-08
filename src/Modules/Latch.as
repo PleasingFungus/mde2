@@ -79,9 +79,10 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			if (width == 1)
-				return "Stores & outputs a value. Each tick, sets its value to the input."
-			return "Stores & outputs "+width+" values. Each tick, sets its values to the inputs."
+			var values:String = width == 1 ? "a value" : width+" values";
+			var ticks:String = U.state.time.clockPeriod == 1 ? "Each tick" : "Every " + U.state.time.clockPeriod + " ticks";
+			var plural:String = width == 1 ? "" : 's';
+			return "Stores & outputs " + values + ". " + ticks + ", sets its value" + plural + " to the input" + plural + ".";
 		}
 		
 		override public function getHighlitDescription():HighlightFormat {
@@ -105,6 +106,9 @@ package Modules {
 		}
 		
 		protected function statefulUpdate():Boolean {
+			if ((U.state.time.moment % U.state.time.clockPeriod) != U.state.time.clockPeriod - 1)
+				return false;
+			
 			var changed:Boolean = false;
 			for (var i:int = 0; i < width; i++) {
 				var input:Value = inputs[i].getValue();

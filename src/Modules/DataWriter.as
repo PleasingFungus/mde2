@@ -47,7 +47,9 @@ package Modules {
 		}
 		
 		override public function getDescription():String {
-			return "Each tick, writes the input value to the specified line of memory."
+			if (U.state.time.clockPeriod == 1)
+				return "Each tick, writes the input value to the specified line of memory."
+			return "Every "+U.state.time.clockPeriod+" ticks, writes the input value to the specified line of memory."
 		}
 		
 		private function getNextValue():Value {
@@ -65,6 +67,8 @@ package Modules {
 		override public function updateState():Boolean {
 			if (U.state.time.moment == lastMomentStored)
 				return false; //can only store at most once per cycle
+			if ((U.state.time.moment % U.state.time.clockPeriod) != U.state.time.clockPeriod - 1)
+				return false;
 			
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown || line.toNumber() < 0 || line.toNumber() > U.state.memory.length) return false;

@@ -39,13 +39,13 @@ package LevelStates {
 			for each (module in U.state.modules)
 				module.cacheValues();
 			
-			moment += 1;
-			
 			for each (module in U.state.modules)
 				module.updateState();
 			
 			for each (module in U.state.modules)
 				module.clearCachedValues();
+			
+			moment += 1;
 		}
 		
 		public function backstep():Boolean {

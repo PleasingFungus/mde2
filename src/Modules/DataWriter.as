@@ -40,6 +40,8 @@ package Modules {
 			lineNode.type = new NodeType(0x0, U.LINE_NUM.color);
 			layout.ports[0].port.name = "Input";
 			var writeNode:InternalNode = new BigNode(this, new Point(layout.ports[1].offset.x-1, layout.ports[0].offset.y), [layout.ports[0], lineNode], [], getNextValue, "Next Value");
+			if (!U.state || !U.state.level.delay)
+				return new InternalLayout([lineNode, writeNode]);
 			
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[0].offset.x + 2, layout.ports[1].offset.y + 2), [],
 															[new NodeTuple(layout.ports[0], writeNode, writeOK)], function ticksUntilWrite():IntegerValue {
@@ -54,6 +56,8 @@ package Modules {
 		}
 		
 		override public function generateDisplay():DModule {
+			if (!U.state.level.delay)
+				return super.generateDisplay();
 			return new DClockModule(this, this);
 		}
 		

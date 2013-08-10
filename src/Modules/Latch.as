@@ -75,6 +75,9 @@ package Modules {
 				tuples.push(new NodeTuple(layout.ports[i], dataNode, writeOK));
 			}
 			
+			if (!U.state || !U.state.level.delay)
+				return new InternalLayout(nodes);
+			
 			var valueText:String = width == 1 ? "value" : "values";
 			var controlText:String = "Stored " +valueText + " will be set to input " + valueText +" in";
 			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[0].offset.x + 2, layout.ports[0].offset.y - 2), [],
@@ -91,6 +94,8 @@ package Modules {
 		}
 		
 		override public function generateDisplay():DModule {
+			if (!U.state.level.delay)
+				return super.generateDisplay();
 			return new DClockModule(this, this);
 		}
 		

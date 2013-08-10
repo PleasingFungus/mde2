@@ -3,13 +3,15 @@ package Modules {
 	import Layouts.*;
 	import Layouts.Nodes.*;
 	import Components.Port;
+	import Displays.DModule;
+	import Displays.DClockModule;
 	
 	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class DataWriter extends Module {
+	public class DataWriter extends Module implements Clockable {
 		
 		protected var lastMomentStored:int = -1;
 		public function DataWriter(X:int, Y:int) {
@@ -26,7 +28,7 @@ package Modules {
 		}
 		
 		override protected function generateLayout():ModuleLayout {
-			var layout:ModuleLayout = super.generateLayout();
+			var layout:ModuleLayout = new DefaultLayout(this, 3, 6);
 			layout.ports[0].offset.y += 2;
 			layout.ports[1].offset.x += 2;
 			return layout;
@@ -38,7 +40,21 @@ package Modules {
 			lineNode.type = new NodeType(0x0, U.LINE_NUM.color);
 			layout.ports[0].port.name = "Input";
 			var writeNode:InternalNode = new BigNode(this, new Point(layout.ports[1].offset.x-1, layout.ports[0].offset.y), [layout.ports[0], lineNode], [], getNextValue, "Next Value");
-			return new InternalLayout([lineNode, writeNode]);
+			
+			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[0].offset.x + 2, layout.ports[1].offset.y + 2), [],
+															[new NodeTuple(layout.ports[0], writeNode, writeOK)], function ticksUntilWrite():IntegerValue {
+																return new IntegerValue(U.state.time.clockPeriod - (U.state.time.moment % U.state.time.clockPeriod));
+															}, "Memory value at line will be set to input value in");
+			//controlNode.type = NodeType.TOGGLE;
+			return new InternalLayout([lineNode, writeNode, controlNode]);
+		}
+		
+		public function getClockNode():InternalNode {
+			return internalLayout.nodes[internalLayout.nodes.length - 1];
+		}
+		
+		override public function generateDisplay():DModule {
+			return new DClockModule(this, this);
 		}
 		
 		override public function renderDetails():String {
@@ -61,7 +77,7 @@ package Modules {
 			if (index < 0 || index >= U.state.memory.length)
 				return NilValue.NIL;
 			
-			if (!willWrite())
+			if (!writeOK())
 				return NilValue.NIL;
 			
 			return inputs[0].getValue();
@@ -70,7 +86,7 @@ package Modules {
 		override public function updateState():Boolean {
 			if (U.state.time.moment == lastMomentStored)
 				return false; //can only store at most once per cycle
-			if (!willWrite())
+			if (!writeOK())
 				return false;
 			
 			var line:Value = controls[0].getValue();
@@ -87,7 +103,7 @@ package Modules {
 			return true;
 		}
 		
-		private function willWrite():Boolean {
+		private function writeOK():Boolean {
 			return (U.state.time.moment % U.state.time.clockPeriod) == U.state.time.clockPeriod - 1;
 		}
 		
@@ -110,6 +126,10 @@ package Modules {
 				return FixedValue.NULL;
 			
 			return memoryValue;
+		}
+		
+		public function getClockFraction():Number {
+			return 1.0 / U.state.time.clockPeriod;
 		}
 		
 		[Embed(source = "../../lib/art/modules/symbol_stamp_24.png")] private const _symbol:Class;

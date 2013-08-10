@@ -6,11 +6,14 @@ package Modules {
 	import flash.geom.Point;
 	import UI.HighlightFormat;
 	import UI.ColorText;
+	import Displays.DClockModule;
+	import Displays.DModule;
+	
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class Latch extends Module {
+	public class Latch extends Module implements Clockable {
 		
 		public var values:Vector.<Value>;
 		public var width:int;
@@ -56,22 +59,39 @@ package Modules {
 		}
 		
 		override protected function generateLayout():ModuleLayout {
-			var layout:ModuleLayout = new DefaultLayout(this, 2, 3);
-			for (var i:int = 0; i < layout.ports.length; i++)
-				layout.ports[i].offset.y -= 1;
+			var layout:ModuleLayout = new DefaultLayout(this, 2, 5);
 			return layout;
 		}
 		
 		override protected function generateInternalLayout():InternalLayout {
 			var nodes:Array = [];
+			var tuples:Array = [];
 			for (var i:int = 0; i < width; i++) {
 				var outPort:PortLayout = layout.ports[i + width];
-				var dataNode:InternalNode = new StandardNode(this, new Point(outPort.offset.x - 2, outPort.offset.y), [layout.ports[i], outPort], [],
-													 outputs[i].getValue /*?*/, width > 1 ? "Stored value " + i : "Stored value", true);
+				var dataNode:InternalNode = new StandardNode(this, new Point(outPort.offset.x - (U.state && U.state.level.delay ? 2 : 3), outPort.offset.y),
+															 [layout.ports[i], outPort], [], outputs[i].getValue /*?*/, width > 1 ? "Stored value " + i : "Stored value", true);
 				//dataNode.type = NodeType.STORAGE;
 				nodes.push(dataNode);
+				tuples.push(new NodeTuple(layout.ports[i], dataNode, writeOK));
 			}
+			
+			var valueText:String = width == 1 ? "value" : "values";
+			var controlText:String = "Stored " +valueText + " will be set to input " + valueText +" in";
+			var controlNode:StandardNode = new StandardNode(this, new Point(layout.ports[0].offset.x + 2, layout.ports[0].offset.y - 2), [],
+															tuples, function ticksUntilWrite():IntegerValue {
+																return new IntegerValue(U.state.time.clockPeriod - (U.state.time.moment % U.state.time.clockPeriod));
+															}, controlText);
+			//controlNode.type = NodeType.TOGGLE;
+			nodes.push(controlNode);
 			return new InternalLayout(nodes);
+		}
+		
+		public function getClockNode():InternalNode {
+			return internalLayout.nodes[internalLayout.nodes.length - 1];
+		}
+		
+		override public function generateDisplay():DModule {
+			return new DClockModule(this, this);
 		}
 		
 		override public function renderDetails():String {
@@ -106,7 +126,7 @@ package Modules {
 		}
 		
 		protected function statefulUpdate():Boolean {
-			if ((U.state.time.moment % U.state.time.clockPeriod) != U.state.time.clockPeriod - 1)
+			if (!writeOK())
 				return false;
 			
 			var changed:Boolean = false;
@@ -122,10 +142,18 @@ package Modules {
 			return changed;
 		}
 		
+		private function writeOK():Boolean {
+			return (U.state.time.moment % U.state.time.clockPeriod) == U.state.time.clockPeriod - 1;
+		}
+		
 		override public function revertTo(oldValue:Value):void {
 			var indexedOldValue:IndexedValue = oldValue as IndexedValue;
 			values[indexedOldValue.index] = indexedOldValue.subValue;
 			lastMomentStored = -1;
+		}
+		
+		public function getClockFraction():Number {
+			return 1.0 / U.state.time.clockPeriod;
 		}
 		
 		[Embed(source = "../../lib/art/modules/symbol_box_unlocked_24.png")] private const _symbol:Class;

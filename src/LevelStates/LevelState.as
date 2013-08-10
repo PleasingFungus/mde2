@@ -1206,7 +1206,12 @@ package LevelStates {
 			if (saveString == null)
 				saveString = findSuccessSave();
 			if (saveString) {
-				try {
+				if (DEBUG.ON) {
+					if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
+						savedString = loadBinary(saveString);
+					else
+						savedString = loadOldFormat(saveString);
+				} else try {
 					if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
 						savedString = loadBinary(saveString);
 					else
@@ -1230,8 +1235,6 @@ package LevelStates {
 					});
 					
 					saveString = null;
-					if (DEBUG.ON)
-						throw error;
 				}
 			}
 			

@@ -30,6 +30,8 @@ package Layouts {
 			attemptPathTo(End);
 			if (!end.equals(End))
 				throw new Error("Internal wire pathing failure!");
+			if (path.length < 2)
+				path = new Vector.<Point>;
 			endpoint = null;
 			bounds = null; //not guaranteed to be well-defined after init
 			
@@ -44,6 +46,7 @@ package Layouts {
 		public function update():void { }
 		
 		public function shiftTo(newEnd:Point):void {
+			if (!path.length) return;
 			var delta:Point = newEnd.subtract(reversed ? end : start);
 			for each (var p:Point in path) {
 				p.x += delta.x;

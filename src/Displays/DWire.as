@@ -127,11 +127,11 @@ package Displays {
 		}
 		
 		public function outsideScreen():Boolean {
-			return wire.path.length && !boundingBox.intersects(U.screenRect());
+			return wire.path.length > 1 && !boundingBox.intersects(U.screenRect());
 		}
 		
 		protected function canBuildCache():Boolean {
-			return wire.deployed && cachesThisFrame < MAX_CACHES_PER_FRAME;
+			return wire.deployed && wire.path.length > 1 && cachesThisFrame < MAX_CACHES_PER_FRAME;
 		}
 		
 		protected function buildCache():void {

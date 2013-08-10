@@ -55,11 +55,14 @@ package Modules {
 		private function getNextValue():Value {
 			var line:Value = controls[0].getValue();
 			if (line.unpowered || line.unknown)
-				return line;
+				return NilValue.NIL;
 			
 			var index:int = line.toNumber();
 			if (index < 0 || index >= U.state.memory.length)
-				return U.V_UNPOWERED;
+				return NilValue.NIL;
+			
+			if (!willWrite())
+				return NilValue.NIL;
 			
 			return inputs[0].getValue();
 		}
@@ -67,7 +70,7 @@ package Modules {
 		override public function updateState():Boolean {
 			if (U.state.time.moment == lastMomentStored)
 				return false; //can only store at most once per cycle
-			if ((U.state.time.moment % U.state.time.clockPeriod) != U.state.time.clockPeriod - 1)
+			if (!willWrite())
 				return false;
 			
 			var line:Value = controls[0].getValue();
@@ -82,6 +85,10 @@ package Modules {
 			U.state.memory[line.toNumber()] = input;
 			lastMomentStored = U.state.time.moment;
 			return true;
+		}
+		
+		private function willWrite():Boolean {
+			return (U.state.time.moment % U.state.time.clockPeriod) == U.state.time.clockPeriod - 1;
 		}
 		
 		override public function revertTo(oldValue:Value):void {

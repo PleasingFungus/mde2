@@ -1,4 +1,7 @@
 package Displays {
+	import Layouts.Nodes.InternalNode;
+	import Modules.Clockable;
+	import Modules.Module;
 	import Modules.SysDelayClock;
 	/**
 	 * ...
@@ -6,10 +9,10 @@ package Displays {
 	 */
 	public class DClockModule extends DModule {
 		
-		public var clockModule:SysDelayClock;
+		public var clockModule:Clockable;
 		private var clock:Clock;
-		public function DClockModule(module:SysDelayClock) {
-			clockModule = module;
+		public function DClockModule(module:Module, clockable:Clockable) {
+			clockModule = clockable;
 			clock = new Clock( -1, -1, 0.5);
 			super(module);
 		}
@@ -20,18 +23,29 @@ package Displays {
 		}
 		
 		private function updateClock():void {
-			clock.fraction = clockModule.edgeLength / U.state.time.clockPeriod;
+			clock.fraction = clockModule.getClockFraction();
 			clock.handFraction = ((U.state.time.moment % U.state.time.clockPeriod) + 0.5) / U.state.time.clockPeriod;
 		}
 		
 		override protected function drawInternals():void {
 			super.drawInternals();
 			if (U.zoom >= 0.5) {
-				clock.x = displayNodes[0].x - displayNodes[0].offset.x;
-				clock.y = displayNodes[0].y - displayNodes[0].offset.y;
+				var displayNode:DNode = findClockNode();
+				
+				clock.x = displayNode.x - displayNode.offset.x;
+				clock.y = displayNode.y - displayNode.offset.y;
 				clock.draw();
-				displayNodes[0].drawLabel(); //?
+				
+				displayNode.drawLabel(); //?
 			}
+		}
+		
+		private function findClockNode():DNode {
+			var node:InternalNode = clockModule.getClockNode();
+			for each (var dNode:DNode in displayNodes)
+				if (dNode.node == node)
+					return dNode;
+			return null;
 		}
 		
 		override protected function drawLabel():void {

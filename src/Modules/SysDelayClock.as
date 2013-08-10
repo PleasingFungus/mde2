@@ -18,7 +18,7 @@ package Modules {
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class SysDelayClock extends Module {
+	public class SysDelayClock extends Module implements Clockable {
 		
 		private var _edgeLength:int = 1;
 		public function SysDelayClock(X:int, Y:int, EdgeLength:int = 1) {
@@ -33,12 +33,6 @@ package Modules {
 			setByConfig();
 		}
 		
-		override protected function generateLayout():ModuleLayout {
-			var layout:ModuleLayout = super.generateLayout();
-			layout.ports[0].offset.y += 1;
-			return layout;
-		}
-		
 		override public function getConfiguration():Configuration {
 			var maxEdge:int = U.state ? U.state.time.clockPeriod - 1 : 64;
 			if (!configuration)
@@ -51,6 +45,12 @@ package Modules {
 			return configuration;
 		}
 		
+		override protected function generateLayout():ModuleLayout {
+			var layout:ModuleLayout = super.generateLayout();
+			layout.ports[0].offset.y += 1;
+			return layout;
+		}
+		
 		override protected function generateInternalLayout():InternalLayout {
 			var lport:PortLayout = layout.ports[0];
 			lport.port.name = "Clock";
@@ -58,8 +58,12 @@ package Modules {
 													new Point(lport.offset.x - layout.dim.x / 2 - 1 / 2, lport.offset.y), lport)]);
 		}
 		
+		public function getClockNode():InternalNode {
+			return internalLayout.nodes[0];
+		}
+		
 		override public function generateDisplay():DModule {
-			return new DClockModule(this);
+			return new DClockModule(this, this);
 		}
 		
 		override public function setByConfig():void {
@@ -90,8 +94,12 @@ package Modules {
 			return NO_EDGE;
 		}
 		
-		public function get edgeLength():int {
+		private function get edgeLength():int {
 			return U.state ? Math.min(_edgeLength, U.state.time.clockPeriod - 1) : _edgeLength;
+		}
+		
+		public function getClockFraction():Number { 
+			return edgeLength / U.state.time.clockPeriod;;
 		}
 		
 		override public function getSaveValues():Array {

@@ -36,6 +36,8 @@ package Displays {
 				clock.y = displayNode.y - displayNode.offset.y;
 				clock.draw();
 				
+				displayNode.label.color = clock.on ? 0x0 : 0xffffff;
+				displayNode.label.shadow = clock.on ? 0xffffff : 0x1;
 				displayNode.drawLabel(); //?
 			}
 		}

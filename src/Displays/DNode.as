@@ -12,7 +12,7 @@ package Displays {
 	public class DNode extends FlxSprite {
 		
 		public var node:InternalNode;
-		private var label:FlxText;
+		public var label:FlxText;
 		private var lastValueString:String;
 		private var delayFiller:FlxSprite;
 		public function DNode(node:InternalNode) {

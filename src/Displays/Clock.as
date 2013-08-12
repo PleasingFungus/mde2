@@ -13,7 +13,7 @@ package Displays {
 		private var _fraction:Number;
 		private var hand:FlxSprite;
 		private var _handFraction:Number;
-		private var on:Boolean;
+		public var on:Boolean;
 		public function Clock(X:int, Y:int, Fraction:Number) {
 			super(X, Y);
 			_fraction = Fraction;

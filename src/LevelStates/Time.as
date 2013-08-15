@@ -54,7 +54,7 @@ package LevelStates {
 			
 			moment -= 1;
 			var ll:int = deltas.length;
-			while (deltas.length && deltas[deltas.length - 1].moment > moment)
+			while (deltas.length && deltas[deltas.length - 1].moment >= moment)
 				deltas.pop().revert();
 			
 			return true;

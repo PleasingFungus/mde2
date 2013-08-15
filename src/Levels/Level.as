@@ -185,7 +185,7 @@ package Levels {
 			(L_SingleOp = new OpTutorial).predecessors.push(L_Accumulation);
 			(L_DoubleOp = new Op2Tutorial).predecessors.push(L_SingleOp, L_Double);
 			
-			L_Square = new Level("Square", new SquareGoal, false, [ConstIn, Adder, Latch, DataReader, DataWriter, Equals, And, Or, Not, Demux]);
+			L_Square = new Level("Square", new SquareGoal, false, [ConstIn, Adder, Subtractor, Latch, DataReader, DataWriter, Equals, And, Or, Not, Demux]);
 			L_Square.predecessors.push(L_Double);
 			
 			

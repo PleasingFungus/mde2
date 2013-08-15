@@ -147,6 +147,8 @@ package Levels {
 		public static var L_SingleOp:Level;
 		public static var L_DoubleOp:Level;
 		
+		public static var L_Square:Level;
+		
 		public static var L_CPU_Basic:Level;
 		public static var L_CPU_Advanced:Level;
 		public static var L_CPU_Load:Level;
@@ -182,6 +184,9 @@ package Levels {
 			(L_Double = new DoubleTutorial).predecessors.push(L_Accumulation);
 			(L_SingleOp = new OpTutorial).predecessors.push(L_Accumulation);
 			(L_DoubleOp = new Op2Tutorial).predecessors.push(L_SingleOp, L_Double);
+			
+			L_Square = new Level("Square", new SquareGoal, false, [ConstIn, Adder, Latch, DataReader, DataWriter, Equals, And, Or, Not, Demux]);
+			L_Square.predecessors.push(L_Double);
 			
 			
 			L_CPU_Basic = new ShardLevel("Add-CPU", LevelShard.CORE);
@@ -250,7 +255,7 @@ package Levels {
 						L_DCPU_Basic, null, null, null,
 						L_PTutorial,
 						L_PCPU_Basic, L_PCPU_Jump, L_PCPU_Advanced, L_PCPU_Load, L_PCPU_LoadAdvanced, L_PCPU_Branch, L_PCPU_Full,
-						L_Double);
+						L_Double, L_Square);
 			
 			return levels;
 		}

@@ -8,7 +8,7 @@ package Testing.Goals {
 	public class SquareGoal extends GeneratedGoal {
 		
 		public function SquareGoal() {
-			super(SquareTest, new Vector.<OpcodeValue>, 12, 1, 5);
+			super(SquareTest, new Vector.<OpcodeValue>, 12, 2, 5);
 			description = "Square each value in memory lines 0-4!";
 		}
 		

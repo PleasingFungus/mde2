@@ -42,14 +42,15 @@ package Menu {
 			wire.x += wire.layout.dim.x;
 			var module:LevelModule = addSuccessor(Level.L_TutorialModule, wire);
 			var drag:LevelModule = addSuccessor(Level.L_TutorialSelection, module, module.layout.dim.y + MODULE_SPACING.y * 2);
-			addSuccessor(Level.L_TutorialCopying, drag);
+			addSuccessor(Level.L_TutorialCopying, drag, MODULE_SPACING.y);
 			
 			var accum:LevelModule = addSuccessor(Level.L_Accumulation, module);
-			var singleOp:LevelModule = addSuccessor(Level.L_SingleOp, accum, (accum.layout.dim.y + MODULE_SPACING.y)/2);
-			var double:LevelModule = addSuccessor(Level.L_Double, accum, -(singleOp.layout.dim.y + MODULE_SPACING.y)/2);
-			var doubleOp:LevelModule = addSuccessor(Level.L_DoubleOp, singleOp, -(singleOp.layout.dim.y + MODULE_SPACING.y) / 2);
+			var double:LevelModule = addSuccessor(Level.L_Double, accum, (accum.layout.dim.y + MODULE_SPACING.y)/2);
+			var singleOp:LevelModule = addSuccessor(Level.L_SingleOp, accum, -(double.layout.dim.y + MODULE_SPACING.y)/2);
+			var doubleOp:LevelModule = addSuccessor(Level.L_DoubleOp, double, -(double.layout.dim.y + MODULE_SPACING.y) / 2);
 			
-			addSuccessor(Level.L_Square, double, - MODULE_SPACING.y * 2);
+			addSuccessor(Level.L_Square, double, (singleOp.layout.dim.y) + (double.layout.dim.y) / 2);
+			addSuccessor(Level.L_Collatz, double, (doubleOp.layout.dim.y) / 2);
 			
 			var cpuBasic:LevelModule = addSuccessor(Level.L_CPU_Basic, doubleOp);
 			var cpuJump:LevelModule = addSuccessor(Level.L_CPU_Jump, cpuBasic, -(doubleOp.layout.dim.y + MODULE_SPACING.y));

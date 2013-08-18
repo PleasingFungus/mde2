@@ -65,9 +65,12 @@ package Menu {
 			
 			var dcpuBasic:LevelModule = addSuccessor(Level.L_DCPU_Basic, d2);
 			
-			addSuccessor(Level.L_PTutorial, modulesByName[Level.L_DCPU_Basic.name]);
+			var ptut1:LevelModule = addSuccessor(Level.L_PTutorial1, dcpuBasic);
+			var ptut2:LevelModule = addSuccessor(Level.L_PTutorial2, ptut1);
+			var ptut3:LevelModule = addSuccessor(Level.L_PTutorial3, ptut1, ptut2.layout.dim.y + MODULE_SPACING.y);
+			var ptut4:LevelModule = addSuccessor(Level.L_PTutorial4, ptut3);
 			
-			addSuccessor(Level.L_PCPU_Basic, modulesByName[Level.L_PTutorial.name]);
+			addSuccessor(Level.L_PCPU_Basic, ptut4);
 			addSuccessor(Level.L_PCPU_Jump, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_CPU_Branch.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);
 			addSuccessor(Level.L_PCPU_Branch, modulesByName[Level.L_PCPU_Jump.name]);
 			addSuccessor(Level.L_PCPU_Load, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_CPU_Load.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);

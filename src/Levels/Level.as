@@ -163,7 +163,10 @@ package Levels {
 		
 		public static var L_DCPU_Basic:Level;
 		
-		public static var L_PTutorial:Level;
+		public static var L_PTutorial1:Level;
+		public static var L_PTutorial2:Level;
+		public static var L_PTutorial3:Level;
+		public static var L_PTutorial4:Level;
 		
 		public static var L_PCPU_Basic:Level;
 		public static var L_PCPU_Advanced:Level;
@@ -231,13 +234,24 @@ package Levels {
 			L_DCPU_Basic = new ShardLevel("Add-CPU Delay", delayShard);
 			L_DCPU_Basic.predecessors.push(L_DTutorial_2);
 			
-			L_PTutorial = new Level("Pipeline Tutorial", new PipelineTutorialGoal, true,
+			L_PTutorial1 = new Level("Pipeline 1", new OpcodeTutorialGoal, true,
 											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI]);
-			L_PTutorial.predecessors.push(L_DCPU_Basic);
+			L_PTutorial1.predecessors.push(L_DCPU_Basic);
+			L_PTutorial2 = new Level("Pipeline 2", new PipelineTutorial1Goal, true,
+											   [ConstIn, SlowAdder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI]);
+			L_PTutorial2.predecessors.push(L_PTutorial1);
+			L_PTutorial3 = new Level("Pipeline 3", new InstructionSelectGoal, true,
+											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
+			L_PTutorial3.predecessors.push(L_PTutorial1);
+			L_PTutorial4 = new Level("Pipeline 4", new PipelineTutorial2Goal, true,
+											   [ConstIn, SlowAdder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
+			L_PTutorial4.predecessors.push(L_PTutorial2, L_PTutorial3);
+			//TODO: add fixed modules
+			//TODO: add info
 			
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);
 			L_PCPU_Basic = new ShardLevel("Efficiency!", pipeShard);
-			L_PCPU_Basic.predecessors.push(L_PTutorial);
+			L_PCPU_Basic.predecessors.push(L_PTutorial4);
 			L_PCPU_Jump = new ShardLevel("Efficient Jump", pipeShard.compositWith( LevelShard.JUMP));
 			L_PCPU_Jump.predecessors.push(L_PCPU_Basic, L_CPU_Branch);
 			L_PCPU_Branch = new ShardLevel("Efficient Branch", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));
@@ -251,7 +265,7 @@ package Levels {
 			L_PCPU_Full = new ShardLevel("Full Efficient", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
 			L_PCPU_Full.predecessors.push(L_CPU_Full, L_PCPU_Branch, L_PCPU_LoadAdvanced);
 			
-			L_PTutorial.useTickRecord = L_PCPU_Basic.useTickRecord = L_PCPU_Jump.useTickRecord = L_PCPU_Branch.useTickRecord = true;
+			L_PCPU_Basic.useTickRecord = L_PCPU_Jump.useTickRecord = L_PCPU_Branch.useTickRecord = true;
 			L_PCPU_Advanced.useTickRecord = L_PCPU_Load.useTickRecord = L_PCPU_LoadAdvanced.useTickRecord = L_PCPU_Full.useTickRecord = true;
 			
 			levels.push(L_TutorialWire, L_TutorialModule, L_TutorialSelection, L_TutorialCopying,
@@ -259,9 +273,10 @@ package Levels {
 						L_CPU_Basic, L_CPU_Jump, L_CPU_Branch, L_CPU_Advanced, L_CPU_Load, L_CPU_Full,
 						L_DTutorial_0, L_DTutorial_1, L_DTutorial_2,
 						L_DCPU_Basic, null, null, null,
-						L_PTutorial,
+						L_PTutorial1,
 						L_PCPU_Basic, L_PCPU_Jump, L_PCPU_Advanced, L_PCPU_Load, L_PCPU_LoadAdvanced, L_PCPU_Branch, L_PCPU_Full,
-						L_Double, L_Square, L_Collatz);
+						L_Double, L_Square, L_Collatz,
+						L_PTutorial2, L_PTutorial3, L_PTutorial4);
 			
 			return levels;
 		}

@@ -401,7 +401,8 @@ package Modules {
 												Or, Output, And, Not, null, DataWriter,
 												InstructionComparator, null, Latch, SysDelayClock,
 												MagicWriter, DataReader, InstructionDecoder,
-												CustomModule, Subtractor, Multiplier, Divider]) {
+												CustomModule, Subtractor, Multiplier, Divider,
+												SlowAdder]) {
 				ALL_MODULES.push(moduleClass);
 				if (!moduleClass || moduleClass == CustomModule)
 					ARCHETYPES.push(null);

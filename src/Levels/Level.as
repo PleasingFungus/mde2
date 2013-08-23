@@ -238,7 +238,7 @@ package Levels {
 											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI]);
 			L_PTutorial1.predecessors.push(L_DCPU_Basic);
 			L_PTutorial2 = new Level("Pipeline 2", new PipelineTutorial1Goal, true,
-											   [ConstIn, SlowAdder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI]);
+											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI]);
 			L_PTutorial2.predecessors.push(L_PTutorial1);
 			L_PTutorial3 = new Level("Pipeline 3", new InstructionSelectGoal, true,
 											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
@@ -246,6 +246,8 @@ package Levels {
 			L_PTutorial4 = new Level("Pipeline 4", new PipelineTutorial2Goal, true,
 											   [ConstIn, SlowAdder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
 			L_PTutorial4.predecessors.push(L_PTutorial2, L_PTutorial3);
+			L_PTutorial1.configurableLatchesEnabled = L_PTutorial2.configurableLatchesEnabled = true;
+			L_PTutorial3.configurableLatchesEnabled = L_PTutorial4.configurableLatchesEnabled = true;
 			//TODO: add fixed modules
 			//TODO: add info
 			

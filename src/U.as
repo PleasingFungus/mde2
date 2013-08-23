@@ -106,14 +106,14 @@ package  {
 			LevelShard.init();
 			
 			Level.ALL = Level.list();
-			if (DEBUG.ON)
+			if (FlxG.debug)
 				Level.validate(Level.ALL);
 			DEMO_LIMIT = Level.L_CPU_Basic;
 			DEMO_PERMITTED = Level.ALL.slice(0, Level.ALL.indexOf(DEMO_LIMIT) + 1); //dubious?
 			
 			zoom = 1;
 			
-			if (!DEBUG.ON)
+			if (!FlxG.debug)
 				sendStartupInfo();
 		}
 		
@@ -139,7 +139,7 @@ package  {
 		
 		
 		public static function displayVersion():String {
-			if (DEBUG.ON)
+			if (FlxG.debug)
 				return VERSION + "-DEBUG";
 			if (VERSION.slice(0,2) == '0.')
 				return VERSION + "-PLAYTEST";

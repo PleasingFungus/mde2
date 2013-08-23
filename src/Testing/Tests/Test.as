@@ -99,7 +99,7 @@ package Testing.Tests {
 				log(i + ": " + instructions[i]);
 			log("PROGRAM END\n\n");
 			
-			if (DEBUG.ON)
+			if (FlxG.debug)
 				testRun();
 		}
 		

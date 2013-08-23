@@ -44,6 +44,8 @@ package Controls {
 		public static const ZOOM:Key = new Key("K");
 		public static const SHARE:Key = new Key("L");
 		
+		public static const DEBUG_PRINT:Key = new Key("G");
+		
 		
 		
 		

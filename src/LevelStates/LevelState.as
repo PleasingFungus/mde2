@@ -575,6 +575,8 @@ package LevelStates {
 			checkBuildControls();
 			if (UIEnableKey.justPressed())
 				upperLayer.visible = !upperLayer.visible
+			if (ControlSet.DEBUG_PRINT.justPressed())
+				C.log(genSaveString());
 		}
 		
 		private function checkBuildControls():void {
@@ -1206,7 +1208,7 @@ package LevelStates {
 			if (saveString == null)
 				saveString = findSuccessSave();
 			if (saveString) {
-				if (DEBUG.ON) {
+				if (FlxG.debug) {
 					if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
 						savedString = loadBinary(saveString);
 					else

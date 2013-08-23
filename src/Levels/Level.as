@@ -45,7 +45,7 @@ package Levels {
 		
 		public function Level(Name:String, Goal:LevelGoal, delay:Boolean = false, AllowedModules:Array = null, ExpectedOps:Array = null, Modules:Array = null) {
 			name = displayName = Name;
-			info = DEBUG.ON ? "TODO" : "";
+			info = FlxG.debug ? "TODO" : "";
 			hints = new Vector.<String>;
 			this.goal = Goal;
 			
@@ -67,7 +67,7 @@ package Levels {
 				for each (var allowedModule:Class in AllowedModules)
 					if (Module.ALL_MODULES.indexOf(allowedModule) != -1)
 						allowedModules.push(allowedModule);
-					else if (DEBUG.ON)
+					else if (FlxG.debug)
 						throw new Error("Level " + name + " has unlisted module "+allowedModule+" in allowed list!");
 			else
 				allowedModules = Module.ALL_MODULES;

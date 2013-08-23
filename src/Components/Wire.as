@@ -3,6 +3,7 @@ package Components {
 	import flash.utils.ByteArray;
 	import Layouts.PortLayout;
 	import Modules.Module;
+	import org.flixel.FlxG;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -471,7 +472,7 @@ package Components {
 			if (bytes.length != length)
 				throw new Error("Error in calculating length!");
 			
-			if (DEBUG.ON) {
+			if (FlxG.debug) {
 				bytes.position = 4;
 				var loadWire:Wire = fromBytes(bytes, bytes.length);
 				if (!equals(loadWire))

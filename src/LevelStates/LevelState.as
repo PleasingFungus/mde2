@@ -1208,114 +1208,22 @@ package LevelStates {
 			if (saveString == null)
 				saveString = findSuccessSave();
 			if (saveString) {
-				if (FlxG.debug) {
-					if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
-						savedString = loadBinary(saveString);
-					else
-						savedString = loadOldFormat(saveString);
-				} else try {
-					if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
-						savedString = loadBinary(saveString);
-					else
-						savedString = loadOldFormat(saveString);
-				} catch (error:Error) {
-					C.log("Error in loading!");
-					C.log(error);
-					
-					var loader:URLLoader = C.sendRequest(
-						"http://pleasingfungus.com/mde2/error.php",
-						{'lvl' : U.save.data[level.name],
-						 'version' : U.VERSION,
-						 'error' : error.message +"\n\n" + error.getStackTrace() },
-						 function onLoad(e : Event):void {
-							var response:String = loader.data;
-							C.log(response);
-						 }
-					);
-					loader.addEventListener(IOErrorEvent.IO_ERROR, function onIOError(e:Event):void {
-						C.log(e);
-					});
-					
+				var loadedData:LevelLoader = FlxG.debug ? LevelLoader.loadSimple(saveString) : LevelLoader.loadSafe(saveString);
+				if (loadedData) {
+					saveString = loadedData.saveString;
+					time.clockPeriod = loadedData.clock;
+			
+					for each (var wire:Wire in loadedData.wires)
+						addWire(wire, false);
+					for each (var module:Module in loadedData.modules)
+						addModule(module, false);
+				} else
 					saveString = null;
-				}
 			}
 			
 			level.loadIntoState(this, saveString == RESET_SAVE || !saveString);
 			
 			makeUI();
-		}
-		
-		private function loadBinary(saveString:String):String {
-			var bytes:ByteArray = Base64.decodeToByteArray(saveString);
-			
-			bytes.inflate();
-			
-			var saveVersion:int = bytes.readInt();
-			if (saveVersion != U.SAVE_VERSION) {
-				C.log("Save version mismatch: save version " + saveVersion + " does not match game save version " + U.SAVE_VERSION + "!");
-				return null;
-			}
-			
-			//find lengths of all sections
-			var moduleSectionLength:int = bytes.readInt();
-			var moduleSectionEnd:int = bytes.position - 4 + moduleSectionLength;
-			
-			bytes.position = moduleSectionEnd;
-			var wireSectionLength:int = bytes.readInt();
-			var wireSectionEnd:int = bytes.position - 4 + wireSectionLength;
-			
-			bytes.position = wireSectionEnd;
-			var miscLength:int = bytes.readInt(); //currently unused; added for future-compat
-			//load misc data (first, so that clocks are constrained correctly)
-			if (level.delay)
-				time.clockPeriod = bytes.readInt();
-			if (bytes.position != bytes.length)
-				throw new Error("Trailing data in save!");
-			
-			//load modules & wires, then add them (wires first, for historical reasons; may or may not still be needed)
-			bytes.position = 4+4;
-			var newModules:Vector.<Module> = Module.modulesFromBytes(bytes, moduleSectionEnd);
-			if (bytes.position != moduleSectionEnd)
-				throw new Error("Unread data in module load!");
-			
-			bytes.position += 4;
-			var newWires:Vector.<Wire> = Wire.wiresFromBytes(bytes, wireSectionEnd);
-			if (bytes.position != wireSectionEnd)
-				throw new Error("Unread data in wire load!");
-			
-			for each (var wire:Wire in newWires)
-				addWire(wire, false);
-			for each (var module:Module in newModules)
-				addModule(module, false);
-			
-			return saveString;
-		}
-		
-		private function loadOldFormat(saveString:String):String {			
-			var saveArray:Array = saveString.split(U.MAJOR_SAVE_DELIM);
-			
-			//ordering is key
-			//misc info first
-			var miscStringsString:String = saveArray[2];
-			if (miscStringsString.length) {
-				var miscStrings:Array = miscStringsString.split(U.SAVE_DELIM);
-				if (level.delay)
-					time.clockPeriod = C.safeInt(miscStrings[0]);
-			}
-			
-			//load wires
-			var wireStrings:String = saveArray[1];
-			if (wireStrings.length)
-				for each (var wireString:String in wireStrings.split(U.SAVE_DELIM))
-					addWire(Wire.fromString(wireString), false);
-			
-			//load modules
-			var moduleStrings:String = saveArray[0];
-			if (moduleStrings.length)
-				for each (var moduleString:String in moduleStrings.split(U.SAVE_DELIM))
-					addModule(Module.fromString(moduleString), false);
-			
-			return saveString;
 		}
 		
 		private function loadFromSuccess():void {

@@ -16,6 +16,10 @@ package Displays {
 		public var port:Port;
 		public var layout:PortLayout;
 		protected var lastZoom:Number;
+		
+		private var baseX:int;
+		private var baseY:int;
+		
 		public function DPort(Layout:PortLayout) {
 			layout = Layout;
 			port = Layout.port;
@@ -38,9 +42,16 @@ package Displays {
 			}
 			
 			lastZoom = U.zoom;
+			setPosition();
 		}
 		
 		public function updatePosition(baseX:int, baseY:int):void {
+			this.baseX = baseX;
+			this.baseY = baseY;
+			setPosition();
+		}
+		
+		private function setPosition():void {
 			x = baseX + layout.offset.x * U.GRID_DIM;
 			y = baseY + layout.offset.y * U.GRID_DIM;
 			if (layout.reversed) {

@@ -46,7 +46,7 @@ package LevelStates {
 			var miscLength:int = bytes.readInt(); //currently unused; added for future-compat
 			//load misc data (first, so that clocks are constrained correctly)
 			var clockPeriod:int = 1;
-			if (miscLength)
+			if (miscLength && bytes.position != bytes.length)
 				clockPeriod = bytes.readInt();
 			if (bytes.position != bytes.length)
 				throw new Error("Trailing data in save!");

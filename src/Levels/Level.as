@@ -237,33 +237,32 @@ package Levels {
 			
 			
 			L_PTutorial1 = new Level("Pipeline 1", new OpcodeTutorialGoal, true,
-											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI]);
+											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			(L_PTutorial1.goal as OpcodeTutorialGoal).allowedTimePerInstr = 40;
 			L_PTutorial1.info = "This is " + L_SingleOp.displayName + " with delay. It needs a lot more time than the delayless version!";
 			L_PTutorial1.predecessors.push(L_DCPU_Basic);
 			
 			L_PTutorial2 = new Level("Pipeline 2", new PipelineTutorial1Goal, true,
-											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI]);
+											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			L_PTutorial2.info = "Exactly the same as " + L_PTutorial1.displayName + ", but with a dramatically tighter time limit."
 			L_PTutorial2.info += "\n\nThere are two slow components in this system: the Data Reader and the Data Writer."; //TODO
 			L_PTutorial2.modules = LevelLoader.loadSimple("Y2BgYGFgYJAHYj4QQxLEYAQSvCCWEIjHAFHCAcSMAA==").modules;
-			for each (var module:Module in L_PTutorial2.modules)
-				module.FIXED = true;
 			L_PTutorial2.predecessors.push(L_PTutorial1);
 			
 			L_PTutorial3 = new Level("Pipeline 3", new InstructionSelectGoal, true,
-											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
+											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
 			(L_PTutorial3.goal as InstructionSelectGoal).allowedTimePerInstr = 40;
+			L_PTutorial1.info = "And this level is " + L_DoubleOp.displayName + " with delay.";
 			L_PTutorial3.predecessors.push(L_PTutorial1);
 			
 			L_PTutorial4 = new Level("Pipeline 4", new PipelineTutorial2Goal, true,
-											   [ConstIn, SlowAdder, Latch, DataWriter, DataReader, InstructionDecoder, And], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
+											   [ConstIn, SlowAdder, Latch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
+			L_PTutorial4.modules = LevelLoader.loadSimple("Y2BgYGFgYNAFYj4QgxeIhRhhPCUYj1cSSLCBeAwQDRxAzAgA").modules;
 			L_PTutorial4.predecessors.push(L_PTutorial2, L_PTutorial3);
 			
 			L_PTutorial2.configurableLatchesEnabled = L_PTutorial4.configurableLatchesEnabled = true;
 			L_PTutorial1.useModuleRecord = L_PTutorial2.useModuleRecord = false;
 			L_PTutorial3.useModuleRecord = L_PTutorial4.useModuleRecord = false;
-			//TODO: add fixed modules
 			//TODO: add info
 			
 			
@@ -304,6 +303,7 @@ package Levels {
 		public function loadIntoState(levelState:LevelState, loadFresh:Boolean = false):void {
 			for each (var module:Module in modules) {
 				module.cleanup();
+				module.setLayout();
 				levelState.addModule(module);
 			}
 		}

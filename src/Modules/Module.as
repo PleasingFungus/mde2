@@ -45,9 +45,7 @@ package Modules {
 			category = Category;
 			makePorts(numInputs, numOutputs, numControls);
 			
-			layout = generateLayout();
-			internalLayout = generateInternalLayout();
-			
+			setLayout();
 			initialize();
 		}
 		
@@ -59,6 +57,11 @@ package Modules {
 		
 		public function getConfiguration():Configuration {
 			return configuration;
+		}
+		
+		public function setLayout():void {
+			layout = generateLayout();
+			internalLayout = generateInternalLayout();
 		}
 		
 		protected function generateLayout():ModuleLayout {

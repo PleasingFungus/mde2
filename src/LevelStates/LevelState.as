@@ -1210,7 +1210,7 @@ package LevelStates {
 			if (saveString) {
 				var loadedData:LevelLoader = FlxG.debug ? LevelLoader.loadSimple(saveString) : LevelLoader.loadSafe(saveString);
 				if (loadedData) {
-					saveString = loadedData.saveString;
+					savedString = loadedData.saveString;
 					time.clockPeriod = loadedData.clock;
 			
 					for each (var wire:Wire in loadedData.wires)
@@ -1218,10 +1218,10 @@ package LevelStates {
 					for each (var module:Module in loadedData.modules)
 						addModule(module, false);
 				} else
-					saveString = null;
+					savedString = null;
 			}
 			
-			level.loadIntoState(this, saveString == RESET_SAVE || !saveString);
+			level.loadIntoState(this, savedString == RESET_SAVE || !savedString);
 			
 			makeUI();
 		}

@@ -45,8 +45,8 @@ package LevelStates {
 			bytes.position = wireSectionEnd;
 			var miscLength:int = bytes.readInt(); //currently unused; added for future-compat
 			//load misc data (first, so that clocks are constrained correctly)
-			var clockPeriod:int;
-			if (U.state.level.delay)
+			var clockPeriod:int = 1;
+			if (miscLength)
 				clockPeriod = bytes.readInt();
 			if (bytes.position != bytes.length)
 				throw new Error("Trailing data in save!");
@@ -71,10 +71,10 @@ package LevelStates {
 			//ordering is key
 			//misc info first
 			var miscStringsString:String = saveArray[2];
-			var clockPeriod:int;
+			var clockPeriod:int = 1;
 			if (miscStringsString.length) {
 				var miscStrings:Array = miscStringsString.split(U.SAVE_DELIM);
-				if (U.state.level.delay)
+				if (miscStrings.length)
 					clockPeriod = C.safeInt(miscStrings[0]);
 			}
 			

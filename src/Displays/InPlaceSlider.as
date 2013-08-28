@@ -25,6 +25,7 @@ package Displays {
 				module.getConfiguration().setValue(v);
 				module.setByConfig();
 				module.initialize();
+				U.state.calculateModuleState();
 			};
 			
 			super(displayModule.x + displayModule.width / 2, displayModule.y + displayModule.height,
@@ -36,14 +37,10 @@ package Displays {
 				var newValue:int = module.getConfiguration().value;
 				if (newValue != oldValue)
 					new CustomAction(function setByConfig(newValue:int, oldValue:int):Boolean {
-						module.getConfiguration().value = newValue;
-						module.setByConfig();
-						module.initialize();
+						setValue(newValue);
 						return true;
 					}, function setOldConfig(newValue:int, oldValue:int):Boolean {
-						module.getConfiguration().value = oldValue;
-						module.setByConfig();
-						module.initialize();
+						setValue(oldValue);
 						return true;
 					}, newValue, oldValue).execute();
 			});

@@ -149,11 +149,6 @@ package Modules {
 		public function updateState():Boolean { return false; }
 		public function setByConfig():void { }
 		
-		public function lastMinuteInit():void {
-			for each (var port:Port in outputs)
-				port.lastMinuteInit();
-		}
-		
 		public function cacheValues():void {
 			for each (var portLayout:PortLayout in layout.ports)
 				portLayout.port.cacheValue();

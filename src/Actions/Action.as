@@ -11,15 +11,19 @@ package Actions {
 		
 		public function execute():Action {
 			U.state.actionStack.push(this);
-			U.state.save();
+			finish();
 			return this;
 		}
 		
 		public function revert():Action {
 			if (canRedo)
 				U.state.reactionStack.push(this);
-			U.state.save();
+			finish();
 			return this;
+		}
+		
+		public function finish():void {
+			U.state.onStateChange();
 		}
 		
 		public function get canRedo():Boolean {

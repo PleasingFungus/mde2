@@ -121,11 +121,6 @@ package Modules {
 				module.initialize();
 		}
 		
-		override public function lastMinuteInit():void {
-			for each (var module:Module in modules)
-				module.lastMinuteInit();
-		}
-		
 		override public function cacheValues():void {
 			for each (var module:Module in modules)
 				module.cacheValues();

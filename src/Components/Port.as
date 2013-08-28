@@ -94,8 +94,6 @@ package Components {
 				return cachedValue;
 			
 			var curValue:Value = findValue();
-			if (U.state && U.state.level.delay)
-				updateDelay(curValue);
 			return curValue;
 		}
 		
@@ -141,13 +139,10 @@ package Components {
 			lastChanged = oldTime;
 		}
 		
-		public function lastMinuteInit():void {
-			lastValue = findValue();
-			lastChanged = 0;
-		}
-		
 		public function cacheValue():void {
 			cachedValue = findValue();
+			if (U.state && U.state.level.delay)
+				updateDelay(cachedValue);
 		}
 		
 		public function clearCachedValue():void {

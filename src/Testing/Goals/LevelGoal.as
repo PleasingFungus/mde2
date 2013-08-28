@@ -79,6 +79,13 @@ package Testing.Goals {
 			for (var line:int = 0; line < memory.length; line++)
 				if (!memory[line].eq(expectedMemory[line]))
 					return false;
+			
+			//DEBUG
+			//for (line = 0; line < memory.length; line++)
+				//if ((memory[line] != FixedValue.NULL) ||
+					//(expectedMemory[line] != FixedValue.NULL))
+					//C.log(line + ": " + memory[line] + " --- " + expectedMemory[line]);
+			
 			return true;
 		}
 	}

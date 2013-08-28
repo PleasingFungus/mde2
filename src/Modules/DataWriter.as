@@ -136,6 +136,13 @@ package Modules {
 			return 1.0 / U.state.time.clockPeriod;
 		}
 		
+		override public function cacheValues():void {
+			if (inputs[0].getValue().toNumber() == 26) {
+				inputs[0].getValue();
+			}
+			super.cacheValues();
+		}
+		
 		[Embed(source = "../../lib/art/modules/symbol_stamp_24.png")] private const _symbol:Class;
 	}
 

@@ -21,31 +21,23 @@ package LevelStates {
 			deltas = new Vector.<Delta>;
 			if (U.state.initialMemory)
 				U.state.memory = U.state.initialMemory.slice(); //clone
+			U.state.calculateModuleState(); //probably not necessary, but makes me happier
 		}
 		
 		public function reset():void {
 			init();
 			for each (var module:Module in U.state.modules)
 				module.initialize();
+			U.state.calculateModuleState();
 		}
 		
 		public function step():void {
-			var module:Module, port:Port, portLayout:PortLayout;
-			
-			if (U.state.level.delay && moment == 0)
-				for each (module in U.state.modules)
-					module.lastMinuteInit();
-			
-			for each (module in U.state.modules)
-				module.cacheValues();
-			
-			for each (module in U.state.modules)
+			for each (var module:Module in U.state.modules)
 				module.updateState();
 			
-			for each (module in U.state.modules)
-				module.clearCachedValues();
-			
 			moment += 1;
+			
+			U.state.calculateModuleState();
 		}
 		
 		public function backstep():Boolean {
@@ -56,6 +48,8 @@ package LevelStates {
 			var ll:int = deltas.length;
 			while (deltas.length && deltas[deltas.length - 1].moment >= moment)
 				deltas.pop().revert();
+			
+			U.state.calculateModuleState();
 			
 			return true;
 		}

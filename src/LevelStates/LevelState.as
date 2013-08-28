@@ -1121,6 +1121,19 @@ package LevelStates {
 			return reactionStack.pop().execute();
 		}
 		
+		public function onStateChange():void {
+			save();
+			calculateModuleState();
+		}
+		
+		public function calculateModuleState():void {
+			var module:Module;
+			for each (module in U.state.modules)
+				module.clearCachedValues();
+			for each (module in modules)
+				module.cacheValues();
+		}
+		
 		public function save():void {
 			savedString = genSaveString();
 			U.save.data[level.name] = savedString;

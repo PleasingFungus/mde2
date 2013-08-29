@@ -400,7 +400,7 @@ package Modules {
 												InstructionComparator, null, Latch, SysDelayClock,
 												MagicWriter, DataReader, InstructionDecoder,
 												CustomModule, Subtractor, Multiplier, Divider,
-												SlowAdder]) {
+												SlowAdder, LatchQ]) {
 				ALL_MODULES.push(moduleClass);
 				if (!moduleClass || moduleClass == CustomModule)
 					ARCHETYPES.push(null);

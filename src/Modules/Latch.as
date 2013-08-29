@@ -35,11 +35,15 @@ package Modules {
 			super.initialize();
 			
 			values = new Vector.<Value>;
-			var init:Value = new IntegerValue(0);
+			var init:Value = initializerValue;
 			for (var i:int = 0; i < width; i++)
 				values.push(init);
 			
 			lastMomentStored = -1;
+		}
+		
+		protected function get initializerValue():Value {
+			return new IntegerValue(0);
 		}
 		
 		override public function getConfiguration():Configuration {

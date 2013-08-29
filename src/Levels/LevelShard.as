@@ -64,7 +64,7 @@ package Levels {
 															 [ConstIn, And, Or, Not, Adder, InstructionDecoder, Latch, DataWriter,
 															  Mux, Demux, InstructionDemux, InstructionComparator, DataReader, Output], 3);
 		public static const DELAY:LevelShard = new LevelShard("Delay", [], [], 12, 1, true); //12*3 = 36 t/i
-		public static const SPD:LevelShard = new LevelShard("Speed", [], [Demux, Equals], 1/2, 2); //12*3/2 = 18 t/i
+		public static const SPD:LevelShard = new LevelShard("Speed", [], [Equals, LatchQ], 1/2, 2); //12*3/2 = 18 t/i
 		public static const JUMP:LevelShard = new LevelShard("Jump", [OpcodeValue.OP_JMP]);
 		public static const BRANCH:LevelShard = new LevelShard("Branch", [OpcodeValue.OP_BEQ], [Equals], 1, 1.25);
 		public static const ADV:LevelShard = new LevelShard("Adv.", [OpcodeValue.OP_SUB, OpcodeValue.OP_MUL, OpcodeValue.OP_DIV], [Subtractor, Multiplier, Divider]);

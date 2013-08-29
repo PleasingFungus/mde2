@@ -245,7 +245,10 @@ package Levels {
 			L_PTutorial2 = new Level("Pipeline 2", new PipelineTutorial1Goal, true,
 											   [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder], [OpcodeValue.OP_SAVI]);
 			L_PTutorial2.info = "Exactly the same as " + L_PTutorial1.displayName + ", but with a dramatically tighter time limit."
-			L_PTutorial2.info += "\n\nThere are two slow components in this system: the Data Reader and the Data Writer."; //TODO
+			L_PTutorial2.info += "\n\nThere are two slow components in this system: the Data Reader and the Data Writer.";
+			L_PTutorial2.info += "\n\nInstead of waiting for the writer to finish before the reader can start on the next instruction,"
+			L_PTutorial2.info += " you can build a machine that runs much faster by saving the result of the reader into a storage unit and having the decoder/writer read from that.";
+			L_PTutorial2.info += "\n\nIt's already partially set up - try it out!";
 			L_PTutorial2.modules = LevelLoader.loadSimple("Y2BgYGFgYJAHYj4QQxLEYAQSvCCWEIjHAFHCAcSMAA==").modules;
 			L_PTutorial2.predecessors.push(L_PTutorial1);
 			
@@ -256,14 +259,17 @@ package Levels {
 			L_PTutorial3.predecessors.push(L_PTutorial1);
 			
 			L_PTutorial4 = new Level("Pipeline 4", new PipelineTutorial2Goal, true,
-											   [ConstIn, SlowAdder, Latch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
-			L_PTutorial4.modules = LevelLoader.loadSimple("Y2BgYGFgYNAFYj4QgxeIhRhhPCUYj1cSSLCBeAwQDRxAzAgA").modules;
+											   [ConstIn, SlowAdder, Latch, LatchQ, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
+			L_PTutorial4.modules = LevelLoader.loadSimple("Y2BgYGFgYNAFYj4FIMEKxLyMMJ46iMEEEpL8////PxCDAaKBA4j5AQ==").modules;
+			L_PTutorial4.info = "Much like " + L_PTutorial3.displayName + ", but with a tight time limit.";
+			L_PTutorial4.info += "\n\n"+L_PTutorial2.displayName + " showed how you can speed up a machine by splitting it into two similarly-slow stages;"
+			L_PTutorial4.info += " you can expand this to three stages, or even more, though there's a small overhead with each added stage.";
+			L_PTutorial4.info += "\n\nGive it a go!";
 			L_PTutorial4.predecessors.push(L_PTutorial2, L_PTutorial3);
 			
 			L_PTutorial2.configurableLatchesEnabled = L_PTutorial4.configurableLatchesEnabled = true;
 			L_PTutorial1.useModuleRecord = L_PTutorial2.useModuleRecord = false;
 			L_PTutorial3.useModuleRecord = L_PTutorial4.useModuleRecord = false;
-			//TODO: add info
 			
 			
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);

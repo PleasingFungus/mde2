@@ -262,7 +262,7 @@ package Levels {
 											   [ConstIn, SlowAdder, Latch, LatchQ, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
 			L_PTutorial4.modules = LevelLoader.loadSimple("Y2BgYGFgYNAFYj4FIMEKxLyMMJ46iMEEEpL8////PxCDAaKBA4j5AQ==").modules;
 			L_PTutorial4.info = "Much like " + L_PTutorial3.displayName + ", but with a tight time limit.";
-			L_PTutorial4.info += "\n\n"+L_PTutorial2.displayName + " showed how you can speed up a machine by splitting it into two similarly-slow stages;"
+			L_PTutorial4.info += "\n\n"+L_PTutorial2.displayName + " showed how you can speed up a machine by splitting it into two similarly-timed stages;"
 			L_PTutorial4.info += " you can expand this to three stages, or even more, though there's a small overhead with each added stage.";
 			L_PTutorial4.info += "\n\nGive it a go!";
 			L_PTutorial4.predecessors.push(L_PTutorial2, L_PTutorial3);

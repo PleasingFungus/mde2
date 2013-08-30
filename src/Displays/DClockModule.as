@@ -36,8 +36,10 @@ package Displays {
 				clock.y = displayNode.y - displayNode.offset.y;
 				clock.draw();
 				
-				displayNode.label.color = clock.on ? 0x0 : 0xffffff;
-				displayNode.label.shadow = clock.on ? 0xffffff : 0x1;
+				var color:uint = clock.on ? 0x0 : 0xffffff;
+				var shadow:uint = clock.on ? 0xffffff : 0x1;
+				if (displayNode.label.color != color || displayNode.label.shadow != shadow)
+					displayNode.label.setFormat(displayNode.label.font, displayNode.label.size, color, displayNode.label.alignment, shadow);
 				displayNode.drawLabel(); //?
 			}
 		}

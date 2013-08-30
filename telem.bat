@@ -1,3 +1,3 @@
-C:\Python27\python.exe "C:\Users\Nick\My Dropbox\Code\telemetry-utils-master\add-opt-in.py" "C:\Users\Nick\My Dropbox\Code\MDE2\bin\MDE2.swf"
+E:\Python33\python.exe "E:\Users\Nick\My Dropbox\Dropbox\Code\telemetry-utils-master\add-opt-in.py" "E:\Users\Nick\My Dropbox\Dropbox\Code\MDE2\bin\MDE2.swf"
 PING 1.1.1.1 -n 1 -w 500 >NUL
-start "" "C:\Users\Nick\My Dropbox\Code\MDE2\bin\MDE2.swf"
+start "" "E:\Users\Nick\My Dropbox\Dropbox\Code\MDE2\bin\MDE2.swf"

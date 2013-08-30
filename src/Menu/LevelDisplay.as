@@ -38,8 +38,9 @@ package Menu {
 			min = new Point(int.MAX_VALUE, int.MAX_VALUE);
 			max = new Point(int.MIN_VALUE, int.MIN_VALUE);
 			
-			var wire:LevelModule = addLevel(Level.L_TutorialWire, 0, FlxG.height / U.GRID_DIM / 2);
-			wire.x += wire.layout.dim.x;
+			var fib:LevelModule = addLevel(Level.L_TutorialTest, 0, FlxG.height / U.GRID_DIM / 2);
+			fib.x += fib.layout.dim.x;
+			var wire:LevelModule = addSuccessor(Level.L_TutorialWire, fib);
 			var module:LevelModule = addSuccessor(Level.L_TutorialModule, wire);
 			var drag:LevelModule = addSuccessor(Level.L_TutorialSelection, module, module.layout.dim.y + MODULE_SPACING.y * 2);
 			addSuccessor(Level.L_TutorialCopying, drag, MODULE_SPACING.y);

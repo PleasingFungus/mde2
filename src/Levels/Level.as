@@ -28,6 +28,7 @@ package Levels {
 		public var fewestModules:int;
 		public var fewestTicks:int;
 		public var modules:Vector.<Module>;
+		public var wires:Vector.<Wire>;
 		
 		public var canDrawWires:Boolean = true;
 		public var canPlaceModules:Boolean = true;
@@ -59,6 +60,7 @@ package Levels {
 			if (Modules)
 				for each (var module:Module in Modules)
 					modules.push(module);
+			wires = new Vector.<Wire>;
 			
 			expectedOps = new Vector.<OpcodeValue>;
 			if (ExpectedOps)
@@ -139,7 +141,7 @@ package Levels {
 		private const MODULE_SUFFIX:String = "-modules";
 		private const TICK_SUFFIX:String = "-ticks";
 		
-		
+		public static var L_TutorialTest:Level;
 		public static var L_TutorialWire:Level;
 		public static var L_TutorialModule:Level;
 		public static var L_TutorialSelection:Level;
@@ -182,7 +184,8 @@ package Levels {
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			
-			L_TutorialWire = new WireTutorial;
+			L_TutorialTest = new FibonacciTutorial;
+			(L_TutorialWire = new WireTutorial).predecessors.push(L_TutorialTest);;
 			(L_TutorialModule = new ModuleTutorial).predecessors.push(L_TutorialWire);
 			(L_TutorialSelection = new DragSelectTutorial).predecessors.push(L_TutorialModule);
 			(L_TutorialCopying = new CopyingTutorial).predecessors.push(L_TutorialSelection);
@@ -301,7 +304,7 @@ package Levels {
 						L_PTutorial1,
 						L_PCPU_Basic, L_PCPU_Jump, L_PCPU_Advanced, L_PCPU_Load, L_PCPU_LoadAdvanced, L_PCPU_Branch, L_PCPU_Full,
 						L_Double, L_Square, L_Collatz,
-						L_PTutorial2, L_PTutorial3, L_PTutorial4);
+						L_PTutorial2, L_PTutorial3, L_PTutorial4, L_TutorialTest);
 			
 			return levels;
 		}
@@ -313,6 +316,10 @@ package Levels {
 				module.cleanup();
 				module.setLayout();
 				levelState.addModule(module);
+			}
+			for each (var wire:Wire in wires) {
+				wire.cleanup();
+				levelState.addWire(wire);
 			}
 		}
 		

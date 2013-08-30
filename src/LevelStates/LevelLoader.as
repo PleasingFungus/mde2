@@ -1,5 +1,6 @@
 package LevelStates {
 	import Components.Wire;
+	import Levels.Level;
 	import Modules.Module;
 	import org.flixel.FlxG;
 	import flash.net.URLLoader;
@@ -21,6 +22,12 @@ package LevelStates {
 			modules = Modules;
 			wires = Wires;
 			clock = Clock;
+		}
+		
+		public function loadIntoLevel(level:Level):Level {
+			level.modules = modules;
+			level.wires = wires;
+			return level;
 		}
 		
 		private static function loadBinary(saveString:String):LevelLoader {

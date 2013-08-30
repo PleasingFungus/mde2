@@ -358,6 +358,13 @@ package Components {
 			return true;
 		}
 		
+		public function cleanup():void {
+			deployed = false;
+			exists = false;
+			connections = new Vector.<Carrier>; //un-needed, but aesthetically pleasing
+			source = null;
+		}
+		
 		//Carrier implementations
 		
 		public function getConnections():Vector.<Carrier> {

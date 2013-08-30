@@ -137,7 +137,7 @@ package LevelStates {
 		}
 		
 		public function addWire(w:Wire, fixed:Boolean = true):void {
-			w.FIXED = fixed;;
+			w.FIXED = fixed;
 			if (!Wire.place(w))
 				return;
 			
@@ -766,7 +766,8 @@ package LevelStates {
 		private function canDelete():Boolean {
 			if (currentWire || currentBloc || selectionArea || runningDisplayTest)
 				return false;
-			if (findMousedWire())
+			var mousedWire:DWire = findMousedWire();
+			if (mousedWire && !mousedWire.wire.FIXED)
 				return true;
 			var module:Module = findMousedModule();
 			return module && !module.FIXED;

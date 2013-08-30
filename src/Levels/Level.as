@@ -37,7 +37,9 @@ package Levels {
 		public var useModuleRecord:Boolean = true;
 		public var useTickRecord:Boolean = false;
 		public var configurableLatchesEnabled:Boolean = false;
-		public var commentsEnabled:Boolean;
+		public var commentsEnabled:Boolean = false;
+		public var startWithMemory:Boolean = false;
+		
 		public var expectedOps:Vector.<OpcodeValue>;
 		public var allowedModules:Vector.<Class>
 		public var predecessors:Vector.<Level>;

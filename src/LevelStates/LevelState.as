@@ -112,7 +112,11 @@ package LevelStates {
 			recentModules = new Vector.<Class>;
 			
 			makeUI(false); //don't add UI actives yet...
-			upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem())); //because we won't be updating while the infobox is up...
+			if (level.startWithMemory)
+				infobox = new DMemory(memory, level.goal.genExpectedMem());
+			else
+				infobox = new DGoal(level);
+			upperLayer.add(infobox); //because we won't be updating while the infobox is up...
 			
 			FlxG.camera.scroll.x = (FlxG.width / 2) / 1 - (FlxG.width / 2) / U.zoom;
 			FlxG.camera.scroll.y = (FlxG.height / 2) / 1 - (FlxG.height / 2) / U.zoom;

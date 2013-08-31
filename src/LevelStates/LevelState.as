@@ -1159,7 +1159,7 @@ package LevelStates {
 			
 			var wireBytes:ByteArray = new ByteArray;
 			for each (var wire:Wire in wires)
-				if (wire.exists)
+				if (wire.exists && !wire.FIXED)
 					wireBytes.writeBytes(wire.getBytes());
 			
 			var miscBytes:ByteArray = new ByteArray;
@@ -1194,7 +1194,7 @@ package LevelStates {
 			//save wires
 			var wireStrings:Vector.<String> = new Vector.<String>;
 			for each (var wire:Wire in wires)
-				if (wire.exists)
+				if (wire.exists && !wire.FIXED)
 					wireStrings.push(wire.saveString());
 			saveStrings.push(wireStrings.join(U.SAVE_DELIM));
 			

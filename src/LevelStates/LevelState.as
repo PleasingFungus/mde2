@@ -107,9 +107,23 @@ package LevelStates {
 			initialMemory = level.goal.genMem();
 			
 			load(loadData);
-			loadData = null;
 			level.setLast();
 			recentModules = new Vector.<Class>;
+			
+			makeUIInitial(loadData == null);
+			loadData = null;
+			
+			FlxG.camera.scroll.x = (FlxG.width / 2) / 1 - (FlxG.width / 2) / U.zoom;
+			FlxG.camera.scroll.y = (FlxG.height / 2) / 1 - (FlxG.height / 2) / U.zoom;
+			
+			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
+		}
+		
+		private function makeUIInitial(makeInfobox:Boolean):void {
+			if (!makeInfobox) {
+				makeUI();
+				return;
+			}
 			
 			makeUI(false); //don't add UI actives yet...
 			if (level.startWithMemory)
@@ -118,16 +132,12 @@ package LevelStates {
 				infobox = new DGoal(level);
 			upperLayer.add(infobox); //because we won't be updating while the infobox is up...
 			
-			FlxG.camera.scroll.x = (FlxG.width / 2) / 1 - (FlxG.width / 2) / U.zoom;
-			FlxG.camera.scroll.y = (FlxG.height / 2) / 1 - (FlxG.height / 2) / U.zoom;
 			upperLayer.update(); //and some UI members need a single-frame update to position themselves properly
 			var temp:Array = upperLayer.members; //but now we don't have the UI actives in the right place (first) in the upper layer, so...
 			upperLayer.members = []; //reset the list...
 			addUIActives(); //add the UI actives...
 			for each (var member:FlxBasic in temp)
 				upperLayer.add(member); //then add the other UI members back.
-			
-			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
 		}
 		
 		private function initLayers():void {

@@ -95,26 +95,24 @@ package LevelStates {
 		
 		override public function create():void {
 			U.state = this;
-			
-			FlxG.bgColor = U.BG_COLOR;
-			FlxG.mouse.show();
+			level.setLast();
 			
 			actions = new ActionStack;
-			elapsed = 0;
 			
 			initialMemory = level.goal.genMem();
 			
-			load(loadData);
-			level.setLast();
 			recentModules = new Vector.<Class>;
 			
+			load(loadData);
 			makeUIInitial(loadData == null);
 			loadData = null;
 			
 			FlxG.camera.scroll.x = (FlxG.width / 2) / 1 - (FlxG.width / 2) / U.zoom;
 			FlxG.camera.scroll.y = (FlxG.height / 2) / 1 - (FlxG.height / 2) / U.zoom;
-			
+			FlxG.bgColor = U.BG_COLOR;
+			FlxG.mouse.show();
 			FlxG.flash(0xff000000, MenuButton.FADE_TIME);
+			elapsed = 0;
 		}
 		
 		private function makeUIInitial(makeInfobox:Boolean):void {

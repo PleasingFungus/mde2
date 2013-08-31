@@ -73,8 +73,7 @@ package LevelStates {
 		private var moduleList:ButtonList;
 		private var moduleSliders:Vector.<ModuleSlider>;
 		
-		public var actionStack:Vector.<Action>;
-		public var reactionStack:Vector.<Action>;
+		public var actions:ActionStack;
 		private var currentWire:Wire;
 		private var selectionArea:SelectionBox;
 		private var currentBloc:Bloc;
@@ -100,8 +99,7 @@ package LevelStates {
 			FlxG.bgColor = U.BG_COLOR;
 			FlxG.mouse.show();
 			
-			actionStack = new Vector.<Action>;
-			reactionStack = new Vector.<Action>;
+			actions = new ActionStack;
 			elapsed = 0;
 			
 			initialMemory = level.goal.genMem();
@@ -260,8 +258,8 @@ package LevelStates {
 		}
 		
 		private function makeUndoButtons():void {
-			undoButton = addToolbarButton(50, _undo_sprite, undo, "Undo", "Undo", ControlSet.UNDO);
-			redoButton = addToolbarButton(90, _redo_sprite, redo, "Redo", "Redo",  ControlSet.REDO);
+			undoButton = addToolbarButton(50, _undo_sprite, actions.undo, "Undo", "Undo", ControlSet.UNDO);
+			redoButton = addToolbarButton(90, _redo_sprite, actions.redo, "Redo", "Redo",  ControlSet.REDO);
 		}
 		
 		private function makeDataButton():void {
@@ -752,10 +750,10 @@ package LevelStates {
 		
 		
 		private function checkMenuState():void {
-			undoButton.exists = actionStack.length > 0;
-			undoButton.active = canUndo(); 
-			redoButton.exists = reactionStack.length > 0;
-			redoButton.active = canRedo();
+			undoButton.exists = actions.actionStack.length > 0;
+			undoButton.active = actions.canUndo(); 
+			redoButton.exists = actions.reactionStack.length > 0;
+			redoButton.active = actions.canRedo();
 			var undoAlpha:Number = currentWire || (currentBloc && !currentBloc.rooted) ? 0.3 : 1;
 			undoButton.setAlpha(undoAlpha);
 			redoButton.setAlpha(undoAlpha);
@@ -1107,33 +1105,15 @@ package LevelStates {
 			//}
 		//}
 		
-		private function canUndo():Boolean {
-			return actionStack.length > 0 && !currentWire && (!currentBloc || currentBloc.rooted);
+		public function hasHeldState():Boolean {
+			return currentWire || (currentBloc && !currentBloc.rooted);
 		}
 		
-		private function canRedo():Boolean {
-			return reactionStack.length > 0 && !currentWire && (!currentBloc || currentBloc.rooted);
-		}
-		
-		
-		private function undo():Action {
-			if (!canUndo())
-				return null;
+		public function clearHeldState():void {
 			if (currentBloc) {
 				currentBloc.unravel();
 				currentBloc = null;
 			}
-			return actionStack.pop().revert();
-		}
-		
-		private function redo():Action {
-			if (!canRedo())
-				return null;
-			if (currentBloc) {
-				currentBloc.unravel();
-				currentBloc = null;
-			}
-			return reactionStack.pop().execute();
 		}
 		
 		public function onStateChange():void {
@@ -1259,7 +1239,7 @@ package LevelStates {
 			if (successSave == savedString || successSave == null)
 				return;
 			
-			new CustomAction(function loadSuccess(success:String = null, old:String = null):Boolean { load(success); reactionStack = new Vector.<Action>; return true; },
+			new CustomAction(function loadSuccess(success:String = null, old:String = null):Boolean { load(success); actions.clearRedo(); return true; },
 							 function loadOld(success:String = null, old:String = null):void { load(old); },
 							 successSave, savedString).execute();
 		}
@@ -1275,7 +1255,8 @@ package LevelStates {
 			if (RESET_SAVE == savedString || savedString == null)
 				return;
 			
-			new CustomAction(function loadSuccess(old:String = null):Boolean { load(RESET_SAVE); reactionStack = new Vector.<Action>; return true; },
+			//actions.actionStack = new Vector.<Action>; //clear undo before reset
+			new CustomAction(function loadSuccess(old:String = null):Boolean { load(RESET_SAVE); actions.clearRedo(); return true; },
 							 function loadOld(old:String = null):void { load(old); },
 							 savedString).execute();
 		}

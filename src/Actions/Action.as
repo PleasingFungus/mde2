@@ -5,19 +5,25 @@ package Actions {
 	 */
 	public class Action {
 		
+		public var hasExecuted:Boolean;
 		public function Action() {
-			U.state.reactionStack = new Vector.<Action>; //whenever you take a new action, kill "re-do" stack
+			hasExecuted = false;
 		}
 		
 		public function execute():Action {
-			U.state.actionStack.push(this);
+			if (!hasExecuted)
+				U.state.actions.clearRedo(); //whenever you take a new action, kill "re-do" stack
+			hasExecuted = true;
+			
+			U.state.actions.actionStack.push(this);
 			finish();
+			
 			return this;
 		}
 		
 		public function revert():Action {
 			if (canRedo)
-				U.state.reactionStack.push(this);
+				U.state.actions.reactionStack.push(this);
 			finish();
 			return this;
 		}

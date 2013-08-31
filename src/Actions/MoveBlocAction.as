@@ -17,21 +17,21 @@ package Actions {
 		}
 		
 		public function specialExecute():void {
-			if (!U.state.actionStack.length) {
+			if (!U.state.actions.actionStack.length) {
 				execute();
 				return;
 			}
 			
-			var lastAction:Action = U.state.actionStack.pop();
+			var lastAction:Action = U.state.actions.actionStack.pop();
 			if (!(lastAction is BlocLiftAction)) {
-				U.state.actionStack.push(lastAction);
+				U.state.actions.actionStack.push(lastAction);
 				execute();
 				return;
 			}
 			
 			var cLastAction:BlocLiftAction = lastAction as BlocLiftAction;
 			if (cLastAction.bloc != bloc) {
-				U.state.actionStack.push(lastAction);
+				U.state.actions.actionStack.push(lastAction);
 				execute();
 				return;
 			}
@@ -44,7 +44,10 @@ package Actions {
 			}
 			
 			bloc.place(newLoc);
-			U.state.actionStack.push(new MigrateBlocAction(bloc, newLoc, oldLoc, cLastAction.history));
+			var migrateAction:MigrateBlocAction = new MigrateBlocAction(bloc, newLoc, oldLoc, cLastAction.history);
+			U.state.actions.actionStack.push(migrateAction);
+			U.state.actions.clearRedo();
+			migrateAction.hasExecuted = true;
 			finish();
 		}
 		

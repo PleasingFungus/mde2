@@ -38,6 +38,7 @@ package LevelStates {
 	public class LevelState extends FlxState {
 		
 		private var savedString:String;
+		private var initialString:String;
 		
 		public var lowerLayer:FlxGroup;
 		public var midLayer:FlxGroup;
@@ -103,7 +104,7 @@ package LevelStates {
 			
 			recentModules = new Vector.<Class>;
 			
-			load(loadData);
+			loadInitial(loadData);
 			makeUIInitial(loadData == null);
 			loadData = null;
 			
@@ -761,7 +762,7 @@ package LevelStates {
 			if (loadButton) {
 				var successSave:String = findSuccessSave();
 				loadButton.exists = successSave != savedString && successSave != null;
-				resetButton.exists = savedString && savedString != RESET_SAVE;
+				resetButton.exists = savedString && savedString != RESET_SAVE && savedString != initialString;
 			}
 			
 			checkCursorState();
@@ -1195,12 +1196,13 @@ package LevelStates {
 			return string;
 		}
 		
-		
-		private function load(saveString:String = null):void {
+		private function initDisplay():void {
 			initLayers();
 			displayWires = new Vector.<DWire>;
 			displayModules = new Vector.<DModule>;
-			
+		}
+		
+		private function initState():void {
 			wires = new Vector.<Wire>;
 			modules = new Vector.<Module>;
 			grid = new Grid;
@@ -1208,6 +1210,20 @@ package LevelStates {
 			
 			time = new Time;
 			FlxG.globalSeed = 0.49;
+		}
+		
+		private function loadInitial(saveString:String):void {
+			initDisplay();
+			initState();
+			level.loadIntoState(this, true);
+			initialString = genSaveString();
+			
+			load(saveString);
+		}
+		
+		private function load(saveString:String = null):void {
+			initDisplay();
+			initState();
 			
 			if (saveString == null)
 				saveString = U.save.data[level.name];

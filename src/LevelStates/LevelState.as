@@ -1255,7 +1255,7 @@ package LevelStates {
 			if (RESET_SAVE == savedString || savedString == null)
 				return;
 			
-			//actions.actionStack = new Vector.<Action>; //clear undo before reset
+			actions.actionStack = new Vector.<Action>; //clear undo before reset
 			new CustomAction(function loadSuccess(old:String = null):Boolean { load(RESET_SAVE); actions.clearRedo(); return true; },
 							 function loadOld(old:String = null):void { load(old); },
 							 savedString).execute();

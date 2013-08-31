@@ -53,8 +53,6 @@ package LevelStates {
 		
 		private var UIEnableKey:Key = ControlSet.UI_ENABLE;
 		
-		private var undoButton:GraphicButton;
-		private var redoButton:GraphicButton;
 		private var loadButton:MenuButton;
 		private var resetButton:MenuButton;
 		private var wireBeingDragged:Boolean;
@@ -252,39 +250,38 @@ package LevelStates {
 		}
 		
 		private function makeSaveButtons():void {
-			loadButton = addToolbarButton(170, _success_load_sprite, loadFromSuccess, "Load", "Load last successful machine");
-			resetButton = addToolbarButton(130, _reset_sprite, reset, "Reset", "Erase all placed parts");
+			upperLayer.add(loadButton = new ToolbarButton(170, _success_load_sprite, loadFromSuccess, "Load", "Load last successful machine"));
+			upperLayer.add(resetButton = new ToolbarButton(130, _reset_sprite, reset, "Reset", "Erase all placed parts"));
 		}
 		
 		private function makeUndoButtons():void {
-			undoButton = addToolbarButton(50, _undo_sprite, actions.undo, "Undo", "Undo", ControlSet.UNDO);
-			redoButton = addToolbarButton(90, _redo_sprite, actions.redo, "Redo", "Redo",  ControlSet.REDO);
+			upperLayer.add(new DUndo(actions));
 		}
 		
 		private function makeDataButton():void {
-			addToolbarButton(FlxG.width - 180, _data_sprite, function _():void {
+			upperLayer.add(new ToolbarButton(FlxG.width - 180, _data_sprite, function _():void {
 				upperLayer.add(infobox = new DMemory(memory, level.goal.genExpectedMem()));
-			}, "Memory", runningDisplayTest ? "View memory" : "View example memory", ControlSet.MEMORY);
+			}, "Memory", runningDisplayTest ? "View memory" : "View example memory", ControlSet.MEMORY));
 		}
 		
 		private function makeInfoButton():void {
-			addToolbarButton(FlxG.width - 220, _info_sprite, function _():void {
+			upperLayer.add(new ToolbarButton(FlxG.width - 220, _info_sprite, function _():void {
 				upperLayer.add(infobox = new DGoal(level));
-			}, "Info", "Level info", ControlSet.HELP);
+			}, "Info", "Level info", ControlSet.HELP));
 		}
 		
 		private function makeClockButton():void {
 			var clock:DClock = new DClock(210, 10);
 			var extraWidth:int = 10;
-			clock.add(makeToolbarText(clock.X - 10 / 2 - 1, clock.Y + clock.fullHeight - 2, clock.fullWidth + extraWidth, "Period"));
+			clock.add(new ToolbarText(clock.X - 10 / 2 - 1, clock.Y + clock.fullHeight - 2, clock.fullWidth + extraWidth, "Period"));
 			upperLayer.add(clock);
 		}
 		
 		private function makeZoomButton():void {
-			addToolbarButton(FlxG.width - 140, _zoom_sprite, function openList():void {
+			upperLayer.add(new ToolbarButton(FlxG.width - 140, _zoom_sprite, function openList():void {
 				listOpen = LIST_ZOOM;
 				makeUI();
-			}, "Zoom", "Display zoom controls", ControlSet.ZOOM);
+			}, "Zoom", "Display zoom controls", ControlSet.ZOOM));
 		}
 		
 		private function makeZoomList():void {
@@ -316,14 +313,15 @@ package LevelStates {
 		
 		private function makeTestButtons():void {
 			if (level.goal.dynamicallyTested)
-				addToolbarButton(FlxG.width / 2 - 16, _test_sprite, function _():void {
+				upperLayer.add(new ToolbarButton(FlxG.width / 2 - 16, _test_sprite, function _():void {
 					level.goal.startRun();
 					lastRunTime = elapsed;
-				}, "Test", "Test your machine!", ControlSet.TEST);
+				}, "Test", "Test your machine!", ControlSet.TEST));
 		}
 		
 		private function makeEndTestButton():void {
-			addToolbarButton(FlxG.width / 2 - 16, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite, finishDisplayTest, "End Test", "Finish the test!", ControlSet.TEST);
+			upperLayer.add(new ToolbarButton(FlxG.width / 2 - 16, level.goal.succeeded ? _test_success_sprite : _test_failure_sprite, finishDisplayTest,
+											 "End Test", "Finish the test!", ControlSet.TEST));
 		}
 		
 		//private function makeViewModeButton():void {
@@ -357,11 +355,11 @@ package LevelStates {
 		//}
 		
 		private function makeModuleCatButton():void {
-			addToolbarButton(10, _module_sprite, function openList():void {
+			upperLayer.add(new ToolbarButton(10, _module_sprite, function openList():void {
 				ensureNothingHeld();
 				listOpen = LIST_CATEGORIES;
 				makeUI();
-			}, "Modules", "Choose modules", ControlSet.MODULES_BACK);
+			}, "Modules", "Choose modules", ControlSet.MODULES_BACK));
 		}
 		
 		private function makeModuleCatList():void {
@@ -499,26 +497,6 @@ package LevelStates {
 			else if (recentModules.length >= 3)
 				recentModules.pop();
 			recentModules.unshift( moduleType);
-		}
-		
-		private function addToolbarButton(X:int, Sprite:Class, Callback:Function, ShortName:String, LongName:String = null, Hotkey:Key = null):GraphicButton {
-			if (!LongName)
-				LongName = ShortName;
-			var button:GraphicButton = new GraphicButton(X, 8, Sprite, Callback, LongName, Hotkey);
-			upperLayer.add(button);
-			
-			var extraWidth:int = 10;
-			var labelText:FlxText = makeToolbarText(X - extraWidth / 2 - 1, button.Y + button.fullHeight - 2, button.fullWidth + extraWidth, ShortName);
-			button.add(labelText);
-			
-			return button;
-		}
-		
-		private function makeToolbarText(X:int, Y:int, Width:int, Text:String):FlxText {
-			var text:FlxText = new FlxText(X, Y, Width, Text);
-			U.TOOLBAR_FONT.configureFlxText(text, 0xffffff, 'center');
-			text.scrollFactor.x = text.scrollFactor.y = 0;
-			return text;
 		}
 		
 		
@@ -747,16 +725,7 @@ package LevelStates {
 		}
 		
 		
-		
 		private function checkMenuState():void {
-			undoButton.exists = actions.actionStack.length > 0;
-			undoButton.active = actions.canUndo(); 
-			redoButton.exists = actions.reactionStack.length > 0;
-			redoButton.active = actions.canRedo();
-			var undoAlpha:Number = currentWire || (currentBloc && !currentBloc.rooted) ? 0.3 : 1;
-			undoButton.setAlpha(undoAlpha);
-			redoButton.setAlpha(undoAlpha);
-			
 			deleteHint.exists = canDelete();
 			
 			if (loadButton) {
@@ -937,7 +906,7 @@ package LevelStates {
 				new CustomAction(Wire.remove, Wire.place, mousedWire.wire).execute();
 		}
 		
-		private function ensureNothingHeld():void {
+		public function ensureNothingHeld():void {
 			if (currentBloc) {
 				currentBloc.unravel();
 				currentBloc = null;
@@ -1106,13 +1075,6 @@ package LevelStates {
 		
 		public function hasHeldState():Boolean {
 			return currentWire || (currentBloc && !currentBloc.rooted);
-		}
-		
-		public function clearHeldState():void {
-			if (currentBloc) {
-				currentBloc.unravel();
-				currentBloc = null;
-			}
 		}
 		
 		public function onStateChange():void {
@@ -1335,8 +1297,6 @@ package LevelStates {
 		private const VIEW_MODE_NAMES:Array = ["normal", "delay"];
 		
 		[Embed(source = "../../lib/art/ui/module.png")] private const _module_sprite:Class;
-		[Embed(source = "../../lib/art/ui/undo.png")] private const _undo_sprite:Class;
-		[Embed(source = "../../lib/art/ui/redo.png")] private const _redo_sprite:Class;
 		[Embed(source = "../../lib/art/ui/up.png")] private const _back_sprite:Class;
 		[Embed(source = "../../lib/art/ui/floppy-trophy.png")] private const _success_load_sprite:Class;
 		

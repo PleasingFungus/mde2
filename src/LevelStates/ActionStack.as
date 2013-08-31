@@ -25,14 +25,14 @@ package LevelStates {
 		public function undo():Action {
 			if (!canUndo())
 				return null;
-			U.state.clearHeldState();
+			U.state.ensureNothingHeld();
 			return actionStack.pop().revert();
 		}
 		
 		public function redo():Action {
 			if (!canRedo())
 				return null;
-			U.state.clearHeldState();
+			U.state.ensureNothingHeld();
 			return reactionStack.pop().execute();
 		}
 		

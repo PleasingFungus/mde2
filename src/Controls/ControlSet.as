@@ -16,8 +16,6 @@ package Controls {
 		public static const DRAG_MODIFY_KEY:Key = new Key("SHIFT");
 		public static const CLICK_MODIFY_KEY:Key = new Key("CONTROL");
 		
-		public static const HOME_KEY:Key = new Key("EIGHT"); //for scrolling
-		public static const UI_ENABLE:Key = new Key("NINE");
 		
 		public static const COPY_KEY:Key = new Key("C");
 		public static const PASTE_KEY:Key = new Key("V");
@@ -45,6 +43,8 @@ package Controls {
 		public static const SHARE:Key = new Key("L");
 		
 		public static const DEBUG_PRINT:Key = new Key("G");
+		public static const HOME_KEY:Key = new Key("EIGHT"); //for scrolling
+		public static const UI_ENABLE:Key = new Key("NINE");
 		
 		
 		

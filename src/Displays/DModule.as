@@ -58,7 +58,7 @@ package Displays {
 				largeSymbol = module.generateLargeSymbolDisplay();
 				if (!symbol) {
 					nameText = new FlxText( -1, -1, width, module.name);
-					U.NODE_FONT.configureFlxText(nameText, 0x0, 'center');
+					U.MODULE_LABEL_FONT.configureFlxText(nameText, 0x0, 'center');
 					nameText.scrollFactor = scrollFactor;
 				}
 			} else {			
@@ -231,6 +231,11 @@ package Displays {
 				detailsText.text = getDetails();
 				detailsText.draw();
 			}
+		}
+		
+		public function drawNodeText():void {
+			for each (var node:DNode in displayNodes)
+				node.drawScreenspaceText();
 		}
 	}
 

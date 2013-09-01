@@ -1,6 +1,7 @@
 package Displays {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import Infoboxes.DGoal;
 	import Layouts.Nodes.WideNode;
 	import org.flixel.*;
 	import Layouts.Nodes.InternalNode;
@@ -58,12 +59,17 @@ package Displays {
 				delayFiller.draw();
 			}
 			
-			drawLabel();
+			if (U.zoom == 1) {
+				label.x = x - 1 - offset.x;
+				label.y = y + 1 - offset.y;
+				drawLabel();
+			}
 		}
 		
 		public function drawLabel():void {
-			label.x = x - 1 - offset.x;
-			label.y = y + 1 - offset.y;
+			if (label.size != U.NODE_FONT.size)
+				label.size = U.NODE_FONT.size;
+			
 			var valueString:String = node.getValue().toString();
 			if (valueString != lastValueString) {
 				label.text = valueString;
@@ -80,6 +86,17 @@ package Displays {
 			if (InScreenSpace || Camera)
 				return super.overlapsPoint(fp, InScreenSpace, Camera);
 			return fp.x >= x - offset.x && fp.y >= y - offset.y && fp.x < x - offset.x + width && fp.y < y - offset.y + height;
+		}
+		
+		public function drawScreenspaceText():void {
+			//position
+			var initialX:int = x - offset.x * 2 - 1;
+			var initialY:int = y - offset.y;
+			//transform into screenspace
+			label.x = (initialX - FlxG.camera.scroll.x) * U.zoom + FlxG.camera.scroll.x;
+			label.y = (initialY - FlxG.camera.scroll.y) * U.zoom + FlxG.camera.scroll.y;
+			//draw
+			drawLabel();
 		}
 		
 		protected const BORDER_WIDTH:int = 2;

@@ -9,6 +9,7 @@ package  {
 	import flash.net.URLRequestMethod;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import Layouts.Nodes.NodeTuple;
 	import Levels.LevelShard;
 	import Modules.*;
 	import org.flixel.*;
@@ -24,7 +25,7 @@ package  {
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
 	public class U {
-		public static const VERSION:String = "0.817";
+		public static const VERSION:String = "0.82";
 		public static const SAVE_VERSION:int = 4;
 		
 		public static const BINARY_SAVES:Boolean = true;
@@ -45,7 +46,10 @@ package  {
 		public static const LABEL_FONT:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const BODY_FONT:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const TITLE_FONT:FontTuple = new FontTuple(SYSTEM, 32);
-		public static const NODE_FONT:FontTuple = new FontTuple(MUNRO_WEB, 32);
+		public static const NODE_FONT_LARGE:FontTuple = new FontTuple(MUNRO_WEB, 32);
+		public static const NODE_FONT_SMALL:FontTuple = new FontTuple(MUNRO_WEB, 16);
+		public static function get NODE_FONT():FontTuple { return zoom >= 1 ? NODE_FONT_LARGE : NODE_FONT_SMALL; }
+		public static const MODULE_LABEL_FONT:FontTuple = new FontTuple(MUNRO_WEB, 32);
 		public static const TOOLBAR_FONT:FontTuple = new FontTuple(MUNRO_WEB, 16);
 		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);

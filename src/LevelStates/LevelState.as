@@ -971,6 +971,9 @@ package LevelStates {
 			realBuf.draw(buf, matrix);
 			FlxG.camera.buffer = realBuf;
 			
+			if (U.zoom < 1 && U.zoom >= 0.5)
+				drawNodeText();
+			
 			if (level.goal.running)
 				drawTestText();
 			else if (upperLayer.exists && upperLayer.visible)
@@ -995,83 +998,15 @@ package LevelStates {
 					bgTile.draw();
 		}
 		
-		//private var debugLineH:FlxSprite;
-		//private var debugLineV:FlxSprite;
-		//private var debugPoint:FlxSprite;
-		//private function debugRenderCollision():void {
-			//if (!debugLineH) {
-				//debugLineH = new FlxSprite().makeGraphic(U.GRID_DIM, 3, 0xffffffff);
-				//debugLineH.offset.y = 1;
-				//debugLineV = new FlxSprite().makeGraphic(3, U.GRID_DIM, 0xffffffff);
-				//debugLineV.offset.x = 1;
-				//debugPoint = new FlxSprite().makeGraphic(5, 5, 0xffffffff);
-				//debugPoint.offset.x = debugPoint.offset.y = 2;
-			//}
-			//debugLineH.color = debugLineV.color = debugPoint.color = 0x80ff00ff;
-			//
-			//var s:String, coords:Array;
-			//
-			//for (s in grid.horizontalLines) {
-				//if (!grid.horizontalLines[s]) continue;
-				//coords = s.split(U.COORD_DELIM);
-				//debugLineH.x = int(coords[0]) * U.GRID_DIM;
-				//debugLineH.y = int(coords[1]) * U.GRID_DIM;
-				//debugLineH.draw();
-			//}
-			//
-			//for (s in grid.verticalLines) {
-				//if (!grid.verticalLines[s]) continue;
-				//coords = s.split(U.COORD_DELIM);
-				//debugLineV.x = int(coords[0]) * U.GRID_DIM;
-				//debugLineV.y = int(coords[1]) * U.GRID_DIM;
-				//debugLineV.draw();
-			//}
-			//
-			//for (s in grid.carriersAtPoints) {
-				//if (!(grid.carriersAtPoints[s] is Module)) continue;
-				//coords = s.split(U.COORD_DELIM);
-				//debugPoint.x = int(coords[0]) * U.GRID_DIM;
-				//debugPoint.y = int(coords[1]) * U.GRID_DIM;
-				//debugPoint.draw();
-			//}
-		//}
-		//private function debugRenderCurrent():void {
-			//if (!debugLineH) {
-				//debugLineH = new FlxSprite().makeGraphic(U.GRID_DIM, 3, 0xffffffff);
-				//debugLineH.offset.y = 1;
-				//debugLineV = new FlxSprite().makeGraphic(3, U.GRID_DIM, 0xffffffff);
-				//debugLineV.offset.x = 1;
-				//debugPoint = new FlxSprite().makeGraphic(5, 5, 0xffffffff);
-				//debugPoint.offset.x = debugPoint.offset.y = 2;
-			//}
-			//debugLineH.color = debugLineV.color = debugPoint.color = 0x8000eeff;
-			//
-			//var s:String, coords:Array;
-			//
-			//for (s in currentGrid.horizontalLines) {
-				//if (!currentGrid.horizontalLines[s]) continue;
-				//coords = s.split(U.COORD_DELIM);
-				//debugLineH.x = int(coords[0]) * U.GRID_DIM;
-				//debugLineH.y = int(coords[1]) * U.GRID_DIM;
-				//debugLineH.draw();
-			//}
-			//
-			//for (s in currentGrid.verticalLines) {
-				//if (!currentGrid.verticalLines[s]) continue;
-				//coords = s.split(U.COORD_DELIM);
-				//debugLineV.x = int(coords[0]) * U.GRID_DIM;
-				//debugLineV.y = int(coords[1]) * U.GRID_DIM;
-				//debugLineV.draw();
-			//}
-			//
-			//for (s in grid.carriersAtPoints) {
-				//if (!(grid.carriersAtPoints[s] is Vector.<Carrier>)) continue;
-				//coords = s.split(U.COORD_DELIM);
-				//debugPoint.x = int(coords[0]) * U.GRID_DIM;
-				//debugPoint.y = int(coords[1]) * U.GRID_DIM;
-				//debugPoint.draw();
-			//}
-		//}
+		private function drawNodeText():void {
+			for each (var dModule:DModule in displayModules)
+				if (dModule.exists && dModule.visible)
+					dModule.drawNodeText();
+		}
+		
+		
+		
+		
 		
 		public function hasHeldState():Boolean {
 			return currentWire || (currentBloc && !currentBloc.rooted);

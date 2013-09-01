@@ -13,8 +13,6 @@ package Controls {
 		
 		public static const CONFIRM_KEY:Key = new Key("ENTER");
 		public static const CANCEL_KEY:Key = new Key("ESCAPE");
-		public static const DRAG_MODIFY_KEY:Key = new Key("SHIFT");
-		public static const CLICK_MODIFY_KEY:Key = new Key("CONTROL");
 		
 		
 		public static const COPY_KEY:Key = new Key("C");

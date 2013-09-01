@@ -589,15 +589,14 @@ package LevelStates {
 				//currently delegated to DBloc
 			} else {
 				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
-					if (ControlSet.DRAG_MODIFY_KEY.pressed())
-						midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
-					else if (findMousedModule() && level.canPickupModules)
+					if (findMousedModule() && level.canPickupModules)
 						pickUpModule();
 					else if (level.canDrawWires && findMousedCarrier()) {
 						currentWire = new Wire(U.pointToGrid(U.mouseLoc))
 						displayWires.push(midLayer.add(new DWire(currentWire)));
 						wireBeingDragged = false;
-					}
+					} else
+						midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
 				}
 				
 				if (ControlSet.DELETE_KEY.enabled && ControlSet.DELETE_KEY.pressed() && !currentBloc) {
@@ -788,7 +787,7 @@ package LevelStates {
 			
 			if (currentWire)
 				return Cursor.PEN;
-			if (ControlSet.DRAG_MODIFY_KEY.pressed() || selectionArea)
+			if (selectionArea)
 				return Cursor.SEL;
 			
 			var mousedModule:Module = findMousedModule();

@@ -17,7 +17,7 @@ package Levels.ControlTutorials {
 		public function DragSelectTutorial() {
 			super(NAME, new WireTutorialGoal());
 			
-			info = "Select modules, and wires, by holding " + ControlSet.DRAG_MODIFY_KEY + " and dragging; once held, pick up & place them by clicking."
+			info = "Select modules, and wires, by clicking and dragging. Once selected, pick them up by clicking on them, and put them down by clicking again."
 			
 			canDrawWires = false;
 			canPickupModules = false;

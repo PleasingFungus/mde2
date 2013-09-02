@@ -41,10 +41,7 @@ package Infoboxes {
 			if (U.state.level.goal.randomizedMemory && U.state.editEnabled)
 				makeRandomButton();
 			
-			var timeString:String = "Allowed ticks total: " + U.state.level.goal.timeLimit;
-			if (U.state.level.goal is GeneratedGoal)
-				timeString += " (over " + (U.state.level.goal.timeLimit / (U.state.level.goal as GeneratedGoal).allowedTimePerInstr) + " expected instruction executions)";
-			timeString += ".";
+			var timeString:String = "Allowed ticks total: " + U.state.level.goal.timeLimit + ".";
 			var timeText:FlxText = U.BODY_FONT.configureFlxText(new FlxText(bg.x, bg.y + bg.height + 2, bg.width, timeString), 0xffffff, 'center', 0x1);
 			add(timeText);
 			

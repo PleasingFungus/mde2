@@ -79,12 +79,13 @@ package Displays {
 			var valueString:String = node.getValue().toString();
 			if (valueString != lastValueString) {
 				label.text = valueString;
-				for (var i:int = valueString.length - 2; i > 0 && label.height > height; i--)
+				for (var i:int = valueString.length - 2; i > 0 && label.height > height * U.zoom; i--)
 					label.text = valueString.substr(0, i) + "...";
-				if (label.height > height)
+				if (label.height > height * U.zoom)
 					label.text = "...";
 				lastValueString = valueString;
 			}
+			//label.framePixels.fillRect(new Rectangle(0, 0, label.width, label.height), 0xffff00ff);
 			label.draw();
 		}
 		
@@ -96,7 +97,7 @@ package Displays {
 		
 		public function drawScreenspaceText():void {
 			//position
-			var initialX:int = x - offset.x;
+			var initialX:int = x - offset.x - 1/U.zoom;
 			var initialY:int = y - offset.y;
 			//transform into screenspace
 			label.x = (initialX - FlxG.camera.scroll.x) * U.zoom + FlxG.camera.scroll.x;

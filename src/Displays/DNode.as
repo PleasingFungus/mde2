@@ -20,8 +20,7 @@ package Displays {
 			this.node = node;
 			super();
 			makeSprite();
-			label = new FlxText( -1, -1, width);
-			U.NODE_FONT.configureFlxText(label, node.type.textColor, 'center');
+			makeLabel();
 		}
 		
 		protected function makeSprite():void {
@@ -37,6 +36,11 @@ package Displays {
 				delayFiller.offset.x = offset.x - BORDER_WIDTH;
 				delayFiller.offset.y = offset.y - BORDER_WIDTH;
 			}
+		}
+		
+		protected function makeLabel():void {
+			label = new FlxText( -1, -1, width * U.zoom);
+			U.NODE_FONT.configureFlxText(label, node.type.textColor, 'center');
 		}
 		
 		public function updatePosition():void {
@@ -67,8 +71,10 @@ package Displays {
 		}
 		
 		public function drawLabel():void {
-			if (label.size != U.NODE_FONT.size)
-				label.size = U.NODE_FONT.size;
+			if (label.size != U.NODE_FONT.size) {
+				makeLabel();
+				lastValueString = null;
+			}
 			
 			var valueString:String = node.getValue().toString();
 			if (valueString != lastValueString) {
@@ -90,7 +96,7 @@ package Displays {
 		
 		public function drawScreenspaceText():void {
 			//position
-			var initialX:int = x - offset.x * 2 - 1;
+			var initialX:int = x - offset.x;
 			var initialY:int = y - offset.y;
 			//transform into screenspace
 			label.x = (initialX - FlxG.camera.scroll.x) * U.zoom + FlxG.camera.scroll.x;

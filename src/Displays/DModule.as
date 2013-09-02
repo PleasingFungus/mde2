@@ -235,6 +235,7 @@ package Displays {
 		
 		public function drawNodeText():void {
 			for each (var node:DNode in displayNodes)
+				if (node.visible && node.exists)
 				node.drawScreenspaceText();
 		}
 	}

@@ -180,6 +180,10 @@ package  {
 			return _rect;
 		}
 		
+		//public static function roundToRemainder(base:Number, divisor:int, offset:int):void {
+			//
+		//}
+		
 		public static const INSERT_URL:String = "http://pleasingfungus.com/mde2/insert.php";
 		public static const LOOKUP_URL:String = "http://pleasingfungus.com/mde2/lookup.php";
 		

@@ -54,6 +54,8 @@ package Displays {
 			
 			if (FlxG.camera.bounds)
 				checkBounds();
+			
+			preventBlurring();
 		}
 		
 		private function checkBounds():void {
@@ -63,6 +65,16 @@ package Displays {
 			if (FlxG.camera.scroll.y >= FlxG.camera.bounds.bottom ||
 				FlxG.camera.scroll.y <= (FlxG.camera.bounds.top - FlxG.height))
 				scrollSpeed.y = 0;
+		}
+		
+		private function preventBlurring():void {
+			if (U.zoom == 0.5) {
+				FlxG.camera.scroll.x = FlxG.camera.scroll.x - (FlxG.camera.scroll.x % 2);
+				FlxG.camera.scroll.y = FlxG.camera.scroll.y - (FlxG.camera.scroll.y % 2);
+			} else if (U.zoom == 0.25) {
+				FlxG.camera.scroll.x = FlxG.camera.scroll.x - (FlxG.camera.scroll.x % 4);
+				FlxG.camera.scroll.y = FlxG.camera.scroll.y - (FlxG.camera.scroll.y % 4);
+			}
 		}
 		
 		private function get MAX_SPEED():int {

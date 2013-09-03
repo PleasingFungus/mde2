@@ -970,7 +970,7 @@ package LevelStates {
 			realBuf.draw(buf, matrix);
 			FlxG.camera.buffer = realBuf;
 			
-			if (U.zoom < 1 && U.zoom >= 0.5)
+			if (U.UPPER_NODE_TEXT && U.zoom < 1 && U.zoom >= 0.5)
 				drawNodeText();
 			
 			if (level.goal.running)

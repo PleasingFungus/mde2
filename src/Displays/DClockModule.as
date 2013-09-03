@@ -40,7 +40,7 @@ package Displays {
 				var shadow:uint = clock.on ? 0xffffff : 0x1;
 				if (displayNode.label.color != color || displayNode.label.shadow != shadow)
 					displayNode.label.setFormat(displayNode.label.font, displayNode.label.size, color, displayNode.label.alignment, shadow);
-				if (U.zoom >= 1)
+				if (!U.UPPER_NODE_TEXT || U.zoom >= 1)
 					displayNode.drawLabel();
 			}
 		}

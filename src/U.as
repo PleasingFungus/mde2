@@ -25,12 +25,13 @@ package  {
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
 	public class U {
-		public static const VERSION:String = "0.825";
+		public static const VERSION:String = "0.826";
 		public static const SAVE_VERSION:int = 4;
 		
 		public static const BINARY_SAVES:Boolean = true;
 		public static const ASSOC_WIRES:Boolean = false;
 		public static const BLIT_ENABLED:Boolean = false;
+		public static const UPPER_NODE_TEXT:Boolean = true;
 		public static var PLAIN_BG:Boolean = false;
 		
 		[Embed(source = "../lib/fonts/munro.ttf", fontFamily = "MUNRO")] private const _1:String;
@@ -48,7 +49,7 @@ package  {
 		public static const TITLE_FONT:FontTuple = new FontTuple(SYSTEM, 32);
 		public static const NODE_FONT_LARGE:FontTuple = new FontTuple(MUNRO_WEB, 32);
 		public static const NODE_FONT_SMALL:FontTuple = new FontTuple(MUNRO_WEB, 16);
-		public static function get NODE_FONT():FontTuple { return zoom >= 1 ? NODE_FONT_LARGE : NODE_FONT_SMALL; }
+		public static function get NODE_FONT():FontTuple { return UPPER_NODE_TEXT && zoom < 1 ? NODE_FONT_SMALL : NODE_FONT_LARGE; }
 		public static const MODULE_LABEL_FONT:FontTuple = new FontTuple(MUNRO_WEB, 32);
 		public static const TOOLBAR_FONT:FontTuple = new FontTuple(MUNRO_WEB, 16);
 		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
@@ -179,10 +180,6 @@ package  {
 			_rect.height = FlxG.height / zoom;
 			return _rect;
 		}
-		
-		//public static function roundToRemainder(base:Number, divisor:int, offset:int):void {
-			//
-		//}
 		
 		public static const INSERT_URL:String = "http://pleasingfungus.com/mde2/insert.php";
 		public static const LOOKUP_URL:String = "http://pleasingfungus.com/mde2/lookup.php";

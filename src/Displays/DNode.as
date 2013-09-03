@@ -63,7 +63,7 @@ package Displays {
 				delayFiller.draw();
 			}
 			
-			if (U.zoom == 1) {
+			if (!U.UPPER_NODE_TEXT || U.zoom >= 1) {
 				label.x = x - 1 - offset.x;
 				label.y = y + 1 - offset.y;
 				drawLabel();

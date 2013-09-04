@@ -666,7 +666,9 @@ package LevelStates {
 			var mousedModule:Module = findMousedModule();
 			if (mousedModule && !mousedModule.FIXED) {
 				currentBloc = addBlocFromModule(associatedDisplayModule(mousedModule), true);
-				//currentBloc.connections = currentBloc.findConnections();
+				currentBloc.addWiresAtConnections();
+				for each (var wire:Wire in currentBloc.trailingWires)
+					displayWires.push(midLayer.add(new DWire(wire)));
 				currentBloc.lift();
 			}
 		}

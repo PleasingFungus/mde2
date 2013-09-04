@@ -24,6 +24,8 @@ package Components {
 		public function Bloc(modules:Vector.<Module>, wires:Vector.<Wire>, Rooted:Boolean = true) {
 			this.modules = modules;
 			this.wires = wires;
+			connections = new Vector.<Connection>;
+			trailingWires = new Vector.<Wire>;
 			rooted = Rooted;
 			exists = true;
 		}
@@ -52,6 +54,11 @@ package Components {
 				Wire.place(wire);
 			for each (var module:Module in modules)
 				module.register();
+			for each (wire in trailingWires)
+				if (wire.exists && !wire.collides())
+					Wire.place(wire);
+				else
+					wire.exists = false;
 			
 			exists = true;
 			return true;
@@ -64,6 +71,8 @@ package Components {
 			for each (var module:Module in modules)
 				module.deregister();
 			for each (var wire:Wire in wires)
+				Wire.remove(wire);
+			for each (wire in trailingWires)
 				Wire.remove(wire);
 			
 			rooted = false;
@@ -84,6 +93,8 @@ package Components {
 				module.exists = false;
 			for each (var wire:Wire in wires)
 				wire.exists = false;
+			for each (wire in trailingWires)
+				wire.exists = false;
 			exists = false;
 		}
 		
@@ -91,6 +102,8 @@ package Components {
 			for each (var module:Module in modules)
 				module.exists = true;
 			for each (var wire:Wire in wires)
+				wire.exists = true;
+			for each (wire in trailingWires)
 				wire.exists = true;
 			exists = true;
 		}
@@ -111,6 +124,13 @@ package Components {
 			for each (var wire:Wire in wires)
 				wire.shift(delta);
 			
+			for (var i:int = 0; i < connections.length; i++) {
+				wire = trailingWires[i];
+				var connection:Connection = connections[i];
+				wire.attemptPath(connection.origin, connection.port.Loc, false);
+				wire.exists = wire.end.equals(connection.port.Loc);
+			}
+			
 			var oldLoc:Point = origin;
 			origin = p;
 			
@@ -124,6 +144,17 @@ package Components {
 			for each (var wire:Wire in wires)
 				if (wire.deployed)
 					throw new Error("Wire not retracted!");
+		}
+		
+		public function addWiresAtConnections():void {
+			connections = new Vector.<Connection>;
+			trailingWires = new Vector.<Wire>;
+			for each (var module:Module in modules)
+				for each (var port:PortLayout in module.layout.ports)
+					if (port.port.connections.length) {
+						connections.push(new Connection(port, port.Loc));
+						trailingWires.push(new Wire(port.Loc));
+					}
 		}
 		
 		protected function carrierIncluded(carrier:Carrier):Boolean {

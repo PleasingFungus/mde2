@@ -188,17 +188,8 @@ package Displays {
 		
 		override public function draw():void {
 			super.draw();
-			checkAssociatedWires();
 			//if (DEBUG.RENDER_BLOC_CONNECTIONS)
 				//debugRenderBlocConnections();
-		}
-		
-		private function checkAssociatedWires():void {
-			if (!bloc.newAssociatedWires)
-				return;
-			for each (var wire:Wire in bloc.newAssociatedWires)
-				U.state.addDisplayWireFor(wire);
-			bloc.newAssociatedWires = null;
 		}
 		
 		//private var connectionSprite:FlxSprite;

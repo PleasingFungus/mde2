@@ -20,21 +20,12 @@ package Actions {
 		}
 		
 		override public function execute():Action {
-			bloc.generateAssociatedWires();
-			
-			history = new Vector.<WireHistory>;
-			for each (var assocWire:AssociatedWire in bloc.allAssociatedWires)
-					history.push(new WireHistory(assocWire.wire));
-			
 			bloc.remove(oldLoc);
 			bloc.mobilize();
 			return super.execute();
 		}
 		
 		override public function revert():Action {
-			for each (var wireHistory:WireHistory in history)
-				wireHistory.revertAndPlace();
-			bloc.singlyAssociatedWires = bloc.multiplyAssociatedWires = null;
 			bloc.place(oldLoc);
 			return super.revert();
 		}

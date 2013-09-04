@@ -23,26 +23,14 @@ package Actions {
 		}
 		
 		override public function execute():Action {
-			bloc.generateAssociatedWires();
-			for each (var assocWire:AssociatedWire in bloc.allAssociatedWires)
-				history.push(new WireHistory(assocWire.wire));
 			bloc.remove(oldLoc);
 			bloc.place(newLoc);
 			return super.execute();
 		}
 		
 		override public function revert():Action {
-			var wireHistory:WireHistory;
-			for each (wireHistory in history)
-				Wire.remove(wireHistory.wire);
-			bloc.singlyAssociatedWires = bloc.multiplyAssociatedWires = null;
-			
 			bloc.remove(newLoc);
 			bloc.place(oldLoc);
-			
-			for each (wireHistory in history)
-				wireHistory.revertAndPlace();
-			
 			return super.revert();
 		}
 		

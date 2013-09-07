@@ -154,7 +154,7 @@ package Infoboxes {
 			var lastScroll:FlxPoint = FlxG.camera.scroll;
 			FlxG.camera.scroll = noscroll;
 			f();
-			noscroll;
+			FlxG.camera.scroll = lastScroll;
 		}
 		override public function update():void { HORRIBLE_HACK(super.update); }
 		override public function draw():void { HORRIBLE_HACK(super.draw); }

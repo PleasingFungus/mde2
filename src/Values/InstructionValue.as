@@ -26,7 +26,7 @@ package Values {
 		
 		private function numberToValue(n:int):Value {
 			if (n == C.INT_NULL)
-				return U.V_UNKNOWN;
+				return U.V_UNPOWERED;
 			return new IntegerValue(n);
 		}
 		

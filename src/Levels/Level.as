@@ -174,9 +174,7 @@ package Levels {
 		public static var L_PTutorial4:Level;
 		
 		public static var L_PCPU_Basic:Level;
-		public static var L_PCPU_Advanced:Level;
 		public static var L_PCPU_Load:Level;
-		public static var L_PCPU_LoadAdvanced:Level;
 		public static var L_PCPU_Jump:Level;
 		public static var L_PCPU_Branch:Level;
 		public static var L_PCPU_Full:Level;
@@ -284,17 +282,13 @@ package Levels {
 			L_PCPU_Jump.predecessors.push(L_PCPU_Basic, L_CPU_Branch);
 			L_PCPU_Branch = new ShardLevel("Efficient Branch", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));
 			L_PCPU_Branch.predecessors.push(L_PCPU_Jump);
-			L_PCPU_Advanced = new ShardLevel("Efficient Adv Op", pipeShard.compositWith(LevelShard.ADV));
-			L_PCPU_Advanced.predecessors.push(L_PCPU_Basic, L_CPU_Advanced);
 			L_PCPU_Load = new ShardLevel("Efficient Load", pipeShard.compositWith(LevelShard.LOAD));
 			L_PCPU_Load.predecessors.push(L_PCPU_Basic, L_CPU_Load);
-			L_PCPU_LoadAdvanced = new ShardLevel("Eff. Adv/Load", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD));
-			L_PCPU_LoadAdvanced.predecessors.push(L_PCPU_Load, L_PCPU_Advanced);
 			L_PCPU_Full = new ShardLevel("Full Efficient", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
-			L_PCPU_Full.predecessors.push(L_CPU_Full, L_PCPU_Branch, L_PCPU_LoadAdvanced);
+			L_PCPU_Full.predecessors.push(L_CPU_Full, L_PCPU_Branch, L_PCPU_Load);
 			
 			L_PCPU_Basic.useTickRecord = L_PCPU_Jump.useTickRecord = L_PCPU_Branch.useTickRecord = true;
-			L_PCPU_Advanced.useTickRecord = L_PCPU_Load.useTickRecord = L_PCPU_LoadAdvanced.useTickRecord = L_PCPU_Full.useTickRecord = true;
+			L_PCPU_Load.useTickRecord = L_PCPU_Full.useTickRecord = true;
 			
 			levels.push(L_TutorialWire, L_TutorialModule, L_TutorialSelection, L_TutorialCopying,
 					    L_Accumulation, L_SingleOp, L_DoubleOp,
@@ -302,7 +296,7 @@ package Levels {
 						L_DTutorial_0, L_DTutorial_1, L_DTutorial_2,
 						L_DCPU_Basic, null, null, null,
 						L_PTutorial1,
-						L_PCPU_Basic, L_PCPU_Jump, L_PCPU_Advanced, L_PCPU_Load, L_PCPU_LoadAdvanced, L_PCPU_Branch, L_PCPU_Full,
+						L_PCPU_Basic, L_PCPU_Jump, null, L_PCPU_Load, null, L_PCPU_Branch, L_PCPU_Full,
 						L_Double, L_Square, L_Collatz,
 						L_PTutorial2, L_PTutorial3, L_PTutorial4, L_TutorialTest);
 			

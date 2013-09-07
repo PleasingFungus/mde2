@@ -56,6 +56,7 @@ package Values {
 		}
 		
 		override public function toString():String { return name + " (" + value + ")"; }
+		override public function shortString():String { return name; }
 		
 		public function getName():String { return name; }
 		

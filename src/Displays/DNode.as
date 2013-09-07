@@ -79,6 +79,10 @@ package Displays {
 			var valueString:String = node.getValue().toString();
 			if (valueString != lastValueString) {
 				label.text = valueString;
+				if (label.height > height * U.zoom) {
+					valueString = node.getValue().shortString();
+					label.text = valueString;
+				}
 				for (var i:int = valueString.length - 2; i > 0 && label.height > height * U.zoom; i--)
 					label.text = valueString.substr(0, i) + "...";
 				if (label.height > height * U.zoom)

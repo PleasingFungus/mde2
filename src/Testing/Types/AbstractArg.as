@@ -8,18 +8,24 @@ package Testing.Types {
 		public var value:int;
 		public var address:int;
 		public var immediate:Boolean;
-		public function AbstractArg(Value:int, Address:int = C.INT_NULL, Immediate:Boolean = false) {
+		public var stacked:Boolean;
+		public function AbstractArg(Value:int, Address:int = C.INT_NULL, Immediate:Boolean = false, Stacked:Boolean = false) {
 			value = Value;
 			address = Address;
 			immediate = Immediate;
+			stacked = Stacked;
 		}
 		
 		public function get inMemory():Boolean {
-			return address != C.INT_NULL;
+			return address != C.INT_NULL && !stacked;
 		}
 		
 		public function get inRegisters():Boolean {
-			return address == C.INT_NULL;
+			return address == C.INT_NULL && !stacked;
+		}
+		
+		public function get inStack():Boolean {
+			return stacked;
 		}
 		
 		public function toString():String {

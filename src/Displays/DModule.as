@@ -129,11 +129,11 @@ package Displays {
 			if (selected)
 				color = U.SELECTION_COLOR;
 			else if (module.FIXED)
-				color = 0xff808080;
+				color = MODULE_GRAY;
 			else if (module.validPosition)
-				color = 0xff7070a0;
+				color = MODULE_BLUE;
 			else
-				color = 0xffa07070;
+				color = MODULE_RED;
 		}
 		
 		private var lastLoc:Point;
@@ -238,6 +238,10 @@ package Displays {
 				if (node.visible && node.exists)
 				node.drawScreenspaceText();
 		}
+		
+		protected const MODULE_BLUE:uint = 0xff7070a0;
+		protected const MODULE_RED:uint = 0xffa07070;
+		protected const MODULE_GRAY:uint = 0xff808080;
 	}
 
 }

@@ -180,6 +180,9 @@ package Levels {
 		public static var L_PCPU_Branch:Level;
 		public static var L_PCPU_Full:Level;
 		
+		public static var L_CPU_Stack:Level;
+		public static var L_PCPU_Stack:Level;
+		
 		public static function list():Vector.<Level> {
 			var levels:Vector.<Level> = new Vector.<Level>;
 			
@@ -221,7 +224,8 @@ package Levels {
 			L_CPU_Jump.predecessors.push(L_CPU_Basic);
 			L_CPU_Branch = new ShardLevel("Branch!", LevelShard.CORE.compositWith(LevelShard.JUMP, LevelShard.BRANCH));
 			L_CPU_Branch.predecessors.push(L_CPU_Jump);
-			L_CPU_Full = new ShardLevel("Full!", LevelShard.CORE.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			var fullShard:LevelShard = LevelShard.CORE.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH);
+			L_CPU_Full = new ShardLevel("Full!", fullShard);
 			L_CPU_Full.predecessors.push(L_CPU_Advanced, L_CPU_Load, L_CPU_Branch);
 			
 			
@@ -287,11 +291,19 @@ package Levels {
 			L_PCPU_Branch.predecessors.push(L_PCPU_Jump);
 			L_PCPU_Load = new ShardLevel("Efficient Load", pipeShard.compositWith(LevelShard.LOAD));
 			L_PCPU_Load.predecessors.push(L_PCPU_Basic, L_CPU_Load);
-			L_PCPU_Full = new ShardLevel("Full Efficient", pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH));
+			var fullEfficientShard:LevelShard = pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH);
+			L_PCPU_Full = new ShardLevel("Full Efficient", fullEfficientShard);
 			L_PCPU_Full.predecessors.push(L_CPU_Full, L_PCPU_Branch, L_PCPU_Load);
 			
 			L_PCPU_Basic.useTickRecord = L_PCPU_Jump.useTickRecord = L_PCPU_Branch.useTickRecord = true;
 			L_PCPU_Load.useTickRecord = L_PCPU_Full.useTickRecord = true;
+			
+			L_CPU_Stack = new ShardLevel("Stack", fullShard.compositWith(LevelShard.STACK));
+			L_CPU_Stack.predecessors.push(L_CPU_Full);
+			L_CPU_Stack.isBonus = true;
+			L_PCPU_Stack = new ShardLevel("Efficient Stack", fullEfficientShard.compositWith(LevelShard.STACK));
+			L_PCPU_Stack.predecessors.push(L_PCPU_Full);
+			L_PCPU_Stack.useTickRecord = L_PCPU_Stack.isBonus = true;
 			
 			levels.push(L_TutorialWire, L_TutorialModule, L_TutorialSelection, L_TutorialCopying,
 					    L_Accumulation, L_SingleOp, L_DoubleOp,
@@ -301,7 +313,8 @@ package Levels {
 						L_PTutorial1,
 						L_PCPU_Basic, L_PCPU_Jump, null, L_PCPU_Load, null, L_PCPU_Branch, L_PCPU_Full,
 						L_Double, L_Square, L_Collatz,
-						L_PTutorial2, L_PTutorial3, L_PTutorial4, L_TutorialTest);
+						L_PTutorial2, L_PTutorial3, L_PTutorial4, L_TutorialTest,
+						L_CPU_Stack, L_PCPU_Stack);
 			
 			return levels;
 		}

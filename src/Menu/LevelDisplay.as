@@ -60,6 +60,8 @@ package Menu {
 			var cpuAdvanced:LevelModule = addSuccessor(Level.L_CPU_Advanced, cpuBasic, cpuBranch.layout.dim.y + cpuLoad.layout.dim.y + MODULE_SPACING.y * 2);
 			var cpuFull:LevelModule = addSuccessor(Level.L_CPU_Full, cpuBranch, doubleOp.layout.dim.y + MODULE_SPACING.y);
 			
+			addSuccessor(Level.L_CPU_Stack, cpuFull);
+			
 			var d0:LevelModule = addSuccessor(Level.L_DTutorial_0, cpuBasic, -(doubleOp.layout.dim.y + MODULE_SPACING.y) * 2);
 			var d1:LevelModule = addSuccessor(Level.L_DTutorial_1, d0);
 			var d2:LevelModule = addSuccessor(Level.L_DTutorial_2, d1);
@@ -76,6 +78,8 @@ package Menu {
 			addSuccessor(Level.L_PCPU_Branch, modulesByName[Level.L_PCPU_Jump.name]);
 			addSuccessor(Level.L_PCPU_Load, modulesByName[Level.L_PCPU_Basic.name], modulesByName[Level.L_CPU_Load.name].y -  modulesByName[Level.L_PCPU_Basic.name].y);
 			addSuccessor(Level.L_PCPU_Full, modulesByName[Level.L_PCPU_Branch.name], modulesByName[Level.L_CPU_Full.name].y -  modulesByName[Level.L_PCPU_Branch.name].y);
+			
+			addSuccessor(Level.L_PCPU_Stack, modulesByName[Level.L_PCPU_Full.name]);
 		}
 		
 		protected function addSuccessor(level:Level, predecessor:LevelModule, offY:int = 0):LevelModule {

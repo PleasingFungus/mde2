@@ -22,7 +22,7 @@ package Levels {
 		public var displayName:String;
 		public var info:String;
 		public var hints:Vector.<String>;
-		public var hintDone:Boolean; //not related to 'hints' per se
+		public var hintDone:Boolean; //refers to floating-hints, not text-hints (^)
 		
 		public var goal:LevelGoal;
 		public var fewestModules:int;
@@ -35,6 +35,7 @@ package Levels {
 		public var canPickupModules:Boolean = true;
 		public var canEditModules:Boolean = true;
 		
+		public var isBonus:Boolean = false;
 		public var useModuleRecord:Boolean = true;
 		public var useTickRecord:Boolean = false;
 		public var configurableLatchesEnabled:Boolean = false;
@@ -194,12 +195,14 @@ package Levels {
 			(L_DoubleOp = new Op2Tutorial).predecessors.push(L_SingleOp, L_Double);
 			
 			L_Square = new Level("Square", new SquareGoal, false, [ConstIn, Adder, Subtractor, Latch, DataReader, DataWriter, Equals, And, Or, Not, Demux]);
+			L_Square.isBonus = true;
 			L_Square.predecessors.push(L_Double);
 			L_Collatz = new Level("Collatz", new CollatzGoal, false, [ConstIn, Adder, Subtractor, Multiplier, Divider, Latch, DataReader, DataWriter, Equals, And, Or, Not, Demux]);
 			L_Collatz.predecessors.push(L_Double);
 			L_Collatz.info = "The Collatz procedure goes as follows:"
 			L_Collatz.info += "\n\nTake a number. If it's even, halve it. Otherwise, triple it and add 1. Continue until the number becomes 1."
 			L_Collatz.info += "\n\nIt's not known whether all numbers will eventually reach 1 when this procedure is applied. However, the numbers you're given will be!";
+			L_Collatz.isBonus = true;
 			
 			
 			L_CPU_Basic = new ShardLevel("Add-CPU", LevelShard.CORE);

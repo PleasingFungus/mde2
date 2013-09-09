@@ -37,7 +37,7 @@ package Testing.Instructions {
 			return null;
 		}
 		
-		public function execute(memory:Dictionary, registers:Dictionary):int {
+		public function execute(memory:Dictionary, registers:Dictionary, stack:Vector.<int>):int {
 			return C.INT_NULL;
 		}
 		
@@ -66,6 +66,11 @@ package Testing.Instructions {
 					return SaveImmediateInstruction;
 				case InstructionType.ADDM:
 					return AddMemoryInstruction;
+				
+				case InstructionType.PUSH:
+					return PushInstruction;
+				case InstructionType.POP:
+					return PopInstruction;
 			}
 			return null;
 		}

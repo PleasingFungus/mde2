@@ -12,7 +12,7 @@ package Testing.Instructions {
 			super(registers, abstract, noop);
 		}
 		
-		override public function execute(memory:Dictionary, registers:Dictionary):int {
+		override public function execute(memory:Dictionary, registers:Dictionary, stack:Vector.<int>):int {
 			registers[args[0].value] = registers[args[1].value] * registers[args[2].value];
 			return C.INT_NULL;
 		}

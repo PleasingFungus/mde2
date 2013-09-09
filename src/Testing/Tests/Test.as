@@ -132,7 +132,8 @@ package Testing.Tests {
 				memory[memorandum.address] = memorandum.value;
 			
 			var registers:Dictionary = new Dictionary;
-			executeInEnvironment(memory, registers, instructions);
+			var stack:Vector.<int> = new Vector.<int>;
+			executeInEnvironment(memory, registers, stack, instructions);
 			
 			var mem:String = "Memory: ";
 			for (var memAddrStr:String in memory)
@@ -161,6 +162,8 @@ package Testing.Tests {
 				else
 					noop = true;
 			}
+			
+			//TODO: setup stack
 			
 			for each (var abstractArg:AbstractArg in abstraction.getAbstractArgs())
 				if (!abstractArg.immediate && abstractArg.inRegisters)
@@ -200,7 +203,8 @@ package Testing.Tests {
 			var instructionTypes:Vector.<OrderableInstructionType> = new Vector.<OrderableInstructionType>;
 			for each (var instructionType:InstructionType in [InstructionType.SAVE, InstructionType.ADD, InstructionType.SUB, 
 															  InstructionType.MUL, InstructionType.DIV, InstructionType.LOAD,
-															  InstructionType.SAVI, InstructionType.ADDM])
+															  InstructionType.SAVI, InstructionType.ADDM,
+															  InstructionType.PUSH, InstructionType.POP])
 				if (expectedOps.indexOf(instructionType.mapToOp()) != -1)
 					instructionTypes.push(new OrderableInstructionType(instructionType, C.INT_NULL, 0));
 			return instructionTypes;
@@ -245,7 +249,7 @@ package Testing.Tests {
 			if (abstraction.writesToMemory) {
 				if (!value.inMemory || value.value != abstraction.memoryValue || value.address != abstraction.memoryAddress)
 					throw new Error("!!");
-			} else if (abstraction.value != value.value)
+			} else if (!abstraction.writesToStack && abstraction.value != value.value)
 				throw new Error("!!!");
 			
 			for each (var arg:AbstractArg in abstraction.getAbstractArgs())
@@ -422,12 +426,15 @@ package Testing.Tests {
 			return instructions;
 		}
 		
-		protected function executeInEnvironment(memory:Dictionary, registers:Dictionary, instructions:Vector.<Instruction>):void {
+		protected function executeInEnvironment(memory:Dictionary, registers:Dictionary, stack:Vector.<int>,
+												instructions:Vector.<Instruction>):void {
 			for (var line:int = 0; line < instructions.length; line ++) {
 				var instruction:Instruction = instructions[line];
-				var jump:int = instruction.execute(memory, registers);
+				var jump:int = instruction.execute(memory, registers, stack);
 				if (jump != C.INT_NULL)
 					line = jump;
+				if (stack.length > STACK_SIZE)
+					throw new Error("!!!");
 			}
 		}
 		
@@ -468,6 +475,7 @@ package Testing.Tests {
 		}
 		
 		protected const NUM_REGISTERS:int = 8;
+		protected const STACK_SIZE:int = 4;
 	}
 
 }

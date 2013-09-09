@@ -20,7 +20,7 @@ package Testing.Instructions {
 			return args;
 		}
 		
-		override public function execute(memory:Dictionary, registers:Dictionary):int {
+		override public function execute(memory:Dictionary, registers:Dictionary, stack:Vector.<int>):int {
 			registers[args[0].value] = args[1].value;
 			return C.INT_NULL;
 		}

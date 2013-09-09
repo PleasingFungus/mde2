@@ -91,6 +91,9 @@ package Testing.Types {
 		public static var SAVI:SaveImmediateType;
 		public static var ADDM:AddMemoryType;
 		
+		public static var PUSH:PushType;
+		public static var POP:PopType;
+		
 		public static function init():void {
 			SET = new SetType();
 			LOAD = new LoadType();
@@ -105,6 +108,9 @@ package Testing.Types {
 			
 			SAVI = new SaveImmediateType();
 			ADDM = new AddMemoryType();
+			
+			PUSH = new PushType();
+			POP = new PopType();
 		}
 	}
 

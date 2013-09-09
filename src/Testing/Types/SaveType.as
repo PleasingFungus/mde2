@@ -28,7 +28,7 @@ package Testing.Types {
 		override protected function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			var valueArg:AbstractArg, memArg:AbstractArg;
 			for each (var arg:AbstractArg in args) {
-				if (arg.inMemory)
+				if (!arg.inRegisters)
 					continue;
 				if (arg.value == value.value)
 					valueArg = arg;

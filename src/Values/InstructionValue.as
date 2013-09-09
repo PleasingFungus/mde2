@@ -55,6 +55,11 @@ package Values {
 					return operation.getName() + " M[" + targetArg + "]=" + sourceArg;
 				case OpcodeValue.OP_ADDM:
 					return operation.getName() + " M[" + targetArg + "]=" + sourceArg + "+" + destArg;
+				
+				case OpcodeValue.OP_PUSH:
+					return operation.getName() + "R" + sourceArg + "->STACK"; 
+				case OpcodeValue.OP_POP:
+					return operation.getName() + "STACK->R"+destArg;
 			}
 			
 			var out:String = operation.getName() + "(" + sourceArg.toNumber();
@@ -90,6 +95,11 @@ package Values {
 					return formatFrom("M[{}] = {}", [U.TARGET, U.SOURCE]);
 				case OpcodeValue.OP_ADDM:
 					return formatFrom("M[{}] = {}+{}", [U.TARGET, U.SOURCE, U.DESTINATION]);
+				
+				case OpcodeValue.OP_PUSH:
+					return formatFrom("R{}->STACK", [U.SOURCE]);
+				case OpcodeValue.OP_POP:
+					return formatFrom("STACK->R{}", [U.DESTINATION]);
 			}
 			
 			return null;

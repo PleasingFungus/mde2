@@ -15,7 +15,7 @@ package Testing.Instructions {
 			super(registers, abstract, noop);
 		}
 		
-		override public function execute(memory:Dictionary, registers:Dictionary):int {
+		override public function execute(memory:Dictionary, registers:Dictionary, stack:Vector.<int>):int {
 			if (isNaN( memory[registers[args[1].value]]))
 				throw new Error("!!!");
 			registers[args[0].value] = memory[registers[args[1].value]];

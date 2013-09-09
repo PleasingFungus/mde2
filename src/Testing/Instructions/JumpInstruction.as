@@ -27,7 +27,7 @@ package Testing.Instructions {
 			return type.name +" " +args[0].value;
 		}
 		
-		override public function execute(memory:Dictionary, registers:Dictionary):int {
+		override public function execute(_:Dictionary, __:Dictionary, ___:Vector.<int>):int {
 			return args[0].value;
 		}
 		

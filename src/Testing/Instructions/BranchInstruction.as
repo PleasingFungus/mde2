@@ -27,7 +27,7 @@ package Testing.Instructions {
 			return type.name +" " +args[0].value; //TODO
 		}
 		
-		override public function execute(memory:Dictionary, registers:Dictionary):int {
+		override public function execute(memory:Dictionary, registers:Dictionary, stack:Vector.<int>):int {
 			if (registers[args[1].value] == registers[args[2].value])
 				return args[0].value;
 			return C.INT_NULL;

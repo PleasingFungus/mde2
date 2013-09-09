@@ -13,6 +13,7 @@ package Testing.Abstractions {
 		public var args:Vector.<int>;
 		public var value:int;
 		public var writesToMemory:Boolean;
+		public var writesToStack:Boolean;
 		public function InstructionAbstraction(type:InstructionType, args:Vector.<int>, value:int) {
 			this.type = type;
 			this.args = args ? args : new Vector.<int>;

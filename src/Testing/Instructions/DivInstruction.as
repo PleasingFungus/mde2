@@ -13,7 +13,9 @@ package Testing.Instructions {
 		}
 		
 		override public function execute(memory:Dictionary, registers:Dictionary, stack:Vector.<int>):int {
-			registers[args[0].value] = registers[args[2].value] ? int(registers[args[1].value] / registers[args[2].value]) : NaN;
+			if (!registers[args[2].value])
+				throw new Error("!"); //div by 0
+			registers[args[0].value] = int(registers[args[1].value] / registers[args[2].value]);
 			return C.INT_NULL;
 		}
 		

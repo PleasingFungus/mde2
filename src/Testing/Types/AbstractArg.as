@@ -35,14 +35,14 @@ package Testing.Types {
 		}
 		
 		public function eq(arg:AbstractArg):Boolean {
-			return value == arg.value && address == arg.address;
+			return value == arg.value && address == arg.address && !stacked;
 		}
 		
 		
 		public static function instructionsToSet(values:Vector.<AbstractArg>):int {
 			var toSet:int = 0;
 			for each (var arg:AbstractArg in values)
-				toSet += arg.inMemory ? 0 : 1;
+				toSet += arg.inMemory ? 0 : arg.inStack ? 2 : 1;
 			return toSet;
 		}
 		

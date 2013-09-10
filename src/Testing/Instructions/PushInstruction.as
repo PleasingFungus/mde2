@@ -14,7 +14,7 @@ package Testing.Instructions {
 		}
 		
 		override public function execute(memory:Dictionary, registers:Dictionary, stack:Vector.<int>):int {
-			stack.push(registers[args[0]]);
+			stack.push(registers[args[0].value]);
 			return C.INT_NULL;
 		}
 		

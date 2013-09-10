@@ -19,8 +19,12 @@ package Testing.Types {
 		public function mapToOp():OpcodeValue {
 			return OpcodeValue.OP_NOOP;
 		}
+
+		public function can_produce_in_state(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
+			return can_produce(value);
+		}
 		
-		public function can_produce(value:AbstractArg):Boolean {
+		protected function can_produce(value:AbstractArg):Boolean {
 			return false;
 		}
 		

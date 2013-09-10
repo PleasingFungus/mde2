@@ -20,6 +20,8 @@ package Testing.Abstractions {
 		override public function toFormat():HighlightFormat {
 			return new HighlightFormat(type.name +" {}", ColorText.singleVec(new ColorText(U.SOURCE.color, args[0].toString())));
 		}
+		
+		override public function get stackValue():int { return args[0] }
 	}
 
 }

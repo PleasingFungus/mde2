@@ -56,6 +56,7 @@ package Testing.Abstractions {
 		
 		public function get memoryAddress():int { return C.INT_NULL }
 		public function get memoryValue():int { return C.INT_NULL }
+		public function get stackValue():int { return C.INT_NULL }
 	}
 
 }

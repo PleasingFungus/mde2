@@ -49,6 +49,7 @@ package Testing.Tests {
 			
 			var values:Vector.<AbstractArg> = genFirstValues()
 			var registers:Vector.<int> = initializeRegisters();
+			var sidestack:Vector.<AbstractArg> = new Vector.<AbstractArg>;
 			
 			log("\n\nSEED: " + seed);
 			log("PROGRAM START");
@@ -60,11 +61,14 @@ package Testing.Tests {
 				var value:AbstractArg = values[0];
 				values.splice(0, 1); //values.shift()?
 				
+				if (value.inStack)
+					value = sidestack.pop(); //LIFO, not FIFO
+				
 				if (!loop && canMakeLoop(value, values, instructionTypes, abstractionsMade) && FlxG.random() < 1 / 2) {
 					loop = makeLoop(value, values, instructionTypes, registers, instructions);
 					abstractionsMade += loop.length;
 				} else {
-					var abstraction:InstructionAbstraction = genAbstraction(value, values, instructionTypes);
+					var abstraction:InstructionAbstraction = genAbstraction(value, values, sidestack, instructionTypes);
 					
 					if (AbstractArg.instructionsToSet(values) > NUM_REGISTERS) {
 						values.pop();
@@ -81,6 +85,14 @@ package Testing.Tests {
 				}
 			}
 			
+			//cleanup sidestack
+			while (sidestack.length) {
+				value = sidestack.pop();
+				instructions.push(makeInstruction(new PushAbstraction(value.value), registers));
+				values.push(value);
+			}
+			
+			//cleanup other values to be initialized
 			dataMemory = new Vector.<AbstractArg>;
 			provideInitialValues(values, instructions, registers);
 			
@@ -163,8 +175,6 @@ package Testing.Tests {
 					noop = true;
 			}
 			
-			//TODO: setup stack
-			
 			for each (var abstractArg:AbstractArg in abstraction.getAbstractArgs())
 				if (!abstractArg.immediate && abstractArg.inRegisters)
 					argRegisters.push(setRegisterFor(abstractArg.value, registers));
@@ -212,10 +222,11 @@ package Testing.Tests {
 		
 		
 		
-		protected function genAbstraction(value:AbstractArg, values:Vector.<AbstractArg>, instructionTypes:Vector.<OrderableInstructionType>):InstructionAbstraction {
+		protected function genAbstraction(value:AbstractArg, values:Vector.<AbstractArg>, sidestack:Vector.<AbstractArg>,
+										  instructionTypes:Vector.<OrderableInstructionType>):InstructionAbstraction {
 			var optimalInstructionTypes:Vector.<OrderableInstructionType> = new Vector.<OrderableInstructionType>;
 			for each (var orderableInstructionType:OrderableInstructionType in instructionTypes) {
-				if (!orderableInstructionType.type.can_produce(value))
+				if (!orderableInstructionType.type.can_produce_in_state(value, values))
 					continue;
 				
 				var produced:int = orderableInstructionType.numAlreadyProduced;
@@ -249,12 +260,18 @@ package Testing.Tests {
 			if (abstraction.writesToMemory) {
 				if (!value.inMemory || value.value != abstraction.memoryValue || value.address != abstraction.memoryAddress)
 					throw new Error("!!");
-			} else if (!abstraction.writesToStack && abstraction.value != value.value)
+			} else if (abstraction.writesToStack)
+				if (!value.inMemory || value.value != abstraction.stackValue)
+					throw new Error("!");
+			else if (abstraction.value != value.value)
 				throw new Error("!!!");
 			
 			for each (var arg:AbstractArg in abstraction.getAbstractArgs())
-				if (!arg.immediate && !AbstractArg.argInVec(arg, values))
+				if (!arg.immediate && !AbstractArg.argInVec(arg, values)) {
 					values.push(arg);
+					if (arg.inStack)
+						sidestack.push(arg);
+				}
 			
 			return abstraction;
 		}
@@ -268,7 +285,7 @@ package Testing.Tests {
 			for each (var value:AbstractArg in values) {
 				if (value.inMemory)
 					dataMemory.push(value);
-				else
+				else if (value.inRegisters)
 					instructions.push(makeInstruction(new SetAbstraction(value.value), registers));
 			}
 		}
@@ -433,6 +450,13 @@ package Testing.Tests {
 				var jump:int = instruction.execute(memory, registers, stack);
 				if (jump != C.INT_NULL)
 					line = jump;
+				
+				for (var k:* in registers)
+					if (isNaN(k))
+						throw new Error("!");
+				for each (var v:* in registers)
+					if (isNaN(v))
+						throw new Error("!!");
 				if (stack.length > STACK_SIZE)
 					throw new Error("!!!");
 			}
@@ -475,7 +499,7 @@ package Testing.Tests {
 		}
 		
 		protected const NUM_REGISTERS:int = 8;
-		protected const STACK_SIZE:int = 4;
+		public static const STACK_SIZE:int = 4;
 	}
 
 }

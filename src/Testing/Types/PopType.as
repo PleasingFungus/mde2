@@ -1,4 +1,5 @@
 package Testing.Types {
+	import Testing.Tests.Test;
 	import Values.OpcodeValue;
 	import Testing.Abstractions.InstructionAbstraction;
 	import Testing.Abstractions.PopAbstraction;
@@ -20,8 +21,19 @@ package Testing.Types {
 			return OpcodeValue.OP_POP;
 		}
 		
-		override public function can_produce(value:AbstractArg):Boolean {
-			return value.inStack;
+		override public function can_produce_in_state(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
+			if (!can_produce(value))
+				return false;
+			
+			var inStack:int = 0;
+			for each (var arg:AbstractArg in args)
+				if (arg.inStack)
+					inStack += 1;
+			return inStack < Test.STACK_SIZE; //can't promise another value to be popped off the stack if the stack is already full of promises!
+		}
+		
+		override protected function can_produce(value:AbstractArg):Boolean {
+			return value.inRegisters;
 		}
 		
 		override protected function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {

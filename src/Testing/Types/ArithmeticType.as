@@ -24,7 +24,7 @@ package Testing.Types {
 		}
 		
 		
-		override public function can_produce(value:AbstractArg):Boolean {
+		override protected function can_produce(value:AbstractArg):Boolean {
 			return value.inRegisters;
 		}
 		

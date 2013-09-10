@@ -20,7 +20,7 @@ package Testing.Types {
 			return OpcodeValue.OP_PUSH;
 		}
 		
-		override public function can_produce(value:AbstractArg):Boolean {
+		override protected function can_produce(value:AbstractArg):Boolean {
 			return value.inStack;
 		}
 		

@@ -106,8 +106,9 @@ package Menu {
 		
 		protected function addWires():void {
 			for each (var levelModule:LevelModule in levelModules)
-				for each (var predecessor:Level in levelModule.level.predecessors)
-					addWireBetween(levelModule, modulesByName[predecessor.name])
+				if (levelModule.exists)
+					for each (var predecessor:Level in levelModule.level.predecessors)
+						addWireBetween(levelModule, modulesByName[predecessor.name])
 		}
 		protected function addWireBetween(successorModule:LevelModule, predecessorModule:LevelModule):void {
 			

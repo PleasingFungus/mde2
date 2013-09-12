@@ -24,10 +24,22 @@ package Levels {
 		public var unlocked:Boolean;
 		public function LevelModule(X:int, Y:int, level:Level) {
 			this.level = level;
-			super(X, Y, level.unlocked() ? level.displayName : "???", ModuleCategory.MISC, level.predecessors.length, level.successors.length, 0);
+			
+			var successors:int = 0
+			for each (var successor:Level in level.successors)
+				if (shouldDisplay(successor))
+					successors += 1;
+			
+			super(X, Y, level.unlocked() ? level.displayName : "???", ModuleCategory.MISC, level.predecessors.length, successors, 0);
+			
 			deployed = true;
 			beaten = level.beaten;
 			unlocked = level.unlocked();
+			exists = shouldDisplay(level);
+		}
+		
+		public function shouldDisplay(level:Level):Boolean {
+			return !level.isBonus || level.unlocked()
 		}
 		
 		override protected function generateLayout():ModuleLayout {

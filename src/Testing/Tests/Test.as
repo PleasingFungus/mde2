@@ -89,7 +89,7 @@ package Testing.Tests {
 			while (sidestack.length) {
 				value = sidestack.pop();
 				instructions.push(makeInstruction(new PushAbstraction(value.value), registers));
-				values.push(value);
+				values.push(new AbstractArg(value.value));
 			}
 			
 			//cleanup other values to be initialized

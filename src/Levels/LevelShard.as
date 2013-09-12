@@ -69,7 +69,7 @@ package Levels {
 		public static const BRANCH:LevelShard = new LevelShard("Branch", [OpcodeValue.OP_BEQ], [Equals], 1, 1.25);
 		public static const ADV:LevelShard = new LevelShard("Adv.", [OpcodeValue.OP_SUB, OpcodeValue.OP_MUL, OpcodeValue.OP_DIV], [Subtractor, Multiplier, Divider]);
 		public static const LOAD:LevelShard = new LevelShard("Load", [OpcodeValue.OP_LD], null, 1.25);
-		public static const STACK:LevelShard = new LevelShard("Stack", [OpcodeValue.OP_PUSH, OpcodeValue.OP_POP], null, 1.1, 1.2);
+		public static const STACK:LevelShard = new LevelShard("Stack", [OpcodeValue.OP_PUSH, OpcodeValue.OP_POP], null, 1.1, 1.4);
 		
 	}
 

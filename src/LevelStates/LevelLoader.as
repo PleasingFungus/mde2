@@ -1,6 +1,7 @@
 package LevelStates {
 	import Components.Wire;
 	import Levels.Level;
+	import Menu.CrashState;
 	import Modules.Module;
 	import org.flixel.FlxG;
 	import flash.net.URLLoader;
@@ -129,6 +130,8 @@ package LevelStates {
 				loader.addEventListener(IOErrorEvent.IO_ERROR, function onIOError(e:Event):void {
 					C.log(e);
 				});
+				
+				FlxG.switchState(new CrashState(error));
 			}
 			return null;
 		}

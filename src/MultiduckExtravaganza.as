@@ -6,6 +6,8 @@ package
 	import org.flixel.*;
 	
 	import Menu.MenuState;
+	import Menu.CrashState;
+	import flash.net.URLLoader;
 
 	[SWF(width="640", height="480", backgroundColor="#000000")]
 
@@ -34,7 +36,38 @@ package
 			U.load();
 		}
 
-		override protected function onFocusLost(FlashEvent:Event=null):void { }
+		override protected function onFocusLost(FlashEvent:Event = null):void { }
+		
+		override protected function onEnterFrame(FlashEvent:Event = null):void {
+			if (FlxG.debug) {
+				super.onEnterFrame(FlashEvent);
+				return;
+			}
+			
+			try {
+				super.onEnterFrame(FlashEvent);
+			} catch (error:Error) {
+				C.log("Error in loading!");
+				C.log(error);
+				
+				var data:Object = {
+					'version' : U.VERSION,
+					'error' : error.getStackTrace()
+				};
+				if (U.state)
+					data['lvl'] = U.save.data[U.state.level.name]
+				
+				var loader:URLLoader = C.sendRequest(
+					"http://pleasingfungus.com/mde2/error.php", data,
+					 function onLoad(e : Event):void {
+						var response:String = loader.data;
+						C.log(response);
+					 }
+				);
+				
+				FlxG.switchState(new CrashState(error));
+			}
+		}
 	}
 
 }

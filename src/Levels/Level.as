@@ -265,7 +265,7 @@ package Levels {
 			L_PTutorial3 = new Level("Pipeline 3", new InstructionSelectGoal, true,
 											   [ConstIn, SlowAdder, Latch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
 			(L_PTutorial3.goal as InstructionSelectGoal).allowedTimePerInstr = 40;
-			L_PTutorial1.info = "And this level is " + L_DoubleOp.displayName + " with delay and a 'slow adder' which works 10x as slowly as the normal one.";
+			L_PTutorial3.info = "And this level is " + L_DoubleOp.displayName + " with delay and a 'slow adder' which works 10x as slowly as the normal one.";
 			L_PTutorial3.predecessors.push(L_PTutorial1);
 			
 			L_PTutorial4 = new Level("Pipeline 4", new PipelineTutorial2Goal, true,

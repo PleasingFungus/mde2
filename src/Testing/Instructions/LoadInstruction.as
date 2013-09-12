@@ -1,6 +1,7 @@
 package Testing.Instructions {
 	import flash.utils.Dictionary;
 	import Testing.Abstractions.InstructionAbstraction;
+	import Testing.Abstractions.LoadAbstraction;
 	import Values.InstructionValue;
 	import Values.OpcodeValue;
 	
@@ -11,14 +12,21 @@ package Testing.Instructions {
 	 */
 	public class LoadInstruction extends RegInstruction {
 		
-		public function LoadInstruction(registers:Vector.<int>, abstract:InstructionAbstraction, noop:Boolean) {
+		public function LoadInstruction(registers:Vector.<int>, abstract:LoadAbstraction, noop:Boolean) {
 			super(registers, abstract, noop);
 		}
 		
 		override public function execute(memory:Dictionary, registers:Dictionary, stack:Vector.<int>):int {
+			if (isNaN(registers[args[1].value]))
+				throw new Error("Attempting to read undefined value from registers!");
 			if (isNaN( memory[registers[args[1].value]]))
-				throw new Error("!!!");
+				throw new Error("Attempting to read undefined value from memory!");
+			
 			registers[args[0].value] = memory[registers[args[1].value]];
+			
+			if (abstract.value != C.INT_NULL && abstract.value != registers[args[0].value])
+				throw new Error("Mismatch between expected value and stored value!");
+			
 			return C.INT_NULL;
 		}
 		

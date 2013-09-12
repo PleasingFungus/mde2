@@ -144,6 +144,8 @@ package Testing.Tests {
 				memory[memorandum.address] = memorandum.value;
 			
 			var registers:Dictionary = new Dictionary;
+			for (var i:int = 0; i < NUM_REGISTERS; i++)
+				registers[i] = NaN;
 			var stack:Vector.<int> = new Vector.<int>;
 			executeInEnvironment(memory, registers, stack, instructions);
 			
@@ -260,10 +262,10 @@ package Testing.Tests {
 			if (abstraction.writesToMemory) {
 				if (!value.inMemory || value.value != abstraction.memoryValue || value.address != abstraction.memoryAddress)
 					throw new Error("!!");
-			} else if (abstraction.writesToStack)
-				if (!value.inMemory || value.value != abstraction.stackValue)
+			} else if (abstraction.writesToStack) {
+				if (!value.inStack || value.value != abstraction.stackValue)
 					throw new Error("!");
-			else if (abstraction.value != value.value)
+			} else if (abstraction.value != value.value)
 				throw new Error("!!!");
 			
 			for each (var arg:AbstractArg in abstraction.getAbstractArgs())
@@ -454,9 +456,6 @@ package Testing.Tests {
 				for (var k:* in registers)
 					if (isNaN(k))
 						throw new Error("!");
-				for each (var v:* in registers)
-					if (isNaN(v))
-						throw new Error("!!");
 				if (stack.length > STACK_SIZE)
 					throw new Error("!!!");
 			}

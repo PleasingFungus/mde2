@@ -37,11 +37,11 @@ package Testing.Types {
 		}
 		
 		override protected function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
-			return false;
+			return true;
 		}
 		
 		override protected function can_produce_with_one(value:AbstractArg, arg:AbstractArg):Boolean {
-			return false;
+			return true;
 		}
 		
 		
@@ -50,11 +50,11 @@ package Testing.Types {
 		}
 		
 		override protected function produce_with(value:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {
-			throw new Error("!!!");
+			return new PopAbstraction(value.value);
 		}
 		
 		override protected function produce_with_one(value:AbstractArg, arg:AbstractArg):InstructionAbstraction {
-			throw new Error("!!!");
+			return new PopAbstraction(value.value);
 		}
 		
 	}

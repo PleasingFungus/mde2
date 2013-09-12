@@ -15,8 +15,15 @@ package Testing.Instructions {
 		
 		override public function execute(memory:Dictionary, registers:Dictionary, stack:Vector.<int>):int {
 			if (isNaN(registers[args[0].value]) || isNaN(registers[args[1].value]))
-				throw new Error("!!");
+				throw new Error("Attempting to read undefined value from registers!");
+			
 			memory[registers[args[1].value]] = registers[args[0].value];
+			
+			if (abstract.memoryAddress != C.INT_NULL && abstract.memoryAddress != registers[args[1].value])
+				throw new Error("Mismatch between expected address & saved address!");
+			if (abstract.memoryValue != C.INT_NULL && abstract.memoryValue != registers[args[0].value])
+				throw new Error("Mismatch between expected value & saved value!");
+			
 			return C.INT_NULL;
 		}
 		

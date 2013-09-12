@@ -14,7 +14,14 @@ package Testing.Instructions {
 		}
 		
 		override public function execute(memory:Dictionary, registers:Dictionary, stack:Vector.<int>):int {
+			if (isNaN(registers[args[0].value]))
+				throw new Error("Attempting to read undefined value from registers!");
+			
 			stack.push(registers[args[0].value]);
+			
+			if (abstract.stackValue != C.INT_NULL && abstract.stackValue != stack[stack.length - 1])
+				throw new Error("Mismatch between expected value & pushed value!");
+			
 			return C.INT_NULL;
 		}
 		

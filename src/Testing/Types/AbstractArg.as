@@ -35,7 +35,7 @@ package Testing.Types {
 		}
 		
 		public function eq(arg:AbstractArg):Boolean {
-			return value == arg.value && address == arg.address && !stacked;
+			return value == arg.value && address == arg.address && !stacked && !arg.stacked;
 		}
 		
 		

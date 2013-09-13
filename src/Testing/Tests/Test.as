@@ -7,6 +7,8 @@ package Testing.Tests {
 	import Testing.Types.InstructionType;
 	import Testing.Types.AbstractArg;
 	import Testing.Types.OrderableInstructionType;
+	import UI.ColorText;
+	import UI.HighlightFormat;
 	import Values.*;
 	/**
 	 * ...
@@ -316,7 +318,7 @@ package Testing.Tests {
 			} else {
 				loopCount = C.randomRange(2, 5);
 				if (instructionType == InstructionType.DIV)
-					applicand = FlxG.random() < 0.5 ? C.randomRange( -16, -1) : C.randomRange(1, 16);
+					applicand = FlxG.random() < 0.5 ? C.randomRange( -16, -1) : C.randomRange(2, 16);
 				else if (instructionType == InstructionType.MUL) {
 					//applicand = C.randomIntChoice(C.factorsOf(value.value)); //TODO
 					instructionType = InstructionType.ADD;
@@ -372,13 +374,33 @@ package Testing.Tests {
 			//jump
 			//(but backwards)
 			var loop:Vector.<Instruction> = new Vector.<Instruction>;
-			loop.push(new JumpInstruction(C.INT_NULL)); //jump back to start
+			var jumpback:Instruction = new JumpInstruction(C.INT_NULL);
+			jumpback.abstract.comment = "Return to loop start";
+			jumpback.abstract.commentFormat = new HighlightFormat("Return to {}", ColorText.singleVec(new ColorText(U.DESTINATION.color, "loop start")));
+			loop.push(jumpback); //jump back to start
+			
 			//TODO: scramble source/target for increment?
+			var incrementor:Instruction;
 			if (loopBackwards)
-				loop.push(new SubInstruction(C.buildIntVector(loopCountRegister, loopCountRegister, incrementRegister), new SubAbstraction(C.INT_NULL, C.INT_NULL), false)); //decrement
+				loop.push(incrementor = new SubInstruction(C.buildIntVector(loopCountRegister, loopCountRegister, incrementRegister),
+														   new SubAbstraction(C.INT_NULL, C.INT_NULL), false)); //decrement
 			else
-				loop.push(new AddInstruction(C.buildIntVector(loopCountRegister, loopCountRegister, incrementRegister), new AddAbstraction(C.INT_NULL, C.INT_NULL), false)); //increment
-			loop.push(new (Instruction.mapByType(instructionType))(C.buildIntVector(destRegister, destRegister, applicandRegister), instructionType.produce(C.INT_NULL, C.INT_NULL), false)); //operate
+				loop.push(incrementor = new AddInstruction(C.buildIntVector(loopCountRegister, loopCountRegister, incrementRegister),
+														   new AddAbstraction(C.INT_NULL, C.INT_NULL), false)); //increment
+			incrementor.abstract.comment = (loopBackwards ? "Decrement from " : "Increment to ") + loopLimit +" by " + increment;
+			incrementor.abstract.commentFormat = new HighlightFormat((loopBackwards ? "Decrement from" : "Increment to") + " {} by {}",
+																	 ColorText.vecFromArray([new ColorText(U.DESTINATION.color, loopLimit.toString()),
+																							 new ColorText(U.TARGET.color, increment.toString())])); //double-check: might be source?
+			
+			var operator:Instruction = new (Instruction.mapByType(instructionType))(C.buildIntVector(destRegister, destRegister, applicandRegister), instructionType.produce(C.INT_NULL, C.INT_NULL), false);
+			operator.abstract.comment = "(" + base + instructionType.symbol + applicand + ") x" + loopCount + " = " + value.value;
+			operator.abstract.commentFormat = new HighlightFormat("({}"+instructionType.symbol+"{}) x"+loopCount+" = {}",
+																  ColorText.vecFromArray([
+																	new ColorText(U.SOURCE.color, base.toString()),
+																	new ColorText(U.TARGET.color, applicand.toString()),
+																	new ColorText(U.DESTINATION.color, value.value.toString())
+																  ]));
+			loop.push(operator); //operate
 			loop.push(new BranchInstruction(C.buildIntVector(C.INT_NULL, loopCountRegister, loopLimitRegister)));
 			
 			//final cleanup

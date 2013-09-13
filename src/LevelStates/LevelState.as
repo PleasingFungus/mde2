@@ -121,10 +121,7 @@ package LevelStates {
 			}
 			
 			makeUI(false); //don't add UI actives yet...
-			if (level.startWithMemory)
-				infobox = new DMemory(memory, level.goal.genExpectedMem());
-			else
-				infobox = new DGoal(level);
+			infobox = new DGoal(level);
 			upperLayer.add(infobox); //because we won't be updating while the infobox is up...
 			
 			upperLayer.update(); //and some UI members need a single-frame update to position themselves properly

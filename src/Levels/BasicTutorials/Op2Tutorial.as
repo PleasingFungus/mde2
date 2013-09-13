@@ -15,6 +15,7 @@ package Levels.BasicTutorials {
 										 [ConstIn, Adder, Latch, DataWriter, DataReader, InstructionDecoder, InstructionDemux], [OpcodeValue.OP_SAVI, OpcodeValue.OP_ADDM]);
 			info = "There are two different instruction types that appear in this level, and a new part, the Instruction Multiplexer module.";
 			useModuleRecord = false;
+			commentsEnabled = true;
 		}
 		
 	}

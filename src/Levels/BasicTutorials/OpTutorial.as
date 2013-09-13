@@ -18,6 +18,7 @@ package Levels.BasicTutorials {
 			info += "Every level has a fixed set of instruction types, but several permutations will be generated to test your solution. ";
 			info += "Click 'Memory' in the top bar to see examples.";
 			useModuleRecord = false;
+			commentsEnabled = true;
 		}
 		
 	}

@@ -60,7 +60,7 @@ package Menu {
 			var cpuAdvanced:LevelModule = addSuccessor(Level.L_CPU_Advanced, cpuBasic, cpuBranch.layout.dim.y + cpuLoad.layout.dim.y + MODULE_SPACING.y * 2);
 			var cpuFull:LevelModule = addSuccessor(Level.L_CPU_Full, cpuBranch, doubleOp.layout.dim.y + MODULE_SPACING.y);
 			
-			addSuccessor(Level.L_CPU_Stack, cpuFull);
+			addSuccessor(Level.L_CPU_Stack, cpuFull, - MODULE_SPACING.y * 2);
 			
 			var d0:LevelModule = addSuccessor(Level.L_DTutorial_0, cpuBasic, -(doubleOp.layout.dim.y + MODULE_SPACING.y) * 2);
 			var d1:LevelModule = addSuccessor(Level.L_DTutorial_1, d0);

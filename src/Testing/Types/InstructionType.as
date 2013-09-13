@@ -16,6 +16,8 @@ package Testing.Types {
 			return "<"+this.name+">";
 		}
 		
+		public function get symbol():String { return null; }
+		
 		public function mapToOp():OpcodeValue {
 			return OpcodeValue.OP_NOOP;
 		}

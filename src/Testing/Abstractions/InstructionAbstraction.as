@@ -13,6 +13,9 @@ package Testing.Abstractions {
 		public var args:Vector.<int>;
 		public var value:int;
 		public var writesToMemory:Boolean;
+		
+		public var comment:String;
+		public var commentFormat:HighlightFormat;
 		public function InstructionAbstraction(type:InstructionType, args:Vector.<int>, value:int) {
 			this.type = type;
 			this.args = args ? args : new Vector.<int>;
@@ -20,6 +23,9 @@ package Testing.Abstractions {
 		}
 		
 		public function toString():String {
+			if (comment)
+				return comment;
+			
 			var out:String = "";
 			out += type.name + " ";
 			for each (var arg:int in args)
@@ -30,6 +36,9 @@ package Testing.Abstractions {
 		}
 		
 		public function toFormat():HighlightFormat {
+			if (commentFormat)
+				return commentFormat;
+			
 			var out:String = "";
 			var colorTexts:Vector.<ColorText> = new Vector.<ColorText>;
 			var colorOptions:Array = [U.SOURCE, U.TARGET, U.DESTINATION];

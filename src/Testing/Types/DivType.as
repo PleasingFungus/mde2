@@ -19,6 +19,8 @@ package Testing.Types {
 			return OpcodeValue.OP_DIV;
 		}
 		
+		override public function get symbol():String { return '/'; }
+		
 		
 		override protected function produceValue(a:int, b:int):int {
 			if (b)

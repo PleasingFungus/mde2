@@ -40,7 +40,6 @@ package Levels {
 		public var useTickRecord:Boolean = false;
 		public var configurableLatchesEnabled:Boolean = false;
 		public var commentsEnabled:Boolean = false;
-		public var startWithMemory:Boolean = false;
 		
 		public var expectedOps:Vector.<OpcodeValue>;
 		public var allowedModules:Vector.<Class>
@@ -280,6 +279,8 @@ package Levels {
 			L_PTutorial2.configurableLatchesEnabled = L_PTutorial4.configurableLatchesEnabled = true;
 			L_PTutorial1.useModuleRecord = L_PTutorial2.useModuleRecord = false;
 			L_PTutorial3.useModuleRecord = L_PTutorial4.useModuleRecord = false;
+			L_PTutorial1.commentsEnabled = L_PTutorial2.commentsEnabled = true;
+			L_PTutorial3.commentsEnabled = L_PTutorial4.commentsEnabled = true;
 			
 			
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);
@@ -320,6 +321,7 @@ package Levels {
 		}
 		
 		public static var ALL:Vector.<Level>;
+		public static function get FIRST():Level { return L_TutorialTest; }
 		
 		public function loadIntoState(levelState:LevelState, loadFresh:Boolean = false):void {
 			for each (var module:Module in modules) {

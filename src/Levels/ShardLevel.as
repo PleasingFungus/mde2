@@ -14,7 +14,6 @@ package Levels {
 			writerLimit = 0;
 			commentsEnabled = true;
 			configurableLatchesEnabled = true;
-			startWithMemory = true;
 			info = null;
 		}
 		

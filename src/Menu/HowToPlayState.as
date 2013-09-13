@@ -23,7 +23,7 @@ package Menu {
 			
 			var contButton:MenuButton = new TextButton(FlxG.width / 2 - 30, FlxG.height - 50, "Continue", function cont():void {
 				if (U.tutorialState < U.TUT_BEAT_TUT_1)
-					FlxG.switchState(new LevelState(Level.ALL[0]));
+					FlxG.switchState(new LevelState(Level.FIRST));
 				else
 					FlxG.switchState(new MenuState);
 			}).setFormat(U.LABEL_FONT.id, U.LABEL_FONT.size, 0xffffff);

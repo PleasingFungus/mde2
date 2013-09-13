@@ -15,8 +15,7 @@ package Displays {
 			super();
 			
 			scrollSpeed = new Point;
-			if (U.tutorialState >= U.TUT_BEAT_TUT_2)
-				add(new ArrowHelper(Context));
+			add(new ArrowHelper(Context));
 		}
 		
 		override public function update():void {

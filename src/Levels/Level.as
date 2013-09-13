@@ -307,6 +307,7 @@ package Levels {
 		}
 		
 		public static var ALL:Vector.<Level>;
+		public static function get FIRST():Level { return L_TutorialTest; }
 		
 		public function loadIntoState(levelState:LevelState, loadFresh:Boolean = false):void {
 			for each (var module:Module in modules) {

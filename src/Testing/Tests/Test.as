@@ -62,7 +62,7 @@ package Testing.Tests {
 				var value:AbstractArg = values[0];
 				values.splice(0, 1); //values.shift()?
 				
-				if (!loop && canMakeLoop(value, values, instructionTypes, abstractionsMade) && FlxG.random() < 1 / 2) {
+				if (!loop && canMakeLoop(value, values, instructionTypes, abstractionsMade) && FlxG.random() < 1 / 3) {
 					loop = makeLoop(value, values, instructionTypes, registers, instructions);
 					abstractionsMade += loop.length;
 				} else {

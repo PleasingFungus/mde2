@@ -66,7 +66,7 @@ package Testing.Tests {
 				if (value.inStack)
 					value = sidestack.pop(); //LIFO, not FIFO
 				
-				if (!loop && canMakeLoop(value, values, instructionTypes, abstractionsMade) && FlxG.random() < 1 / 2) {
+				if (!loop && canMakeLoop(value, values, instructionTypes, abstractionsMade) && FlxG.random() < 1 / 3) {
 					loop = makeLoop(value, values, instructionTypes, registers, instructions);
 					abstractionsMade += loop.length;
 				} else {

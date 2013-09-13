@@ -34,7 +34,7 @@ package Testing.Instructions {
 		}
 		
 		override public function toMemValue():InstructionValue {
-			return new InstructionValue(OpcodeValue.OP_BEQ, args[1].value, args[2].value, args[0].value, "TODO", null);
+			return new InstructionValue(OpcodeValue.OP_BEQ, args[1].value, args[2].value, args[0].value, abstract.toString(), null);
 		}
 		
 	}

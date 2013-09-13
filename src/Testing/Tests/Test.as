@@ -401,7 +401,11 @@ package Testing.Tests {
 																	new ColorText(U.DESTINATION.color, value.value.toString())
 																  ]));
 			loop.push(operator); //operate
-			loop.push(new BranchInstruction(C.buildIntVector(C.INT_NULL, loopCountRegister, loopLimitRegister)));
+			
+			var branchInstr:BranchInstruction = new BranchInstruction(C.buildIntVector(C.INT_NULL, loopCountRegister, loopLimitRegister));
+			branchInstr.abstract.comment = "End loop after " +loopCount + " times.";
+			branchInstr.abstract.commentFormat = new HighlightFormat(branchInstr.abstract.comment, new Vector.<ColorText>);
+			loop.push(branchInstr);
 			
 			//final cleanup
 			registers[destRegister] = base;

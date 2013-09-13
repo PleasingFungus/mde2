@@ -94,6 +94,14 @@ package Levels {
 			return successors;
 		}
 		
+		public function get nonBonusSuccessors():Vector.<Level> {
+			var successors:Vector.<Level> = new Vector.<Level>;
+			for each (var level:Level in Level.ALL)
+				if (level && !level.isBonus && level.predecessors.indexOf(this) != -1)
+					successors.push(level);
+			return successors;
+		}
+		
 		public function setHighScore(modules:int):void {
 			if (modules < fewestModules || !fewestModules) {
 				fewestModules = modules;

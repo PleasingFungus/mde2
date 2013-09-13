@@ -50,7 +50,7 @@ package Infoboxes {
 			add(backButton);
 			addLabelFor(backButton, "Menu");
 			
-			var successors:Vector.<Level> = level.successors;
+			var successors:Vector.<Level> = level.nonBonusSuccessors;
 			if (successors.length == 1 && successors[0].unlocked()) {
 				var nextButton:GraphicButton = new GraphicButton(backButton.X + backButton.fullWidth + 8, backButton.Y, _next_sprite, function next():void {
 					FlxG.switchState(new LevelState(successors[0]));

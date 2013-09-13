@@ -149,15 +149,6 @@ package Infoboxes {
 		}
 		
 		
-		private const noscroll:FlxPoint = new FlxPoint;
-		private function HORRIBLE_HACK(f:Function):void {
-			var lastScroll:FlxPoint = FlxG.camera.scroll;
-			FlxG.camera.scroll = noscroll;
-			f();
-			FlxG.camera.scroll = lastScroll;
-		}
-		override public function update():void { HORRIBLE_HACK(super.update); }
-		override public function draw():void { HORRIBLE_HACK(super.draw); }
 		
 		private const COL_WIDTH:int = 255;
 		private const ROW_HEIGHT:int = 20;

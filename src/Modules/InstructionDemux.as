@@ -90,7 +90,7 @@ package Modules {
 			var op:OpcodeValue = OpcodeValue.fromValue(control);
 			var index:int = expectedOps.indexOf(op);
 			if (index < 0 || index >= width)
-				return U.V_UNKNOWN;
+				return U.V_UNPOWERED;
 			
 			return inputs[index].getValue();
 		}

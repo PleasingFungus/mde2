@@ -8,6 +8,7 @@ package LevelStates {
 	import Modules.Module;
 	import Modules.CustomModule;
 	import Modules.ModuleCategory;
+	import Modules.SeenModules;
 	import Modules.SysDelayClock;
 	import org.flixel.*;
 	import Actions.*;
@@ -352,11 +353,15 @@ package LevelStates {
 		//}
 		
 		private function makeModuleCatButton():void {
-			upperLayer.add(new ToolbarButton(10, _module_sprite, function openList():void {
+			var moduleCatButton:ToolbarButton = new ToolbarButton(10, _module_sprite, function openList():void {
 				ensureNothingHeld();
 				listOpen = LIST_CATEGORIES;
 				makeUI();
-			}, "Modules", "Choose modules", ControlSet.MODULES_BACK));
+			}, "Modules", "Choose modules", ControlSet.MODULES_BACK);
+			upperLayer.add(moduleCatButton);
+			
+			if (SeenModules.SEEN.unknownInList(level.allowedModules))
+				upperLayer.add(new ButtonFlasher(moduleCatButton));
 		}
 		
 		private function makeModuleCatList():void {
@@ -417,6 +422,15 @@ package LevelStates {
 			}
 			
 			upperLayer.add(moduleList);
+			
+			for (i = 1; i < ModuleCategory.ALL.length; i++) {
+				category = ModuleCategory.ALL[i-1];
+				if (!SeenModules.SEEN.unknownInListInCategory(level.allowedModules, category))
+					continue;
+				
+				var button:MenuButton = moduleButtons[i];
+				upperLayer.add(new ButtonFlasher(button));
+			}
 		}
 		
 		private function makeModuleList():void {
@@ -467,6 +481,16 @@ package LevelStates {
 			}
 			
 			upperLayer.add(moduleList);
+			
+			for (i = 0; i < moduleTypes.length; i++) {
+				moduleType = moduleTypes[i];
+				if (SeenModules.SEEN.moduleSeen(moduleType))
+					continue;
+				
+				var button:MenuButton = moduleButtons[i+1]; //offset for back button
+				upperLayer.add(new ButtonFlasher(button));
+			}
+			SeenModules.SEEN.setSeen(moduleTypes);
 		}
 		
 		private function createNewModule(moduleType:Class):void {

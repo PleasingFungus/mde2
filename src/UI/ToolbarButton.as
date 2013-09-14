@@ -15,6 +15,9 @@ package UI {
 			var extraWidth:int = 10;
 			var labelText:FlxText = new ToolbarText(X - extraWidth / 2 - 1, Y + fullHeight - 2, fullWidth + extraWidth, ShortName);
 			add(labelText);
+			
+			setScroll(0);
+			labelText.scrollFactor.x = labelText.scrollFactor.y = 0; 
 		}
 		
 	}

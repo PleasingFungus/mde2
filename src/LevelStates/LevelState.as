@@ -237,7 +237,7 @@ package LevelStates {
 		private function makeBackButton():void {
 			var backButton:GraphicButton = new GraphicButton(FlxG.width - 32, -4, _back_sprite, function back():void {
 				FlxG.switchState(new MenuState);
-			}, "Exit to menu");
+			}, "Exit to menu").setScroll(0);
 			backButton.fades = true;
 			upperLayer.add(backButton);
 		}

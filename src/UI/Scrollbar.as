@@ -148,6 +148,16 @@ package UI {
 			slider.y = rail.y + (rail.height - slider.height) * fraction;
 		}
 		
+		public function setFlxScrollFactor(x:int, y:int):Scrollbar {
+			for each (var member:FlxBasic in members)
+				if (member is FlxObject) {
+					var obj:FlxObject = member as FlxObject;
+					obj.scrollFactor.x = x;
+					obj.scrollFactor.y = y;
+				}
+			return this;
+		}
+		
 		private const DEROCK_TIME:Number = 1 / 3;
 		
 		[Embed(source = "../../lib/art/ui/upscrollarrow.png")] private const _up_arrow:Class;

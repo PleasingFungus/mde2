@@ -46,6 +46,11 @@ package Infoboxes {
 			
 			addTimeText();
 			addMemoryLines();
+			
+			var nilScroll:FlxPoint = new FlxPoint;
+			for each (var member:FlxBasic in members)
+				if (member is FlxObject)
+					(member as FlxObject).scrollFactor = nilScroll;
 		}
 		
 		protected function addTimeText():void {
@@ -139,7 +144,7 @@ package Infoboxes {
 									  U.state.viewingComments = kludge.displayComments = !kludge.displayComments;
 									  init();
 									},
-								  displayComments ? "View expected memory" : "View instruction info", new Key("C")))
+								  displayComments ? "View expected memory" : "View instruction info", new Key("C")).setScroll(0))
 		}
 		
 		private var randomButton:MenuButton;
@@ -150,7 +155,7 @@ package Infoboxes {
 				memory = U.state.memory = U.state.initialMemory.slice();
 				expectedMemory = U.state.level.goal.genExpectedMem();
 				init();
-			}, "Generate new example memory", new Key("R"));
+			}, "Generate new example memory", new Key("R")).setScroll(0);
 			add(randomButton);
 		}
 		

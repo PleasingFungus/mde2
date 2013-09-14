@@ -17,14 +17,14 @@ package UI {
 		}
 		
 		override public function update():void {
-			tooltip.visible = C.textOverlapsPoint(text, new Point(FlxG.mouse.x - FlxG.camera.scroll.x,
-																  FlxG.mouse.y - FlxG.camera.scroll.y))
-			tooltip.x = FlxG.mouse.x + 20;
+			var descrolledMouse:Point = new Point(FlxG.mouse.x - FlxG.camera.scroll.x, FlxG.mouse.y - FlxG.camera.scroll.y);
+			tooltip.visible = C.textOverlapsPoint(text, descrolledMouse);
+			tooltip.x = descrolledMouse.x + 20;
 			if (tooltip.x + tooltip.width >= FlxG.width - 5)
-				tooltip.x = FlxG.mouse.x - (tooltip.width + 10);
-			tooltip.y = FlxG.mouse.y + 30;
+				tooltip.x = descrolledMouse.x - (tooltip.width + 10);
+			tooltip.y = descrolledMouse.y + 30;
 			if (tooltip.y + tooltip.height >= FlxG.height - 5)
-				tooltip.y = FlxG.mouse.y - (tooltip.height + 10);
+				tooltip.y = descrolledMouse.y - (tooltip.height + 10);
 		}
 		
 	}

@@ -25,7 +25,7 @@ package  {
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
 	public class U {
-		public static const VERSION:String = "0.843";
+		public static const VERSION:String = "0.844";
 		public static const SAVE_VERSION:int = 4;
 		
 		public static const BINARY_SAVES:Boolean = true;
@@ -113,7 +113,7 @@ package  {
 			if (FlxG.debug)
 				Level.validate(Level.ALL);
 			DEMO_LIMIT = Level.L_CPU_Basic;
-			DEMO_PERMITTED = Level.ALL.slice(0, Level.ALL.indexOf(DEMO_LIMIT) + 1); //dubious?
+			DEMO_PERMITTED = Level.ALL.slice(0, Level.ALL.indexOf(DEMO_LIMIT) + 1); //TODO: FIXME
 			
 			zoom = 1;
 			
@@ -124,6 +124,7 @@ package  {
 		public static function load():void {
 			ControlSet.load();
 			Level.load();
+			SeenModules.SEEN.load();
 		}
 		
 		private static function sendStartupInfo():void {

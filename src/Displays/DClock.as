@@ -28,8 +28,9 @@ package Displays {
 																			 U.state.time.clockPeriod, lastNum).execute();
 													 }).setLabeled(false));
 			}, "Set system clock period", HKEY);
+			setScroll(0);
 			numberText = U.LABEL_FONT.configureFlxText(new FlxText(X, Y + 8, fullWidth, " "), 0x0, 'center');
-			numberText.scrollFactor = new FlxPoint;
+			numberText.scrollFactor.x = numberText.scrollFactor.y = 0;
 		}
 		
 		override public function draw():void {

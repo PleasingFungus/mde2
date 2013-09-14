@@ -44,7 +44,7 @@ package UI {
 			
 			members = [];
 			
-			add(button = new GraphicButton(X, Y, SPRITES[sharingState], onClick, "Share your machine", ControlSet.SHARE));
+			add(button = new GraphicButton(X, Y, SPRITES[sharingState], onClick, "Share your machine", ControlSet.SHARE).setScroll(0));
 			
 			if (sharingState == SHARING_SUCCESS) {
 				textField = new FlxInputText(X - extraWidth / 2 - 1 - 120, text.y, 110 * 2 - 8, 8,
@@ -59,7 +59,6 @@ package UI {
 				text.scrollFactor.x = text.scrollFactor.y = 0;
 				button.add(text);
 			}
-			
 		}
 		
 		private function onClick():void {

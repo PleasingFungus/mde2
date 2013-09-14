@@ -120,6 +120,13 @@ package Infoboxes {
 			super.draw();
 		}
 		
+		protected function nilScroll():void {
+			var nilScroll:FlxPoint = new FlxPoint;
+			for each (var member:FlxBasic in members)
+				if (member is FlxObject)
+					(member as FlxObject).scrollFactor = nilScroll;
+		}
+		
 		[Embed(source = "../../lib/art/ui/close.png")] private const _close_sprite:Class;
 		
 		protected const RAISED_BORDER_WIDTH:int = 2;

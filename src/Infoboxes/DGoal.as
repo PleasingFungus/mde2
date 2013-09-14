@@ -82,7 +82,9 @@ package Infoboxes {
 			if (level.writerLimit)
 				addBodyText("Number of data writers allowed: " + level.writerLimit);
 			
+			nilScroll();
 		}
+
 	}
 
 }

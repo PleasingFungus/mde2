@@ -46,11 +46,7 @@ package Infoboxes {
 			
 			addTimeText();
 			addMemoryLines();
-			
-			var nilScroll:FlxPoint = new FlxPoint;
-			for each (var member:FlxBasic in members)
-				if (member is FlxObject)
-					(member as FlxObject).scrollFactor = nilScroll;
+			nilScroll();
 		}
 		
 		protected function addTimeText():void {

@@ -36,26 +36,37 @@ package Infoboxes {
 				randomButton.exists = false;
 			
 			super.init();
+			
+			moment = U.state.time.moment;
+			
 			if (U.state.level.commentsEnabled)
 				makeCommentButton();
 			if (U.state.level.goal.randomizedMemory && U.state.editEnabled)
 				makeRandomButton();
 			
+			addTimeText();
+			addMemoryLines();
+			
+			var nilScroll:FlxPoint = new FlxPoint;
+			for each (var member:FlxBasic in members)
+				if (member is FlxObject)
+					(member as FlxObject).scrollFactor = nilScroll;
+		}
+		
+		protected function addTimeText():void {
 			var timeString:String = "Allowed ticks total: " + U.state.level.goal.timeLimit;
 			if (FlxG.debug && U.state.level.goal is GeneratedGoal)
 				timeString += " (over " + (U.state.level.goal.timeLimit / (U.state.level.goal as GeneratedGoal).allowedTimePerInstr) + " expected instruction executions)";
 			timeString += ".";
 			var timeText:FlxText = U.BODY_FONT.configureFlxText(new FlxText(bg.x, bg.y + bg.height + 2, bg.width, timeString), 0xffffff, 'center', 0x1);
 			add(timeText);
-			
-			
-			
+		}
+		
+		protected function addMemoryLines():void {
 			var LINE_NO_START:int = bg.x + INNER_BORDER;
 			var COL_1_START:int = bg.x + INNER_BORDER * 2;
 			var COL_2_START:int = bg.x + INNER_BORDER * 4 + COL_WIDTH;
 			var TITLE_SPACING:int = 20;
-			
-			moment = U.state.time.moment;
 			
 			var Y:int = bg.y + INNER_BORDER;
 			add(U.BODY_FONT.configureFlxText(new FlxText(LINE_NO_START, Y + 10, 60,
@@ -133,7 +144,7 @@ package Infoboxes {
 									  U.state.viewingComments = kludge.displayComments = !kludge.displayComments;
 									  init();
 									},
-								  displayComments ? "View expected memory" : "View instruction info", new Key("C")))
+								  displayComments ? "View expected memory" : "View instruction info", new Key("C")).setScroll(0))
 		}
 		
 		private var randomButton:MenuButton;
@@ -144,7 +155,7 @@ package Infoboxes {
 				memory = U.state.memory = U.state.initialMemory.slice();
 				expectedMemory = U.state.level.goal.genExpectedMem();
 				init();
-			}, "Generate new example memory", new Key("R"));
+			}, "Generate new example memory", new Key("R")).setScroll(0);
 			add(randomButton);
 		}
 		

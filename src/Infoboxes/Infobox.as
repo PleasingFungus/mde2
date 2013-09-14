@@ -22,7 +22,9 @@ package Infoboxes {
 		}
 		
 		protected function init():void {
+			//NOTE: not safe to call repeatedly (when FlxG.camera.scroll != 0,0)
 			members = [];
+			
 			makeBG();
 			makeCloseButton();
 			add(page = new InfoboxPage(bg.width - RAISED_BORDER_WIDTH * 4, bg.height - RAISED_BORDER_WIDTH * 4));
@@ -39,8 +41,7 @@ package Infoboxes {
 			
 			var lineHeight:int = U.BODY_FONT.configureFlxText(new FlxText( -1, -1, 10000, "Example")).height + 6;
 			scrollbar.arrowScrollFraction = lineHeight / (pageBottom - pageTop);
-			
-			scroll = 0;
+			scrollbar.setFlxScrollFactor(0, 0);
 		}
 		
 		protected function setPageTop(top:int):void {
@@ -52,6 +53,7 @@ package Infoboxes {
 			var shade:FlxSprite = new FlxSprite;
 			shade.makeGraphic(FlxG.width, FlxG.height, 0xff000000);
 			shade.alpha = 0.4;
+			shade.scrollFactor.x = shade.scrollFactor.y = 0;
 			add(shade);
 			
 			var width:int = FlxG.width * WIDTH_FRACTION;
@@ -70,7 +72,7 @@ package Infoboxes {
 		protected function makeCloseButton():void {
 			var kludge:Infobox = this;
 			add(new GraphicButton(bg.x + bg.width - INNER_BORDER - 32 - 6, bg.y + INNER_BORDER,
-								  _close_sprite, function close():void { kludge.exists = false } ))
+								  _close_sprite, function close():void { kludge.exists = false } ).setScroll(0))
 		}
 		
 		override public function update():void {

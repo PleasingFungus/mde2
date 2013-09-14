@@ -25,7 +25,7 @@ package  {
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
 	public class U {
-		public static const VERSION:String = "0.842";
+		public static const VERSION:String = "0.843";
 		public static const SAVE_VERSION:int = 4;
 		
 		public static const BINARY_SAVES:Boolean = true;

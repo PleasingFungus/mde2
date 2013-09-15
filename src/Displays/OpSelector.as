@@ -51,7 +51,10 @@ package Displays {
 			offToggles = new Vector.<TextButton>;
 			buttonBGs = new Vector.<FlxSprite>;
 			
-			for each (var op:OpcodeValue in U.state.level.expectedOps) {
+			for each (var op:OpcodeValue in OpcodeValue.OPS) {
+				if (U.state.level.expectedOps.indexOf(op) == -1)
+					continue;
+				
 				onToggles.push(new TextButton( -1, -1, op.shortString(), toggleOn
 											  /*, "Add " + op.shortString() + " to " + mux.name*/).setFormat(U.OPCODE_FONT.id, U.OPCODE_FONT.size, U.HIGHLIGHTED_COLOR).setParam(op).setScroll(0));
 				offToggles.push(new TextButton( -1, -1, op.shortString(), toggleOff

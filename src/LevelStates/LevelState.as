@@ -71,7 +71,7 @@ package LevelStates {
 		private var recentModules:Vector.<Class>;
 		private var moduleCategory:ModuleCategory;
 		private var moduleList:ButtonList;
-		private var moduleSliders:Vector.<ModuleSlider>;
+		private var moduleSliders:Vector.<FlxBounded>; 
 		
 		public var actions:ActionStack;
 		private var currentWire:Wire;
@@ -412,13 +412,17 @@ package LevelStates {
 			});
 			moduleList.setSpacing(4);
 			
-			moduleSliders = new Vector.<ModuleSlider>;
+			moduleSliders = new Vector.<FlxBounded>;
 			for (i = recentModules.length - 1; i >= 0; i-- ) {
 				moduleType = recentModules[i];
 				var archetype:Module = Module.getArchetype(moduleType);
-				if (archetype.getConfiguration())
-					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width,
-																	   moduleButtons[i+ModuleCategory.ALL.length+2], archetype)));
+				if (archetype.canGenerateConfigurationTool()) {
+					var button:MenuButton = moduleButtons[i + ModuleCategory.ALL.length + 2];
+					var slider:FlxBounded = archetype.generateConfigurationTool(moduleList.x + moduleList.width,
+																				button.Y, button.fullHeight);
+					moduleSliders.push(slider);
+					upperLayer.add(slider.basic);
+				}
 			}
 			
 			upperLayer.add(moduleList);
@@ -428,7 +432,7 @@ package LevelStates {
 				if (!SeenModules.SEEN.unknownInListInCategory(level.allowedModules, category))
 					continue;
 				
-				var button:MenuButton = moduleButtons[i];
+				button = moduleButtons[i];
 				upperLayer.add(new ButtonFlasher(button));
 			}
 		}
@@ -472,12 +476,18 @@ package LevelStates {
 			moduleList.setSpacing(4);
 			
 			//make some sliders
-			moduleSliders = new Vector.<ModuleSlider>;
+			moduleSliders = new Vector.<FlxBounded>;
 			for (i = 0; i < moduleTypes.length; i++ ) {
 				moduleType = moduleTypes[i];
 				archetype = Module.getArchetype(moduleType);
 				if (archetype.getConfiguration())
-					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+1], archetype)));
+				if (archetype.canGenerateConfigurationTool()) {
+					var button:MenuButton = moduleButtons[i + 1];
+					var slider:FlxBounded = archetype.generateConfigurationTool(moduleList.x + moduleList.width,
+																				button.Y, button.fullHeight);
+					moduleSliders.push(slider);
+					upperLayer.add(slider.basic);
+				}
 			}
 			
 			upperLayer.add(moduleList);
@@ -487,7 +497,7 @@ package LevelStates {
 				if (SeenModules.SEEN.moduleSeen(moduleType))
 					continue;
 				
-				var button:MenuButton = moduleButtons[i+1]; //offset for back button
+				button = moduleButtons[i+1]; //offset for back button
 				upperLayer.add(new ButtonFlasher(button));
 			}
 			SeenModules.SEEN.setSeen(moduleTypes);
@@ -495,6 +505,7 @@ package LevelStates {
 		
 		private function createNewModule(moduleType:Class):void {
 			var archetype:Module = Module.getArchetype(moduleType);
+			
 			if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
 				var gridLoc:Point = U.pointToGrid(U.mouseLoc);
 				var newModule:Module;

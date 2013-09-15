@@ -12,26 +12,23 @@ package UI {
 	 */
 	public class ModuleSlider extends BoxedSliderbar {
 		
-		public var parent:MenuButton;
 		private var module:Module;
 		private var config:Configuration;
 		public var configValue:int;
 		
-		public function ModuleSlider(X:int, Parent:MenuButton, module:Module) {
-			parent = Parent;
+		public function ModuleSlider(X:int, Y:int, MaxHeight:int, module:Module) {
 			this.module = module;
-			super(X, parent.Y);
+			maxHeight = MaxHeight;
+			super(X, Y);
 			init();
 		}
 		
 		override public function init():void {
-			y = parent.Y;
 			config = module.getConfiguration();
 			configValue = config.value;
 			valueRange = config.valueRange;
 			onChange = config.setValue;
 			initialValue = configValue;
-			maxHeight = parent.fullHeight;
 			
 			super.init();
 		}

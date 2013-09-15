@@ -140,7 +140,8 @@ package Infoboxes {
 									  U.state.viewingComments = kludge.displayComments = !kludge.displayComments;
 									  init();
 									},
-								  displayComments ? "View expected memory" : "View instruction info", new Key("C")).setScroll(0))
+								  displayComments ? "View expected memory" : "View instruction info", new Key("C")));
+			commentButton.setScroll(0);
 		}
 		
 		private var randomButton:MenuButton;

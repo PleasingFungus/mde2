@@ -30,14 +30,16 @@ package Menu {
 			
 			var howToPlay:GraphicButton = new GraphicButton(40, bg.y, _info_sprite, function onSelect():void {
 				FlxG.switchState(new HowToPlayState);
-			}, "How To Play").setScroll(0);
+			}, "How To Play");
 			howToPlay.Y += (bg.height - howToPlay.fullHeight) / 2;
 			howToPlay.fades = true;
+			howToPlay.setScroll(0);
 			add(howToPlay);
 			
 			var credits:GraphicButton = new GraphicButton(FlxG.width - 72, howToPlay.Y, _credits_sprite, function onSelect():void {
 				FlxG.switchState(new CreditsState);
-			}, "Credits").setScroll(0);
+			}, "Credits");
+			credits.setScroll(0);
 			credits.fades = true;
 			add(credits);
 		}

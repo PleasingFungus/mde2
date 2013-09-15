@@ -2,12 +2,13 @@ package Displays {
 	import org.flixel.*;
 	import UI.Sliderbar;
 	import flash.geom.Rectangle;
+	import UI.FlxBounded;
 	
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
-	public class BoxedSliderbar extends FlxGroup {
+	public class BoxedSliderbar extends FlxGroup implements FlxBounded {
 		
 		protected var x:int;
 		protected var y:int;
@@ -51,6 +52,8 @@ package Displays {
 		public function overlapsPoint(p:FlxPoint):Boolean {
 			return bg.overlapsPoint(p, true, FlxG.camera);
 		}
+		
+		public function get basic():FlxBasic { return this; }
 		
 		public function setDieOnClickOutside(die:Boolean, onDie:Function = null):BoxedSliderbar {
 			this.die = die;

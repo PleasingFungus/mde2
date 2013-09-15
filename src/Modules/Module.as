@@ -5,7 +5,10 @@ package Modules {
 	import flash.utils.Dictionary;
 	import Layouts.*;
 	import Components.Port;
+	import org.flixel.FlxBasic;
 	import org.flixel.FlxSprite;
+	import UI.FlxBounded;
+	import UI.ModuleSlider;
 	import UI.HighlightFormat;
 	import Values.Value;
 	/**
@@ -92,6 +95,14 @@ package Modules {
 				symbolDisplay.scale.x = symbolDisplay.scale.y = 2;
 			symbolDisplay.color = 0x0;
 			return symbolDisplay;
+		}
+		
+		public function canGenerateConfigurationTool():Boolean {
+			return getConfiguration() != null;
+		}
+		
+		public function generateConfigurationTool(X:int, Y:int, MaxHeight:int):FlxBounded {
+			return new ModuleSlider(X, Y, MaxHeight, this);
 		}
 		
 		private function populatePorts(ports:Vector.<Port>, numPorts:int, isOutput:Boolean):void {
@@ -296,6 +307,14 @@ package Modules {
 		}
 		
 		
+		
+		public function fromConfig(type:Class, loc:Point):Module {
+			var config:Configuration = getConfiguration();
+			if (config)
+				return new type(loc.x, loc.y, config.value);
+			else
+				return new type(loc.x, loc.y);
+		}
 		
 		public function saveString():String {
 			return getSaveValues().join(U.ARG_DELIM);

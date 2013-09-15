@@ -71,7 +71,7 @@ package LevelStates {
 		private var recentModules:Vector.<Class>;
 		private var moduleCategory:ModuleCategory;
 		private var moduleList:ButtonList;
-		private var moduleSliders:Vector.<ModuleSlider>;
+		private var moduleSliders:Vector.<FlxBounded>; 
 		
 		public var actions:ActionStack;
 		private var currentWire:Wire;
@@ -238,8 +238,9 @@ package LevelStates {
 		private function makeBackButton():void {
 			var backButton:GraphicButton = new GraphicButton(FlxG.width - 32, -4, _back_sprite, function back():void {
 				FlxG.switchState(new MenuState);
-			}, "Exit to menu").setScroll(0);
+			}, "Exit to menu");
 			backButton.fades = true;
+			backButton.setScroll(0);
 			upperLayer.add(backButton);
 		}
 		
@@ -392,7 +393,7 @@ package LevelStates {
 			if (recentModules.length) {
 				moduleButtons.push(new TextButton( -1, -1, "---").setDisabled(true));
 				for each (moduleType in recentModules) {
-					archetype = Module.getArchetype(moduleType);
+					var archetype:Module = Module.getArchetype(moduleType);
 					moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
 						createNewModule(moduleType);
 						
@@ -412,24 +413,14 @@ package LevelStates {
 			});
 			moduleList.setSpacing(4);
 			
-			moduleSliders = new Vector.<ModuleSlider>;
-			for (i = recentModules.length - 1; i >= 0; i-- ) {
-				moduleType = recentModules[i];
-				var archetype:Module = Module.getArchetype(moduleType);
-				if (archetype.getConfiguration())
-					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width,
-																	   moduleButtons[i+ModuleCategory.ALL.length+2], archetype)));
-			}
+			makeModuleSliders(recentModules, moduleButtons.slice(ModuleCategory.ALL.length + 2));
 			
 			upperLayer.add(moduleList);
 			
 			for (i = 1; i < ModuleCategory.ALL.length; i++) {
 				category = ModuleCategory.ALL[i-1];
-				if (!SeenModules.SEEN.unknownInListInCategory(level.allowedModules, category))
-					continue;
-				
-				var button:MenuButton = moduleButtons[i];
-				upperLayer.add(new ButtonFlasher(button));
+				if (SeenModules.SEEN.unknownInListInCategory(level.allowedModules, category))
+					upperLayer.add(new ButtonFlasher(moduleButtons[i]));
 			}
 		}
 		
@@ -472,44 +463,33 @@ package LevelStates {
 			moduleList.setSpacing(4);
 			
 			//make some sliders
-			moduleSliders = new Vector.<ModuleSlider>;
-			for (i = 0; i < moduleTypes.length; i++ ) {
-				moduleType = moduleTypes[i];
-				archetype = Module.getArchetype(moduleType);
-				if (archetype.getConfiguration())
-					moduleSliders.push(upperLayer.add(new ModuleSlider(moduleList.x + moduleList.width, moduleButtons[i+1], archetype)));
-			}
+			moduleSliders = makeModuleSliders(moduleTypes, moduleButtons.slice(1));
 			
 			upperLayer.add(moduleList);
 			
 			for (i = 0; i < moduleTypes.length; i++) {
 				moduleType = moduleTypes[i];
-				if (SeenModules.SEEN.moduleSeen(moduleType))
-					continue;
-				
-				var button:MenuButton = moduleButtons[i+1]; //offset for back button
-				upperLayer.add(new ButtonFlasher(button));
+				if (!SeenModules.SEEN.moduleSeen(moduleType))
+					upperLayer.add(new ButtonFlasher(moduleButtons[i+1]));
 			}
 			SeenModules.SEEN.setSeen(moduleTypes);
 		}
 		
 		private function createNewModule(moduleType:Class):void {
 			var archetype:Module = Module.getArchetype(moduleType);
-			if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
-				var gridLoc:Point = U.pointToGrid(U.mouseLoc);
-				var newModule:Module;
-				if (archetype.getConfiguration())
-					newModule = new moduleType(gridLoc.x, gridLoc.y, archetype.getConfiguration().value);
-				else
-					newModule = new moduleType(gridLoc.x, gridLoc.y);
-				newModule.initialize();
-				
-				modules.push(newModule);
-				var displayModule:DModule = newModule.generateDisplay();
-				displayModules.push(midLayer.add(displayModule));
-				currentBloc = addBlocFromModule(displayModule);
-				addRecentModule(moduleType);
-			}
+			
+			if (archetype.writesToMemory && level.writerLimit && numMemoryWriters() >= level.writerLimit)
+				return;
+			
+			var gridLoc:Point = U.pointToGrid(U.mouseLoc);
+			var newModule:Module = archetype.fromConfig(moduleType, gridLoc);
+			newModule.initialize();
+			
+			modules.push(newModule);
+			var displayModule:DModule = newModule.generateDisplay();
+			displayModules.push(midLayer.add(displayModule));
+			currentBloc = addBlocFromModule(displayModule);
+			addRecentModule(moduleType);
 		}
 		
 		private function addRecentModule(moduleType:Class):void {
@@ -518,6 +498,22 @@ package LevelStates {
 			else if (recentModules.length >= 3)
 				recentModules.pop();
 			recentModules.unshift( moduleType);
+		}
+		
+		private function makeModuleSliders(moduleTypes:Vector.<Class>, moduleButtons:Vector.<MenuButton>):Vector.<FlxBounded> {
+			moduleSliders = new Vector.<FlxBounded>;
+			for (var i:int = 0; i < moduleTypes.length; i++ ) {
+				var moduleType:Class = moduleTypes[i];
+				var archetype:Module = Module.getArchetype(moduleType);
+				if (archetype.canGenerateConfigurationTool()) {
+					var button:MenuButton = moduleButtons[i];
+					var slider:FlxBounded = archetype.generateConfigurationTool(moduleList.x + moduleList.width,
+																				button.Y, button.fullHeight);
+					moduleSliders.push(slider);
+					upperLayer.add(slider.basic);
+				}
+			}
+			return moduleSliders;
 		}
 		
 		
@@ -840,14 +836,13 @@ package LevelStates {
 		}
 		
 		private function checkModuleListState():void {
-			var moduleSlider:ModuleSlider;
 			if (moduleList && !moduleList.exists) {
 				moduleList = null;
 				moduleSliders = null;
 				makeUI();
 			} else if (moduleSliders) {
 				moduleList.closesOnClickOutside = true;
-				for each (moduleSlider in moduleSliders)
+				for each (var moduleSlider:FlxBounded in moduleSliders)
 					if (moduleSlider.overlapsPoint(FlxG.mouse)) {
 						moduleList.closesOnClickOutside = false;
 						break;

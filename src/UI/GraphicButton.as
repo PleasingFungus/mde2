@@ -40,9 +40,8 @@ package UI {
 			graphic.alpha = a;
 		}
 		
-		public function setScroll(factor:int):GraphicButton {
-			coreGraphic.scrollFactor.x = coreGraphic.scrollFactor.y = factor;
-			highlight.scrollFactor.x = highlight.scrollFactor.y = factor;
+		override public function setScroll(factor:int):MenuButton {
+			super.setScroll(factor);
 			if (hotkeyHint)
 				hotkeyHint.scrollFactor.x = hotkeyHint.scrollFactor.y = factor;
 			return this;

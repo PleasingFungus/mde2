@@ -239,6 +239,12 @@ package UI {
 			return this;
 		}
 		
+		public function setScroll(factor:int):MenuButton {
+			coreGraphic.scrollFactor.x = coreGraphic.scrollFactor.y = factor;
+			highlight.scrollFactor.x = highlight.scrollFactor.y = factor;
+			return this;
+		}
+		
 		
 		override public function draw():void {
 			highlight.visible = isHighlighted;

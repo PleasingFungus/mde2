@@ -392,7 +392,7 @@ package LevelStates {
 			if (recentModules.length) {
 				moduleButtons.push(new TextButton( -1, -1, "---").setDisabled(true));
 				for each (moduleType in recentModules) {
-					archetype = Module.getArchetype(moduleType);
+					var archetype:Module = Module.getArchetype(moduleType);
 					moduleButtons.push(new TextButton( -1, -1, archetype.name, function chooseModule(moduleType:Class):void {
 						createNewModule(moduleType);
 						
@@ -412,28 +412,14 @@ package LevelStates {
 			});
 			moduleList.setSpacing(4);
 			
-			moduleSliders = new Vector.<FlxBounded>;
-			for (i = recentModules.length - 1; i >= 0; i-- ) {
-				moduleType = recentModules[i];
-				var archetype:Module = Module.getArchetype(moduleType);
-				if (archetype.canGenerateConfigurationTool()) {
-					var button:MenuButton = moduleButtons[i + ModuleCategory.ALL.length + 2];
-					var slider:FlxBounded = archetype.generateConfigurationTool(moduleList.x + moduleList.width,
-																				button.Y, button.fullHeight);
-					moduleSliders.push(slider);
-					upperLayer.add(slider.basic);
-				}
-			}
+			makeModuleSliders(recentModules, moduleButtons.slice(ModuleCategory.ALL.length + 2));
 			
 			upperLayer.add(moduleList);
 			
 			for (i = 1; i < ModuleCategory.ALL.length; i++) {
 				category = ModuleCategory.ALL[i-1];
-				if (!SeenModules.SEEN.unknownInListInCategory(level.allowedModules, category))
-					continue;
-				
-				button = moduleButtons[i];
-				upperLayer.add(new ButtonFlasher(button));
+				if (SeenModules.SEEN.unknownInListInCategory(level.allowedModules, category))
+					upperLayer.add(new ButtonFlasher(moduleButtons[i]));
 			}
 		}
 		
@@ -476,29 +462,14 @@ package LevelStates {
 			moduleList.setSpacing(4);
 			
 			//make some sliders
-			moduleSliders = new Vector.<FlxBounded>;
-			for (i = 0; i < moduleTypes.length; i++ ) {
-				moduleType = moduleTypes[i];
-				archetype = Module.getArchetype(moduleType);
-				if (archetype.getConfiguration())
-				if (archetype.canGenerateConfigurationTool()) {
-					var button:MenuButton = moduleButtons[i + 1];
-					var slider:FlxBounded = archetype.generateConfigurationTool(moduleList.x + moduleList.width,
-																				button.Y, button.fullHeight);
-					moduleSliders.push(slider);
-					upperLayer.add(slider.basic);
-				}
-			}
+			moduleSliders = makeModuleSliders(moduleTypes, moduleButtons.slice(1));
 			
 			upperLayer.add(moduleList);
 			
 			for (i = 0; i < moduleTypes.length; i++) {
 				moduleType = moduleTypes[i];
-				if (SeenModules.SEEN.moduleSeen(moduleType))
-					continue;
-				
-				button = moduleButtons[i+1]; //offset for back button
-				upperLayer.add(new ButtonFlasher(button));
+				if (!SeenModules.SEEN.moduleSeen(moduleType))
+					upperLayer.add(new ButtonFlasher(moduleButtons[i+1]));
 			}
 			SeenModules.SEEN.setSeen(moduleTypes);
 		}
@@ -526,6 +497,22 @@ package LevelStates {
 			else if (recentModules.length >= 3)
 				recentModules.pop();
 			recentModules.unshift( moduleType);
+		}
+		
+		private function makeModuleSliders(moduleTypes:Vector.<Class>, moduleButtons:Vector.<MenuButton>):Vector.<FlxBounded> {
+			moduleSliders = new Vector.<FlxBounded>;
+			for (var i:int = 0; i < moduleTypes.length; i++ ) {
+				var moduleType:Class = moduleTypes[i];
+				var archetype:Module = Module.getArchetype(moduleType);
+				if (archetype.canGenerateConfigurationTool()) {
+					var button:MenuButton = moduleButtons[i];
+					var slider:FlxBounded = archetype.generateConfigurationTool(moduleList.x + moduleList.width,
+																				button.Y, button.fullHeight);
+					moduleSliders.push(slider);
+					upperLayer.add(slider.basic);
+				}
+			}
+			return moduleSliders;
 		}
 		
 		

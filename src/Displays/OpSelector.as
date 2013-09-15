@@ -25,6 +25,7 @@ package Displays {
 		private var onToggles:Vector.<TextButton>;
 		private var offToggles:Vector.<TextButton>;
 		private var buttonBGs:Vector.<FlxSprite>;
+		private var orderedOps:Vector.<OpcodeValue>;
 		public function OpSelector(X:int, Y:int, MaxHeight:int, Mux:InstructionDemux) {
 			x = X;
 			y = Y;
@@ -50,6 +51,7 @@ package Displays {
 			onToggles = new Vector.<TextButton>;
 			offToggles = new Vector.<TextButton>;
 			buttonBGs = new Vector.<FlxSprite>;
+			orderedOps = new Vector.<OpcodeValue>;
 			
 			for each (var op:OpcodeValue in OpcodeValue.OPS) {
 				if (U.state.level.expectedOps.indexOf(op) == -1)
@@ -65,6 +67,8 @@ package Displays {
 																			onToggles[onToggles.length - 1].fullHeight + 2);
 				buttonBG.scrollFactor.x = buttonBG.scrollFactor.y = 0;
 				buttonBGs.push(buttonBG);
+				
+				orderedOps.push(op);
 			}
 		}
 		
@@ -119,7 +123,7 @@ package Displays {
 			var canToggleOff:Boolean = mux.expectedOps.length > 1;
 			
 			for (var i:int = 0; i < onToggles.length; i++) {
-				var op:OpcodeValue = U.state.level.expectedOps[i];
+				var op:OpcodeValue = orderedOps[i];
 				var opEnabled:Boolean = mux.expectedOps.indexOf(op) != -1;
 				
 				onToggles[i].exists = !opEnabled;

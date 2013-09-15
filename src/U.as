@@ -25,7 +25,7 @@ package  {
 	 * @author Nicholas "PleasingFungus" Feinberg
 	 */
 	public class U {
-		public static const VERSION:String = "0.844";
+		public static const VERSION:String = "0.845";
 		public static const SAVE_VERSION:int = 4;
 		
 		public static const BINARY_SAVES:Boolean = true;
@@ -53,6 +53,7 @@ package  {
 		public static const TOOLBAR_FONT:FontTuple = new FontTuple(MUNRO_WEB, 16);
 		public static const MODULE_FONT_CLOSE:FontTuple = new FontTuple(SYSTEM, 16);
 		public static const MODULE_FONT_FAR:FontTuple = new FontTuple(SYSTEM, 32);
+		public static const OPCODE_FONT:FontTuple = new FontTuple(MUNRO_WEB, 16);
 		
 		public static var save:FlxSave;
 		

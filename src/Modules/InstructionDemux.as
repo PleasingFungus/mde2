@@ -1,7 +1,9 @@
 package Modules {
 	import Components.Port;
+	import Displays.OpSelector;
 	import flash.utils.ByteArray;
 	import Values.*;
+	import UI.FlxBounded;
 	
 	import Layouts.*;
 	import Layouts.Nodes.*;
@@ -14,7 +16,7 @@ package Modules {
 	public class InstructionDemux extends Module {
 		
 		public var width:int;
-		private var expectedOps:Vector.<OpcodeValue>;
+		public var expectedOps:Vector.<OpcodeValue>;
 		protected var level:Level;
 		public function InstructionDemux(X:int, Y:int, opIntValues:* = null) {
 			if (opIntValues is int)
@@ -111,8 +113,10 @@ package Modules {
 		}
 		
 		override public function getConfiguration():Configuration {
-			if (U.state && U.state.level != level)
+			if (U.state && U.state.level != level) {
 				expectedOps = U.state.level.expectedOps.slice();
+				level = U.state.level;
+			}
 			return null;
 		}
 		
@@ -123,6 +127,14 @@ package Modules {
 				if (expectedOps.indexOf(op) != -1)
 					opArray.push(op.toNumber());
 			return new type(loc.x, loc.y, opArray);
+		}
+		
+		override public function canGenerateConfigurationTool():Boolean {
+			return U.state && U.state.level.expectedOps.length > 1;
+		}
+		
+		override public function generateConfigurationTool(X:int, Y:int, MaxHeight:int):FlxBounded {
+			return new OpSelector(X, Y, MaxHeight, this);
 		}
 		
 		override public function getSaveValues():Array {

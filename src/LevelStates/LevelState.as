@@ -238,8 +238,9 @@ package LevelStates {
 		private function makeBackButton():void {
 			var backButton:GraphicButton = new GraphicButton(FlxG.width - 32, -4, _back_sprite, function back():void {
 				FlxG.switchState(new MenuState);
-			}, "Exit to menu").setScroll(0);
+			}, "Exit to menu");
 			backButton.fades = true;
+			backButton.setScroll(0);
 			upperLayer.add(backButton);
 		}
 		
@@ -835,14 +836,13 @@ package LevelStates {
 		}
 		
 		private function checkModuleListState():void {
-			var moduleSlider:ModuleSlider;
 			if (moduleList && !moduleList.exists) {
 				moduleList = null;
 				moduleSliders = null;
 				makeUI();
 			} else if (moduleSliders) {
 				moduleList.closesOnClickOutside = true;
-				for each (moduleSlider in moduleSliders)
+				for each (var moduleSlider:FlxBounded in moduleSliders)
 					if (moduleSlider.overlapsPoint(FlxG.mouse)) {
 						moduleList.closesOnClickOutside = false;
 						break;

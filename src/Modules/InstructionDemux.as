@@ -6,6 +6,7 @@ package Modules {
 	import Layouts.*;
 	import Layouts.Nodes.*;
 	import flash.geom.Point;
+	import Levels.Level;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -14,6 +15,7 @@ package Modules {
 		
 		public var width:int;
 		private var expectedOps:Vector.<OpcodeValue>;
+		protected var level:Level;
 		public function InstructionDemux(X:int, Y:int, opIntValues:* = null) {
 			if (opIntValues is int)
 				opIntValues = [opIntValues];
@@ -106,6 +108,21 @@ package Modules {
 				return C.INT_NULL;
 			
 			return index;
+		}
+		
+		override public function getConfiguration():Configuration {
+			if (U.state && U.state.level != level)
+				expectedOps = U.state.level.expectedOps.slice();
+			return null;
+		}
+		
+		override public function fromConfig(type:Class, loc:Point):Module {
+			getConfiguration(); //just to be sure
+			var opArray:Array = new Array;
+			for each (var op:OpcodeValue in OpcodeValue.OPS)
+				if (expectedOps.indexOf(op) != -1)
+					opArray.push(op.toNumber());
+			return new type(loc.x, loc.y, opArray);
 		}
 		
 		override public function getSaveValues():Array {

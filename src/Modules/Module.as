@@ -308,6 +308,14 @@ package Modules {
 		
 		
 		
+		public function fromConfig(type:Class, loc:Point):Module {
+			var config:Configuration = getConfiguration();
+			if (config)
+				return new type(loc.x, loc.y, config.value);
+			else
+				return new type(loc.x, loc.y);
+		}
+		
 		public function saveString():String {
 			return getSaveValues().join(U.ARG_DELIM);
 		}

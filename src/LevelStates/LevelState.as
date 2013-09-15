@@ -506,21 +506,18 @@ package LevelStates {
 		private function createNewModule(moduleType:Class):void {
 			var archetype:Module = Module.getArchetype(moduleType);
 			
-			if (!archetype.writesToMemory || !level.writerLimit || numMemoryWriters() < level.writerLimit) {
-				var gridLoc:Point = U.pointToGrid(U.mouseLoc);
-				var newModule:Module;
-				if (archetype.getConfiguration())
-					newModule = new moduleType(gridLoc.x, gridLoc.y, archetype.getConfiguration().value);
-				else
-					newModule = new moduleType(gridLoc.x, gridLoc.y);
-				newModule.initialize();
-				
-				modules.push(newModule);
-				var displayModule:DModule = newModule.generateDisplay();
-				displayModules.push(midLayer.add(displayModule));
-				currentBloc = addBlocFromModule(displayModule);
-				addRecentModule(moduleType);
-			}
+			if (archetype.writesToMemory && level.writerLimit && numMemoryWriters() >= level.writerLimit)
+				return;
+			
+			var gridLoc:Point = U.pointToGrid(U.mouseLoc);
+			var newModule:Module = archetype.fromConfig(moduleType, gridLoc);
+			newModule.initialize();
+			
+			modules.push(newModule);
+			var displayModule:DModule = newModule.generateDisplay();
+			displayModules.push(midLayer.add(displayModule));
+			currentBloc = addBlocFromModule(displayModule);
+			addRecentModule(moduleType);
 		}
 		
 		private function addRecentModule(moduleType:Class):void {

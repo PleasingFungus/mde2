@@ -133,9 +133,13 @@ package Menu {
 		
 		protected function indexByY(module:LevelModule, levels:Vector.<Level>):int {
 			var index:int = 0;
-			for each (var level:Level in levels)
-				if (level != module.level && (modulesByName[level.name] as LevelModule).y < module.y)
+			for each (var level:Level in levels) {
+				if (level == module.level)
+					continue;
+				var levelModule:LevelModule = modulesByName[level.name] as LevelModule;
+				if (levelModule.exists && levelModule.y < module.y)
 					index += 1
+			}
 			return index;
 		}
 		

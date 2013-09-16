@@ -36,7 +36,7 @@ package Testing.Types {
 		
 		private function can_produce_with_one_contextual(value:AbstractArg, arg:AbstractArg, args:Vector.<AbstractArg>):Boolean {
 			return ((arg.inMemory && arg.value == value.value) ||
-					(arg.inRegisters && arg.value >= U.MIN_INT && arg.value <= U.MAX_MEM && !AbstractArg.addrInVec(arg.value, args)));
+					(arg.inRegisters && arg.value >= U.MIN_MEM && arg.value <= U.MAX_MEM && !AbstractArg.addrInVec(arg.value, args)));
 		}
 		
 		override protected function can_produce_with(value:AbstractArg, args:Vector.<AbstractArg>):Boolean {
@@ -75,7 +75,9 @@ package Testing.Types {
 		override protected function produce_with_one(value:AbstractArg, arg:AbstractArg):InstructionAbstraction {
 			if (arg.inMemory)
 				return new LoadAbstraction(arg.address, value.value);
-			return new LoadAbstraction(C.randomRange(U.MIN_MEM, U.MAX_MEM), value.value);
+			if (arg.inRegisters)
+				return new LoadAbstraction(arg.value, value.value);
+			throw new Error("Invalid arg to load abstraction!");
 		}
 		
 		override protected function produce_with(value:AbstractArg, args:Vector.<AbstractArg>):InstructionAbstraction {

@@ -486,9 +486,12 @@ package Testing.Tests {
 				
 				for (var k:* in registers)
 					if (isNaN(k))
-						throw new Error("!");
+						throw new Error("NaN key into registers!");
 				if (stack.length > STACK_SIZE)
-					throw new Error("!!!");
+					throw new Error("Stack too large!");
+				for each (var v:int in stack)
+					if (isNaN(v))
+						throw new Error("NaN stack value!");
 			}
 		}
 		

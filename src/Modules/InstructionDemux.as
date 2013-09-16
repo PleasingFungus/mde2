@@ -23,21 +23,29 @@ package Modules {
 				opIntValues = [opIntValues];
 			
 			expectedOps = new Vector.<OpcodeValue>;
-			if (opIntValues && opIntValues.length)
-				for each (var opIntValue:int in opIntValues)
-					expectedOps.push(OpcodeValue.fromValue(new IntegerValue(opIntValue)));
-			else if (U.state)
+			if (U.state) {
 				for each (var op:OpcodeValue in OpcodeValue.OPS)
-					if (U.state.level.expectedOps.indexOf(op) != -1)
-						expectedOps.push(op);
+					if (opIntValues && opIntValues.length) {
+						if (opIntValues.indexOf(op.toNumber()) != -1)
+							expectedOps.push(op);
+					} else {
+						if (U.state.level.expectedOps.indexOf(op) != -1)
+							expectedOps.push(op);
+					}
+				level = U.state.level;
+			}
 			
 			width = expectedOps.length ? expectedOps.length : 1;
 			super(X, Y, "Instruction Multiplexer", ModuleCategory.CONTROL, width, 1, 1);
 			abbrev = "Imx";
 			symbol = _symbol;
 			
+			for (var i:int = 1; i < expectedOps.length; i++)
+				if (expectedOps[i - 1].toNumber() > expectedOps[i].toNumber())
+					throw new Error("Misordered ops!");
+			
 			if (U.state)
-				for (var i:int = 0; i < width; i++)
+				for (i = 0; i < width; i++)
 					inputs[i].name = expectedOps[i].toString();
 			delay = Math.ceil(Math.log(width) / Math.log(2));
 		}

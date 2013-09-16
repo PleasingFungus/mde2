@@ -308,6 +308,11 @@ package Levels {
 			L_PCPU_Load.useTickRecord = L_PCPU_Full.useTickRecord = true;
 			
 			L_CPU_Stack = new ShardLevel("Stack", fullShard.compositWith(LevelShard.STACK));
+			L_CPU_Stack.info = "This bonus level asks you to implement a 'stack' in your CPU."
+			L_CPU_Stack.info += "\n\nA stack is a simple data structure. It holds some number of values 'pushed' onto the top - like a stack of papers.";
+			L_CPU_Stack.info += " Later, those values can be 'popped' off one-by-one, in the opposite order from which they were pushed on."
+			L_CPU_Stack.info += "\n\nIn this level, your stack need hold at most 4 values; you don't need to worry about more being pushed on, or being requested to 'pop' from an empty stack.";
+			L_CPU_Stack.info += "\n\nHave fun!";
 			L_CPU_Stack.predecessors.push(L_CPU_Full);
 			L_CPU_Stack.isBonus = true;
 			L_PCPU_Stack = new ShardLevel("Efficient Stack", fullEfficientShard.compositWith(LevelShard.STACK));

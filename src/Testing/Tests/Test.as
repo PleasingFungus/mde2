@@ -72,13 +72,23 @@ package Testing.Tests {
 				} else {
 					var abstraction:InstructionAbstraction = genAbstraction(value, values, sidestack, instructionTypes);
 					
+					var oldValues:Vector.<AbstractArg> = values.slice();
+					var oldStack:Vector.<AbstractArg> = sidestack.slice();
+					for each (var arg:AbstractArg in abstraction.getAbstractArgs())
+						if (!arg.immediate && !AbstractArg.argInVec(arg, values)) {
+							values.push(arg);
+							if (arg.inStack)
+								sidestack.push(arg);
+						}
+					
 					if (AbstractArg.instructionsToSet(values) > NUM_REGISTERS) {
-						values.pop();
-						values.pop(); //assuming max 2 args, error condition can only occur if both are added, not prev. present; so safe to pop
+						values = oldValues;
+						sidestack = oldStack;
 						values.push(value);
 						log("Early termination due to register overflow");
 						break;
 					}
+					
 					
 					if (abstraction.writesToMemory)
 						saveTargets.push(new AbstractArg(abstraction.memoryValue, abstraction.memoryAddress));
@@ -91,7 +101,9 @@ package Testing.Tests {
 			while (sidestack.length) {
 				value = sidestack.pop();
 				instructions.push(makeInstruction(new PushAbstraction(value.value), registers));
-				values.push(new AbstractArg(value.value));
+				var pushedArg:AbstractArg = new AbstractArg(value.value);
+				if (!AbstractArg.argInVec(pushedArg, values))
+					values.push(pushedArg);
 			}
 			
 			//cleanup other values to be initialized
@@ -269,13 +281,6 @@ package Testing.Tests {
 					throw new Error("!");
 			} else if (abstraction.value != value.value)
 				throw new Error("!!!");
-			
-			for each (var arg:AbstractArg in abstraction.getAbstractArgs())
-				if (!arg.immediate && !AbstractArg.argInVec(arg, values)) {
-					values.push(arg);
-					if (arg.inStack)
-						sidestack.push(arg);
-				}
 			
 			return abstraction;
 		}
@@ -488,10 +493,15 @@ package Testing.Tests {
 		}
 		
 		
-		
+		protected var DEBUG_PRINTOUT:String;
 		protected function log(...args):void {
 			if (DEBUG.PRINT_TESTS)
 				C.log(args);
+			else {
+				if (!DEBUG_PRINTOUT)
+					DEBUG_PRINTOUT = '';
+				DEBUG_PRINTOUT += args.join(", ") + "\n";
+			}
 		}
 		
 		

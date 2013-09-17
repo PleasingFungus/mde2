@@ -300,7 +300,11 @@ package Testing.Tests {
 		}
 		
 		protected function canMakeLoop(value:AbstractArg, values:Vector.<AbstractArg>, instructionTypes:Vector.<OrderableInstructionType>, abstractionsMade:int):Boolean {
-			return branchesEnabled && value.inRegisters && AbstractArg.instructionsToSet(values) + 4 <= NUM_REGISTERS && remainingAbstractions(abstractionsMade, values) >= 4;
+			var registersNeededForLoop:int = 5; //applicand, loopcount, looplimit, loopincrement, and destination (not currently in list of values, so needs to be counted!)
+			var instructionsNeededForLoop:int = 4;
+			return (branchesEnabled && value.inRegisters &&
+					AbstractArg.instructionsToSet(values) + registersNeededForLoop <= NUM_REGISTERS &&
+					remainingAbstractions(abstractionsMade, values) >= instructionsNeededForLoop);
 		}
 		
 		protected function makeLoop(value:AbstractArg, values:Vector.<AbstractArg>,

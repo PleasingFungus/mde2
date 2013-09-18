@@ -14,6 +14,7 @@ package Testing.Instructions {
 		public var type:InstructionType;
 		public var noop:Boolean;
 		public var comment:String;
+		public var validValues:Vector.<int>;
 		public function Instruction(registers:Vector.<int>, abstract:InstructionAbstraction, noop:Boolean) {
 			this.abstract = abstract;
 			this.type = abstract.type;

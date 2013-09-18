@@ -22,6 +22,8 @@ package Testing.Instructions {
 			
 			if (abstract.value != C.INT_NULL && abstract.value != registers[args[0].value])
 				throw new Error("Mismatch between expected value and stored value!");
+			else if (validValues && validValues.indexOf(registers[args[0].value]) == -1)
+				throw new Error("Mismatch between expected values and stored value!");
 			
 			return C.INT_NULL;
 		}

@@ -75,7 +75,7 @@ package Testing.Tests {
 					var oldValues:Vector.<AbstractArg> = values.slice();
 					var oldStack:Vector.<AbstractArg> = sidestack.slice();
 					for each (var arg:AbstractArg in abstraction.getAbstractArgs())
-						if (!arg.immediate && !AbstractArg.argInVec(arg, values)) {
+						if (!arg.immediate && (!AbstractArg.argInVec(arg, values) || arg.eq(value))) {
 							values.push(arg);
 							if (arg.inStack)
 								sidestack.push(arg);
@@ -93,7 +93,8 @@ package Testing.Tests {
 					if (abstraction.writesToMemory)
 						saveTargets.push(new AbstractArg(abstraction.memoryValue, abstraction.memoryAddress));
 					
-					instructions.push(makeInstruction(abstraction, registers));
+					var instruction:Instruction = makeInstruction(abstraction, registers);
+					instructions.push(instruction);
 				}
 			}
 			
@@ -343,6 +344,14 @@ package Testing.Tests {
 			var increment:int = C.randomRange(1, 4);
 			var loopLimit:int = loopCount * increment;
 			var loopBackwards:Boolean = expectedOps.indexOf(OpcodeValue.OP_SUB) != -1 && FlxG.random() < 0.5;
+			var initialLoopCount:int, finalLoopCount:int;
+			if (loopBackwards) {
+				initialLoopCount = loopLimit;
+				finalLoopCount = 0;
+			} else {
+				initialLoopCount = 0;
+				finalLoopCount = loopLimit;
+			}
 			
 			//determine base value
 			var base:int = value.value;
@@ -357,13 +366,14 @@ package Testing.Tests {
 					default:
 						throw new Error("Unexpected instruction type: " + instructionType);
 				}
-			//determine values to be set (loop #, applicand, base)
-			var newValues:Vector.<int> = C.buildIntSet(loopLimit, applicand, base, increment, 0);
+			//determine values to be set
+			var newValues:Vector.<int> = C.buildIntSet(applicand, base, increment, finalLoopCount);
 			for each (var newValue:int in newValues) {
 				var v:AbstractArg = new AbstractArg(newValue);
 				if (!AbstractArg.argInVec(v, values))
 					values.push(v);
 			}
+			values.push(new AbstractArg(initialLoopCount)); //always needs to be generated separately
 			
 			//find registers
 			var destRegister:int = registers.indexOf(value.value);
@@ -371,10 +381,14 @@ package Testing.Tests {
 				throw new Error("!!!");
 			registers[destRegister] = C.INT_NULL + 1; //invalid value; won't be used to store other values below
 			
+			var loopCountRegister:int = setRegisterFor(initialLoopCount, registers);
+			registers[loopCountRegister] = C.INT_NULL + 1; //invalid value; won't be used to store other values below
+			
 			var applicandRegister:int = setRegisterFor(applicand, registers);
-			var loopCountRegister:int = setRegisterFor(loopBackwards ? loopLimit : 0, registers);
-			var loopLimitRegister:int = setRegisterFor(loopBackwards ? 0 : loopLimit, registers);
+			var loopLimitRegister:int = setRegisterFor(finalLoopCount, registers);
 			var incrementRegister:int = setRegisterFor(increment, registers);
+			
+			registers[loopCountRegister] = initialLoopCount;
 			
 			//generate actual instructions
 			//branch
@@ -400,6 +414,9 @@ package Testing.Tests {
 			incrementor.abstract.commentFormat = new HighlightFormat((loopBackwards ? "Decrement from" : "Increment to") + " {} by {}",
 																	 ColorText.vecFromArray([new ColorText(U.DESTINATION.color, loopLimit.toString()),
 																							 new ColorText(U.TARGET.color, increment.toString())])); //double-check: might be source?
+			incrementor.validValues = new Vector.<int>;
+			for (i = 1; i <= loopCount; i++)
+				incrementor.validValues.push(loopBackwards ? (loopLimit - i * increment) : i * increment);
 			
 			var operator:Instruction = new (Instruction.mapByType(instructionType))(C.buildIntVector(destRegister, destRegister, applicandRegister), instructionType.produce(C.INT_NULL, C.INT_NULL), false);
 			operator.abstract.comment = "(" + base + instructionType.symbol + applicand + ") x" + loopCount + " = " + value.value;
@@ -409,6 +426,18 @@ package Testing.Tests {
 																	new ColorText(U.TARGET.color, applicand.toString()),
 																	new ColorText(U.DESTINATION.color, value.value.toString())
 																  ]));
+			operator.validValues = new Vector.<int>;
+			for (i = 1; i <= loopCount; i++)
+				switch (instructionType) {
+					case InstructionType.ADD:
+						operator.validValues.push(base + applicand * i); break;
+					case InstructionType.SUB:
+						operator.validValues.push(base - applicand * i); break;
+					case InstructionType.DIV:
+						operator.validValues.push(base / Math.pow(applicand, i)); break;
+					default:
+						throw new Error("Unexpected instruction type: " + instructionType);
+				}
 			loop.push(operator); //operate
 			
 			var branchInstr:BranchInstruction = new BranchInstruction(C.buildIntVector(C.INT_NULL, loopCountRegister, loopLimitRegister));
@@ -417,7 +446,7 @@ package Testing.Tests {
 			loop.push(branchInstr);
 			
 			//final cleanup
-			registers[destRegister] = base;
+			registers[destRegister] = base; //TODO: figure out why this isn't setting to INT_NULL, and change it or comment
 			
 			for each (var instruction:Instruction in loop)
 				instructions.push(instruction);
@@ -427,7 +456,7 @@ package Testing.Tests {
 		
 		
 		protected function postProcess(instructions:Vector.<Instruction>):Vector.<Instruction> {
-			if (jumpsEnabled && (!branchesEnabled || FlxG.random() < 1/4))
+			if (jumpsEnabled && !branchesEnabled)
 				instructions = addJumpLoop(instructions);
 			expectedExecutions = instructions.length;
 			if (loop) {

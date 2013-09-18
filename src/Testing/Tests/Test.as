@@ -446,7 +446,7 @@ package Testing.Tests {
 			loop.push(branchInstr);
 			
 			//final cleanup
-			registers[destRegister] = base; //TODO: figure out why this isn't setting to INT_NULL, and change it or comment
+			registers[destRegister] = base; //the value at the start of the loop
 			
 			for each (var instruction:Instruction in loop)
 				instructions.push(instruction);

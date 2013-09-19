@@ -25,9 +25,10 @@ package Modules {
 		
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = new DefaultLayout(this, 2, 5);
-			for (var i:int = 0; i < layout.ports.length; i++)
-				if (i != layout.ports.length - 2)
-					layout.ports[i].offset.y += 1;
+			for each (var port:Port in inputs)
+				port.offset.y += 1;
+			for each (port in outputs)
+				port.offset.y += 1;
 			return layout;
 		}
 		

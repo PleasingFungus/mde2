@@ -52,8 +52,8 @@ package Displays {
 		}
 		
 		private function setPosition():void {
-			x = baseX + layout.offset.x * U.GRID_DIM;
-			y = baseY + layout.offset.y * U.GRID_DIM;
+			x = baseX + layout.port.offset.x * U.GRID_DIM;
+			y = baseY + layout.port.offset.y * U.GRID_DIM;
 			if (layout.reversed) {
 				if (layout.vertical)
 					y -= height;

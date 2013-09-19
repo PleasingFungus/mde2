@@ -13,13 +13,12 @@ package Layouts {
 		
 		public var port:Port;
 		public var parent:Module;
-		public var offset:Point;
 		public var vertical:Boolean;
 		public var reversed:Boolean;
 		public function PortLayout(port:Port, Offset:Point, Vertical:Boolean = false, Reversed:Boolean = false) {
 			this.port = port;
 			parent = port.parent;
-			offset = Offset;
+			port.offset = Offset;
 			vertical = Vertical;
 			reversed = Reversed;
 		}
@@ -79,7 +78,11 @@ package Layouts {
 		}
 		
 		public function get Loc():Point {
-			return parent.add(offset);
+			return port.Loc;
+		}
+		
+		public function get offset():Point {
+			return port.offset;
 		}
 		
 		public function remainingDelay():int {

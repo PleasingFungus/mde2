@@ -36,9 +36,7 @@ package Modules {
 			for each (var portLayout:PortLayout in layout.ports)
 				ports.push(portLayout);
 			
-			var outport:PortLayout = layout.ports[layout.ports.length - 1];
-			
-			return new InternalLayout([new TallNode(this, new Point(outport.offset.x - layout.dim.x / 2 - 1 / 2, outport.offset.y),
+			return new InternalLayout([new TallNode(this, new Point(outputs[0].offset.x - layout.dim.x / 2 - 1 / 2, outputs[0].offset.y),
 														ports, [], function getValue():Value { return drive(outputs[0]); }, "Any" )]);
 		}
 		

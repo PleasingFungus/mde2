@@ -52,9 +52,10 @@ package Modules {
 		
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = new DefaultLayout(this, 2, 5);
-			for (var i:int = 0; i < layout.ports.length; i++)
-				if (i != layout.ports.length - 2)
-					layout.ports[i].offset.y += 1;
+			for each (var port:Port in inputs)
+				port.offset.y += 1;
+			for each (port in outputs)
+				port.offset.y += 1;
 			return layout;
 		}
 		
@@ -64,7 +65,7 @@ package Modules {
 			var nodes:Array = [];
 			var controlLines:Array = [];
 			for (var i:int = 0; i < inputs.length; i++) {
-				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2, layout.ports[i].offset.y);
+				var loc:Point = new Point(layout.offset.x + layout.dim.x / 2, inputs[i].offset.y);
 				nodes.push(new WideNode(this, loc, [layout.ports[i], layout.ports[layout.ports.length - 1]], [],
 											inputs[i].getValue, "Input value for "+expectedOps[i], true));
 				controlLines.push(new NodeTuple(layout.ports[layout.ports.length - 1], nodes[i], function (i:int):Boolean { 
@@ -72,7 +73,7 @@ package Modules {
 				}, i));
 			}
 			
-			var controlNode:WideNode = new WideNode(this, new Point(layout.ports[inputs.length].offset.x, layout.ports[inputs.length].offset.y + 2),
+			var controlNode:WideNode = new WideNode(this, new Point(controls[0].offset.x, controls[0].offset.y + 2),
 															[layout.ports[layout.ports.length - 2]], controlLines,
 															controls[0].getValue, "Selected input");
 			//controlNode.type = NodeType.INDEX;

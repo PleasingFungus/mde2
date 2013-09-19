@@ -12,6 +12,7 @@ package Components {
 		public var name:String;
 		public var isOutput:Boolean;
 		public var parent:Module;
+		public var offset:Point;
 		public var connections:Vector.<Carrier>;
 		public var source:Port;
 		
@@ -79,7 +80,11 @@ package Components {
 		}
 		
 		public function isEndpoint(p:Point):Boolean {
-			return true; //not implemented
+			return Loc.equals(p);
+		}
+		
+		public function get Loc():Point {
+			return parent.add(offset);
 		}
 		
 		

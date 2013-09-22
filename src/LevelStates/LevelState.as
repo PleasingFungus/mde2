@@ -1,5 +1,6 @@
 package LevelStates {
 	import Components.Link;
+	import Components.LinkPotential;
 	import Components.Port;
 	import Components.PseudoPort;
 	import flash.events.IOErrorEvent;
@@ -143,6 +144,15 @@ package LevelStates {
 			members = [];
 			add(lowerLayer = new FlxGroup());
 			add(midLayer = new FlxGroup());
+		}
+		
+		public function addLink(l:Link, fixed:Boolean = true):void {
+			l.FIXED = fixed;
+			Link.place(l);
+			
+			var displayLink:DLink = new DLink(l);
+			midLayer.add(displayLink);
+			displayLinks.push(displayLink);
 		}
 		
 		public function addWire(w:Wire, fixed:Boolean = true):void {
@@ -1101,6 +1111,11 @@ package LevelStates {
 				if (wire.exists && !wire.FIXED)
 					wireBytes.writeBytes(wire.getBytes());
 			
+			var linkBytes:ByteArray = new ByteArray;
+			for each (var link:Link in links)
+				if (link.saveIncluded)
+					linkBytes.writeBytes(link.getBytes());
+			
 			var miscBytes:ByteArray = new ByteArray;
 			if (level.delay)
 				miscBytes.writeInt(time.clockPeriod);
@@ -1111,6 +1126,8 @@ package LevelStates {
 			saveBytes.writeBytes(moduleBytes);
 			saveBytes.writeInt(4 + wireBytes.length);
 			saveBytes.writeBytes(wireBytes);
+			saveBytes.writeInt(4 + linkBytes.length);
+			saveBytes.writeBytes(linkBytes);
 			saveBytes.writeInt(4 + miscBytes.length);
 			saveBytes.writeBytes(miscBytes);
 			
@@ -1177,6 +1194,8 @@ package LevelStates {
 			initDisplay();
 			initState();
 			
+			var levelLoaded:Boolean = false;
+			
 			if (saveString == null)
 				saveString = U.save.data[level.name];
 			if (saveString == null)
@@ -1186,16 +1205,22 @@ package LevelStates {
 				if (loadedData) {
 					savedString = loadedData.saveString;
 					time.clockPeriod = loadedData.clock;
+					
+					level.loadIntoState(this, false);
+					levelLoaded = true;
 			
 					for each (var wire:Wire in loadedData.wires)
 						addWire(wire, false);
 					for each (var module:Module in loadedData.modules)
 						addModule(module, false);
+					for each (var linkPotential:LinkPotential in loadedData.linkPotentials)
+						addLink(linkPotential.manifestPotential(modules), false);
 				} else
 					savedString = null;
 			}
 			
-			level.loadIntoState(this, savedString == RESET_SAVE || !savedString);
+			if (!levelLoaded)
+				level.loadIntoState(this, savedString == RESET_SAVE || !savedString);
 			
 			makeUI();
 		}

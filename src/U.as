@@ -26,7 +26,7 @@ package  {
 	 */
 	public class U {
 		public static const VERSION:String = "0.853";
-		public static const SAVE_VERSION:int = 4;
+		public static const SAVE_VERSION:int = 5;
 		
 		public static const BINARY_SAVES:Boolean = true;
 		public static const BLIT_ENABLED:Boolean = false;

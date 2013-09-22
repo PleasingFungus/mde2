@@ -1,5 +1,6 @@
 package Components {
 	import flash.geom.Point;
+	import flash.utils.ByteArray;
 	import Layouts.PortLayout;
 	import Modules.Module;
 	/**
@@ -12,6 +13,7 @@ package Components {
 		public var destination:Port;
 		public var deleted:Boolean = false;
 		public var fullyPlaced:Boolean = false;
+		public var FIXED:Boolean = false;
 		public function Link(Source:Port, Destination:Port) {
 			source = Source;
 			destination = Destination;
@@ -27,6 +29,10 @@ package Components {
 		
 		public function get mouseable():Boolean {
 			return exists && deployed;
+		}
+		
+		public function get saveIncluded():Boolean {
+			return exists && !FIXED;
 		}
 		
 		public function atValidEndpoint():Boolean {
@@ -108,6 +114,68 @@ package Components {
 			if (source.isSource())
 				return !port.getSource();
 			return port.isSource();
+		}
+		
+		public function getBytes():ByteArray {
+			var bytes:ByteArray = new ByteArray;
+			
+			var sourceIndex:int = portIndex(source);
+			var sourceModuleIndex:int = moduleIndex(source.parent);
+			var destIndex:int = portIndex(destination);
+			var destModuleIndex:int = moduleIndex(destination.parent);
+			
+			if (sourceIndex == -1 || sourceModuleIndex == -1 ||
+				destIndex == -1 || destModuleIndex == -1)
+				throw new Error("Module or port not found!");
+			
+			bytes.writeInt(sourceModuleIndex);
+			bytes.writeByte(sourceIndex);
+			bytes.writeInt(destModuleIndex);
+			bytes.writeByte(destIndex);
+			
+			bytes.position = 0;
+			return bytes;
+		}
+		
+		
+		
+		private static function fromBytes(bytes:ByteArray):LinkPotential {
+			var sourceModuleIndex:int = bytes.readInt();
+			var sourceIndex:int = bytes.readByte();
+			var destModuleIndex:int = bytes.readInt();
+			var destIndex:int = bytes.readByte();
+			
+			return new LinkPotential(sourceIndex, sourceModuleIndex,
+									 destIndex, destModuleIndex);
+		}
+		
+		public static function linksFromBytes(bytes:ByteArray, end:int):Vector.<LinkPotential> {
+			var links:Vector.<LinkPotential> = new Vector.<LinkPotential>;
+			while (bytes.position < end)
+				links.push(fromBytes(bytes));
+			if (bytes.position > end)
+				throw new Error("Link reading overshot?");
+			return links;
+		}
+		
+		protected function moduleIndex(module:Module):int {
+			var index:int = 0;
+			for each (var m:Module in U.state.modules)
+				if (m == module)
+					return index;
+				else if (m.exists)
+					index++;
+			return -1;
+		}
+		
+		protected function portIndex(port:Port):int {
+			var index:int = 0;
+			for each (var layout:PortLayout in port.parent.layout.ports)
+				if (layout.port == port)
+					return index;
+				else
+					index++;
+			return -1;
 		}
 	}
 

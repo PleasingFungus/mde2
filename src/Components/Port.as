@@ -14,6 +14,7 @@ package Components {
 		public var parent:Module;
 		public var offset:Point;
 		public var connections:Vector.<Carrier>;
+		public var links:Vector.<Link>;
 		public var source:Port;
 		
 		private var cachedValue:Value;
@@ -24,6 +25,7 @@ package Components {
 			isOutput = IsOutput;
 			parent = Parent;
 			connections = Connections ? Connections : new Vector.<Carrier>;
+			links = new Vector.<Link>;
 		}
 		
 		public function cleanup():void {
@@ -42,6 +44,10 @@ package Components {
 		public function getSource():Port {
 			if (isSource())
 				return this;
+			if (links.length > 1)
+				throw new Error("Multiple links to a non-source port!");
+			if (links.length)
+				return links[0].source;
 			return source;
 		}
 		

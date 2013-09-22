@@ -1,9 +1,13 @@
 package LevelStates {
+	import Components.Link;
+	import Components.Port;
+	import Components.PseudoPort;
 	import flash.events.IOErrorEvent;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import Helpers.DeleteHelper;
 	import Helpers.KeyHelper;
+	import Layouts.PortLayout;
 	import Levels.LevelHint;
 	import Modules.Module;
 	import Modules.CustomModule;
@@ -47,6 +51,7 @@ package LevelStates {
 		public var elapsed:Number;
 		
 		private var displayWires:Vector.<DWire>;
+		private var displayLinks:Vector.<DLink>;
 		private var displayModules:Vector.<DModule>;
 		private var listOpen:int;
 		private var UIChanged:Boolean;
@@ -56,7 +61,7 @@ package LevelStates {
 		
 		private var loadButton:MenuButton;
 		private var resetButton:MenuButton;
-		private var wireBeingDragged:Boolean;
+		private var linkBeingDragged:Boolean;
 		
 		private var deleteHint:KeyHelper;
 		
@@ -74,7 +79,7 @@ package LevelStates {
 		private var moduleSliders:Vector.<FlxBounded>; 
 		
 		public var actions:ActionStack;
-		private var currentWire:Wire;
+		private var currentLink:Link;
 		private var selectionArea:SelectionBox;
 		private var currentBloc:Bloc;
 		
@@ -82,6 +87,7 @@ package LevelStates {
 		public var grid:Grid;
 		public var currentGrid:CurrentGrid;
 		public var wires:Vector.<Wire>;
+		public var links:Vector.<Link>;
 		public var modules:Vector.<Module>;
 		public var memory:Vector.<Value>;
 		public var initialMemory:Vector.<Value>;
@@ -600,18 +606,18 @@ package LevelStates {
 					}
 					selectionArea = null;
 				}
-			} else if (currentWire)
-				checkWireControls();
+			} else if (currentLink)
+				checkLinkControls();
 			else if (currentBloc && !currentBloc.rooted) {
 				//currently delegated to DBloc
 			} else {
 				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
 					if (findMousedModule() && level.canPickupModules)
 						pickUpModule();
-					else if (level.canDrawWires && findMousedCarrier()) {
-						currentWire = new Wire(U.pointToGrid(U.mouseLoc))
-						displayWires.push(midLayer.add(new DWire(currentWire)));
-						wireBeingDragged = false;
+					else if (level.canDrawWires && findMousedPort()) {
+						currentLink = new Link(findMousedPort(), new PseudoPort(U.pointToGrid(U.mouseLoc)));
+						displayLinks.push(midLayer.add(new DLink(currentLink)));
+						linkBeingDragged = false;
 					} else
 						midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
 				}
@@ -640,25 +646,27 @@ package LevelStates {
 			}
 		}
 		
-		private function checkWireControls():void {
+		private function checkLinkControls():void {
 			if (ControlSet.CANCEL_KEY.justPressed()) {
-				currentWire.exists = false;
-				currentWire = null;
+				currentLink.deleted = true;
+				currentLink = null;
 				return;
 			}
 			
-			if (FlxG.mouse.pressed() || wireBeingDragged) {
-				currentWire.attemptPathTo(U.pointToGrid(U.mouseLoc), true)
-				if (currentWire.path.length > 1)
-					wireBeingDragged = true;
+			if (FlxG.mouse.pressed() || linkBeingDragged) {
+				var mouseLoc:Point = U.pointToGrid(U.mouseLoc);
+				currentLink.destination.Loc.x = mouseLoc.x;
+				currentLink.destination.Loc.y = mouseLoc.y;
+				if (!currentLink.destination.Loc.equals(currentLink.source.Loc))
+					linkBeingDragged = true;
 			}
 			
 			if (FlxG.mouse.justReleased()) {
-				if (wireBeingDragged) {
-					new CustomAction(Wire.place, Wire.remove, currentWire).execute();
-					currentWire = null;
+				if (linkBeingDragged) {
+					new CustomAction(Link.place, Link.remove, currentLink).execute();
+					currentLink = null;
 				} else
-					wireBeingDragged = true;
+					linkBeingDragged = true;
 			}
 		}
 		
@@ -743,6 +751,45 @@ package LevelStates {
 			return null;
 		}
 		
+		public function findMousedDPort():DPort {
+			var mouseLoc:FlxPoint = U.mouseFlxLoc;
+			for each (var dModule:DModule in displayModules)
+				if (dModule.module.exists && dModule.module.deployed && dModule.onScreen())
+					for each (var dPort:DPort in dModule.displayPorts)
+						if (dPort.overlapsPoint(mouseLoc))
+							return dPort;
+			return null;
+		}
+		
+		
+		
+		private function findMousedCarrier():Carrier {
+			var mousedPoint:Point = U.pointToGrid(U.mouseLoc);
+			var carriers:Vector.<Carrier> = grid.carriersAtPoint(mousedPoint);
+			return carriers ? carriers[0] : null;
+		}
+		
+		//UNTESTED
+		public function findMousedPort():Port {
+			var mousedPoint:Point = U.pointToGrid(U.mouseLoc);
+			for each (var module:Module in modules)
+				if (module.exists && module.deployed)
+					for each (var port:PortLayout in module.layout.ports)
+						if (port.Loc.equals(mousedPoint))
+							return port.port;
+			return null;
+		}
+		
+		private function findMousedWire():DWire {
+			if (U.buttonManager.moused)
+				return null;
+			
+			for each (var wire:DWire in displayWires)
+				if (wire.exists && wire.overlapsPoint(U.mouseFlxLoc))
+					return wire;
+			return null;
+		}
+		
 		
 		private function checkMenuState():void {
 			deleteHint.exists = canDelete();
@@ -759,7 +806,7 @@ package LevelStates {
 		}
 		
 		private function canDelete():Boolean {
-			if (currentWire || currentBloc || selectionArea || runningDisplayTest)
+			if (currentLink || currentBloc || selectionArea || runningDisplayTest)
 				return false;
 			var mousedWire:DWire = findMousedWire();
 			if (mousedWire && !mousedWire.wire.FIXED)
@@ -805,7 +852,7 @@ package LevelStates {
 			if (listOpen != LIST_NONE || runningDisplayTest || (infobox && infobox.exists) || U.buttonManager.moused)
 				return null;
 			
-			if (currentWire)
+			if (currentLink)
 				return Cursor.PEN;
 			if (selectionArea)
 				return Cursor.SEL;
@@ -902,22 +949,6 @@ package LevelStates {
 			return used;
 		}
 		
-		private function findMousedCarrier():Carrier {
-			var mousedPoint:Point = U.pointToGrid(U.mouseLoc);
-			var carriers:Vector.<Carrier> = grid.carriersAtPoint(mousedPoint);
-			return carriers ? carriers[0] : null;
-		}
-		
-		private function findMousedWire():DWire {
-			if (U.buttonManager.moused)
-				return null;
-			
-			for each (var wire:DWire in displayWires)
-				if (wire.exists && wire.overlapsPoint(U.mouseFlxLoc))
-					return wire;
-			return null;
-		}
-		
 		private function destroyWires():void {
 			var mousedWire:DWire = findMousedWire();
 			if (mousedWire)
@@ -973,6 +1004,7 @@ package LevelStates {
 			fillBG();
 			
 			DWire.updateStatic();
+			DLink.updateStatic();
 			
 			checkMenuState();
 			
@@ -1027,7 +1059,7 @@ package LevelStates {
 		
 		
 		public function hasHeldState():Boolean {
-			return currentWire || (currentBloc && !currentBloc.rooted);
+			return currentLink || (currentBloc && !currentBloc.rooted);
 		}
 		
 		public function onStateChange():void {
@@ -1114,11 +1146,13 @@ package LevelStates {
 		private function initDisplay():void {
 			initLayers();
 			displayWires = new Vector.<DWire>;
+			displayLinks = new Vector.<DLink>;
 			displayModules = new Vector.<DModule>;
 		}
 		
 		private function initState():void {
 			wires = new Vector.<Wire>;
+			links = new Vector.<Link>;
 			modules = new Vector.<Module>;
 			grid = new Grid;
 			currentGrid = new CurrentGrid;

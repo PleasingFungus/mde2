@@ -127,7 +127,7 @@ package Displays {
 		}
 		
 		public function outsideScreen():Boolean {
-			return wire.path.length > 1 && !boundingBox.intersects(U.screenRect());
+			return wire.path.length < 1 || !boundingBox.intersects(U.screenRect());
 		}
 		
 		protected function canBuildCache():Boolean {

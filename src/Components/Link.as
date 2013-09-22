@@ -26,6 +26,12 @@ package Components {
 			return fullyPlaced && source.parent.deployed && destination.parent.deployed;
 		}
 		
+		public function atValidEndpoint():Boolean {
+			if (fullyPlaced)
+				throw new Error("Why is this being called?");
+			return findDestinationPort(U.pointToGrid(destination.Loc)) != null; //TODO: investigate why pointToGrid is needed here but not in the place() call
+		}
+		
 		protected function connect():void {
 			source.links.push(this);
 			destination.links.push(this);

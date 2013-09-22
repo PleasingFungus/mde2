@@ -37,14 +37,8 @@ package Displays {
 			return 2 / U.zoom;
 		}
 		
-		
-		override public function update():void {
-			visible = link.exists;
-			super.update();
-		}
-		
 		override public function draw():void {
-			if (outsideScreen())
+			if (!link.exists || outsideScreen())
 				return;
 			
 			if (!cacheValid()) {
@@ -158,6 +152,11 @@ package Displays {
 		}
 		
 		protected function getColor():uint {
+			if (!link.fullyPlaced) {
+				if (!link.atValidEndpoint())
+					return U.UNCONNECTED_COLOR;
+				return 0xff000000;
+			}
 			return 0xff000000; //TODO
 		}
 		

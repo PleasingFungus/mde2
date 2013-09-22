@@ -13,7 +13,9 @@ package Displays {
 		
 		public var link:Link;
 		
-		protected var cached:Boolean;
+		protected var cachedLines:Vector.<FlxSprite>;
+		protected var cachedStart:Point;
+		protected var cachedEnd:Point;
 		protected var cachedZoom:Number;
 		
 		protected static const hSegs:Array = [];
@@ -32,6 +34,9 @@ package Displays {
 		}
 		
 		protected function setSegs():void {
+			if (hSeg && U.zoom == segZoom)
+				return;
+			
 			if (!hSegs[zoomIndex])
 				buildSegsForZoom();
 			
@@ -64,22 +69,70 @@ package Displays {
 		}
 		
 		protected function cacheValid():Boolean {
-			if (!cached)
-				return false;
-			if (U.zoom != cachedZoom)
-				return false;
-			return true;
+			return cachedLines && U.zoom == cachedZoom && link.source.Loc.equals(cachedStart) && link.destination.Loc.equals(cachedEnd);
 		}
 		protected function canBuildCache():Boolean {
-			return link.deployed && cachesThisFrame < MAX_CACHES_PER_FRAME && false; //TODO
+			return link.deployed && cachesThisFrame < MAX_CACHES_PER_FRAME; //TODO
 		}
 		
 		protected function buildCache():void {
-			//TODO
-			//same as wire, but per jags, not per pre-path
+			cachedLines = new Vector.<FlxSprite>;
+			_bounds = null;
 			
-			cached = true;
+			var source:Point = link.source.Loc;
+			var dest:Point = link.destination.Loc;
+			var midpoint:Point = new Point(Math.floor((source.x + dest.x) / 2),
+										   Math.floor((source.y + dest.y) / 2));
+			var primaryHorizontal:Boolean = Math.abs(source.x - dest.x) >= Math.abs(source.y - dest.y);
+			
+			var width:int = getWidth();
+			
+			//TODO: split up very long wires
+			if (primaryHorizontal) {
+				cachedLines.push(new FlxSprite(
+					Math.min(source.x, midpoint.x) * U.GRID_DIM - width/2,
+					source.y * U.GRID_DIM - width / 2
+				).makeGraphic(Math.abs(source.x - midpoint.x) * U.GRID_DIM + width, width, 0xffffffff, true));
+				
+				cachedLines.push(new FlxSprite(
+					midpoint.x * U.GRID_DIM - width/2,
+					Math.min(source.y, dest.y) * U.GRID_DIM - width/2
+				).makeGraphic(width, Math.abs(source.y - dest.y) * U.GRID_DIM + width, 0xffffffff, true));
+				
+				cachedLines.push(new FlxSprite(
+					Math.min(midpoint.x, dest.x) * U.GRID_DIM - width/2,
+					dest.y * U.GRID_DIM - width/2
+				).makeGraphic(Math.abs(midpoint.x - dest.x) * U.GRID_DIM + width, width, 0xffffffff, true));
+			} else {
+				cachedLines.push(new FlxSprite(
+					source.x * U.GRID_DIM - width/2,
+					Math.min(source.y, midpoint.y) * U.GRID_DIM - width/2
+				).makeGraphic(width, Math.abs(source.y - midpoint.y) * U.GRID_DIM + width, 0xffffffff, true));
+				
+				cachedLines.push(new FlxSprite(
+					Math.min(source.x, dest.x) * U.GRID_DIM - width/2,
+					midpoint.y * U.GRID_DIM - width/2
+				).makeGraphic(Math.abs(source.x - dest.x) * U.GRID_DIM + width, width, 0xffffffff, true));
+				
+				cachedLines.push(new FlxSprite(
+					dest.x * U.GRID_DIM - width/2,
+					Math.min(midpoint.y, dest.y) * U.GRID_DIM - width/2
+				).makeGraphic(width, Math.abs(midpoint.y - dest.y) * U.GRID_DIM + width, 0xffffffff, true));
+			}
+			
+			
 			cachedZoom = U.zoom;
+			cachedStart = link.source.Loc.clone();
+			cachedEnd = link.destination.Loc.clone();
+		}
+		
+		protected function drawCached():void {
+			var color:uint = getColor();
+			for each (var line:FlxSprite in cachedLines) {
+				if (line.color != color)
+					line.color = color;
+				line.draw();
+			}
 		}
 		
 		protected function drawDynamic(drawFromOrigin:Boolean = false):void {
@@ -105,8 +158,8 @@ package Displays {
 			end.x *= U.GRID_DIM;
 			end.y *= U.GRID_DIM;
 			
-			if (!hSeg || U.zoom != segZoom)
-				setSegs();
+			setSegs();
+			var width:int = getWidth();
 			
 			var color:uint = getColor();
 			if (hSeg.color != color)
@@ -116,48 +169,44 @@ package Displays {
 			//the following is awful
 			
 			if (primaryHorizontal) {
-				hSeg.y = start.y;
+				hSeg.y = start.y - width/2;
 				for (x = start.x; x < midpoint.x; x += U.GRID_DIM) {
-					hSeg.x = x;
+					hSeg.x = x - width/2;
 					hSeg.draw();
 				}
 			 	
-				vSeg.x = midpoint.x;
+				vSeg.x = midpoint.x - width/2;
 				var bottom:int = Math.max(start.y, end.y);
 				for (y = Math.min(start.y, end.y); y < bottom; y += U.GRID_DIM) {
-					vSeg.y = y;
+					vSeg.y = y - width/2;
 					vSeg.draw();
 				}
 				
-				hSeg.y = end.y;
+				hSeg.y = end.y - width/2;
 				for (x = midpoint.x; x < end.x; x += U.GRID_DIM) {
-					hSeg.x = x;
+					hSeg.x = x - width/2;
 					hSeg.draw();
 				}
 			} else {
-				vSeg.x = start.x;
+				vSeg.x = start.x - width/2;
 				for (y = start.y; y < midpoint.y; y += U.GRID_DIM) {
-					vSeg.y = y;
+					vSeg.y = y - width/2;
 					vSeg.draw();
 				}
 			 	
-				hSeg.y = midpoint.y;
+				hSeg.y = midpoint.y - width/2;
 				var right:int = Math.max(start.x, end.x);
 				for (x = Math.min(start.x, end.x); x < right; x += U.GRID_DIM) {
-					hSeg.x = x;
+					hSeg.x = x - width/2;
 					hSeg.draw();
 				}
 				
-				vSeg.x = end.x;
+				vSeg.x = end.x - width/2;
 				for (y = midpoint.y; y < end.y; y += U.GRID_DIM) {
-					vSeg.y = y;
+					vSeg.y = y - width/2;
 					vSeg.draw();
 				}
 			}
-		}
-		
-		protected function drawCached():void {
-			 //TODO
 		}
 		
 		protected function getColor():uint {
@@ -173,37 +222,32 @@ package Displays {
 			return !boundingBox.intersects(U.screenRect());
 		}
 		
+		protected var _bounds:Rectangle;
 		public function get boundingBox():Rectangle {
+			if (cacheValid() && _bounds)
+				return _bounds;
+			
 			var sourceLoc:Point = link.source.Loc;
 			var destLoc:Point = link.destination.Loc;
 			var width:int = getWidth();
-			return new Rectangle(Math.min(sourceLoc.x, destLoc.x) * U.GRID_DIM - width, Math.min(sourceLoc.y, destLoc.y) * U.GRID_DIM - width,
-								 Math.abs(sourceLoc.x - destLoc.x) * U.GRID_DIM + width * 2,
-								 Math.abs(sourceLoc.y - destLoc.y) * U.GRID_DIM + width * 2); //TODO: cache?
+			_bounds = new Rectangle(Math.min(sourceLoc.x, destLoc.x) * U.GRID_DIM - width, Math.min(sourceLoc.y, destLoc.y) * U.GRID_DIM - width,
+									Math.abs(sourceLoc.x - destLoc.x) * U.GRID_DIM + width * 2,
+									Math.abs(sourceLoc.y - destLoc.y) * U.GRID_DIM + width * 2);
+			return _bounds;
 		}
 		
 		override public function overlapsPoint(p:FlxPoint, _:Boolean=false, __:FlxCamera=null):Boolean {
 			if (!link.exists) return false;
 			
-			if (cacheValid())
-				return super.overlapsPoint(p, _, __);
-			
-			var bounds:Rectangle = boundingBox;
-			return (p.x < bounds.x || p.y < bounds.y || p.x >= bounds.right || p.y >= bounds.bottom)
+			//TODO: implement
+			return false;
 		}
 		
 		override public function overlaps(o:FlxBasic, _:Boolean=false, __:FlxCamera=null):Boolean {
 			if (!link.exists) return false;
 			
-			if (cacheValid())
-				return super.overlaps(o, _, __);
-			
-			var bounds:Rectangle = boundingBox;
-			x = bounds.left;
-			y = bounds.top;
-			width = bounds.width;
-			height = bounds.height;
-			return super.overlaps(o, _, __);
+			//TODO: implement
+			return false;
 		}
 		
 		

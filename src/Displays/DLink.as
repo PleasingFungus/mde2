@@ -112,9 +112,6 @@ package Displays {
 			var x:int, y:int;
 			//the following is awful
 			
-			if (start.y == end.y) 
-				C.log("???");
-			
 			if (primaryHorizontal) {
 				hSeg.y = start.y;
 				for (x = start.x; x < midpoint.x; x += U.GRID_DIM) {
@@ -171,8 +168,9 @@ package Displays {
 		public function get boundingBox():Rectangle {
 			var sourceLoc:Point = link.source.Loc;
 			var destLoc:Point = link.destination.Loc;
-			return new Rectangle(Math.min(sourceLoc.x, destLoc.x), Math.min(sourceLoc.y, destLoc.y),
-								 Math.abs(sourceLoc.x - destLoc.x), Math.abs(sourceLoc.y - destLoc.y)); //TODO: cache?
+			var width:int = getWidth();
+			return new Rectangle(Math.min(sourceLoc.x, destLoc.x) - width, Math.min(sourceLoc.y, destLoc.y) - width,
+								 Math.abs(sourceLoc.x - destLoc.x) + width * 2, Math.abs(sourceLoc.y - destLoc.y) + width * 2); //TODO: cache?
 		}
 		
 		override public function overlapsPoint(p:FlxPoint, _:Boolean=false, __:FlxCamera=null):Boolean {

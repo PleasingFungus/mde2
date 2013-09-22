@@ -18,12 +18,15 @@ package Components {
 		}
 		
 		public function get exists():Boolean {
-			return !deleted && (!fullyPlaced || (source.parent.exists && source.parent.deployed &&
-											     destination.parent.exists && destination.parent.deployed));
+			return !deleted && (!fullyPlaced || (source.parent.exists && destination.parent.exists));
 		}
 		
 		public function get deployed():Boolean {
 			return fullyPlaced && source.parent.deployed && destination.parent.deployed;
+		}
+		
+		public function get mouseable():Boolean {
+			return exists && deployed;
 		}
 		
 		public function atValidEndpoint():Boolean {
@@ -55,7 +58,7 @@ package Components {
 				throw new Error("Attempting to place an already-placed & non-deleted link!");
 			
 			if (!link.fullyPlaced) {
-				link.destination = findDestinationPort(link.destination.Loc);
+				link.destination = link.findDestinationPort(link.destination.Loc);
 				if (link.destination) {
 					link.fullyPlaced = true;
 				} else {
@@ -70,12 +73,15 @@ package Components {
 			return true; //will go onto the action stack
 		}
 		
-		private static function findDestinationPort(loc:Point):Port {
+		private function findDestinationPort(loc:Point):Port {
 			for each (var module:Module in U.state.modules)
 				if (module.exists)
 					for each (var port:PortLayout in module.layout.ports)
-						if (!port.port.getSource() && port.Loc.equals(loc))
-							return port.port;
+						if (port.Loc.equals(loc)) {
+							if (validDestination(port.port))
+								return port.port;
+							return null;
+						}
 			return null;
 		}
 		
@@ -93,6 +99,16 @@ package Components {
 			return true;
 		}
 		
+		//is a port a valid target for beginning a link?
+		public static function validStart(port:Port):Boolean {
+			return port.isSource() || !port.getSource();
+		}
+		
+		private function validDestination(port:Port):Boolean {
+			if (source.isSource())
+				return !port.getSource();
+			return port.isSource();
+		}
 	}
 
 }

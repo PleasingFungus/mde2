@@ -15,7 +15,7 @@ package Components {
 		public var offset:Point;
 		public var connections:Vector.<Carrier>;
 		public var links:Vector.<Link>;
-		public var source:Port;
+		protected var _source:Port;
 		
 		private var cachedValue:Value;
 		private var lastValue:Value;
@@ -47,8 +47,16 @@ package Components {
 			if (links.length > 1)
 				throw new Error("Multiple links to a non-source port!");
 			if (links.length)
-				return links[0].source;
-			return source;
+				return links[0].source != this ? links[0].source : links[0].destination;
+			return _source;
+		}
+		
+		public function get source():Port {
+			return getSource();
+		}
+		
+		public function set source(s:Port):void {
+			_source = s;
 		}
 		
 		public function removeConnection(Connection:Carrier):void {

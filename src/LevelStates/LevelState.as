@@ -614,12 +614,15 @@ package LevelStates {
 				if (FlxG.mouse.justPressed() && !U.buttonManager.moused) {
 					if (findMousedModule() && level.canPickupModules)
 						pickUpModule();
-					else if (level.canDrawWires && findMousedPort()) {
-						currentLink = new Link(findMousedPort(), new PseudoPort(U.pointToGrid(U.mouseLoc)));
-						displayLinks.push(midLayer.add(new DLink(currentLink)));
-						linkBeingDragged = false;
-					} else
-						midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
+					else {
+						var mousedPort:Port = findMousedPort();
+						if (level.canDrawWires && mousedPort && Link.validStart(mousedPort)) {
+							currentLink = new Link(mousedPort, new PseudoPort(U.pointToGrid(U.mouseLoc)));
+							displayLinks.push(midLayer.add(new DLink(currentLink)));
+							linkBeingDragged = false;
+						} else
+							midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
+					}
 				}
 				
 				if (ControlSet.DELETE_KEY.enabled && ControlSet.DELETE_KEY.pressed() && !currentBloc) {

@@ -16,25 +16,36 @@ package Displays {
 		protected var cached:Boolean;
 		protected var cachedZoom:Number;
 		
-		protected static var lastZoom:Number;
+		protected static const hSegs:Array = [];
+		protected static const vSegs:Array = [];
 		protected static var hSeg:FlxSprite;
 		protected static var vSeg:FlxSprite;
+		protected static var segZoom:Number;
 		public function DLink(link:Link) {
 			this.link = link;
 		}
 		
-		protected function buildSegs():void {
+		protected function buildSegsForZoom():void {
 			var w:int = getWidth();
-			hSeg = new FlxSprite().makeGraphic(U.GRID_DIM, w);
-			vSeg = new FlxSprite().makeGraphic(w, U.GRID_DIM);
-			//hSeg.height = vSeg.width = w + EXTRA_WIDTH;
-			//hSeg.offset.y = vSeg.offset.x = -EXTRA_WIDTH/2;
+			hSegs[zoomIndex] = new FlxSprite().makeGraphic(U.GRID_DIM, w);
+			vSegs[zoomIndex] = new FlxSprite().makeGraphic(w, U.GRID_DIM);
+		}
+		
+		protected function setSegs():void {
+			if (!hSegs[zoomIndex])
+				buildSegsForZoom();
 			
-			lastZoom = U.zoom;
+			hSeg = hSegs[zoomIndex];
+			vSeg = vSegs[zoomIndex];
+			segZoom = U.zoom;
 		}
 		
 		protected function getWidth():int {
 			return 2 / U.zoom;
+		}
+		
+		protected function get zoomIndex():int {
+			return Math.round(Math.log(U.zoom) / Math.LOG2E);
 		}
 		
 		override public function draw():void {
@@ -65,9 +76,7 @@ package Displays {
 		
 		protected function buildCache():void {
 			//TODO
-			//build canvas per rect
-			//draw lines via fillrect (white!) - line 1, cross-stroke, line 2
-			//or all at once in trivial case?
+			//same as wire, but per jags, not per pre-path
 			
 			cached = true;
 			cachedZoom = U.zoom;
@@ -96,8 +105,8 @@ package Displays {
 			end.x *= U.GRID_DIM;
 			end.y *= U.GRID_DIM;
 			
-			if (!hSeg || U.zoom != lastZoom)
-				buildSegs();
+			if (!hSeg || U.zoom != segZoom)
+				setSegs();
 			
 			var color:uint = getColor();
 			if (hSeg.color != color)
@@ -148,7 +157,7 @@ package Displays {
 		}
 		
 		protected function drawCached():void {
-			super.draw();
+			 //TODO
 		}
 		
 		protected function getColor():uint {
@@ -168,8 +177,9 @@ package Displays {
 			var sourceLoc:Point = link.source.Loc;
 			var destLoc:Point = link.destination.Loc;
 			var width:int = getWidth();
-			return new Rectangle(Math.min(sourceLoc.x, destLoc.x) - width, Math.min(sourceLoc.y, destLoc.y) - width,
-								 Math.abs(sourceLoc.x - destLoc.x) + width * 2, Math.abs(sourceLoc.y - destLoc.y) + width * 2); //TODO: cache?
+			return new Rectangle(Math.min(sourceLoc.x, destLoc.x) * U.GRID_DIM - width, Math.min(sourceLoc.y, destLoc.y) * U.GRID_DIM - width,
+								 Math.abs(sourceLoc.x - destLoc.x) * U.GRID_DIM + width * 2,
+								 Math.abs(sourceLoc.y - destLoc.y) * U.GRID_DIM + width * 2); //TODO: cache?
 		}
 		
 		override public function overlapsPoint(p:FlxPoint, _:Boolean=false, __:FlxCamera=null):Boolean {

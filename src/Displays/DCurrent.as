@@ -1,8 +1,10 @@
 package Displays {
 	import Components.Carrier;
+	import Components.Link;
 	import Components.Port;
 	import org.flixel.*;
 	import UI.FloatText;
+	import Values.Value;
 	
 	/**
 	 * ...
@@ -12,14 +14,15 @@ package Displays {
 		
 		private var dWires:Vector.<DWire>;
 		private var dModules:Vector.<DModule>;
+		private var dLinks:Vector.<DLink>;
 		private var lastMouse:FlxBasic;
-		private var lastCarrier:Carrier;
 		private var lastMoment:int;
-		public function DCurrent(DWires:Vector.<DWire>, DModules:Vector.<DModule>) {
+		public function DCurrent(DWires:Vector.<DWire>, DModules:Vector.<DModule>, DLinks:Vector.<DLink>) {
 			super(U.LABEL_FONT.configureFlxText(new FlxText( -1, -1, FlxG.width / 4, " "), 0xffffff));
 			
 			dWires = DWires;
 			dModules = DModules;
+			dLinks = DLinks;
 		}
 		
 		override public function update():void {
@@ -28,7 +31,7 @@ package Displays {
 		}
 		
 		private function checkMouse():void {
-			var moused:FlxBasic, carrier:Carrier;
+			var moused:FlxBasic;
 			
 			if (U.buttonManager.moused || U.state.findMousedModule()) {
 				lastMouse = null;
@@ -39,28 +42,39 @@ package Displays {
 				if (dModule.module.exists && dModule.module.deployed)
 					for each (var dPort:DPort in dModule.displayPorts)
 						if (dPort.nearPoint(U.mouseFlxLoc, U.GRID_DIM / 2 / U.zoom)) {
-							buildDisplay(moused = dPort, carrier = dPort.port);
+							buildDisplay(moused = dPort, dPort.port);
 							break;
 						}
 			
 			if (!moused)
 				for each (var dWire:DWire in dWires)
 					if (dWire.wire.exists && dWire.wire.deployed && !dWire.outsideScreen() && dWire.overlapsPoint(U.mouseFlxLoc)) {
-						buildDisplay(moused = dWire, carrier = dWire.wire);
+						buildDisplay(moused = dWire, dWire.wire);
+						break;
+					}
+			
+			if (!moused)
+				for each (var dLink:DLink in dLinks)
+					if (dLink.link.mouseable && !dLink.outsideScreen() && dLink.overlapsPoint(U.mouseFlxLoc)) {
+						buildDisplay(moused = dLink, null, dLink.link);
 						break;
 					}
 			
 			lastMouse = moused;
-			lastCarrier = carrier;
 		}
 		
-		private function buildDisplay(moused:FlxBasic, carrier:Carrier):void {
+		private function buildDisplay(moused:FlxBasic, carrier:Carrier, link:Link = null):void {
 			if (moused == lastMouse && lastMoment == U.state.time.moment)
 				return;
 			
 			lastMoment = U.state.time.moment;
 			
-			text.text = getDisplayText(carrier);
+			if (carrier)
+				text.text = getDisplayText(carrier);
+			else if (link)
+				text.text = getLinkDisplayText(link);
+			else
+				throw new Error("No link or carrier to display!");
 		}
 		
 		protected function getDisplayText(carrier:Carrier):String {
@@ -101,6 +115,22 @@ package Displays {
 				displayText += " (Ticks Until Stable: " + port.remainingDelay()+")";
 			
 			return displayText;
+		}
+		
+		protected function getLinkDisplayText(link:Link):String {
+			var source:Port = link.getActualSource();
+			var dest:Port = link.source == source ? link.destination : link.source;
+			
+			var value:Value = source.getValue();
+			var out:String = source.getValue() + " from " + source.parent.name;
+			if (source.name)
+				out += "'s " + source.name;
+			out += " to " + dest.parent.name;
+			if (dest.name)
+				out += "'s " + dest.name;
+			if (!source.getValue().unknown && !dest.stable)
+				out += " (Ticks until stable: " + dest.remainingDelay() + ")";
+			return out;
 		}
 		
 		override public function draw():void {

@@ -212,7 +212,7 @@ package LevelStates {
 			upperLayer.add(new Scroller("levelstate"));
 			upperLayer.add(new Zoomer);
 			upperLayer.add(deleteHint = new DeleteHelper);
-			upperLayer.add(new DCurrent(displayWires, displayModules));
+			upperLayer.add(new DCurrent(displayWires, displayModules, displayLinks));
 			upperLayer.add(new DModuleInfo(displayModules));
 		}
 		

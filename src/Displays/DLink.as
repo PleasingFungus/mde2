@@ -85,45 +85,49 @@ package Displays {
 										   Math.floor((source.y + dest.y) / 2));
 			var primaryHorizontal:Boolean = Math.abs(source.x - dest.x) >= Math.abs(source.y - dest.y);
 			
-			var width:int = getWidth();
-			
 			//TODO: split up very long wires
 			if (primaryHorizontal) {
-				cachedLines.push(new FlxSprite(
-					Math.min(source.x, midpoint.x) * U.GRID_DIM - width/2,
-					source.y * U.GRID_DIM - width / 2
-				).makeGraphic(Math.abs(source.x - midpoint.x) * U.GRID_DIM + width, width, 0xffffffff, true));
-				
-				cachedLines.push(new FlxSprite(
-					midpoint.x * U.GRID_DIM - width/2,
-					Math.min(source.y, dest.y) * U.GRID_DIM - width/2
-				).makeGraphic(width, Math.abs(source.y - dest.y) * U.GRID_DIM + width, 0xffffffff, true));
-				
-				cachedLines.push(new FlxSprite(
-					Math.min(midpoint.x, dest.x) * U.GRID_DIM - width/2,
-					dest.y * U.GRID_DIM - width/2
-				).makeGraphic(Math.abs(midpoint.x - dest.x) * U.GRID_DIM + width, width, 0xffffffff, true));
+				cachedLines.push(makeCachedLine(Math.min(source.x, midpoint.x), source.y, Math.abs(source.x - midpoint.x), true));
+				cachedLines.push(makeCachedLine(midpoint.x, Math.min(source.y, dest.y), Math.abs(source.y - dest.y), false));
+				cachedLines.push(makeCachedLine(Math.min(midpoint.x, dest.x), dest.y, Math.abs(dest.x - midpoint.x), true));
 			} else {
-				cachedLines.push(new FlxSprite(
-					source.x * U.GRID_DIM - width/2,
-					Math.min(source.y, midpoint.y) * U.GRID_DIM - width/2
-				).makeGraphic(width, Math.abs(source.y - midpoint.y) * U.GRID_DIM + width, 0xffffffff, true));
-				
-				cachedLines.push(new FlxSprite(
-					Math.min(source.x, dest.x) * U.GRID_DIM - width/2,
-					midpoint.y * U.GRID_DIM - width/2
-				).makeGraphic(Math.abs(source.x - dest.x) * U.GRID_DIM + width, width, 0xffffffff, true));
-				
-				cachedLines.push(new FlxSprite(
-					dest.x * U.GRID_DIM - width/2,
-					Math.min(midpoint.y, dest.y) * U.GRID_DIM - width/2
-				).makeGraphic(width, Math.abs(midpoint.y - dest.y) * U.GRID_DIM + width, 0xffffffff, true));
+				cachedLines.push(makeCachedLine(source.x, Math.min(source.y, midpoint.y), Math.abs(source.y - midpoint.y), false));
+				cachedLines.push(makeCachedLine(Math.min(source.x, dest.x), midpoint.y, Math.abs(source.x - dest.x), true));
+				cachedLines.push(makeCachedLine(dest.x, Math.min(midpoint.y, dest.y), Math.abs(dest.y - midpoint.y), true));
 			}
-			
 			
 			cachedZoom = U.zoom;
 			cachedStart = link.source.Loc.clone();
 			cachedEnd = link.destination.Loc.clone();
+		}
+		
+		private function makeCachedLine(X:int, Y:int, Length:int, Horizontal:Boolean):FlxSprite {
+			X *= U.GRID_DIM;
+			Y *= U.GRID_DIM;
+			Length *= U.GRID_DIM;
+			var thickness:int = getWidth();
+			var fullThickness:int = thickness + EXTRA_WIDTH;
+			
+			var line:FlxSprite = new FlxSprite(X - fullThickness/2, Y - fullThickness/2);
+			
+			var width:int, height:int;
+			if (Horizontal) {
+				width = Length + thickness;
+				height = thickness;
+				
+			} else {
+				height = Length + thickness;
+				width = thickness;
+			}
+			
+			line.makeGraphic(width, height, 0xffffffff, true);
+			
+			line.height += EXTRA_WIDTH / 2;
+			line.offset.y = - EXTRA_WIDTH / 2;
+			line.width += EXTRA_WIDTH / 2;
+			line.offset.x = - EXTRA_WIDTH / 2;
+			
+			return line;
 		}
 		
 		protected function drawCached():void {
@@ -215,6 +219,9 @@ package Displays {
 					return U.UNCONNECTED_COLOR;
 				return 0xff000000;
 			}
+			
+			if (overlapsPoint(FlxG.mouse))
+				return U.HIGHLIGHTED_COLOR;
 			return 0xff000000; //TODO
 		}
 		
@@ -239,14 +246,28 @@ package Displays {
 		override public function overlapsPoint(p:FlxPoint, _:Boolean=false, __:FlxCamera=null):Boolean {
 			if (!link.exists) return false;
 			
-			//TODO: implement
+			if (!link.deployed)
+				return false; //? not implemented
+			
+			//could check bbox here?
+			//check wires
+			for each (var line:FlxSprite in cachedLines)
+				if (line.overlapsPoint(p, _, __))
+					return true;
 			return false;
 		}
 		
 		override public function overlaps(o:FlxBasic, _:Boolean=false, __:FlxCamera=null):Boolean {
 			if (!link.exists) return false;
 			
-			//TODO: implement
+			if (!link.deployed)
+				return false; //? not implemented
+			
+			//could check bbox here?
+			//check wires
+			for each (var line:FlxSprite in cachedLines)
+				if (line.overlaps(o, _, __))
+					return true;
 			return false;
 		}
 		

@@ -133,8 +133,7 @@ package Displays {
 		protected function drawCached():void {
 			var color:uint = getColor();
 			for each (var line:FlxSprite in cachedLines) {
-				if (line.color != color)
-					line.color = color;
+				line.color = color;
 				line.draw();
 			}
 		}
@@ -220,7 +219,7 @@ package Displays {
 				return 0xff000000;
 			}
 			
-			if (overlapsPoint(FlxG.mouse))
+			if (!U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc))
 				return U.HIGHLIGHTED_COLOR;
 			return 0xff000000; //TODO
 		}

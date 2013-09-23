@@ -122,9 +122,9 @@ package Displays {
 			
 			line.makeGraphic(width, height, 0xffffffff, true);
 			
-			line.height += EXTRA_WIDTH / 2;
+			line.height += EXTRA_WIDTH;
 			line.offset.y = - EXTRA_WIDTH / 2;
-			line.width += EXTRA_WIDTH / 2;
+			line.width += EXTRA_WIDTH;
 			line.offset.x = - EXTRA_WIDTH / 2;
 			
 			return line;
@@ -272,7 +272,7 @@ package Displays {
 		}
 		
 		
-		protected const EXTRA_WIDTH:int = 4;
+		protected const EXTRA_WIDTH:int = 8;
 		protected static const MAX_CACHES_PER_FRAME:int = 15;
 		protected static var cachesThisFrame:int;
 		public static function updateStatic():void {

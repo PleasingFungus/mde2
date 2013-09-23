@@ -638,6 +638,7 @@ package LevelStates {
 				if (ControlSet.DELETE_KEY.enabled && ControlSet.DELETE_KEY.pressed() && !currentBloc) {
 					destroyModules();
 					destroyWires();
+					destroyLinks();
 				}
 				
 				if (ControlSet.PASTE_KEY.justPressed() && U.clipboard) {
@@ -803,6 +804,16 @@ package LevelStates {
 			return null;
 		}
 		
+		private function findMousedLink():DLink {
+			if (U.buttonManager.moused)
+				return null;
+			
+			for each (var link:DLink in displayLinks)
+				if (link.link.mouseable && link.overlapsPoint(U.mouseFlxLoc))
+					return link;
+			return null;
+		}
+		
 		
 		private function checkMenuState():void {
 			deleteHint.exists = canDelete();
@@ -821,9 +832,15 @@ package LevelStates {
 		private function canDelete():Boolean {
 			if (currentLink || currentBloc || selectionArea || runningDisplayTest)
 				return false;
+			
 			var mousedWire:DWire = findMousedWire();
 			if (mousedWire && !mousedWire.wire.FIXED)
 				return true;
+			
+			var mousedLink:DLink = findMousedLink();
+			if (mousedLink && !mousedLink.link.FIXED)
+				return true;
+			
 			var module:Module = findMousedModule();
 			return module && !module.FIXED;
 		}
@@ -966,6 +983,12 @@ package LevelStates {
 			var mousedWire:DWire = findMousedWire();
 			if (mousedWire)
 				new CustomAction(Wire.remove, Wire.place, mousedWire.wire).execute();
+		}
+		
+		private function destroyLinks():void {
+			var mousedLink:DLink = findMousedLink();
+			if (mousedLink)
+				new CustomAction(Link.remove, Link.place, mousedLink.link).execute();
 		}
 		
 		public function ensureNothingHeld():void {

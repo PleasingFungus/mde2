@@ -93,7 +93,7 @@ package Displays {
 			} else {
 				cachedLines.push(makeCachedLine(source.x, Math.min(source.y, midpoint.y), Math.abs(source.y - midpoint.y), false));
 				cachedLines.push(makeCachedLine(Math.min(source.x, dest.x), midpoint.y, Math.abs(source.x - dest.x), true));
-				cachedLines.push(makeCachedLine(dest.x, Math.min(midpoint.y, dest.y), Math.abs(dest.y - midpoint.y), true));
+				cachedLines.push(makeCachedLine(dest.x, Math.min(midpoint.y, dest.y), Math.abs(dest.y - midpoint.y), false));
 			}
 			
 			cachedZoom = U.zoom;

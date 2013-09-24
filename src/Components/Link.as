@@ -37,6 +37,11 @@ package Components {
 			return exists && !FIXED;
 		}
 		
+		public function equals(link:Link):Boolean {
+			return ((source == link.source && destination == link.destination) ||
+					(destination == link.source && source == link.destination));
+		}
+		
 		public function atValidEndpoint():Boolean {
 			if (!hovering)
 				throw new Error("Why is this being called?");
@@ -44,8 +49,8 @@ package Components {
 		}
 		
 		protected function connect():void {
-			source.links.push(this);
-			destination.links.push(this);
+			source.addLink(this);
+			destination.addLink(this);
 		}
 		
 		protected function disconnect():void {

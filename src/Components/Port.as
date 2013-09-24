@@ -94,7 +94,7 @@ package Components {
 			connections.push(connection);
 		}
 		
-		public function addLink(port:Port):void {
+		public function createLink(port:Port):void {
 			for each (var link:Link in links)
 				if (link.source == port || link.destination == port)
 					return; //don't add redundant links
@@ -104,6 +104,17 @@ package Components {
 			
 			newLink = new Link(this, port);
 			Link.place(newLink);
+		}
+		
+		public function addLink(link:Link):void {
+			for each (var extLink:Link in links)
+				if (extLink.equals(link))
+					return; //don't add redundant links
+			
+			if (!isSource() && getSource())
+				throw new Error("Multiple links to a non-source port!");
+			
+			links.push(link);
 		}
 		
 		public function isEndpoint(p:Point):Boolean {

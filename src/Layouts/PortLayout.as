@@ -33,7 +33,7 @@ package Layouts {
 			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(connectPoint))
 				if (carrier != port) {
 					if (carrier is Port) {
-						port.addLink(carrier as Port); 						
+						port.createLink(carrier as Port); 						
 					} else {
 						port.addConnection(carrier);
 						carrier.addConnection(port);

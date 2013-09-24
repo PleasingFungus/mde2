@@ -32,10 +32,14 @@ package Layouts {
 			var connectPoint:Point = Loc;
 			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(connectPoint))
 				if (carrier != port) {
-					port.addConnection(carrier);
-					carrier.addConnection(port);
-					if (carrier.getSource())
-						port.source = carrier.getSource();
+					if (carrier is Port) {
+						port.addLink(carrier as Port); 						
+					} else {
+						port.addConnection(carrier);
+						carrier.addConnection(port);
+						if (carrier.getSource())
+							port.source = carrier.getSource();
+					}
 				}
 			if (port.getSource())
 				port.propagateSource();

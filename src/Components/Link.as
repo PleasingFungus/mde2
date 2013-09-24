@@ -12,19 +12,21 @@ package Components {
 		public var source:Port;
 		public var destination:Port;
 		public var deleted:Boolean = false;
-		public var fullyPlaced:Boolean = false;
+		public var placed:Boolean = false;
+		public var hovering:Boolean = false;
 		public var FIXED:Boolean = false;
-		public function Link(Source:Port, Destination:Port) {
+		public function Link(Source:Port, Destination:Port, Hovering:Boolean = false) {
 			source = Source;
 			destination = Destination;
+			hovering = Hovering;
 		}
 		
 		public function get exists():Boolean {
-			return !deleted && (!fullyPlaced || (source.parent.exists && destination.parent.exists));
+			return !deleted && (hovering || (source.parent.exists && destination.parent.exists));
 		}
 		
 		public function get deployed():Boolean {
-			return fullyPlaced && source.parent.deployed && destination.parent.deployed;
+			return !hovering && placed && source.parent.deployed && destination.parent.deployed;
 		}
 		
 		public function get mouseable():Boolean {
@@ -36,7 +38,7 @@ package Components {
 		}
 		
 		public function atValidEndpoint():Boolean {
-			if (fullyPlaced)
+			if (!hovering)
 				throw new Error("Why is this being called?");
 			return findDestinationPort(U.pointToGrid(destination.Loc)) != null; //TODO: investigate why pointToGrid is needed here but not in the place() call
 		}
@@ -60,13 +62,13 @@ package Components {
 		}
 		
 		public static function place(link:Link):Boolean {
-			if (link.fullyPlaced && !link.deleted)
+			if (link.placed)
 				throw new Error("Attempting to place an already-placed & non-deleted link!");
 			
-			if (!link.fullyPlaced) {
+			if (link.hovering) {
 				link.destination = link.findDestinationPort(link.destination.Loc);
 				if (link.destination) {
-					link.fullyPlaced = true;
+					link.hovering = false;
 				} else {
 					link.deleted = true;
 					return false; //won't enter onto the action stack
@@ -74,8 +76,10 @@ package Components {
 			}
 			
 			link.connect();
+			link.placed = true;
 			link.deleted = false;
 			U.state.links.push(link);
+			newLinks.push(link);
 			return true; //will go onto the action stack
 		}
 		
@@ -102,6 +106,7 @@ package Components {
 			U.state.links.splice(linkIndex, 1);
 			link.disconnect();
 			link.deleted = true;
+			link.placed = false;
 			return true;
 		}
 		
@@ -181,6 +186,8 @@ package Components {
 					index++;
 			return -1;
 		}
+		
+		public static var newLinks:Vector.<Link> = new Vector.<Link>;
 	}
 
 }

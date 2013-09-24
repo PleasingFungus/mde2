@@ -14,6 +14,7 @@ package Components {
 		
 		public var modules:Vector.<Module>;
 		public var wires:Vector.<Wire>;
+		private var newLinks:Vector.<Link>;
 		public var connections:Vector.<Connection>;
 		public var origin:Point;
 		public var lastLoc:Point;
@@ -50,8 +51,16 @@ package Components {
 			
 			for each (var wire:Wire in wires)
 				Wire.place(wire);
-			for each (var module:Module in modules)
+			
+			newLinks = new Vector.<Link>;
+			for each (var module:Module in modules) {
 				module.register();
+				for each (var port:PortLayout in module.layout.ports)
+					if (port.port.newLink) {
+						newLinks.push(port.port.newLink)
+						port.port.newLink = null;
+					}
+			}
 			
 			exists = true;
 			return true;
@@ -61,6 +70,8 @@ package Components {
 			if (!rooted)
 				return false;
 			
+			for each (var link:Link in newLinks)
+				Link.remove(link);
 			for each (var module:Module in modules)
 				module.deregister();
 			for each (var wire:Wire in wires)

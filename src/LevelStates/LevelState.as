@@ -572,6 +572,7 @@ package LevelStates {
 			updateUI();
 			super.update();
 			checkControls();
+			checkState();
 			checkTime();
 			forceScroll();
 			
@@ -627,7 +628,7 @@ package LevelStates {
 					else {
 						var mousedPort:Port = findMousedPort();
 						if (level.canDrawWires && mousedPort && Link.validStart(mousedPort)) {
-							currentLink = new Link(mousedPort, new PseudoPort(U.pointToGrid(U.mouseLoc)));
+							currentLink = new Link(mousedPort, new PseudoPort(U.pointToGrid(U.mouseLoc)), true);
 							displayLinks.push(midLayer.add(new DLink(currentLink)));
 							linkBeingDragged = false;
 						} else
@@ -921,6 +922,14 @@ package LevelStates {
 						moduleList.closesOnClickOutside = false;
 						break;
 					}
+			}
+		}
+		
+		private function checkState():void {
+			if (Link.newLinks.length) {
+				for each (var link:Link in Link.newLinks)
+					midLayer.add(new DLink(link));
+				Link.newLinks = new Vector.<Link>;
 			}
 		}
 		

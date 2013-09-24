@@ -213,7 +213,7 @@ package Displays {
 		}
 		
 		protected function getColor():uint {
-			if (!link.fullyPlaced) {
+			if (link.hovering) {
 				if (!link.atValidEndpoint())
 					return U.UNCONNECTED_COLOR;
 				return 0xff000000;

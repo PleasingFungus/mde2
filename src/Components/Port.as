@@ -15,6 +15,7 @@ package Components {
 		public var offset:Point;
 		public var connections:Vector.<Carrier>;
 		public var links:Vector.<Link>;
+		public var newLink:Link;
 		protected var _source:Port;
 		
 		private var cachedValue:Value;
@@ -88,9 +89,21 @@ package Components {
 			}
 		}
 		
-		public function addConnection(Connection:Carrier):void {
-			log(this +" added a connection with " + Connection);
-			connections.push(Connection);
+		public function addConnection(connection:Carrier):void {
+			log(this +" added a connection with " + connection);
+			connections.push(connection);
+		}
+		
+		public function addLink(port:Port):void {
+			for each (var link:Link in links)
+				if (link.source == port || link.destination == port)
+					return; //don't add redundant links
+			
+			if (!isSource() && getSource())
+				throw new Error("Multiple links to a non-source port!");
+			
+			newLink = new Link(this, port);
+			Link.place(newLink);
 		}
 		
 		public function isEndpoint(p:Point):Boolean {

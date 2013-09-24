@@ -13,7 +13,7 @@ package Levels.ControlTutorials {
 		public function CopyingTutorial() {
 			super(NAME, new WireTutorialGoal(), false, [ConstIn, Adder, DataWriter]);
 			
-			info = "Copy modules and wires by shift-dragging to select them, then pressing " + ControlSet.COPY_KEY + " to copy and " + ControlSet.PASTE_KEY + " to paste.";
+			info = "Copy modules and wires by dragging to select them, then pressing " + ControlSet.COPY_KEY + " to copy and " + ControlSet.PASTE_KEY + " to paste.";
 			info += "\n\n\(You can copy within and between levels.)"
 			
 			canDrawWires = canPlaceModules = false;

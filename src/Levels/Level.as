@@ -152,7 +152,6 @@ package Levels {
 		public static var L_TutorialTest:Level;
 		public static var L_TutorialWire:Level;
 		public static var L_TutorialModule:Level;
-		public static var L_TutorialSelection:Level;
 		public static var L_TutorialCopying:Level;
 		
 		public static var L_Accumulation:Level;
@@ -196,8 +195,7 @@ package Levels {
 			L_TutorialTest = new FibonacciTutorial;
 			(L_TutorialWire = new WireTutorial).predecessors.push(L_TutorialTest);;
 			(L_TutorialModule = new ModuleTutorial).predecessors.push(L_TutorialWire);
-			(L_TutorialSelection = new DragSelectTutorial).predecessors.push(L_TutorialModule);
-			(L_TutorialCopying = new CopyingTutorial).predecessors.push(L_TutorialSelection);
+			(L_TutorialCopying = new CopyingTutorial).predecessors.push(L_TutorialModule);
 			
 			(L_Accumulation = new AccumTutorial).predecessors.push(L_TutorialModule);
 			(L_Double = new DoubleTutorial).predecessors.push(L_Accumulation);
@@ -319,7 +317,7 @@ package Levels {
 			L_PCPU_Stack.predecessors.push(L_PCPU_Full);
 			L_PCPU_Stack.useTickRecord = L_PCPU_Stack.isBonus = true;
 			
-			levels.push(L_TutorialWire, L_TutorialModule, L_TutorialSelection, L_TutorialCopying,
+			levels.push(L_TutorialWire, L_TutorialModule, null, L_TutorialCopying,
 					    L_Accumulation, L_SingleOp, L_DoubleOp,
 						L_CPU_Basic, L_CPU_Jump, L_CPU_Branch, L_CPU_Advanced, L_CPU_Load, L_CPU_Full,
 						L_DTutorial_0, L_DTutorial_1, L_DTutorial_2,

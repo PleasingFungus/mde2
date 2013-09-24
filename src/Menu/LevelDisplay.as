@@ -42,8 +42,7 @@ package Menu {
 			fib.x += fib.layout.dim.x;
 			var wire:LevelModule = addSuccessor(Level.L_TutorialWire, fib);
 			var module:LevelModule = addSuccessor(Level.L_TutorialModule, wire);
-			var drag:LevelModule = addSuccessor(Level.L_TutorialSelection, module, module.layout.dim.y + MODULE_SPACING.y * 2);
-			addSuccessor(Level.L_TutorialCopying, drag, MODULE_SPACING.y);
+			addSuccessor(Level.L_TutorialCopying, module, module.layout.dim.y + MODULE_SPACING.y);
 			
 			var accum:LevelModule = addSuccessor(Level.L_Accumulation, module);
 			var double:LevelModule = addSuccessor(Level.L_Double, accum, (accum.layout.dim.y + MODULE_SPACING.y)/2);

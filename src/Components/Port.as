@@ -94,12 +94,19 @@ package Components {
 			connections.push(connection);
 		}
 		
-		public function createLink(port:Port):void {
+		public function hasLinkTo(port:Port):Boolean {
 			for each (var link:Link in links)
 				if (link.source == port || link.destination == port)
-					return; //don't add redundant links
+					return true;
+			return false;
+		}
+		
+		public function createLink(port:Port):void {
+			if (hasLinkTo(port))
+				return; //don't add redundant links
 			
-			if (!isSource() && getSource())
+			var s:Port = getSource();
+			if (!isSource() && s && s != port)
 				throw new Error("Multiple links to a non-source port!");
 			
 			newLink = new Link(this, port);
@@ -111,7 +118,8 @@ package Components {
 				if (extLink.equals(link))
 					return; //don't add redundant links
 			
-			if (!isSource() && getSource())
+			var s:Port = getSource();
+			if (!isSource() && s && s != link.getActualSource())
 				throw new Error("Multiple links to a non-source port!");
 			
 			links.push(link);

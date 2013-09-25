@@ -686,7 +686,7 @@ package LevelStates {
 		}
 		
 		private function makeCustomModule():void {
-			var customModule:CustomModule = CustomModule.fromSelection(currentBloc.modules);
+			var customModule:CustomModule = CustomModule.fromSelection(currentBloc.modules, U.pointToGrid(U.mouseLoc));
 			if (!customModule)
 				return;
 			
@@ -1251,7 +1251,26 @@ package LevelStates {
 			if (!levelLoaded)
 				level.loadIntoState(this, savedString == RESET_SAVE || !savedString);
 			
+			if (wires.length && !DEBUG.PRESERVE_WIRES)
+				cleanupWires();
+			
 			makeUI();
+		}
+		
+		private function cleanupWires():void {
+			for each (var module:Module in modules)
+				if (module.exists)
+					for each (var port:PortLayout in module.layout.ports) {
+						for each (var connection:Carrier in port.port.connections) {
+							var source:Port = connection.getSource();
+							if (source && !port.port.hasLinkTo(source)) {
+								addLink(new Link(source, port.port), false);
+							}
+						}
+					}
+			
+			for each (var wire:Wire in wires.slice()) //copy to avoid iterating a mutated list
+				Wire.remove(wire);
 		}
 		
 		private function loadFromSuccess():void {

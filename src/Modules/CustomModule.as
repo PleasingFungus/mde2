@@ -217,7 +217,7 @@ package Modules {
 			return new CustomModule(modules, x, y);
 		}
 		
-		public static function fromSelection(selection:Vector.<Module>):CustomModule {
+		public static function fromSelection(selection:Vector.<Module>, Loc:Point):CustomModule {
 			var module:Module, moduleIndex:int;
 				
 			if (!selection.length)
@@ -265,7 +265,7 @@ package Modules {
 				}
 			}
 			
-			var customModule:CustomModule = new CustomModule(clones);
+			var customModule:CustomModule = new CustomModule(clones, Loc.x, Loc.y);
 			if (customModule.outputs.length > 16 || customModule.inputs.length > 16 || customModule.controls.length > 16)
 				return null;
 			if (Math.max(customModule.outputs.length, customModule.inputs.length) * customModule.controls.length > 64)

@@ -14,6 +14,7 @@ package Displays {
 		public var link:Link;
 		
 		protected var cachedLines:Vector.<FlxSprite>;
+		protected var cachesByZoom:Array = [];
 		protected var cachedStart:Point;
 		protected var cachedEnd:Point;
 		protected var cachedZoom:Number;
@@ -72,10 +73,19 @@ package Displays {
 			return cachedLines && U.zoom == cachedZoom && link.source.Loc.equals(cachedStart) && link.destination.Loc.equals(cachedEnd);
 		}
 		protected function canBuildCache():Boolean {
-			return link.deployed && cachesThisFrame < MAX_CACHES_PER_FRAME; //TODO
+			return link.deployed && (cachesByZoom[zoomIndex] || cachesThisFrame < MAX_CACHES_PER_FRAME);
 		}
 		
 		protected function buildCache():void {
+			if (!cachedStart || !link.source.Loc.equals(cachedStart) || !link.destination.Loc.equals(cachedEnd))
+				cachesByZoom = [];
+			
+			if (cachesByZoom[zoomIndex]) {
+				cachedLines = cachesByZoom[zoomIndex];
+				cachedZoom = U.zoom;
+				return;
+			}
+			
 			cachedLines = new Vector.<FlxSprite>;
 			_bounds = null;
 			
@@ -85,7 +95,6 @@ package Displays {
 										   Math.floor((source.y + dest.y) / 2));
 			var primaryHorizontal:Boolean = Math.abs(source.x - dest.x) >= Math.abs(source.y - dest.y);
 			
-			//TODO: split up very long wires
 			if (primaryHorizontal) {
 				cachedLines.push(makeCachedLine(Math.min(source.x, midpoint.x), source.y, Math.abs(source.x - midpoint.x), true));
 				cachedLines.push(makeCachedLine(midpoint.x, Math.min(source.y, dest.y), Math.abs(source.y - dest.y), false));
@@ -99,6 +108,7 @@ package Displays {
 			cachedZoom = U.zoom;
 			cachedStart = link.source.Loc.clone();
 			cachedEnd = link.destination.Loc.clone();
+			cachesByZoom[zoomIndex] = cachedLines;
 		}
 		
 		private function makeCachedLine(X:int, Y:int, Length:int, Horizontal:Boolean):FlxSprite {

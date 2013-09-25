@@ -134,9 +134,9 @@ package Components {
 			var bytes:ByteArray = new ByteArray;
 			
 			var sourceIndex:int = portIndex(source);
-			var sourceModuleIndex:int = moduleIndex(source.parent);
+			var sourceModuleIndex:int = portModuleIndex(source);
 			var destIndex:int = portIndex(destination);
-			var destModuleIndex:int = moduleIndex(destination.parent);
+			var destModuleIndex:int = portModuleIndex(destination);
 			
 			if (sourceIndex == -1 || sourceModuleIndex == -1 ||
 				destIndex == -1 || destModuleIndex == -1)
@@ -170,6 +170,21 @@ package Components {
 			if (bytes.position > end)
 				throw new Error("Link reading overshot?");
 			return links;
+		}
+		
+		protected function portModuleIndex(port:Port):int {
+			var index:int = 0;
+			for each (var m:Module in U.state.modules)
+				if (m == port.parent)
+					return index;
+				else if (m.exists) {
+					for each (var portLayout:PortLayout in m.layout.ports)
+						if (portLayout.port == port)
+							return index; //custom module: port parent doesn't exist
+					
+					index++;
+				}
+			return -1;
 		}
 		
 		protected function moduleIndex(module:Module):int {

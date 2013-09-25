@@ -82,7 +82,9 @@ package Layouts {
 		}
 		
 		public function get Loc():Point {
-			return port.Loc;
+			if (parent == port.parent)
+				return port.Loc;
+			return port.Loc.add(parent).subtract(port.parent); //used for custom module
 		}
 		
 		public function get offset():Point {

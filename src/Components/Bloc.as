@@ -55,6 +55,8 @@ package Components {
 						port.port.newLink = null;
 					}
 			}
+			for each (var link:Link in links)
+				link.deleted = false;
 			
 			exists = true;
 			return true;
@@ -64,8 +66,10 @@ package Components {
 			if (!rooted)
 				return false;
 			
-			for each (var link:Link in newLinks)
-				Link.remove(link);
+			for each (var link:Link in links)
+				link.deleted = true;
+			for each (var newLink:Link in newLinks)
+				Link.remove(newLink);
 			for each (var module:Module in modules)
 				module.deregister();
 			
@@ -85,8 +89,6 @@ package Components {
 		public function destroy():void {
 			for each (var module:Module in modules)
 				module.exists = false;
-			for each (var link:Link in links)
-				link.deleted = true; //dubious
 			exists = false;
 		}
 		
@@ -94,7 +96,7 @@ package Components {
 			for each (var module:Module in modules)
 				module.exists = true;
 			for each (var link:Link in links)
-				link.deleted = false; //dubious
+				link.deleted = false;
 			exists = true;
 		}
 		

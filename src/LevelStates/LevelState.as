@@ -923,7 +923,7 @@ package LevelStates {
 		private function checkState():void {
 			if (Link.newLinks.length) {
 				for each (var link:Link in Link.newLinks)
-					midLayer.add(new DLink(link));
+					displayLinks.push(midLayer.add(new DLink(link)));
 				Link.newLinks = new Vector.<Link>;
 			}
 		}

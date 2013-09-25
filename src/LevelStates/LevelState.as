@@ -632,7 +632,7 @@ package LevelStates {
 							displayLinks.push(midLayer.add(new DLink(currentLink)));
 							linkBeingDragged = false;
 						} else
-							midLayer.add(selectionArea = new SelectionBox(displayWires, displayModules));
+							midLayer.add(selectionArea = new SelectionBox(displayLinks, displayModules));
 					}
 				}
 				
@@ -647,7 +647,7 @@ package LevelStates {
 					if (!pastedBloc)
 						return;
 					
-					pastedBloc.extendDisplays(displayWires, displayModules);
+					pastedBloc.extendDisplays(displayLinks, displayModules);
 					
 					if (currentBloc)
 						currentBloc.unravel();
@@ -726,7 +726,7 @@ package LevelStates {
 			var displayModules:Vector.<DModule> = new Vector.<DModule>;
 			displayModules.push(displayModule);
 			
-			var displayBloc:DBloc = DBloc.fromDisplays(new Vector.<DWire>, displayModules, Rooted);
+			var displayBloc:DBloc = DBloc.fromDisplays(new Vector.<DLink>, displayModules, Rooted);
 			displayBloc.bloc.origin = U.pointToGrid(U.mouseLoc);
 			midLayer.add(displayBloc);
 			
@@ -895,12 +895,7 @@ package LevelStates {
 			
 			var blocMoused:Boolean = false;
 			if (currentBloc) { //implies currentBloc.rooted
-				for each (var dwire:DWire in displayWires)
-					if (currentBloc.wires.indexOf(dwire.wire) != -1 && dwire.overlapsPoint(U.mouseFlxLoc)) {
-						blocMoused = true;
-						break;
-					}
-				blocMoused = blocMoused || (!level.canPickupModules && mousedModule && currentBloc.modules.indexOf(mousedModule) != -1);
+				blocMoused = !level.canPickupModules && mousedModule && currentBloc.modules.indexOf(mousedModule) != -1;
 			} 
 			
 			if (blocMoused)

@@ -12,6 +12,7 @@ package Displays {
 	public class DLink extends FlxSprite {
 		
 		public var link:Link;
+		public var selected:Boolean;
 		
 		protected var cachedLines:Vector.<FlxSprite>;
 		protected var cachesByZoom:Array = [];
@@ -231,6 +232,8 @@ package Displays {
 			
 			if (!U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc))
 				return U.HIGHLIGHTED_COLOR;
+			if (selected)
+				return U.SELECTION_COLOR;
 			return 0xff000000; //TODO
 		}
 		

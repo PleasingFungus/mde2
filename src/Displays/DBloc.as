@@ -10,6 +10,7 @@ package Displays {
 	import flash.geom.Point;
 	import Modules.Module;
 	import org.flixel.*;
+	import Components.Link;
 	
 	/**
 	 * ...
@@ -18,7 +19,7 @@ package Displays {
 	public class DBloc extends FlxGroup {
 		
 		private var tick:int;
-		private var displayWires:Vector.<DWire>;
+		private var displayLinks:Vector.<DLink>;
 		private var displayModules:Vector.<DModule>;
 		public var bloc:Bloc;
 		public function DBloc() {
@@ -49,19 +50,12 @@ package Displays {
 				var mouseLoc:FlxPoint = U.mouseFlxLoc;
 				var moused:Boolean = false;
 				
-				if (!U.buttonManager.moused) {
+				if (!U.buttonManager.moused)
 					for each (var dmodule:DModule in displayModules)
 						if (dmodule.overlapsPoint(mouseLoc)) {
 							moused = true;
 							break;
 						}
-					if (!moused)
-						for each (var dwire:DWire in displayWires)
-							if (dwire.overlapsPoint(mouseLoc)) {
-								moused = true;
-								break;
-							}
-				}
 				
 				if (moused) {
 					bloc.lift();
@@ -117,9 +111,6 @@ package Displays {
 					var lastAction:Action = U.state.actions.actionStack.pop();
 					if (lastAction is BlocLiftAction && (lastAction as BlocLiftAction).bloc == bloc)
 						lastAction.revert();
-					else if (bloc.modules.length == 1 && bloc.wires.length == 0 &&
-							 lastAction is CustomAction && (lastAction as CustomAction).exec == Module.remove && (lastAction as CustomAction).param == bloc.modules[0])
-						lastAction.revert();
 					else {
 						U.state.actions.actionStack.push(lastAction);
 						bloc.destroy();
@@ -135,20 +126,20 @@ package Displays {
 		private function setSelect(selected:Boolean = true):void {
 			for each (var dmodule:DModule in displayModules)
 				dmodule.selected = selected;
-			for each (var dwire:DWire in displayWires)
-				dwire.selected = selected;
+			for each (var dlink:DLink in displayLinks)
+				dlink.selected = selected;
 			bloc.exists = exists = selected;
 		}
 		
-		public static function fromDisplays(DisplayWires:Vector.<DWire>, DisplayModules:Vector.<DModule>, Rooted:Boolean = true):DBloc {
+		public static function fromDisplays(DisplayLinks:Vector.<DLink>, DisplayModules:Vector.<DModule>, Rooted:Boolean = true):DBloc {
 			var dBloc:DBloc = new DBloc;
-			dBloc.displayWires = DisplayWires;
+			dBloc.displayLinks = DisplayLinks;
 			dBloc.displayModules = DisplayModules;
 			
-			var wires:Vector.<Wire> = new Vector.<Wire>;
-			for each (var dwire:DWire in dBloc.displayWires) {
-				dwire.selected = true;
-				wires.push(dwire.wire);
+			var links:Vector.<Link> = new Vector.<Link>;
+			for each (var dlink:DLink in dBloc.displayLinks) {
+				dlink.selected = true;
+				links.push(dlink.link);
 			}
 			var modules:Vector.<Module> = new Vector.<Module>;
 			for each (var dmodule:DModule in dBloc.displayModules) {
@@ -156,7 +147,7 @@ package Displays {
 				modules.push(dmodule.module);
 			}
 			
-			dBloc.bloc = new Bloc(modules, wires, Rooted);
+			dBloc.bloc = new Bloc(modules, links, Rooted);
 			return dBloc;
 		}
 		
@@ -168,9 +159,9 @@ package Displays {
 			var dBloc:DBloc = new DBloc;
 			dBloc.bloc = bloc;
 			
-			dBloc.displayWires = new Vector.<DWire>;
-			for each (var wire:Wire in bloc.wires)
-				dBloc.displayWires.push(U.state.midLayer.add(new DWire(wire)));
+			dBloc.displayLinks = new Vector.<DLink>;
+			for each (var link:Link in bloc.links)
+				dBloc.displayLinks.push(U.state.midLayer.add(new DLink(link)));
 			
 			dBloc.displayModules = new Vector.<DModule>;
 			for each (var module:Module in bloc.modules)
@@ -179,42 +170,12 @@ package Displays {
 			return dBloc;
 		}
 		
-		public function extendDisplays(displayWires:Vector.<DWire>, displayModules:Vector.<DModule>):void {
-			for each (var dWire:DWire in this.displayWires)
-				displayWires.push(dWire);
+		public function extendDisplays(displayLinks:Vector.<DLink>, displayModules:Vector.<DModule>):void {
+			for each (var dLink:DLink in this.displayLinks)
+				displayLinks.push(dLink);
 			for each (var dModule:DModule in this.displayModules)
 				displayModules.push(dModule);
 		}
-		
-		override public function draw():void {
-			super.draw();
-			//if (DEBUG.RENDER_BLOC_CONNECTIONS)
-				//debugRenderBlocConnections();
-		}
-		
-		//private var connectionSprite:FlxSprite;
-		//private function debugRenderBlocConnections():void {
-			//if (!connectionSprite)
-				//connectionSprite = new FlxSprite().makeGraphic(4, 4);
-			//
-			//connectionSprite.color = 0xb0ff00ff;
-			//for each (var connection:Connection in bloc.connections) {
-				//connectionSprite.x = connection.meeting.x * U.GRID_DIM;
-				//connectionSprite.y = connection.meeting.y * U.GRID_DIM;
-				//connectionSprite.draw();
-				//
-			//}
-			//
-			//connectionSprite.color = 0xb0ffff00;
-			//for each (connection in bloc.connections) {
-				//if (connection.origin.equals(connection.meeting))
-					//continue;
-				//
-				//connectionSprite.x = connection.origin.x * U.GRID_DIM;
-				//connectionSprite.y = connection.origin.y * U.GRID_DIM;
-				//connectionSprite.draw();
-			//}
-		//}
 		
 	}
 

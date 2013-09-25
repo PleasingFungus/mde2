@@ -13,7 +13,7 @@ package Components {
 	public class Bloc {
 		
 		public var modules:Vector.<Module>;
-		public var wires:Vector.<Wire>;
+		public var links:Vector.<Link>;
 		private var newLinks:Vector.<Link>;
 		public var connections:Vector.<Connection>;
 		public var origin:Point;
@@ -21,9 +21,9 @@ package Components {
 		public var lastRootedLoc:Point;
 		public var rooted:Boolean;
 		public var exists:Boolean;
-		public function Bloc(modules:Vector.<Module>, wires:Vector.<Wire>, Rooted:Boolean = true) {
+		public function Bloc(modules:Vector.<Module>, links:Vector.<Link>, Rooted:Boolean = true) {
 			this.modules = modules;
-			this.wires = wires;
+			this.links = links;
 			connections = new Vector.<Connection>;
 			rooted = Rooted;
 			exists = true;
@@ -36,9 +36,6 @@ package Components {
 			for each (var module:Module in modules)
 				if (!module.validPosition)
 					return false;
-			for each (var wire:Wire in wires)
-				if (wire.collides())
-					return false;
 			return true;
 		}
 		
@@ -48,9 +45,6 @@ package Components {
 			
 			moveTo(p);
 			rooted = true;
-			
-			for each (var wire:Wire in wires)
-				Wire.place(wire);
 			
 			newLinks = new Vector.<Link>;
 			for each (var module:Module in modules) {
@@ -74,8 +68,6 @@ package Components {
 				Link.remove(link);
 			for each (var module:Module in modules)
 				module.deregister();
-			for each (var wire:Wire in wires)
-				Wire.remove(wire);
 			
 			rooted = false;
 			exists = false;
@@ -93,16 +85,16 @@ package Components {
 		public function destroy():void {
 			for each (var module:Module in modules)
 				module.exists = false;
-			for each (var wire:Wire in wires)
-				wire.exists = false;
+			for each (var link:Link in links)
+				link.deleted = true; //dubious
 			exists = false;
 		}
 		
 		public function mobilize():void {
 			for each (var module:Module in modules)
 				module.exists = true;
-			for each (var wire:Wire in wires)
-				wire.exists = true;
+			for each (var link:Link in links)
+				link.deleted = false; //dubious
 			exists = true;
 		}
 		
@@ -119,44 +111,10 @@ package Components {
 				module.y += delta.y;
 			}
 			
-			for each (var wire:Wire in wires)
-				wire.shift(delta);
-			
 			var oldLoc:Point = origin;
 			origin = p;
 			
 			return true;
-		}
-		
-		private function verifyNotPlaced():void {
-			for each (var module:Module in modules)
-				if (module.deployed)
-					throw new Error("Module not retracted!");
-			for each (var wire:Wire in wires)
-				if (wire.deployed)
-					throw new Error("Wire not retracted!");
-		}
-		
-		protected function carrierIncluded(carrier:Carrier):Boolean {
-			if (carrier is Wire)
-				return wires.indexOf(carrier) != -1;
-			if (carrier is Port) {
-				if (modules.indexOf((carrier as Port).parent) != -1)
-					return true;
-				return layoutForPort(carrier as Port) != null; //dumb but maybe it's a custommodule?
-			}
-			
-			throw new Error("Unknown carrier type!");
-		}
-		
-		protected function layoutForPort(port:Port):PortLayout {
-			//this is dumb and bad
-			for each (var module:Module in modules)
-				if (module == port.parent || module is CustomModule)
-					for each (var portLayout:PortLayout in module.layout.ports)
-						if (portLayout.port == port)
-							return portLayout;
-			return null;
 		}
 		
 		public function lift():void {	
@@ -168,17 +126,12 @@ package Components {
 			var moduleStrings:Vector.<String> = new Vector.<String>;
 			for each (var module:Module in modules)
 				moduleStrings.push(module.saveString());
-			var wireStrings:Vector.<String> = new Vector.<String>;
-			for each (var wire:Wire in wires)
-				wireStrings.push(wire.saveString());
-			return [moduleStrings.join(U.SAVE_DELIM), wireStrings.join(U.SAVE_DELIM)].join(U.MAJOR_SAVE_DELIM);
+			return moduleStrings.join(U.SAVE_DELIM);
 		}
 		
 		
 		public static function fromString(str:String, Rooted:Boolean = false):Bloc {
-			var stringSegments:Array = str.split(U.MAJOR_SAVE_DELIM);
-			var moduleStrings:Array = stringSegments[0].split(U.SAVE_DELIM);
-			var wireStrings:Array = stringSegments[1].split(U.SAVE_DELIM);
+			var moduleStrings:Array = str.split(U.SAVE_DELIM);
 			
 			var allowableTypes:Vector.<Class> = U.state.level.allowedModules;
 			var writersRemaining:int = U.state.level.writerLimit ? U.state.level.writerLimit - U.state.numMemoryWriters() : int.MAX_VALUE;
@@ -200,45 +153,11 @@ package Components {
 				averageLoc.y = Math.round(averageLoc.y / modules.length);
 			}
 			
-			var wires:Vector.<Wire> = new Vector.<Wire>;
-			var wireLength:int;
-			for each (var wireString:String in wireStrings) {
-				var wire:Wire = Wire.fromString(wireString);
-				if (!wire) continue;
-				
-				wires.push(wire);
-				
-				if (!modules.length) {
-					for each (var p:Point in wire.path)
-						averageLoc = averageLoc.add(p);
-					wireLength += wire.path.length;
-				}
-			}
-			if (!modules.length) {
-				if (!wires.length)
-					return null;
-				averageLoc.x = Math.round(averageLoc.x / wireLength);
-				averageLoc.y = Math.round(averageLoc.y / wireLength);
-			}
-			
-			var bloc:Bloc = new Bloc(modules, wires, Rooted);
+			var bloc:Bloc = new Bloc(modules, new Vector.<Link>, Rooted);
 			bloc.origin = averageLoc;
 			if (bloc.rooted)
 				bloc.lastRootedLoc = bloc.origin;
 			return bloc;
-		}
-		
-		
-		public static function make(moduleArray:Array, wireArray:Array):Bloc {
-			var modules:Vector.<Module> = new Vector.<Module>;
-			for each (var module:Module in moduleArray)
-				modules.push(module);
-			
-			var wires:Vector.<Wire> = new Vector.<Wire>;
-			for each (var wire:Wire in wireArray)
-				wires.push(wire);
-			
-			return new Bloc(modules, wires);
 		}
 	}
 

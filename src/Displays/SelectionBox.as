@@ -10,12 +10,12 @@ package Displays {
 	public class SelectionBox extends FlxSprite {
 		
 		private var clickPoint:Point;
-		private var displayWires:Vector.<DWire>;
+		private var displayLinks:Vector.<DLink>;
 		private var displayModules:Vector.<DModule>;
 		public var displayBloc:DBloc;
-		public function SelectionBox(DisplayWires:Vector.<DWire>, DisplayModules:Vector.<DModule>) {
+		public function SelectionBox(DisplayLinks:Vector.<DLink>, DisplayModules:Vector.<DModule>) {
 			clickPoint = U.mouseLoc;
-			displayWires = DisplayWires;
+			displayLinks = DisplayLinks;
 			displayModules = DisplayModules;
 			super(clickPoint.x, clickPoint.y);
 			
@@ -45,18 +45,18 @@ package Displays {
 		private function createSelection():void {
 			var area:FlxBasic = new FlxObject(x - scale.x / 2, y - scale.y / 2, scale.x, scale.y);
 			
-			var wires:Vector.<DWire> = new Vector.<DWire>;
-			for each (var wire:DWire in displayWires)
-				if (wire.wire.exists && wire.wire.deployed && wire.wire.path.length > 1 && !wire.wire.FIXED && wire.overlaps(area))
-					wires.push(wire);
+			var links:Vector.<DLink> = new Vector.<DLink>;
+			for each (var link:DLink in displayLinks)
+				if (link.link.mouseable && !link.link.FIXED && link.overlaps(area))
+					links.push(link);
 			
 			var modules:Vector.<DModule> = new Vector.<DModule>;
 			for each (var module:DModule in displayModules)
 				if (module.module.exists && !module.module.FIXED && module.overlaps(area))
 					modules.push(module);
 			
-			if (modules.length || wires.length)
-				displayBloc = DBloc.fromDisplays(wires, modules);
+			if (modules.length || links.length)
+				displayBloc = DBloc.fromDisplays(links, modules);
 		}
 	}
 

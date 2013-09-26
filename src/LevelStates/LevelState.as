@@ -149,10 +149,6 @@ package LevelStates {
 		public function addLink(l:Link, fixed:Boolean = true):void {
 			l.FIXED = fixed;
 			Link.place(l);
-			
-			var displayLink:DLink = new DLink(l);
-			midLayer.add(displayLink);
-			displayLinks.push(displayLink);
 		}
 		
 		public function addWire(w:Wire, fixed:Boolean = true):void {
@@ -923,9 +919,17 @@ package LevelStates {
 		private function checkState():void {
 			if (Link.newLinks.length) {
 				for each (var link:Link in Link.newLinks)
-					displayLinks.push(midLayer.add(new DLink(link)));
+					if (!linkAlreadyDisplayed(link))
+						displayLinks.push(midLayer.add(new DLink(link)));
 				Link.newLinks = new Vector.<Link>;
 			}
+		}
+		
+		private function linkAlreadyDisplayed(link:Link):Boolean {
+			for each (var dLink:DLink in displayLinks)
+				if (dLink.link.equals(link))
+					return true;
+			return false;
 		}
 		
 		private function checkTime():void {

@@ -42,6 +42,13 @@ package Components {
 					(destination == link.source && source == link.destination));
 		}
 		
+		public function inVec(links:Vector.<Link>):Boolean {
+			for each (var link:Link in links)
+				if (equals(link))
+					return true;
+			return false;
+		}
+		
 		public function atValidEndpoint():Boolean {
 			if (!hovering)
 				throw new Error("Why is this being called?");

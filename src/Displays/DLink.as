@@ -224,6 +224,9 @@ package Displays {
 		}
 		
 		protected function getColor():uint {
+			if (selected)
+				return U.SELECTION_COLOR;
+			
 			if (link.hovering) {
 				if (!link.atValidEndpoint())
 					return U.UNCONNECTED_COLOR;
@@ -232,8 +235,6 @@ package Displays {
 			
 			if (!U.buttonManager.moused && overlapsPoint(U.mouseFlxLoc))
 				return U.HIGHLIGHTED_COLOR;
-			if (selected)
-				return U.SELECTION_COLOR;
 			return 0xff000000; //TODO
 		}
 		

@@ -51,12 +51,15 @@ package Components {
 				module.register();
 				for each (var port:PortLayout in module.layout.ports)
 					if (port.port.newLink) {
-						newLinks.push(port.port.newLink)
+						//if (!port.port.newLink.inVec(newLinks))
+							newLinks.push(port.port.newLink)
+						//else
+							//C.log('redundant!');
 						port.port.newLink = null;
 					}
 			}
 			for each (var link:Link in links)
-				link.deleted = false;
+				Link.place(link);
 			
 			exists = true;
 			return true;
@@ -67,7 +70,7 @@ package Components {
 				return false;
 			
 			for each (var link:Link in links)
-				link.deleted = true;
+				Link.remove(link);
 			for each (var newLink:Link in newLinks)
 				Link.remove(newLink);
 			for each (var module:Module in modules)
@@ -96,7 +99,7 @@ package Components {
 			for each (var module:Module in modules)
 				module.exists = true;
 			for each (var link:Link in links)
-				link.deleted = false;
+				link.deleted = link.placed = false;
 			exists = true;
 		}
 		

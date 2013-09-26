@@ -1,6 +1,8 @@
 package Displays {
+	import Components.Port;
 	import flash.geom.Point;
 	import Components.Bloc;
+	import Layouts.PortLayout;
 	import org.flixel.*;
 	
 	/**
@@ -45,18 +47,29 @@ package Displays {
 		private function createSelection():void {
 			var area:FlxBasic = new FlxObject(x - scale.x / 2, y - scale.y / 2, scale.x, scale.y);
 			
-			var links:Vector.<DLink> = new Vector.<DLink>;
-			for each (var link:DLink in displayLinks)
-				if (link.link.mouseable && !link.link.FIXED && link.overlaps(area))
-					links.push(link);
-			
 			var modules:Vector.<DModule> = new Vector.<DModule>;
 			for each (var module:DModule in displayModules)
 				if (module.module.exists && !module.module.FIXED && module.overlaps(area))
 					modules.push(module);
 			
+			var links:Vector.<DLink> = new Vector.<DLink>;
+			for each (var link:DLink in displayLinks)
+				if (link.link.mouseable && !link.link.FIXED &&
+					(!modules.length || (portInDModules(link.link.source, modules) &&
+										 portInDModules(link.link.destination, modules))) &&
+					link.overlaps(area))
+					links.push(link);
+			
 			if (modules.length || links.length)
 				displayBloc = DBloc.fromDisplays(links, modules);
+		}
+		
+		private function portInDModules(port:Port, dModules:Vector.<DModule>):Boolean {
+			for each (var dModule:DModule in dModules)
+				for each (var portLayout:PortLayout in dModule.module.layout.ports)
+					if (portLayout.port == port)
+						return true;
+			return false;
 		}
 	}
 

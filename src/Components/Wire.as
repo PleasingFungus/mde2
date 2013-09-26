@@ -278,13 +278,8 @@ package Components {
 		}
 		
 		public function connectionLoc(carrier:Carrier):Point {
-			if (carrier is Port) {
-				var port:Port = carrier as Port;
-				for each (var portLayout:PortLayout in port.parent.layout.ports)
-					if (portLayout.port == port)
-						return portLayout.Loc;
-				throw new Error("Port not in parent!");
-			}
+			if (carrier is Port)
+				return (carrier as Port).Loc;
 			if (carrier is Wire) {
 				var wire:Wire = carrier as Wire;
 				var point:Point, endpoint:Point;

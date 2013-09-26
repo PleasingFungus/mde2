@@ -9,9 +9,12 @@ package Components {
 	 */
 	public class Port implements Carrier {
 		
+		public var dataParent:Module; //source for drive(), etc
+		public var physParent:Module; //source for Loc(), etc
+		//distinct only in custommodule to-date
+		
 		public var name:String;
 		public var isOutput:Boolean;
-		public var parent:Module;
 		public var offset:Point;
 		public var connections:Vector.<Carrier>;
 		public var links:Vector.<Link>;
@@ -24,7 +27,7 @@ package Components {
 		
 		public function Port(IsOutput:Boolean, Parent:Module, Connections:Vector.<Carrier> = null) {
 			isOutput = IsOutput;
-			parent = Parent;
+			dataParent = physParent = Parent;
 			connections = Connections ? Connections : new Vector.<Carrier>;
 			links = new Vector.<Link>;
 		}
@@ -130,7 +133,7 @@ package Components {
 		}
 		
 		public function get Loc():Point {
-			return parent.add(offset);
+			return physParent.add(offset);
 		}
 		
 		
@@ -155,7 +158,7 @@ package Components {
 			
 			checked = true;
 			if (isSource()) {
-				var value:Value = parent.drive(this);
+				var value:Value = dataParent.drive(this);
 				checked = false;
 				return value;
 			}
@@ -171,7 +174,7 @@ package Components {
 		}
 		
 		public function get stable():Boolean {
-			var _stable:Boolean = (!U.state || !U.state.level.delay || !parent.delay || isOutput ||
+			var _stable:Boolean = (!U.state || !U.state.level.delay || !dataParent.delay || isOutput ||
 								   !source || source.lastChanged == -1 ||
 								   remainingDelay() <= 0);
 			return _stable
@@ -181,7 +184,7 @@ package Components {
 			if (!source) return 0;
 			var moment:int = U.state.time.moment;
 			var timeSince:int = moment - source.lastChanged;
-			var timeRemaining:int = parent.delay - timeSince;
+			var timeRemaining:int = dataParent.delay - timeSince;
 			return timeRemaining;
 		}
 		
@@ -222,7 +225,7 @@ package Components {
 		
 		
 		public function toString():String {
-			return "PORT of " + parent.name;
+			return "PORT of " + dataParent.name; //should be physparent...?
 		}
 	}
 

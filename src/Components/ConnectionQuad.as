@@ -8,6 +8,8 @@ package Components {
 	 */
 	public class ConnectionQuad {
 		
+		//probably can't meld this with link, because it's internal to custommmodule, not external? (hence dataparent...)
+		
 		public var inputPort:Port;
 		public var outputPort:Port;
 		public function ConnectionQuad(InputPort:Port, OutputPort:Port) {
@@ -22,10 +24,14 @@ package Components {
 		}
 		
 		public function toBytes(modules:Vector.<Module>):ByteArray {
-			var inputModuleIndex:int = modules.indexOf(inputPort.parent);
+			var inputModuleIndex:int = modules.indexOf(inputPort.dataParent); //dubious
 			var inputPortIndex:int = portIndex(inputPort);
-			var outputModuleIndex:int = modules.indexOf(outputPort.parent);
+			var outputModuleIndex:int = modules.indexOf(outputPort.dataParent); //dubious
 			var outputPortIndex:int = portIndex(outputPort);
+			
+			if (inputModuleIndex == -1 || inputPortIndex == -1 ||
+				outputModuleIndex == -1 || outputPortIndex == -1)
+				throw new Error("Module or port not found when saving custom module!");
 			
 			var bytes:ByteArray = new ByteArray();
 			bytes.writeInt(inputModuleIndex);
@@ -43,7 +49,7 @@ package Components {
 		
 		private function portIndex(port:Port):int {
 			var i:int = 0;
-			for each (var portLayout:PortLayout in port.parent.layout.ports)
+			for each (var portLayout:PortLayout in port.dataParent.layout.ports)
 				if (portLayout.port == port)
 					return i;
 				else

@@ -107,7 +107,7 @@ package Modules {
 		override protected function generateLayout():ModuleLayout {
 			var layout:ModuleLayout = new DefaultLayout(this, 2, 6);
 			for each (var portLayout:PortLayout in layout.ports)
-				portLayout.parent = this;
+				portLayout.port.physParent = this;
 			return layout;
 		}
 		
@@ -139,9 +139,10 @@ package Modules {
 		}
 		
 		override public function drive(port:Port):Value {
-			if (port.parent != this)
-				return port.parent.drive(port);
-			return U.V_UNPOWERED;
+			if (port.dataParent != this)
+				return port.dataParent.drive(port);
+			throw new Error("Port in custom-module sans parent!");
+			//return U.V_UNPOWERED; 
 		}
 		
 		
@@ -157,10 +158,10 @@ package Modules {
 						continue;
 					
 					var source:Port = portLayout.port.source;
-					if (!source || modules.indexOf(source.parent) == -1)
+					if (!source || modules.indexOf(source.dataParent) == -1) //TODO: FIXME: breaks with triple-nested custom modules
 						moduleConnections.push(NIL_CONNECT + CONNECTION_DELIM + NIL_CONNECT);
 					else
-						moduleConnections.push(modules.indexOf(source.parent) + CONNECTION_DELIM + source.parent.outputs.indexOf(source));
+						moduleConnections.push(modules.indexOf(source.dataParent) + CONNECTION_DELIM + source.dataParent.outputs.indexOf(source));
 				}
 				
 				var saveValue:String = escapeModuleString(module.saveString());
@@ -247,11 +248,11 @@ package Modules {
 						continue;
 					var oldSource:Port = oldPortLayout.port.source;
 					
-					var sourceModuleIndex:int = selection.indexOf(oldSource.parent);
+					var sourceModuleIndex:int = selection.indexOf(oldSource.dataParent);
 					if (sourceModuleIndex == -1)
 						for (sourceModuleIndex = 0; sourceModuleIndex < selection.length; sourceModuleIndex++) //try to look for custom modules containing the port
 							if (selection[sourceModuleIndex].outputs.indexOf(oldSource) != -1)
-								break;
+								break; //TODO: FIXME: this will break for triple-nested custom modules
 					if (sourceModuleIndex != -1 && sourceModuleIndex < selection.length) {
 						var sourceModule:Module = selection[sourceModuleIndex];
 						var sourcePortIndex:int = sourceModule.outputs.indexOf(oldSource);
@@ -301,7 +302,7 @@ package Modules {
 			for each (module in modules)
 				for each (var portLayout:PortLayout in module.layout.ports)
 					if (portLayout.port.source != portLayout.port && portLayout.port.source &&
-						modules.indexOf(portLayout.port.source.parent) != -1)
+						modules.indexOf(portLayout.port.source.dataParent) != -1) //TODO: FIXME: breaks with triple-nested custom modules
 						byteArray.writeBytes(new ConnectionQuad(portLayout.port, portLayout.port.source).toBytes(modules));
 			
 			return byteArray;

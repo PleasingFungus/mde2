@@ -104,7 +104,7 @@ package Displays {
 				if (!port || !port.isOutput)
 					displayText += source.getValue();
 				if (source != carrier) {
-					displayText += " from module " + source.parent.name;
+					displayText += " from module " + source.dataParent.name; //should be physparent?
 					if (source.name)
 						displayText += "'s '" +source.name+"'";
 				}
@@ -122,10 +122,10 @@ package Displays {
 			var dest:Port = link.source == source ? link.destination : link.source;
 			
 			var value:Value = source.getValue();
-			var out:String = source.getValue() + " from " + source.parent.name;
+			var out:String = source.getValue() + " from " + source.dataParent.name; //should be physparent?
 			if (source.name)
 				out += "'s " + source.name;
-			out += " to " + dest.parent.name;
+			out += " to " + dest.dataParent.name; //should be physparent?
 			if (dest.name)
 				out += "'s " + dest.name;
 			if (!source.getValue().unknown && !dest.stable)

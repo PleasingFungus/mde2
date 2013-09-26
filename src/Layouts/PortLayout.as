@@ -12,12 +12,10 @@ package Layouts {
 	public class PortLayout implements Node {
 		
 		public var port:Port;
-		public var parent:Module;
 		public var vertical:Boolean;
 		public var reversed:Boolean;
 		public function PortLayout(port:Port, Offset:Point, Vertical:Boolean = false, Reversed:Boolean = false) {
 			this.port = port;
-			parent = port.parent;
 			port.offset = Offset;
 			vertical = Vertical;
 			reversed = Reversed;
@@ -82,9 +80,7 @@ package Layouts {
 		}
 		
 		public function get Loc():Point {
-			if (parent == port.parent)
-				return port.Loc;
-			return port.Loc.add(parent).subtract(port.parent); //used for custom module
+			return port.Loc;
 		}
 		
 		public function get offset():Point {

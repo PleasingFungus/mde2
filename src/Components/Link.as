@@ -22,11 +22,11 @@ package Components {
 		}
 		
 		public function get exists():Boolean {
-			return !deleted && (hovering || (source.parent.exists && destination.parent.exists));
+			return !deleted && (hovering || (source.physParent.exists && destination.physParent.exists));
 		}
 		
 		public function get deployed():Boolean {
-			return !hovering && placed && source.parent.deployed && destination.parent.deployed;
+			return !hovering && placed && source.physParent.deployed && destination.physParent.deployed;
 		}
 		
 		public function get mouseable():Boolean {
@@ -141,9 +141,9 @@ package Components {
 			var bytes:ByteArray = new ByteArray;
 			
 			var sourceIndex:int = portIndex(source);
-			var sourceModuleIndex:int = portModuleIndex(source);
+			var sourceModuleIndex:int = moduleIndex(source.physParent);
 			var destIndex:int = portIndex(destination);
-			var destModuleIndex:int = portModuleIndex(destination);
+			var destModuleIndex:int = moduleIndex(destination.physParent);
 			
 			if (sourceIndex == -1 || sourceModuleIndex == -1 ||
 				destIndex == -1 || destModuleIndex == -1)
@@ -179,21 +179,6 @@ package Components {
 			return links;
 		}
 		
-		protected function portModuleIndex(port:Port):int {
-			var index:int = 0;
-			for each (var m:Module in U.state.modules)
-				if (m == port.parent)
-					return index;
-				else if (m.exists) {
-					for each (var portLayout:PortLayout in m.layout.ports)
-						if (portLayout.port == port)
-							return index; //custom module: port parent doesn't exist
-					
-					index++;
-				}
-			return -1;
-		}
-		
 		protected function moduleIndex(module:Module):int {
 			var index:int = 0;
 			for each (var m:Module in U.state.modules)
@@ -206,7 +191,7 @@ package Components {
 		
 		protected function portIndex(port:Port):int {
 			var index:int = 0;
-			for each (var layout:PortLayout in port.parent.layout.ports)
+			for each (var layout:PortLayout in port.physParent.layout.ports)
 				if (layout.port == port)
 					return index;
 				else

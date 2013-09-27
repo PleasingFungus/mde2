@@ -141,9 +141,9 @@ package Components {
 			var bytes:ByteArray = new ByteArray;
 			
 			var sourceIndex:int = portIndex(source);
-			var sourceModuleIndex:int = moduleIndex(source.physParent);
+			var sourceModuleIndex:int = moduleIndex(source.physParent, U.state.modules);
 			var destIndex:int = portIndex(destination);
-			var destModuleIndex:int = moduleIndex(destination.physParent);
+			var destModuleIndex:int = moduleIndex(destination.physParent, U.state.modules);
 			
 			if (sourceIndex == -1 || sourceModuleIndex == -1 ||
 				destIndex == -1 || destModuleIndex == -1)
@@ -157,7 +157,6 @@ package Components {
 			bytes.position = 0;
 			return bytes;
 		}
-		
 		
 		
 		private static function fromBytes(bytes:ByteArray):LinkPotential {
@@ -179,9 +178,35 @@ package Components {
 			return links;
 		}
 		
-		protected function moduleIndex(module:Module):int {
+		public function saveString(modules:Vector.<Module>):String {
+			var sourceIndex:int = portIndex(source);
+			var sourceModuleIndex:int = moduleIndex(source.physParent, modules);
+			var destIndex:int = portIndex(destination);
+			var destModuleIndex:int = moduleIndex(destination.physParent, modules);
+			
+			if (sourceIndex == -1 || sourceModuleIndex == -1 ||
+				destIndex == -1 || destModuleIndex == -1)
+				throw new Error("Module or port not found!");
+			
+			return [sourceIndex, sourceModuleIndex, destIndex, destModuleIndex].join(U.COORD_DELIM);
+		}
+		
+		public static function fromString(string:String, modules:Vector.<Module>):Link {
+			var splitString:Array = string.split(U.COORD_DELIM);
+			var sourceIndex:int = C.safeInt(splitString[0]);
+			var sourceModuleIndex:int = C.safeInt(splitString[1]);
+			var destIndex:int = C.safeInt(splitString[2]);
+			var destModuleIndex:int = C.safeInt(splitString[3]);
+			
+			return new Link(modules[sourceModuleIndex].layout.ports[sourceIndex].port,
+							modules[destModuleIndex].layout.ports[destIndex].port);
+		}
+		
+		
+		
+		protected function moduleIndex(module:Module, modules:Vector.<Module>):int {
 			var index:int = 0;
-			for each (var m:Module in U.state.modules)
+			for each (var m:Module in modules)
 				if (m == module)
 					return index;
 				else if (m.exists)

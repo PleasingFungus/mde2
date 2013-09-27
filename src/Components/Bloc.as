@@ -131,12 +131,21 @@ package Components {
 			var moduleStrings:Vector.<String> = new Vector.<String>;
 			for each (var module:Module in modules)
 				moduleStrings.push(module.saveString());
-			return moduleStrings.join(U.SAVE_DELIM);
+			
+			var linkStrings:Vector.<String> = new Vector.<String>;
+			for each (var link:Link in links)
+				linkStrings.push(link.saveString(modules));
+			
+			return [moduleStrings.join(U.SAVE_DELIM), linkStrings.join(U.SAVE_DELIM)].join(U.MAJOR_SAVE_DELIM);
 		}
 		
 		
 		public static function fromString(str:String, Rooted:Boolean = false):Bloc {
-			var moduleStrings:Array = str.split(U.SAVE_DELIM);
+			var stringSections:Array = str.split(U.MAJOR_SAVE_DELIM);
+			var moduleSection:String = stringSections[0];
+			var linkSection:String = stringSections[1];
+			
+			var moduleStrings:Array = moduleSection.split(U.SAVE_DELIM);
 			
 			var allowableTypes:Vector.<Class> = U.state.level.allowedModules;
 			var writersRemaining:int = U.state.level.writerLimit ? U.state.level.writerLimit - U.state.numMemoryWriters() : int.MAX_VALUE;
@@ -158,7 +167,14 @@ package Components {
 				averageLoc.y = Math.round(averageLoc.y / modules.length);
 			}
 			
-			var bloc:Bloc = new Bloc(modules, new Vector.<Link>, Rooted);
+			var linkStrings:Array = linkSection.split(U.SAVE_DELIM);
+			var links:Vector.<Link> = new Vector.<Link>;
+			for each (var linkString:String in linkStrings) {
+				var link:Link = Link.fromString(linkString, modules);
+				links.push(link);
+			}
+			
+			var bloc:Bloc = new Bloc(modules, links, Rooted);
 			bloc.origin = averageLoc;
 			if (bloc.rooted)
 				bloc.lastRootedLoc = bloc.origin;

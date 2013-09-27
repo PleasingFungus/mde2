@@ -51,10 +51,7 @@ package Components {
 				module.register();
 				for each (var port:PortLayout in module.layout.ports)
 					if (port.port.newLink) {
-						//if (!port.port.newLink.inVec(newLinks))
-							newLinks.push(port.port.newLink)
-						//else
-							//C.log('redundant!');
+						newLinks.push(port.port.newLink);
 						port.port.newLink = null;
 					}
 			}
@@ -167,11 +164,13 @@ package Components {
 				averageLoc.y = Math.round(averageLoc.y / modules.length);
 			}
 			
-			var linkStrings:Array = linkSection.split(U.SAVE_DELIM);
 			var links:Vector.<Link> = new Vector.<Link>;
-			for each (var linkString:String in linkStrings) {
-				var link:Link = Link.fromString(linkString, modules);
-				links.push(link);
+			if (linkSection.length) {
+				var linkStrings:Array = linkSection.split(U.SAVE_DELIM);
+				for each (var linkString:String in linkStrings) {
+					var link:Link = Link.fromString(linkString, modules);
+					links.push(link);
+				}
 			}
 			
 			var bloc:Bloc = new Bloc(modules, links, Rooted);

@@ -30,7 +30,7 @@ package Components {
 		}
 		
 		public function get mouseable():Boolean {
-			return exists && deployed;
+			return exists && deployed && !source.Loc.equals(destination.Loc);
 		}
 		
 		public function get saveIncluded():Boolean {

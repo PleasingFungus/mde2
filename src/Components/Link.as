@@ -85,6 +85,14 @@ package Components {
 					link.deleted = true;
 					return false; //won't enter onto the action stack
 				}
+			} else {
+				//check validity here
+				//shouldn't be needful, but...
+				if ((link.source.links.length && !link.source.isSource()) ||
+					(link.destination.links.length && !link.destination.isSource())) {
+					link.deleted = true;
+					return false;
+				}
 			}
 			
 			link.connect();

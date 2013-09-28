@@ -65,7 +65,7 @@ package Displays {
 					return;
 				}
 				
-				buildCache();
+				fetchCache();
 			}
 			drawCached();
 		}
@@ -77,17 +77,19 @@ package Displays {
 			return link.deployed && (cachesByZoom[zoomIndex] || cachesThisFrame < MAX_CACHES_PER_FRAME);
 		}
 		
-		protected function buildCache():void {
+		protected function fetchCache():void {
 			if (!cachedStart || !link.source.Loc.equals(cachedStart) || !link.destination.Loc.equals(cachedEnd))
 				cachesByZoom = [];
 			
-			if (cachesByZoom[zoomIndex]) {
-				cachedLines = cachesByZoom[zoomIndex];
-				cachedZoom = U.zoom;
-				return;
-			}
-			
-			cachedLines = new Vector.<FlxSprite>;
+			if (!cachesByZoom[zoomIndex])
+				buildCache();
+				
+			cachedLines = cachesByZoom[zoomIndex];
+			cachedZoom = U.zoom;
+		}
+		
+		protected function buildCache():void {
+			var cachedLines:Vector.<FlxSprite> = new Vector.<FlxSprite>;
 			_bounds = null;
 			
 			var source:Point = link.source.Loc;
@@ -107,9 +109,10 @@ package Displays {
 			}
 			
 			cachedZoom = U.zoom;
+			cachesByZoom[zoomIndex] = cachedLines;
+			
 			cachedStart = link.source.Loc.clone();
 			cachedEnd = link.destination.Loc.clone();
-			cachesByZoom[zoomIndex] = cachedLines;
 		}
 		
 		private function makeCachedLine(X:int, Y:int, Length:int, Horizontal:Boolean):FlxSprite {

@@ -1,0 +1,23 @@
+Bugs!
+
+To Reproduce
+	
+To Fix
+	delays in tooltips in module menus don't update with config (I-DEMUX doesn't display delay, wide modules only display log of default width, etc)
+	average ticks/instruction can be less than 1 (seen on JMP/BEQ levels, e.g. http://pleasingfungus.com/mde2/index.html?lvl=9&code=88124045519b9bcc4ddad1e4ea38056a
+	initial slider position incorrect - ref e.g. snapping backwards when arrow pressed to go 0 -> 1, on 'number' module
+	mouseover tooltips on main menu bar slide when scrolling
+	custom modules
+		can copy cmodules containing modules not allowed in level
+		crash on doubly recursive custom module - from module at top , 28&cfe433847d9d7fc3e5f76257ac9db453
+		custom module functionality mismatch - 20&code=4d2b3cd039bff0cc9f93d356a688f8ad
+			missing internal connections on load?
+	asymmetrical behavior by order of part placement (in delay levels only?)
+	thickness problem when zooming back in (when lines are (partially?) offscreen? onscreen?)
+	links occasionally turn gray (???) (same bug as above?)
+	hitting random-mem when scrolled down in the memory list creates an empty area at the top of the list
+	comments for addm/savem are too verbose
+Known But Not Currently Fixable
+	test positioning issues
+			flashrects (hints for new modules) are 'above' tooltips; shouldn't be
+			node text displays over the top of held modules 'covering' the current module

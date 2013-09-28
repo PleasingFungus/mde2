@@ -70,8 +70,13 @@ package Components {
 				Link.remove(link);
 			for each (var newLink:Link in newLinks)
 				Link.remove(newLink);
+			var liftedModules:Vector.<Module> = new Vector.<Module>;
 			for each (var module:Module in modules)
-				module.deregister();
+				if (!module.FIXED) {
+					module.deregister();
+					liftedModules.push(module);
+				}
+			modules = liftedModules;
 			
 			rooted = false;
 			exists = false;
@@ -88,7 +93,8 @@ package Components {
 		
 		public function destroy():void {
 			for each (var module:Module in modules)
-				module.exists = false;
+				if (!module.FIXED)
+					module.exists = false;
 			exists = false;
 		}
 		

@@ -49,7 +49,7 @@ package Displays {
 			
 			var modules:Vector.<DModule> = new Vector.<DModule>;
 			for each (var module:DModule in displayModules)
-				if (module.module.exists && !module.module.FIXED && module.overlaps(area))
+				if (module.module.exists && module.overlaps(area))
 					modules.push(module);
 			
 			var links:Vector.<DLink> = new Vector.<DLink>;

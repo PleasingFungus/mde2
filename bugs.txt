@@ -17,6 +17,7 @@ To Fix
 	links occasionally turn gray (???) (same bug as above?)
 	hitting random-mem when scrolled down in the memory list creates an empty area at the top of the list
 	comments for addm/savem are too verbose
+	copy-pasting non-allowed types (or excess writers) breaks associated links & crashes
 Known But Not Currently Fixable
 	test positioning issues
 			flashrects (hints for new modules) are 'above' tooltips; shouldn't be

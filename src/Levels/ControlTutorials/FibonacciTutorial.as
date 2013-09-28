@@ -14,7 +14,7 @@ package Levels.ControlTutorials {
 		public function FibonacciTutorial() {
 			super("Fibonacci", new FibonacciGoal);
 			useModuleRecord = false;
-			var loader:LevelLoader = LevelLoader.loadSimple("TZBJC8IwFIRf2op1i1vRFAL+/6u/xZuIl4J4EI8eROpMmEAOk8z3tixm1pjZGVr1WFrIEyBbQ4cyEwlcHBRKmLOvHsfxB9O7khZVmgd6wWxz6gmzY8o3oIHG5cK7Dk+FV5hNSu11nw66MIrsQxfmKyL4hn3Jy+t0+gl7wG/2SIwFxD5ik2/FNTTT3MxHcdDcqL6vPqFT3IvLM6ZF7Um1fEulWn548wc=");
+			var loader:LevelLoader = LevelLoader.loadSimple("TU8xDsIwELtLAmnTUgQVAxIDGxsP5hl8jYEFKdjJpUolW3Z88aUishORN3C4gu5ApAHkARz75EJzA/Hg1BsPLN5Gztq74FofN6UWcWZitISc8497tQzCfSGGMgjzgRhLtIKeVhaAl3WKZ7ynCmpXa1vigpF2IiWezVTKIDorqv1xU0laOmv7g/qpQVxRJM/UbTd8ecYf");
 			loader.loadIntoLevel(this);
 			info = "This level is already set up for you. All you have to do is press the test button at the top, and watch!";
 			

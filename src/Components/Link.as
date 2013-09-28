@@ -55,7 +55,7 @@ package Components {
 			return findDestinationPort(U.pointToGrid(destination.Loc)) != null; //TODO: investigate why pointToGrid is needed here but not in the place() call
 		}
 		
-		protected function connect():void {
+		public function connect():void {
 			source.addLink(this);
 			destination.addLink(this);
 		}

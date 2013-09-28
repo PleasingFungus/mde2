@@ -21,6 +21,13 @@ package Components {
 			return new Link(contextModules[sourceModuleIndex].layout.ports[sourcePortIndex].port,
 							contextModules[destModuleIndex].layout.ports[destPortIndex].port);
 		}
+		
+		public static function buildFromContext(linkPotentials:Vector.<LinkPotential>, contextModules:Vector.<Module>):Vector.<Link> {
+			var links:Vector.<Link> = new Vector.<Link>;
+			for each (var potential:LinkPotential in linkPotentials)
+				links.push(potential.manifestPotential(contextModules));
+			return links;
+		}
 	}
 
 }

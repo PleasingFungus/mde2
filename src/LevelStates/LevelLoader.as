@@ -32,7 +32,7 @@ package LevelStates {
 		
 		public function loadIntoLevel(level:Level):Level {
 			level.modules = modules;
-			level.wires = wires;
+			level.links = LinkPotential.buildFromContext(linkPotentials, modules);
 			return level;
 		}
 		

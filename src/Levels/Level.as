@@ -11,7 +11,7 @@ package Levels {
 	import Values.OpcodeValue;
 	
 	import org.flixel.FlxG;
-	import Components.Wire;
+	import Components.Link;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -28,7 +28,8 @@ package Levels {
 		public var fewestModules:int;
 		public var fewestTicks:int;
 		public var modules:Vector.<Module>;
-		public var wires:Vector.<Wire>;
+		public var links:Vector.<Link>;
+		public var defaultFixed:Boolean = true;
 		
 		public var canDrawWires:Boolean = true;
 		public var canPlaceModules:Boolean = true;
@@ -60,7 +61,7 @@ package Levels {
 			if (Modules)
 				for each (var module:Module in Modules)
 					modules.push(module);
-			wires = new Vector.<Wire>;
+			links = new Vector.<Link>;
 			
 			expectedOps = new Vector.<OpcodeValue>;
 			if (ExpectedOps)
@@ -338,11 +339,15 @@ package Levels {
 			for each (var module:Module in modules) {
 				module.cleanup();
 				module.setLayout();
-				levelState.addModule(module);
+				levelState.addModule(module, defaultFixed);
 			}
-			for each (var wire:Wire in wires) {
-				wire.cleanup();
-				levelState.addWire(wire);
+			for each (var link:Link in links) {
+				link.FIXED = defaultFixed;
+				link.connect();
+				if (U.state.links.indexOf(link) == -1) {
+					Link.newLinks.push(link);
+					U.state.links.push(link);
+				}
 			}
 		}
 		

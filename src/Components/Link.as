@@ -206,8 +206,13 @@ package Components {
 			var destIndex:int = C.safeInt(splitString[2]);
 			var destModuleIndex:int = C.safeInt(splitString[3]);
 			
-			return new Link(modules[sourceModuleIndex].layout.ports[sourceIndex].port,
-							modules[destModuleIndex].layout.ports[destIndex].port);
+			var sourceModule:Module = modules[sourceModuleIndex];
+			var destModule:Module = modules[destModuleIndex];
+			if (!sourceModule || !destModule)
+				return null;
+			
+			return new Link(sourceModule.layout.ports[sourceIndex].port,
+							destModule.layout.ports[destIndex].port);
 		}
 		
 		

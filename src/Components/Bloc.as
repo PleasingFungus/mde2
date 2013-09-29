@@ -154,32 +154,38 @@ package Components {
 			var writersRemaining:int = U.state.level.writerLimit ? U.state.level.writerLimit - U.state.numMemoryWriters() : int.MAX_VALUE;
 			
 			var modules:Vector.<Module> = new Vector.<Module>;
+			var nonNullModules:Vector.<Module> = new Vector.<Module>;
 			var averageLoc:Point = new Point;
 			for each (var moduleString:String in moduleStrings) {
 				var module:Module = Module.fromString(moduleString, allowableTypes);
-				if (!module) continue;
-				if (module.writesToMemory > writersRemaining) continue;
+				if (module && module.writesToMemory > writersRemaining)
+					module = null;
 				
 				modules.push(module);
-				U.state.modules.push(module);
-				averageLoc = averageLoc.add(module);
-				writersRemaining -= module.writesToMemory;
-			}
-			if (modules.length) {
-				averageLoc.x = Math.round(averageLoc.x / modules.length);
-				averageLoc.y = Math.round(averageLoc.y / modules.length);
-			}
-			
-			var links:Vector.<Link> = new Vector.<Link>;
-			if (linkSection.length) {
-				var linkStrings:Array = linkSection.split(U.SAVE_DELIM);
-				for each (var linkString:String in linkStrings) {
-					var link:Link = Link.fromString(linkString, modules);
-					links.push(link);
+				if (module) {
+					nonNullModules.push(module);
+					U.state.modules.push(module);
+					averageLoc = averageLoc.add(module);
+					writersRemaining -= module.writesToMemory;
 				}
 			}
 			
-			var bloc:Bloc = new Bloc(modules, links, Rooted);
+			var links:Vector.<Link> = new Vector.<Link>;
+			if (nonNullModules.length) {
+				averageLoc.x = Math.round(averageLoc.x / nonNullModules.length);
+				averageLoc.y = Math.round(averageLoc.y / nonNullModules.length);
+				
+				if (linkSection.length) {
+					var linkStrings:Array = linkSection.split(U.SAVE_DELIM);
+					for each (var linkString:String in linkStrings) {
+						var link:Link = Link.fromString(linkString, modules);
+						if (link)
+							links.push(link);
+					}
+				}
+			}
+			
+			var bloc:Bloc = new Bloc(nonNullModules, links, Rooted);
 			bloc.origin = averageLoc;
 			if (bloc.rooted)
 				bloc.lastRootedLoc = bloc.origin;

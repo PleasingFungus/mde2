@@ -88,7 +88,6 @@ package LevelStates {
 		public var grid:Grid;
 		public var currentGrid:CurrentGrid;
 		public var wires:Vector.<Wire>;
-		public var links:Vector.<Link>;
 		public var modules:Vector.<Module>;
 		public var memory:Vector.<Value>;
 		public var initialMemory:Vector.<Value>;
@@ -1139,11 +1138,6 @@ package LevelStates {
 				if (wire.exists && !wire.FIXED)
 					wireBytes.writeBytes(wire.getBytes());
 			
-			var linkBytes:ByteArray = new ByteArray;
-			for each (var link:Link in links)
-				if (link.saveIncluded)
-					linkBytes.writeBytes(link.getBytes());
-			
 			var miscBytes:ByteArray = new ByteArray;
 			if (level.delay)
 				miscBytes.writeInt(time.clockPeriod);
@@ -1154,8 +1148,6 @@ package LevelStates {
 			saveBytes.writeBytes(moduleBytes);
 			saveBytes.writeInt(4 + wireBytes.length);
 			saveBytes.writeBytes(wireBytes);
-			saveBytes.writeInt(4 + linkBytes.length);
-			saveBytes.writeBytes(linkBytes);
 			saveBytes.writeInt(4 + miscBytes.length);
 			saveBytes.writeBytes(miscBytes);
 			
@@ -1200,7 +1192,6 @@ package LevelStates {
 		
 		private function initState():void {
 			wires = new Vector.<Wire>;
-			links = new Vector.<Link>;
 			modules = new Vector.<Module>;
 			grid = new Grid;
 			currentGrid = new CurrentGrid;
@@ -1262,9 +1253,8 @@ package LevelStates {
 					for each (var port:PortLayout in module.layout.ports) {
 						for each (var connection:Carrier in port.port.connections) {
 							var source:Port = connection.getSource();
-							if (source && !port.port.hasLinkTo(source)) {
-								addLink(new Link(source, port.port), false);
-							}
+							if (source)
+								port.port.createLink(source);
 						}
 					}
 			

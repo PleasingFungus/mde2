@@ -343,11 +343,7 @@ package Levels {
 			}
 			for each (var link:Link in links) {
 				link.FIXED = defaultFixed;
-				link.connect();
-				if (U.state.links.indexOf(link) == -1) {
-					Link.newLinks.push(link);
-					U.state.links.push(link);
-				}
+				Link.place(link);
 			}
 		}
 		

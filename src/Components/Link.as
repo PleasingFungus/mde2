@@ -55,22 +55,12 @@ package Components {
 			return findDestinationPort(U.pointToGrid(destination.Loc)) != null; //TODO: investigate why pointToGrid is needed here but not in the place() call
 		}
 		
-		public function connect():void {
-			source.addLink(this);
-			destination.addLink(this);
+		protected function connect():void {
+			destination.source = source;
 		}
 		
 		protected function disconnect():void {
-			unlinkFrom(source);
-			unlinkFrom(destination);
-		}
-		
-		protected function unlinkFrom(port:Port):void {
-			var linkIndex:int = port.links.indexOf(this);
-			if (linkIndex == -1)
-				throw new Error("Unlinking from a port this link was never connected to!");
-			
-			port.links.splice(linkIndex, 1);
+			destination.source = null;
 		}
 		
 		public static function place(link:Link):Boolean {
@@ -81,24 +71,24 @@ package Components {
 				link.destination = link.findDestinationPort(link.destination.Loc);
 				if (link.destination) {
 					link.hovering = false;
+					
+					if (!link.source.isSource()) {
+						var t:Port = link.source;
+						link.source = link.destination;
+						link.destination = t;
+						
+						if (!link.source.isSource())
+							throw new Error("Link connected with no source!");
+					}
 				} else {
 					link.deleted = true;
 					return false; //won't enter onto the action stack
-				}
-			} else {
-				//check validity here
-				//shouldn't be needful, but...
-				if ((link.source.links.length && !link.source.isSource()) ||
-					(link.destination.links.length && !link.destination.isSource())) {
-					link.deleted = true;
-					return false;
 				}
 			}
 			
 			link.connect();
 			link.placed = true;
 			link.deleted = false;
-			U.state.links.push(link);
 			newLinks.push(link);
 			return true; //will go onto the action stack
 		}
@@ -119,11 +109,6 @@ package Components {
 			if (link.deleted)
 				throw new Error("Attempting to delete a deleted link!");
 			
-			var linkIndex:int = U.state.links.indexOf(link);
-			if (linkIndex == -1)
-				throw new Error("Attempting to remove a link that wasn't in the link list!");
-			
-			U.state.links.splice(linkIndex, 1);
 			link.disconnect();
 			link.deleted = true;
 			link.placed = false;

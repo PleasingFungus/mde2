@@ -45,6 +45,7 @@ package LevelStates {
 			switch (saveVersion) {
 				case 4: return loadPreLinks(saveString, bytes);
 				case 5: return loadWithLinks(saveString, bytes);
+				//case 6: return loadPortLinks(saveString, bytes);
 				default:
 					C.log("Save version mismatch: save version " + saveVersion + " does not match game save version " + U.SAVE_VERSION + "!");
 					return null;

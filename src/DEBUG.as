@@ -17,6 +17,7 @@ package  {
 		public static const PRINT_CONNECTIONS:Boolean = FlxG.debug && false;
 		public static const SKIP_TUT:Boolean = FlxG.debug && true;
 		public static const UNLOCK_ALL:Boolean = FlxG.debug && true;
+		public static const IGNORE_SAVES:Boolean = FlxG.debug && false;
 		public static const FORCE_LOAD_LEVEL:Boolean = FlxG.debug && false;
 		public static const FORCE_LEVEL:String = '20';
 		public static const FORCE_CODE:String = "81362d9946b3bffc12ea538b26e1bd5b"

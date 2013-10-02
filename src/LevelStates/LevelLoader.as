@@ -157,6 +157,9 @@ package LevelStates {
 		}
 		
 		public static function loadSimple(saveString:String):LevelLoader {
+			if (DEBUG.IGNORE_SAVES)
+				return new LevelLoader(saveString, new Vector.<Module>, new Vector.<Wire>, new Vector.<LinkPotential>, 1);
+			
 			if (U.BINARY_SAVES && saveString.indexOf(U.MAJOR_SAVE_DELIM) == -1) 
 				return loadBinary(saveString);
 			else

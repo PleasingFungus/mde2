@@ -215,7 +215,7 @@ package Modules {
 		
 		public function deregister():Module {
 			for each (var portLayout:PortLayout in layout.ports) {
-				portLayout.disconnect();
+				portLayout.port.disconnect();
 				portLayout.deregister();
 			}
 			

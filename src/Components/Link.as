@@ -71,19 +71,19 @@ package Components {
 				link.destination = link.findDestinationPort(link.destination.Loc);
 				if (link.destination) {
 					link.hovering = false;
-					
-					if (!link.source.isSource()) {
-						var t:Port = link.source;
-						link.source = link.destination;
-						link.destination = t;
-						
-						if (!link.source.isSource())
-							throw new Error("Link connected with no source!");
-					}
 				} else {
 					link.deleted = true;
 					return false; //won't enter onto the action stack
 				}
+			}
+			
+			if (!link.source.isSource()) {
+				var t:Port = link.source;
+				link.source = link.destination;
+				link.destination = t;
+				
+				if (!link.source.isSource())
+					throw new Error("Link connected with no source!");
 			}
 			
 			link.connect();

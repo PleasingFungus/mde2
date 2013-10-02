@@ -43,19 +43,6 @@ package Layouts {
 				port.propagateSource();
 		}
 		
-		public function disconnect():void {
-			var connection:Carrier;
-			for each (connection in port.connections)
-				connection.removeConnection(port);
-			if (port.getSource()) {
-				for each (connection in port.connections)
-					connection.resetSource();
-				if (!port.isSource())
-					port.source.propagateSource(); //re-propagate
-			}
-			port.cleanup();
-		}
-		
 		public function deregister():void {
 			U.state.grid.removeCarrierFromPoint(Loc, port);
 			setLineContents(null);

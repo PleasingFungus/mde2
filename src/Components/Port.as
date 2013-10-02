@@ -1,5 +1,6 @@
 package Components {
 	import flash.geom.Point;
+	import Layouts.PortLayout;
 	import Modules.Module;
 	import Values.DelayDelta;
 	import Values.Value;
@@ -32,7 +33,14 @@ package Components {
 		
 		public function cleanup():void {
 			connections = new Vector.<Carrier>;
-			source = null;
+			
+			if (isSource()) {
+				for each (var module:Module in U.state.modules)
+					for each (var port:PortLayout in module.layout.ports)
+						if (port.port.source == this)
+							port.port.source = null;
+			} else
+				source = null;
 		}
 		
 		public function getConnections():Vector.<Carrier> {
@@ -54,8 +62,8 @@ package Components {
 		}
 		
 		public function set source(s:Port):void {
-			if (isSource())
-				throw new Error("Can't set the source of a source port!");
+			if (/*s && */isSource())
+				throw new Error("Can't set a source for a source port!");
 			_source = s;
 		}
 		
@@ -118,6 +126,24 @@ package Components {
 		public function addConnection(connection:Carrier):void {
 			log(this +" added a connection with " + connection);
 			connections.push(connection);
+		}
+		
+		
+		public function disconnect():void {
+			disconnectWiring();
+			cleanup();
+		}
+		
+		protected function disconnectWiring():void {
+			var connection:Carrier;
+			for each (connection in connections)
+				connection.removeConnection(this);
+			if (getSource()) {
+				for each (connection in connections)
+					connection.resetSource();
+				if (!isSource())
+					source.propagateSource(); //re-propagate
+			}
 		}
 		
 		public function isEndpoint(p:Point):Boolean {

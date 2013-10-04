@@ -173,15 +173,10 @@ package Components {
 			if (U.state.grid.moduleContentsAtPoint(Loc))
 				return false;
 			
-			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(Loc)) {
-				if (isSource()) {
-					if (carrier.getSource())
-						return false;
-				} else {
-					if (!carrier.isSource())
-						return false;
-				}
-			}
+			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(Loc))
+				if (isSource() == carrier.isSource() || 
+					(getSource() && carrier.getSource() != getSource()))
+					return false;
 			
 			return true;
 		}

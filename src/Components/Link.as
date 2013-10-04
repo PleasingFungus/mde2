@@ -11,7 +11,7 @@ package Components {
 		
 		public var source:Port;
 		public var destination:Port;
-		public var deleted:Boolean = false;
+		public var deleted:Boolean = false; //only necessary to cleanup 'hovering' links that never get attached
 		public var placed:Boolean = false;
 		public var hovering:Boolean = false;
 		public var FIXED:Boolean = false;
@@ -87,6 +87,9 @@ package Components {
 				if (!link.source.isSource())
 					throw new Error("Link connected with no source!");
 			}
+			
+			if (link.source == link.destination) //old save error?
+				return false;
 			
 			link.connect();
 			link.placed = true;

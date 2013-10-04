@@ -169,6 +169,23 @@ package Components {
 			return links;
 		}
 		
+		public function get validPosition():Boolean {
+			if (U.state.grid.moduleContentsAtPoint(Loc))
+				return false;
+			
+			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(Loc)) {
+				if (isSource()) {
+					if (carrier.getSource())
+						return false;
+				} else {
+					if (!carrier.isSource())
+						return false;
+				}
+			}
+			
+			return true;
+		}
+		
 		
 		
 		protected function log(...args):void {

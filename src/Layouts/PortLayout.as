@@ -55,17 +55,6 @@ package Layouts {
 			U.state.grid.setLineContents(connectionPoint, origin, contents);
 		}
 		
-		public function get validPosition():Boolean {
-			if (U.state.grid.moduleContentsAtPoint(Loc))
-				return false;
-			
-			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(Loc))
-				if (port.isOutput && carrier.getSource() && carrier.getSource() != port)
-					return false;
-			
-			return true;
-		}
-		
 		public function get Loc():Point {
 			return port.Loc;
 		}

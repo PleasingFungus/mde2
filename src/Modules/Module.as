@@ -284,7 +284,7 @@ package Modules {
 				return _lastValid = false;
 			
 			for each (var portLayout:PortLayout in layout.ports)
-				if (!portLayout.validPosition)
+				if (!portLayout.port.validPosition)
 					return _lastValid = false;
 			
 			return _lastValid = true;

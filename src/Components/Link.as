@@ -22,7 +22,8 @@ package Components {
 		}
 		
 		public function get exists():Boolean {
-			return !deleted && (hovering || (source.physParent.exists && destination.physParent.exists));
+			return !deleted && (hovering || (source.physParent.exists && destination.physParent.exists &&
+											 destination.source == source));
 		}
 		
 		public function get deployed():Boolean {
@@ -39,7 +40,8 @@ package Components {
 		
 		public function equals(link:Link):Boolean {
 			return ((source == link.source && destination == link.destination) ||
-					(destination == link.source && source == link.destination));
+					(destination == link.source && source == link.destination)) &&
+					exists == link.exists;
 		}
 		
 		public function inVec(links:Vector.<Link>):Boolean {

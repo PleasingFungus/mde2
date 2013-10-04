@@ -18,7 +18,6 @@ package Components {
 		public var isOutput:Boolean;
 		public var offset:Point;
 		public var connections:Vector.<Carrier>;
-		public var newLink:Link;
 		protected var _source:Port;
 		
 		private var cachedValue:Value;
@@ -37,7 +36,7 @@ package Components {
 			if (isSource()) {
 				for each (var module:Module in U.state.modules)
 					for each (var port:PortLayout in module.layout.ports)
-						if (port.port.source == this)
+						if (port.port != this && port.port.source == this)
 							port.port.source = null;
 			} else
 				source = null;

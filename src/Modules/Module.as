@@ -320,6 +320,15 @@ package Modules {
 			return links;
 		}
 		
+		public function getInLinks():Vector.<Link> {
+			var links:Vector.<Link> = new Vector.<Link>;
+			for each (var portList:Vector.<Port> in [inputs, controls])
+				for each (var port:Port in portList)
+					if (port.source)
+						links.push(new Link(port.source, port));
+			return links;
+		}
+		
 		
 		
 		public function fromConfig(type:Class, loc:Point):Module {

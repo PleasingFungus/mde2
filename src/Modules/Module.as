@@ -1,4 +1,5 @@
 package Modules {
+	import Components.Link;
 	import Displays.DModule;
 	import flash.geom.Point;
 	import flash.utils.ByteArray;
@@ -170,9 +171,7 @@ package Modules {
 				portLayout.port.clearCachedValue();
 		}
 		
-		
-		public function register():Module {
-			exists = true;
+		public function place():Module {
 			deployed = true;
 			
 			var self:Module = this;
@@ -189,7 +188,7 @@ package Modules {
 			
 			for each (var portLayout:PortLayout in layout.ports) {
 				portLayout.register();
-				portLayout.attemptConnect();
+				portLayout.attemptConnect(); //assymmetric!
 			}
 			
 			_lastPosition = null;
@@ -197,27 +196,27 @@ package Modules {
 			return this;
 		}
 		
-		public static function place(m:Module, at:Point = null):Module {
-			if (at) {
-				m.x = at.x;
-				m.y = at.y;
-			}
-			return m.register();
+		public function manifest():Module {
+			exists = true;
+			
+			if (!deployed)
+				place();
+			
+			return this;
 		}
 		
 		public function cleanup():void {
 			deployed = false;
-			exists = false;
 			
 			for each (var portLayout:PortLayout in layout.ports)
 				portLayout.port.cleanup();
+			
+			initialize();
 		}
 		
-		public function deregister():Module {
-			for each (var portLayout:PortLayout in layout.ports) {
-				portLayout.port.disconnect();
+		public function lift():Module {
+			for each (var portLayout:PortLayout in layout.ports)
 				portLayout.deregister();
-			}
 			
 			iterContainedPoints(function p(X:int, Y:int):void {
 				U.state.grid.setPointContents(new Point(X, Y), null);
@@ -230,13 +229,20 @@ package Modules {
 			});
 			
 			deployed = false;
-			exists = false;
 			
 			return this;
 		}
 		
-		public static function remove(m:Module, at:Point = null):Module {
-			return m.deregister();
+		public function demanifest():Module {
+			if (deployed)
+				lift();
+			
+			for each (var portLayout:PortLayout in layout.ports)
+				portLayout.port.disconnect(); //asymmetric!
+			
+			exists = false;
+			
+			return this;
 		}
 		
 		private var _lastPosition:Point;
@@ -304,6 +310,14 @@ package Modules {
 		
 		public function get topLeft():Point {
 			return new Point(Math.ceil(x + layout.offset.x), Math.ceil(y + layout.offset.y));
+		}
+		
+		public function getLinks():Vector.<Link> {
+			var links:Vector.<Link> = new Vector.<Link>;
+			for each (var port:PortLayout in layout.ports)
+				for each (var link:Link in port.port.getLinks())
+					links.push(link);
+			return links;
 		}
 		
 		

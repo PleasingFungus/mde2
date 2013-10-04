@@ -154,6 +154,22 @@ package Components {
 			return physParent.add(offset);
 		}
 		
+		public function getLinks():Vector.<Link> {
+			var links:Vector.<Link> = new Vector.<Link>;
+			if (!isOutput) {
+				if (source)
+					links.push(new Link(_source, this));
+				return links;
+			}
+			
+			for each (var module:Module in U.state.modules)
+				//check exists?
+				for each (var port:PortLayout in module.layout.ports)
+					if (port.port != this && port.port.source == this)
+						links.push(new Link(this, port.port));
+			return links;
+		}
+		
 		
 		
 		protected function log(...args):void {

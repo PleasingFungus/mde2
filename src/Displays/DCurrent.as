@@ -118,8 +118,8 @@ package Displays {
 		}
 		
 		protected function getLinkDisplayText(link:Link):String {
-			var source:Port = link.getActualSource();
-			var dest:Port = link.source == source ? link.destination : link.source;
+			var source:Port = link.source;
+			var dest:Port = link.destination;
 			
 			var value:Value = source.getValue();
 			var out:String = source.getValue() + " from " + source.dataParent.name; //should be physparent?

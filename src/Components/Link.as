@@ -115,10 +115,6 @@ package Components {
 			return true;
 		}
 		
-		public function getActualSource():Port {
-			return source.isSource() ? source : destination;
-		}
-		
 		//is a port a valid target for beginning a link?
 		public static function validStart(port:Port):Boolean {
 			return port.isSource() || !port.getSource();

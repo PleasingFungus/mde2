@@ -1,8 +1,9 @@
 package Displays {
 	import Actions.Action;
-	import Actions.BlocLiftAction;
 	import Actions.CustomAction;
-	import Actions.MoveBlocAction;
+	import Actions.DelBlocAction;
+	import Actions.MigrateBlocAction;
+	import Actions.PlaceBlocAction;
 	import Components.Connection;
 	import Components.Wire;
 	import Components.Bloc;
@@ -58,7 +59,7 @@ package Displays {
 						}
 				
 				if (moused) {
-					bloc.lift();
+					bloc.lift(U.pointToGrid(U.mouseLoc));
 				} else
 					setSelect(false);
 			}
@@ -67,7 +68,7 @@ package Displays {
 				setSelect(false);
 			
 			if (ControlSet.DELETE_KEY.justPressed()) {
-				new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
+				new DelBlocAction(bloc).execute();
 				setSelect(false);
 				U.buttonManager.moused = true; //clunky - avoid other things being deleted
 				if (ControlSet.DELETE_KEY.justPressed())
@@ -76,7 +77,7 @@ package Displays {
 			
 			if (ControlSet.CUT_KEY.justPressed()) {
 				U.clipboard = bloc.toString();
-				new CustomAction(bloc.remove, bloc.place, U.pointToGrid(U.mouseLoc)).execute();
+				new DelBlocAction(bloc).execute();
 				setSelect(false);
 			}
 		}
@@ -87,10 +88,16 @@ package Displays {
 			else if (tick) {
 				if (!U.buttonManager.moused && bloc.validPosition(U.pointToGrid(U.mouseLoc))) {
 					FlxG.camera.shake(0.01 * U.zoom, 0.05);
-					new MoveBlocAction(bloc, U.pointToGrid(U.mouseLoc)).specialExecute();
+					
+					var placeLoc:Point = U.pointToGrid(U.mouseLoc);
+					if (bloc.lastRootedLoc)
+						new MigrateBlocAction(bloc, placeLoc, bloc.lastRootedLoc).execute();
+					else
+						new PlaceBlocAction(bloc, placeLoc).execute();
+					
 					setSelect(false);
 				} else if (U.buttonManager.moused) {
-					bloc.destroy();
+					new DelBlocAction(bloc).execute();
 					setSelect(false);
 				}
 			}
@@ -100,24 +107,18 @@ package Displays {
 			
 			if (ControlSet.DELETE_KEY.justPressed() ||
 				ControlSet.PASTE_KEY.justPressed() || ControlSet.CUT_KEY.justPressed()) {
-				bloc.destroy();
+				new DelBlocAction(bloc).execute();
 				setSelect(false);
 				if (ControlSet.DELETE_KEY.justPressed())
 					ControlSet.DELETE_KEY.enabled = false;
 			}
 			
 			if (ControlSet.CANCEL_KEY.justPressed()) {
-				if (U.state.actions.actionStack.length) {
-					var lastAction:Action = U.state.actions.actionStack.pop();
-					if (lastAction is BlocLiftAction && (lastAction as BlocLiftAction).bloc == bloc)
-						lastAction.revert();
-					else {
-						U.state.actions.actionStack.push(lastAction);
-						bloc.destroy();
-					}
+				if (bloc.lastRootedLoc) {
+					bloc.place(bloc.lastRootedLoc);
+					setSelect(false);
 				} else
-					bloc.destroy();
-				setSelect(false);
+					bloc.unravel();
 			}
 			
 			U.buttonManager.moused = true;

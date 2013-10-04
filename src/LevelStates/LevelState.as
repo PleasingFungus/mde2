@@ -165,8 +165,7 @@ package LevelStates {
 				return;
 			
 			m.FIXED = fixed;
-			m.register();
-			m.initialize();
+			m.place();
 			modules.push(m);
 			
 			var displayModule:DModule = m.generateDisplay();
@@ -701,7 +700,7 @@ package LevelStates {
 			var mousedModule:Module = findMousedModule();
 			if (mousedModule && !mousedModule.FIXED) {
 				currentBloc = addBlocFromModule(associatedDisplayModule(mousedModule), true);
-				currentBloc.lift();
+				currentBloc.lift(U.pointToGrid(U.mouseLoc));
 			}
 		}
 		
@@ -738,7 +737,7 @@ package LevelStates {
 		private function destroyModules():void {
 			var mousedModule:Module = findMousedModule();
 			if (mousedModule && !mousedModule.FIXED)
-				new CustomAction(Module.remove, Module.place, mousedModule).execute();
+				new DelModuleAction(mousedModule).execute();
 		}
 		
 		public function findMousedDModule():DModule {

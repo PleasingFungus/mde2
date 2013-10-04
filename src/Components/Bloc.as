@@ -5,7 +5,7 @@ package Components {
 	import Components.WireHistory;
 	import Modules.CustomModule;
 	import Modules.Module;
-	import Actions.BlocLiftAction;
+	import Actions.DelBlocAction;
 	/**
 	 * ...
 	 * @author Nicholas "PleasingFungus" Feinberg
@@ -48,7 +48,7 @@ package Components {
 			
 			newLinks = new Vector.<Link>;
 			for each (var module:Module in modules) {
-				module.register();
+				module.place();
 				for each (var port:PortLayout in module.layout.ports)
 					if (port.port.newLink) {
 						newLinks.push(port.port.newLink);
@@ -56,24 +56,22 @@ package Components {
 					}
 			}
 			for each (var link:Link in links)
-				Link.place(link);
+				link.placed = true;
 			
 			exists = true;
 			return true;
 		}
 		
-		public function remove(p:Point):Boolean {
+		public function lift(p:Point):Boolean {
 			if (!rooted)
 				return false;
 			
 			for each (var link:Link in links)
-				Link.remove(link);
-			for each (var newLink:Link in newLinks)
-				Link.remove(newLink);
+				link.placed = false;
 			var liftedModules:Vector.<Module> = new Vector.<Module>;
 			for each (var module:Module in modules)
 				if (!module.FIXED) {
-					module.deregister();
+					module.lift();
 					liftedModules.push(module);
 				}
 			modules = liftedModules;
@@ -87,24 +85,51 @@ package Components {
 		public function unravel():void {
 			if (rooted)
 				exists = false;
+			else if (lastRootedLoc)
+				new DelBlocAction(this).execute();
 			else
-				destroy();
+				unmake();
 		}
 		
-		public function destroy():void {
-			for each (var module:Module in modules)
-				if (!module.FIXED)
-					module.exists = false;
-			exists = false;
-		}
-		
-		public function mobilize():void {
-			for each (var module:Module in modules)
-				module.exists = true;
-			for each (var link:Link in links)
-				link.deleted = link.placed = false;
+		public function manifest(p:Point):Boolean {
 			exists = true;
+			
+			place(p);
+			
+			for each (var module:Module in modules)
+				module.manifest();
+			
+			for each (var link:Link in links)
+				Link.place(link);
+			
+			return true;
 		}
+		
+		public function demanifest():Boolean {
+			for each (var module:Module in modules)
+				module.demanifest();
+			
+			exists = false;
+			return true;
+		}
+		
+		public function unmake():Boolean {
+			if (rooted || lastRootedLoc)
+				return false; //can only unmake things that never truly were
+			
+			for each (var module:Module in modules)
+				module.exists = false;
+			return true;
+		}
+		
+		//public function destroy():void {
+			//for each (var module:Module in modules)
+				//if (!module.FIXED) {
+					//module.disconnect();
+					//module.exists = false;
+				//}
+			//exists = false;
+		//}
 		
 		public function moveTo(p:Point):Boolean {
 			if (origin.equals(p) || (lastLoc && lastLoc.equals(p)))
@@ -125,10 +150,16 @@ package Components {
 			return true;
 		}
 		
-		public function lift():void {	
-			new BlocLiftAction(this, U.pointToGrid(U.mouseLoc)).execute();
-		}
 		
+		public function getLinks():Vector.<Link> {
+			//get all links associated with all modules in the bloc
+			var links:Vector.<Link> = new Vector.<Link>;
+			for each (var module:Module in modules)
+				for each (var link:Link in module.getLinks())
+					if (!link.inVec(links))
+						links.push(link);
+			return links;
+		}
 		
 		public function toString():String {
 			var moduleStrings:Vector.<String> = new Vector.<String>;

@@ -13,23 +13,21 @@ package Actions {
 		public var bloc:Bloc;
 		public var newLoc:Point;
 		public var oldLoc:Point;
-		public var history:Vector.<WireHistory>;
-		public function MigrateBlocAction(bloc:Bloc, newLoc:Point, oldLoc:Point, history:Vector.<WireHistory>) {
+		public function MigrateBlocAction(bloc:Bloc, newLoc:Point, oldLoc:Point) {
 			super();
 			this.bloc = bloc;
 			this.newLoc = newLoc;
 			this.oldLoc = oldLoc;
-			this.history = history;
 		}
 		
 		override public function execute():Action {
-			bloc.remove(oldLoc);
+			bloc.lift(oldLoc);
 			bloc.place(newLoc);
 			return super.execute();
 		}
 		
 		override public function revert():Action {
-			bloc.remove(newLoc);
+			bloc.lift(newLoc);
 			bloc.place(oldLoc);
 			return super.revert();
 		}

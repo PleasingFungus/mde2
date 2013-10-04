@@ -342,6 +342,7 @@ package Levels {
 				levelState.addModule(module, defaultFixed);
 			}
 			for each (var link:Link in links) {
+				link.placed = false; //cleanup
 				link.FIXED = defaultFixed;
 				Link.place(link);
 			}

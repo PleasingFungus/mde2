@@ -1137,6 +1137,11 @@ package LevelStates {
 				if (wire.exists && !wire.FIXED)
 					wireBytes.writeBytes(wire.getBytes());
 			
+			var linkBytes:ByteArray = new ByteArray;
+			for each (var link:Link in getLinks())
+				if (link.saveIncluded)
+					linkBytes.writeBytes(link.getBytes());
+			
 			var miscBytes:ByteArray = new ByteArray;
 			if (level.delay)
 				miscBytes.writeInt(time.clockPeriod);
@@ -1147,6 +1152,8 @@ package LevelStates {
 			saveBytes.writeBytes(moduleBytes);
 			saveBytes.writeInt(4 + wireBytes.length);
 			saveBytes.writeBytes(wireBytes);
+			saveBytes.writeInt(4 + linkBytes.length);
+			saveBytes.writeBytes(linkBytes);
 			saveBytes.writeInt(4 + miscBytes.length);
 			saveBytes.writeBytes(miscBytes);
 			
@@ -1154,6 +1161,15 @@ package LevelStates {
 			
 			var b64:String = Base64.encodeByteArray(saveBytes);
 			return b64;
+		}
+		
+		private function getLinks():Vector.<Link> {
+			var links:Vector.<Link> = new Vector.<Link>;
+			for each (var module:Module in modules)
+				if (module.exists)
+					for each (var link:Link in module.getInLinks())
+						links.push(link);
+			return links;
 		}
 		
 		private function genOldFormatSave():String {

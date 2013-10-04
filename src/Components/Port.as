@@ -175,7 +175,7 @@ package Components {
 			
 			for each (var carrier:Carrier in U.state.grid.carriersAtPoint(Loc))
 				if (isSource() == carrier.isSource() || 
-					(getSource() && carrier.getSource() != getSource()))
+					(getSource() && carrier.getSource() && carrier.getSource() != getSource()))
 					return false;
 			
 			return true;

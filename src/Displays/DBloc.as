@@ -97,7 +97,7 @@ package Displays {
 					
 					setSelect(false);
 				} else if (U.buttonManager.moused) {
-					new DelBlocAction(bloc).execute();
+					bloc.unravel();
 					setSelect(false);
 				}
 			}
@@ -107,7 +107,7 @@ package Displays {
 			
 			if (ControlSet.DELETE_KEY.justPressed() ||
 				ControlSet.PASTE_KEY.justPressed() || ControlSet.CUT_KEY.justPressed()) {
-				new DelBlocAction(bloc).execute();
+				bloc.unravel();
 				setSelect(false);
 				if (ControlSet.DELETE_KEY.justPressed())
 					ControlSet.DELETE_KEY.enabled = false;

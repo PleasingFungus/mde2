@@ -46,19 +46,11 @@ package Components {
 			moveTo(p);
 			rooted = true;
 			
-			newLinks = new Vector.<Link>;
-			for each (var module:Module in modules) {
+			for each (var module:Module in modules)
 				module.place();
-				for each (var port:PortLayout in module.layout.ports)
-					if (port.port.newLink) {
-						newLinks.push(port.port.newLink);
-						port.port.newLink = null;
-					}
-			}
 			for each (var link:Link in links)
 				link.placed = true;
 			
-			exists = true;
 			return true;
 		}
 		
@@ -68,6 +60,7 @@ package Components {
 			
 			for each (var link:Link in links)
 				link.placed = false;
+			
 			var liftedModules:Vector.<Module> = new Vector.<Module>;
 			for each (var module:Module in modules)
 				if (!module.FIXED) {
@@ -77,7 +70,6 @@ package Components {
 			modules = liftedModules;
 			
 			rooted = false;
-			exists = false;
 			origin = lastRootedLoc = p;
 			return true;
 		}

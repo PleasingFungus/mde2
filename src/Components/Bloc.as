@@ -89,7 +89,8 @@ package Components {
 			place(p);
 			
 			for each (var module:Module in modules)
-				module.manifest();
+				if (!module.FIXED)
+					module.manifest();
 			
 			for each (var link:Link in links)
 				Link.place(link);
@@ -99,7 +100,8 @@ package Components {
 		
 		public function demanifest():Boolean {
 			for each (var module:Module in modules)
-				module.demanifest();
+				if (!module.FIXED)
+					module.demanifest();
 			
 			exists = false;
 			return true;

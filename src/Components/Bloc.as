@@ -113,6 +113,7 @@ package Components {
 			
 			for each (var module:Module in modules)
 				module.exists = false;
+			exists = false;
 			return true;
 		}
 		

@@ -29,13 +29,16 @@ package Displays {
 		}
 		
 		private function changeZoom(direction:int):void {
-			FlxG.camera.scroll.x += (FlxG.width / 2) / U.zoom;
-			FlxG.camera.scroll.y += (FlxG.height / 2) / U.zoom;
+			var zoomCenter:FlxPoint = direction > 0 ? FlxG.mouse.getScreenPosition() : new FlxPoint(FlxG.width / 2, FlxG.height / 2);
+			//zoom into mouse, zoom out from center
+			
+			FlxG.camera.scroll.x += zoomCenter.x / U.zoom;
+			FlxG.camera.scroll.y += zoomCenter.y / U.zoom;
 			
 			U.zoom = nextZoomIn(direction);
 			
-			FlxG.camera.scroll.x -= (FlxG.width / 2) / U.zoom;
-			FlxG.camera.scroll.y -= (FlxG.height / 2) / U.zoom;
+			FlxG.camera.scroll.x -= zoomCenter.x / U.zoom;
+			FlxG.camera.scroll.y -= zoomCenter.y / U.zoom;
 			
 			scrollPosition = 0;
 		}

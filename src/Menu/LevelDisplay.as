@@ -21,8 +21,10 @@ package Menu {
 		private var modulesByName:Dictionary;
 		private var min:Point;
 		private var max:Point;
+		private var lastZoom:Number;
 		public function LevelDisplay() {
 			super();
+			lastZoom = U.zoom;
 			init();
 		}
 		
@@ -103,6 +105,8 @@ package Menu {
 				FlxG.camera.scroll.x = displayModule.x + displayModule.width / 2 - FlxG.width / 2;
 				FlxG.camera.scroll.y = displayModule.y + displayModule.height / 2 - FlxG.height / 2;
 			}
+			
+			levelModule.zoom = lastZoom;
 			
 			return levelModule;
 		}

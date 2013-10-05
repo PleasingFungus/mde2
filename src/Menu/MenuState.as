@@ -14,7 +14,6 @@ package Menu {
 	 */
 	public class MenuState extends FlxState {
 		
-		private var lastZoom:Number;
 		
 		override public function create():void {
 			C.setPrintReady();
@@ -39,7 +38,6 @@ package Menu {
 			add(levelDisplay);
 			add(new MenuSidebar(MENU_BAR_WIDTH));
 			
-			lastZoom = U.zoom;
 			U.zoom = 1;
 			setBounds(levelDisplay.bounds);
 			add(new Scroller("menustate"));

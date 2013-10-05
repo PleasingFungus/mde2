@@ -50,6 +50,8 @@ package Menu {
 		}
 		
 		protected function switchLevels():void {
+			if (!isNaN(levelModule.zoom))
+				U.zoom = levelModule.zoom;
 			FlxG.switchState(new LevelState(levelModule.level));
 		}
 		

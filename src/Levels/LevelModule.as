@@ -22,6 +22,7 @@ package Levels {
 		public var level:Level;
 		public var beaten:Boolean;
 		public var unlocked:Boolean;
+		public var zoom:Number = NaN;
 		public function LevelModule(X:int, Y:int, level:Level) {
 			this.level = level;
 			

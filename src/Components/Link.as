@@ -66,9 +66,6 @@ package Components {
 		}
 		
 		public static function place(link:Link):Boolean {
-			if (link.placed)
-				throw new Error("Attempting to place an already-placed & non-deleted link!");
-			
 			if (link.hovering) {
 				link.destination = link.findDestinationPort(link.destination.Loc);
 				if (link.destination) {

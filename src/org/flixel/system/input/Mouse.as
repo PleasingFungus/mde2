@@ -42,6 +42,10 @@ package org.flixel.system.input
 		 * Helper variable for tracking whether the mouse was just pressed or just released.
 		 */
 		protected var _last:int;
+		
+		protected var _middle_current:int;
+		protected var _middle_last:int;
+		
 		/**
 		 * A display container for the mouse cursor.
 		 * This container is a child of FlxGame and sits at the right "height".
@@ -72,6 +76,7 @@ package org.flixel.system.input
 			_lastWheel = wheel = 0;
 			_current = 0;
 			_last = 0;
+			_middle_current = _middle_last = 0;
 			_cursor = null;
 			_point = new FlxPoint();
 			_globalScreenPosition = new FlxPoint();
@@ -177,10 +182,11 @@ package org.flixel.system.input
 			_globalScreenPosition.x = X;
 			_globalScreenPosition.y = Y;
 			updateCursor();
-			if((_last == -1) && (_current == -1))
-				_current = 0;
-			else if((_last == 2) && (_current == 2))
-				_current = 1;
+			
+			if((_last == JUST_RELEASED) && (_current == JUST_RELEASED))
+				_current = NOT_PRESSED;
+			else if((_last == JUST_PRESSED) && (_current == JUST_PRESSED))
+				_current = PRESSED;
 			_last = _current;
 		}
 		
@@ -248,8 +254,8 @@ package org.flixel.system.input
 		 */
 		public function reset():void
 		{
-			//_current = 0;
-			//_last = 0;
+			_current = 0;
+			_last = 0;
 		}
 		
 		/**
@@ -257,21 +263,21 @@ package org.flixel.system.input
 		 * 
 		 * @return	Whether the mouse is pressed.
 		 */
-		public function pressed():Boolean { return _current > 0; }
+		public function pressed():Boolean { return _current > NOT_PRESSED; }
 		
 		/**
 		 * Check to see if the mouse was just pressed.
 		 * 
 		 * @return Whether the mouse was just pressed.
 		 */
-		public function justPressed():Boolean { return _current == 2; }
+		public function justPressed():Boolean { return _current == JUST_PRESSED; }
 		
 		/**
 		 * Check to see if the mouse was just released.
 		 * 
 		 * @return	Whether the mouse was just released.
 		 */
-		public function justReleased():Boolean { return _current == -1; }
+		public function justReleased():Boolean { return _current == JUST_RELEASED; }
 		
 		public function wheelChange():int {
 			return wheel - _lastWheel;
@@ -284,8 +290,8 @@ package org.flixel.system.input
 		 */
 		public function handleMouseDown(FlashEvent:MouseEvent):void
 		{
-			if(_current > 0) _current = 1;
-			else _current = 2;
+			if (pressed()) _current = PRESSED;
+			else _current = JUST_PRESSED;
 		}
 		
 		/**
@@ -295,8 +301,8 @@ package org.flixel.system.input
 		 */
 		public function handleMouseUp(FlashEvent:MouseEvent):void
 		{
-			if(_current > 0) _current = -1;
-			else _current = 0;
+			if (pressed()) _current = JUST_RELEASED;
+			else _current = NOT_PRESSED;
 		}
 		
 		/**
@@ -316,7 +322,7 @@ package org.flixel.system.input
 		 */
 		public function record():MouseRecord
 		{
-			if((_lastX == _globalScreenPosition.x) && (_lastY == _globalScreenPosition.y) && (_current == 0) && (_lastWheel == wheel))
+			if((_lastX == _globalScreenPosition.x) && (_lastY == _globalScreenPosition.y) && (_current == NOT_PRESSED) && (_lastWheel == wheel))
 				return null;
 			_lastX = _globalScreenPosition.x;
 			_lastY = _globalScreenPosition.y;
@@ -338,5 +344,10 @@ package org.flixel.system.input
 			_globalScreenPosition.y = Record.y;
 			updateCursor();
 		}
+		
+		public static const JUST_RELEASED:int = -1;
+		public static const NOT_PRESSED:int = 0;
+		public static const PRESSED:int = 1;
+		public static const JUST_PRESSED:int = 2;
 	}
 }

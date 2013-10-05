@@ -483,7 +483,7 @@ package org.flixel
 		static public function resetInput():void
 		{
 			keys.reset();
-			mouse.reset();
+			//mouse.reset(); //TODO: why is this commented out? spooky
 		}
 		
 		/**

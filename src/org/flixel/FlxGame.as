@@ -389,6 +389,18 @@ package org.flixel
 			FlxG.mouse.handleMouseWheel(FlashEvent);
 		}
 		
+		protected function onMiddleMouseDown(FlashEvent:MouseEvent):void {
+			if((_debuggerUp && _debugger.hasMouse) || _replaying)
+				return;
+			FlxG.mouse.handleMiddleMouseDown(FlashEvent);
+		}
+		
+		protected function onMiddleMouseUp(FlashEvent:MouseEvent):void {
+			if((_debuggerUp && _debugger.hasMouse) || _replaying)
+				return;
+			FlxG.mouse.handleMiddleMouseUp(FlashEvent);
+		}
+		
 		/**
 		 * Internal event handler for input and focus.
 		 * 
@@ -673,6 +685,8 @@ package org.flixel
 			//Add basic input event listeners and mouse container
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown);
+			stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMiddleMouseUp);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);

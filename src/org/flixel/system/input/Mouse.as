@@ -188,6 +188,12 @@ package org.flixel.system.input
 			else if((_last == JUST_PRESSED) && (_current == JUST_PRESSED))
 				_current = PRESSED;
 			_last = _current;
+			
+			if((_middle_last == JUST_RELEASED) && (_middle_current == JUST_RELEASED))
+				_middle_current = NOT_PRESSED;
+			else if((_middle_last == JUST_PRESSED) && (_middle_current == JUST_PRESSED))
+				_middle_current = PRESSED;
+			_middle_last = _middle_current;
 		}
 		
 		/**
@@ -254,8 +260,9 @@ package org.flixel.system.input
 		 */
 		public function reset():void
 		{
-			_current = 0;
-			_last = 0;
+			_current = NOT_PRESSED;
+			_last = NOT_PRESSED;
+			_middle_current = _middle_last = NOT_PRESSED;
 		}
 		
 		/**
@@ -278,6 +285,14 @@ package org.flixel.system.input
 		 * @return	Whether the mouse was just released.
 		 */
 		public function justReleased():Boolean { return _current == JUST_RELEASED; }
+		
+		
+		public function middlePressed():Boolean { return _middle_current > NOT_PRESSED; }
+		
+		public function middleJustPressed():Boolean { return _middle_current == JUST_PRESSED; }
+		
+		public function middleJustReleased():Boolean { return _middle_current == JUST_RELEASED; }
+		
 		
 		public function wheelChange():int {
 			return wheel - _lastWheel;
@@ -303,6 +318,28 @@ package org.flixel.system.input
 		{
 			if (pressed()) _current = JUST_RELEASED;
 			else _current = NOT_PRESSED;
+		}
+		
+		/**
+		 * Event handler so FlxGame can update the mouse.
+		 * 
+		 * @param	FlashEvent	A <code>MouseEvent</code> object.
+		 */
+		public function handleMiddleMouseDown(FlashEvent:MouseEvent):void
+		{
+			if (middlePressed()) _middle_current = PRESSED;
+			else _middle_current = JUST_PRESSED;
+		}
+		
+		/**
+		 * Event handler so FlxGame can update the mouse.
+		 * 
+		 * @param	FlashEvent	A <code>MouseEvent</code> object.
+		 */
+		public function handleMiddleMouseUp(FlashEvent:MouseEvent):void
+		{
+			if (middlePressed()) _middle_current = JUST_RELEASED;
+			else _middle_current = NOT_PRESSED;
 		}
 		
 		/**

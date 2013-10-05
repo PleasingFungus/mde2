@@ -91,6 +91,11 @@ package Components {
 			if (link.source == link.destination) //old save error?
 				return false;
 			
+			if (link.destination.source == link.source) { //already ext
+				link.deleted = true;
+				return false;
+			}
+			
 			link.connect();
 			link.placed = true;
 			link.deleted = false;

@@ -1263,18 +1263,17 @@ package LevelStates {
 		}
 		
 		private function cleanupWires():void {
+			var links:Vector.<Link> = new Vector.<Link>;
 			for each (var module:Module in modules)
 				if (module.exists)
-					for each (var port:PortLayout in module.layout.ports) {
-						for each (var connection:Carrier in port.port.connections) {
-							var source:Port = connection.getSource();
-							if (source)
-								port.port.createLink(source);
-						}
-					}
+					for each (var link:Link in module.getInLinks())
+						links.push(link);
 			
 			for each (var wire:Wire in wires.slice()) //copy to avoid iterating a mutated list
 				Wire.remove(wire);
+			
+			for each (link in links)
+				Link.place(link);
 		}
 		
 		private function loadFromSuccess():void {

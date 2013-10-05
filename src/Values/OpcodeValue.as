@@ -83,9 +83,9 @@ package Values {
 		public static const OP_MUL:OpcodeValue = new OpcodeValue("MUL", 3, "Multiply the SOURCE register with the TARGET register, and store the product in the DESTINATION register.", "Multiply");
 		public static const OP_DIV:OpcodeValue = new OpcodeValue("DIV", 4, "Divide the SOURCE register by the TARGET register, and store the quotient in the DESTINATION register.", "Divide");
 		public static const OP_SET:OpcodeValue = new OpcodeValue("SET", 5, "Set the DESTINATION register to the SOURCE value.", "Set");
-		public static const OP_JMP:OpcodeValue = new OpcodeValue("JMP", 6, "Jump over the DESTINATION value, to the instruction after.", "Jump");
+		public static const OP_JMP:OpcodeValue = new OpcodeValue("JMP", 6, "Jump to the DESTINATION value & resume execution from that line.", "Jump");
 		public static const OP_SAV:OpcodeValue = new OpcodeValue("SAV", 7, "Set memory at the value of the TARGET register to the value of the SOURCE register.", "Save");
-		public static const OP_BEQ:OpcodeValue = new OpcodeValue("BEQ", 8, "Jump over the DESTINATION value if the SOURCE register equals the TARGET register.", "Branch");
+		public static const OP_BEQ:OpcodeValue = new OpcodeValue("BEQ", 8, "Jump to the DESTINATION value if the SOURCE register equals the TARGET register.", "Branch");
 		public static const OP_SAVI:OpcodeValue = new OpcodeValue("SETM", 12, "Set memory at the TARGET value to the SOURCE value.", "Set Memory");
 		public static const OP_LD:OpcodeValue = new OpcodeValue("LD", 13, "Set the DESTINATION register to the value of memory at the value of the TARGET register.", "Load");
 		public static const OP_ADDM:OpcodeValue = new OpcodeValue("ADDM", 14, "Set memory at the TARGET value to the sum of the SOURCE value and the DESTINATION value.", "Add Memory");

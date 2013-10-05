@@ -462,8 +462,8 @@ package Testing.Tests {
 			if (loop) {
 				var jumpOverInstruction:Instruction = loop[loop.length - 1];
 				var jumpBackInstruction:Instruction = loop[0];
-				jumpOverInstruction.args[0] = new InstructionArg(InstructionArg.INT, instructions.indexOf(jumpBackInstruction));
-				jumpBackInstruction.args[0] = new InstructionArg(InstructionArg.INT, instructions.indexOf(jumpOverInstruction) - 1);
+				jumpOverInstruction.args[0] = new InstructionArg(InstructionArg.INT, instructions.indexOf(jumpBackInstruction) + 1);
+				jumpBackInstruction.args[0] = new InstructionArg(InstructionArg.INT, instructions.indexOf(jumpOverInstruction));
 				
 				expectedExecutions += loopExecutions;
 			}
@@ -496,13 +496,13 @@ package Testing.Tests {
 			instructions = new Vector.<Instruction>;
 			for each (instruction in preBlock)
 				instructions.push(instruction);
-			instructions.push(new JumpInstruction(instructions.length + blockB.length + 1)); //jump over block B
+			instructions.push(new JumpInstruction(instructions.length + blockB.length + 2)); //jump over block B
 			for each (instruction in blockB)
 				instructions.push(instruction);
-			instructions.push(new JumpInstruction(instructions.length + blockA.length + 1)); //jump over block A
+			instructions.push(new JumpInstruction(instructions.length + blockA.length + 2)); //jump over block A
 			for each (instruction in blockA)
 				instructions.push(instruction);
-			instructions.push(new JumpInstruction(preBlock.length)); //jump to start of block B
+			instructions.push(new JumpInstruction(preBlock.length + 1)); //jump to start of block B
 			for each (instruction in postBlock)
 				instructions.push(instruction);
 			
@@ -515,7 +515,7 @@ package Testing.Tests {
 				var instruction:Instruction = instructions[line];
 				var jump:int = instruction.execute(memory, registers, stack);
 				if (jump != C.INT_NULL)
-					line = jump;
+					line = jump - 1; //line will get incremented in a moment
 				
 				for (var k:* in registers)
 					if (isNaN(k))

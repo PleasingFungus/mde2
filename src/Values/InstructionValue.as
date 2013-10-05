@@ -47,9 +47,9 @@ package Values {
 				case OpcodeValue.OP_LD:
 					return operation.getName()+ " R" + destArg +" = M[R" + targetArg + "]";
 				case OpcodeValue.OP_JMP:
-					return operation.getName() + " OVER " + destArg;
+					return operation.getName() + " TO " + destArg;
 				case OpcodeValue.OP_BEQ:
-					return operation.getName() + " R" + sourceArg +"=R"+targetArg + " OVER " + destArg;
+					return operation.getName() + " R" + sourceArg +"=R"+targetArg + " TO " + destArg;
 				
 				case OpcodeValue.OP_SAVI:
 					return operation.getName() + " M[" + targetArg + "]=" + sourceArg;
@@ -87,9 +87,9 @@ package Values {
 				case OpcodeValue.OP_LD:
 					return formatFrom("R{} = M[R{}]", [U.DESTINATION, U.TARGET]);
 				case OpcodeValue.OP_JMP:
-					return formatFrom("OVER {}", [U.DESTINATION]);
+					return formatFrom("TO {}", [U.DESTINATION]);
 				case OpcodeValue.OP_BEQ:
-					return formatFrom("R{}=R{} OVER {}", [U.SOURCE, U.TARGET, U.DESTINATION]);
+					return formatFrom("R{}=R{} TO {}", [U.SOURCE, U.TARGET, U.DESTINATION]);
 				
 				case OpcodeValue.OP_SAVI:
 					return formatFrom("M[{}] = {}", [U.TARGET, U.SOURCE]);

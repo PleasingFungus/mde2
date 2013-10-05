@@ -1,7 +1,7 @@
 Bugs!
 
 To Reproduce
-	
+	crash in loading can cause "lockup" on blank screen instead of going to crash screen (possibly: crash in crash-handling code?)
 To Fix
 	delays in tooltips in module menus don't update with config (I-DEMUX doesn't display delay, wide modules only display log of default width, etc)
 	average ticks/instruction can be less than 1 (seen on JMP/BEQ levels, e.g. http://pleasingfungus.com/mde2/index.html?lvl=9&code=88124045519b9bcc4ddad1e4ea38056a

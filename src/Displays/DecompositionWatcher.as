@@ -1,6 +1,7 @@
 package Displays {
 	import Components.Bloc;
 	import Components.Link;
+	import Controls.ControlSet;
 	import Layouts.PortLayout;
 	import Modules.Module;
 	import Modules.CustomModule;
@@ -25,7 +26,9 @@ package Displays {
 			if (currentModule)
 				checkMoused();
 			
-			if (!currentModule)
+			if (currentModule)
+				checkKeys();
+			else
 				findMoused();
 			
 			super.update();
@@ -72,6 +75,16 @@ package Displays {
 			currentDisplayModule = displayModule;
 			currentModule.exists = false;
 		}
+		
+		private function checkKeys():void {
+			if (ControlSet.CUSTOM_KEY.justPressed())
+				decompose();
+		}
+		
+		private function decompose():void {
+			
+		}
+		
 		
 		public function ensureSafety():void {
 			if (currentModule)

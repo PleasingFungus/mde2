@@ -51,14 +51,19 @@ package Displays {
 			bloc.moveTo(customModule); //should center around
 			
 			dModules = new Vector.<DModule>;
-			for each (var module:Module in bloc.modules)
+			for each (var module:Module in bloc.modules) {
 				dModules.push(U.state.midLayer.add(module.generateDisplay()));
+				module.solid = false;
+			}
 			dLinks = new Vector.<DLink>;
 			for each (var link:Link in bloc.links)
 				dLinks.push(U.state.midLayer.add(new DLink(link)));
 		}
 		
 		private function cleanup():void {
+			for each (var dModule:DModule in DModule)
+				dModule.module.solid = true; //cleanup
+			
 			U.state.midLayer.members.splice(U.state.midLayer.members.indexOf(bg), 1 + dModules.length + dLinks.length); //can't possibly go wrong
 			bg = null;
 			dModules = null;

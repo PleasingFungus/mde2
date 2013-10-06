@@ -38,6 +38,7 @@ package Modules {
 		public var storesData:Boolean = false;
 		
 		public var exists:Boolean = true;
+		public var solid:Boolean = true;
 		public var deployed:Boolean = false;
 		
 		public var FIXED:Boolean = false;
@@ -248,7 +249,7 @@ package Modules {
 		private var _lastPosition:Point;
 		private var _lastValid:Boolean;
 		public function get validPosition():Boolean {
-			if (deployed) return true;
+			if (deployed || !solid) return true;
 			if (_lastPosition && equals(_lastPosition))
 				return _lastValid;
 			

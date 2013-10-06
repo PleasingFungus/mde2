@@ -26,6 +26,7 @@ package Components {
 			this.links = links;
 			connections = new Vector.<Connection>;
 			rooted = Rooted;
+			origin = getAverageLoc();
 			exists = true;
 		}
 		
@@ -139,9 +140,7 @@ package Components {
 				module.y += delta.y;
 			}
 			
-			var oldLoc:Point = origin;
 			origin = p;
-			
 			return true;
 		}
 		
@@ -156,6 +155,19 @@ package Components {
 			return links;
 		}
 		
+		public function getAverageLoc():Point {
+			var averageLoc:Point = new Point;
+			
+			for each (var module:Module in modules)
+				averageLoc = averageLoc.add(module);
+			
+			if (modules.length) {
+				averageLoc.x = Math.round(averageLoc.x / modules.length);
+				averageLoc.y = Math.round(averageLoc.y / modules.length);
+			}
+			return averageLoc;
+		}
+		
 		public function toString():String {
 			var moduleStrings:Vector.<String> = new Vector.<String>;
 			for each (var module:Module in modules)
@@ -167,7 +179,6 @@ package Components {
 			
 			return [moduleStrings.join(U.SAVE_DELIM), linkStrings.join(U.SAVE_DELIM)].join(U.MAJOR_SAVE_DELIM);
 		}
-		
 		
 		public static function fromString(str:String, Rooted:Boolean = false):Bloc {
 			var stringSections:Array = str.split(U.MAJOR_SAVE_DELIM);
@@ -181,7 +192,6 @@ package Components {
 			
 			var modules:Vector.<Module> = new Vector.<Module>;
 			var nonNullModules:Vector.<Module> = new Vector.<Module>;
-			var averageLoc:Point = new Point;
 			for each (var moduleString:String in moduleStrings) {
 				var module:Module = Module.fromString(moduleString, allowableTypes);
 				if (module && module.writesToMemory > writersRemaining)
@@ -191,28 +201,21 @@ package Components {
 				if (module) {
 					nonNullModules.push(module);
 					U.state.modules.push(module);
-					averageLoc = averageLoc.add(module);
 					writersRemaining -= module.writesToMemory;
 				}
 			}
 			
 			var links:Vector.<Link> = new Vector.<Link>;
-			if (nonNullModules.length) {
-				averageLoc.x = Math.round(averageLoc.x / nonNullModules.length);
-				averageLoc.y = Math.round(averageLoc.y / nonNullModules.length);
-				
-				if (linkSection.length) {
-					var linkStrings:Array = linkSection.split(U.SAVE_DELIM);
-					for each (var linkString:String in linkStrings) {
-						var link:Link = Link.fromString(linkString, modules);
-						if (link)
-							links.push(link);
-					}
+			if (nonNullModules.length && linkSection.length) {
+				var linkStrings:Array = linkSection.split(U.SAVE_DELIM);
+				for each (var linkString:String in linkStrings) {
+					var link:Link = Link.fromString(linkString, modules);
+					if (link)
+						links.push(link);
 				}
 			}
 			
 			var bloc:Bloc = new Bloc(nonNullModules, links, Rooted);
-			bloc.origin = averageLoc;
 			if (bloc.rooted)
 				bloc.lastRootedLoc = bloc.origin;
 			return bloc;

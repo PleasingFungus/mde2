@@ -1,5 +1,7 @@
 package Modules {
+	import Components.Bloc;
 	import Components.ConnectionQuad;
+	import Components.Link;
 	import Components.Port;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -177,6 +179,19 @@ package Modules {
 			//per module: [escaped modulestr]||connect1||connect2...
 			//per connect: module|port
 			//50,5,4,49||32|-15|0||3|1||3|2,...
+		}
+		
+		public function toBloc():Bloc {
+			return new Bloc(modules, getInternalLinks(), false);
+		}
+		
+		public function getInternalLinks():Vector.<Link> {
+			var links:Vector.<Link> = new Vector.<Link>;
+			for each (var module:Module in modules)
+				for each (var link:Link in module.getInLinks())
+					if (modules.indexOf(link.source.physParent) != -1) //dubious
+						links.push(link);
+			return links;
 		}
 		
 		public static function fromArgs(args:Array):CustomModule {

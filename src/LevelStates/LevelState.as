@@ -208,6 +208,7 @@ package LevelStates {
 			upperLayer.add(deleteHint = new DeleteHelper);
 			upperLayer.add(new DCurrent(displayWires, displayModules, displayLinks));
 			upperLayer.add(new DModuleInfo(displayModules));
+			upperLayer.add(new DecompositionWatcher());
 		}
 		
 		private function makeViewButtons():void {

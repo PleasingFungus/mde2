@@ -236,7 +236,7 @@ package Displays {
 		public function drawNodeText():void {
 			for each (var node:DNode in displayNodes)
 				if (node.visible && node.exists)
-				node.drawScreenspaceText();
+					node.drawScreenspaceText();
 		}
 		
 		protected const MODULE_BLUE:uint = 0xff7070a0;

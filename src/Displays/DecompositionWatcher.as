@@ -14,8 +14,7 @@ package Displays {
 		
 		private var currentModule:CustomModule;
 		private var currentDisplayModule:DModule;
-		private var bg:FlxSprite;
-		private var zoom:Number;
+		private var bg:ScreenFilter;
 		private var dModules:Vector.<DModule>;
 		private var dLinks:Vector.<DLink>;
 		public function DecompositionWatcher() {
@@ -25,10 +24,10 @@ package Displays {
 		override public function update():void {
 			if (currentModule)
 				checkMoused();
-			if (currentModule)
-				checkZoom();
-			else
+			
+			if (!currentModule)
 				findMoused();
+			
 			super.update();
 		}
 		
@@ -45,13 +44,8 @@ package Displays {
 			
 		}
 		
-		private function checkZoom():void {
-			if (zoom != U.zoom)
-				buildBG();
-		}
-		
 		private function buildDisplayFor(displayModule:DModule, customModule:CustomModule):void {
-			buildBG();
+			U.state.midLayer.add(bg = new ScreenFilter(0x80ffffff));
 			
 			var bloc:Bloc = customModule.toBloc();
 			bloc.moveTo(customModule); //should center around
@@ -73,17 +67,6 @@ package Displays {
 			currentModule = customModule;
 			currentDisplayModule = displayModule;
 			currentDisplayModule.exists = false;
-		}
-		
-		private function buildBG():void {
-			if (!bg) {
-				bg = new FlxSprite()
-				bg.scrollFactor = new FlxPoint;
-				U.state.midLayer.add(bg);
-			}
-			
-			bg.makeGraphic(FlxG.width / U.zoom, FlxG.height / U.zoom, 0x80ffffff);
-			zoom = U.zoom;
 		}
 		
 		public function ensureSafety():void {
@@ -118,7 +101,8 @@ package Displays {
 		
 		private function drawNodeText():void {
 			for each (var dModule:DModule in dModules)
-				dModule.drawNodeText();
+				if (U.zoom >= 0.5)
+					dModule.drawNodeText();
 		}
 	}
 

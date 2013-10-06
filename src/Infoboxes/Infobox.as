@@ -1,4 +1,5 @@
 package Infoboxes {
+	import Displays.ScreenFilter;
 	import org.flixel.*;
 	import UI.Scrollbar;
 	import Controls.ControlSet;
@@ -50,11 +51,7 @@ package Infoboxes {
 		}
 		
 		protected function makeBG():void {
-			var shade:FlxSprite = new FlxSprite;
-			shade.makeGraphic(FlxG.width, FlxG.height, 0xff000000);
-			shade.alpha = 0.4;
-			shade.scrollFactor.x = shade.scrollFactor.y = 0;
-			add(shade);
+			add(new ScreenFilter(0x66000000));
 			
 			var width:int = FlxG.width * WIDTH_FRACTION;
 			var height:int = FlxG.height * HEIGHT_FRACTION;

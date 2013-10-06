@@ -71,7 +71,7 @@ package LevelStates {
 		public var viewingComments:Boolean;
 		private var displayTime:DTime;
 		private var testText:FlxText;
-		private var testBG:FlxSprite;
+		private var testBG:FlxBasic;
 		private var lastRunTime:Number;
 		private var runningDisplayTest:Boolean;
 		
@@ -1326,8 +1326,7 @@ package LevelStates {
 			if (!testText) {
 				testText = U.LABEL_FONT.configureFlxText(new FlxText(0, FlxG.height / 2, FlxG.width, " "), 0x000000, 'center');
 				testText.scrollFactor.x = testText.scrollFactor.y = 0;
-				testBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0x80000000);
-				testBG.scrollFactor.x = testBG.scrollFactor.y = 0;
+				testBG = new ScreenFilter(0x80000000);
 			}
 			testBG.draw();
 			testText.text = "TESTING" + level.goal.getProgress() + "\nClick or " + ControlSet.CANCEL_KEY.key + " to cancel";

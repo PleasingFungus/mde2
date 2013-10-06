@@ -65,6 +65,7 @@ package LevelStates {
 		private var linkBeingDragged:Boolean;
 		
 		private var deleteHint:KeyHelper;
+		private var decompWatcher:DecompositionWatcher;
 		
 		public var infobox:Infobox;
 		public var viewingComments:Boolean;
@@ -208,7 +209,7 @@ package LevelStates {
 			upperLayer.add(deleteHint = new DeleteHelper);
 			upperLayer.add(new DCurrent(displayWires, displayModules, displayLinks));
 			upperLayer.add(new DModuleInfo(displayModules));
-			upperLayer.add(new DecompositionWatcher());
+			upperLayer.add(decompWatcher = new DecompositionWatcher());
 		}
 		
 		private function makeViewButtons():void {
@@ -632,6 +633,7 @@ package LevelStates {
 				}
 				
 				if (ControlSet.DELETE_KEY.enabled && ControlSet.DELETE_KEY.pressed() && !currentBloc) {
+					decompWatcher.ensureSafety();
 					destroyModules();
 					destroyWires();
 					destroyLinks();
@@ -700,6 +702,7 @@ package LevelStates {
 		private function pickUpModule():void {
 			var mousedModule:Module = findMousedModule();
 			if (mousedModule && !mousedModule.FIXED) {
+				decompWatcher.ensureSafety();
 				currentBloc = addBlocFromModule(associatedDisplayModule(mousedModule), true);
 				currentBloc.lift(U.pointToGrid(U.mouseLoc));
 			}

@@ -56,9 +56,7 @@ package Modules {
 			weight = modules.length;
 		}
 		
-		override protected function makePorts(numInputs:int, numOutputs:int, numControls:int):void {
-			
-		}
+		override protected function makePorts(numInputs:int, numOutputs:int, numControls:int):void { }
 		
 		override public function generateSymbolDisplay():FlxSprite {
 			var module:Module;

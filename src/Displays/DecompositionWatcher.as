@@ -1,6 +1,7 @@
 package Displays {
 	import Components.Bloc;
 	import Components.Link;
+	import Controls.ControlSet;
 	import Layouts.PortLayout;
 	import Modules.Module;
 	import Modules.CustomModule;
@@ -25,7 +26,9 @@ package Displays {
 			if (currentModule)
 				checkMoused();
 			
-			if (!currentModule)
+			if (currentModule)
+				checkKeys();
+			else
 				findMoused();
 			
 			super.update();
@@ -37,9 +40,13 @@ package Displays {
 		}
 		
 		private function findMoused():void {
+			if (FlxG.mouse.pressed() || FlxG.mouse.justReleased())
+				return;
+				//don't visual-decompose if you're in selection mode
+			
 			var moused:DModule = U.state.findMousedDModule();
 			
-			if (moused && !moused.selected && moused.module is CustomModule)
+			if (moused && !moused.selected && moused.module is CustomModule) //don't visual-decompose if it's selected
 				buildDisplayFor(moused, moused.module as CustomModule);
 			
 		}
@@ -66,8 +73,18 @@ package Displays {
 			
 			currentModule = customModule;
 			currentDisplayModule = displayModule;
-			currentDisplayModule.exists = false;
+			currentModule.exists = false;
 		}
+		
+		private function checkKeys():void {
+			if (ControlSet.CUSTOM_KEY.justPressed())
+				decompose();
+		}
+		
+		private function decompose():void {
+			
+		}
+		
 		
 		public function ensureSafety():void {
 			if (currentModule)
@@ -82,7 +99,7 @@ package Displays {
 				port.port.physParent = currentModule;
 			currentModule.setLayout();
 			
-			currentDisplayModule.exists = true;
+			currentModule.exists = true;
 			
 			U.state.midLayer.members.splice(U.state.midLayer.members.indexOf(bg), 1 + dModules.length + dLinks.length); //can't possibly go wrong
 			bg = null;

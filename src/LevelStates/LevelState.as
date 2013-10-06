@@ -814,6 +814,10 @@ package LevelStates {
 		private function checkMenuState():void {
 			deleteHint.exists = canDelete();
 			
+			decompWatcher.exists = !currentBloc && !currentLink;
+			if (!decompWatcher.exists)
+				decompWatcher.ensureSafety(); //paranoia
+			
 			if (loadButton) {
 				var successSave:String = findSuccessSave();
 				loadButton.exists = successSave != savedString && successSave != null;

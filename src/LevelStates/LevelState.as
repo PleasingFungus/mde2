@@ -209,6 +209,8 @@ package LevelStates {
 			upperLayer.add(deleteHint = new DeleteHelper);
 			upperLayer.add(new DCurrent(displayWires, displayModules, displayLinks));
 			upperLayer.add(new DModuleInfo(displayModules));
+			if (decompWatcher)
+				decompWatcher.ensureSafety();
 			upperLayer.add(decompWatcher = new DecompositionWatcher());
 		}
 		
@@ -641,21 +643,23 @@ package LevelStates {
 				
 				if (ControlSet.PASTE_KEY.justPressed() && U.clipboard) {
 					var pastedBloc:DBloc = DBloc.fromString(U.clipboard);
-					if (!pastedBloc)
-						return;
-					
-					pastedBloc.extendDisplays(displayLinks, displayModules);
-					
-					if (currentBloc)
-						currentBloc.unravel();
-					currentBloc = pastedBloc.bloc;
-					
-					midLayer.add(pastedBloc);
+					if (pastedBloc)
+						addDBloc(pastedBloc);
 				}
 				
 				if (ControlSet.CUSTOM_KEY.justPressed() && currentBloc) //implies currentBloc.rooted, currentBloc.exists
 					makeCustomModule();
 			}
+		}
+		
+		public function addDBloc(dBloc:DBloc):void {
+			dBloc.extendDisplays(displayLinks, displayModules);
+			
+			if (currentBloc)
+				currentBloc.unravel();
+			currentBloc = dBloc.bloc;
+			
+			midLayer.add(dBloc);
 		}
 		
 		private function checkLinkControls():void {
@@ -814,9 +818,11 @@ package LevelStates {
 		private function checkMenuState():void {
 			deleteHint.exists = canDelete();
 			
-			decompWatcher.exists = !currentBloc && !currentLink;
-			if (!decompWatcher.exists)
-				decompWatcher.ensureSafety(); //paranoia
+			if (!decompWatcher.decomposition) {
+				decompWatcher.exists = !currentLink && !currentBloc;
+				if (!decompWatcher.exists)
+					decompWatcher.ensureSafety(); //paranoia
+			}
 			
 			if (loadButton) {
 				var successSave:String = findSuccessSave();

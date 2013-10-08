@@ -13,6 +13,8 @@ package Displays {
 	 */
 	public class DecompositionWatcher extends FlxGroup {
 		
+		public var decomposition:DBloc;
+		
 		private var currentModule:CustomModule;
 		private var currentDisplayModule:DModule;
 		private var bg:ScreenFilter;
@@ -23,6 +25,28 @@ package Displays {
 		}
 		
 		override public function update():void {
+			if (decomposition)
+				checkDecomposition();
+			else
+				checkModule();
+			
+			super.update();
+		}
+		
+		private function checkDecomposition():void {
+			if (!decomposition.exists) {
+				decomposition = null;
+				if (currentModule.modules[0]) {
+					//TODO
+					unbind();
+				} else {
+					U.state.modules.splice(U.state.modules.indexOf(currentModule.modules[0]), currentModule.modules.length); //can't possibly go wrong
+					cleanup();
+				}
+			}
+		}
+		
+		private function checkModule():void {
 			if (currentModule)
 				checkMoused();
 			
@@ -31,7 +55,6 @@ package Displays {
 			else
 				findMoused();
 			
-			super.update();
 		}
 		
 		private function checkMoused():void {
@@ -57,6 +80,9 @@ package Displays {
 			var bloc:Bloc = customModule.toBloc();
 			bloc.moveTo(customModule); //should center around
 			
+			customModule.lift();
+			customModule.exists = false;
+			
 			dModules = new Vector.<DModule>;
 			for each (var module:Module in bloc.modules) {
 				for each (var port:PortLayout in module.layout.ports)
@@ -66,6 +92,7 @@ package Displays {
 				dModules.push(U.state.midLayer.add(module.generateDisplay()));
 				
 				module.solid = false;
+				module.exists = true;
 			}
 			dLinks = new Vector.<DLink>;
 			for each (var link:Link in bloc.links)
@@ -73,7 +100,6 @@ package Displays {
 			
 			currentModule = customModule;
 			currentDisplayModule = displayModule;
-			currentModule.exists = false;
 		}
 		
 		private function checkKeys():void {
@@ -82,7 +108,9 @@ package Displays {
 		}
 		
 		private function decompose():void {
-			
+			for each (var module:Module in currentModule.modules)
+				U.state.modules.push(module);
+			U.state.addDBloc(decomposition = DBloc.fromDisplays(dLinks, dModules, false));
 		}
 		
 		
@@ -99,10 +127,19 @@ package Displays {
 				port.port.physParent = currentModule;
 			currentModule.setLayout();
 			
+			currentModule.place();
 			currentModule.exists = true;
 			
 			U.state.midLayer.members.splice(U.state.midLayer.members.indexOf(bg), 1 + dModules.length + dLinks.length); //can't possibly go wrong
 			bg = null;
+			unbind(); 
+		}
+		
+		private function unbind():void {
+			if (bg) {
+				U.state.midLayer.members.splice(U.state.midLayer.members.indexOf(bg), 1);
+				bg = null;
+			}
 			dModules = null;
 			dLinks = null;
 			currentModule = null;

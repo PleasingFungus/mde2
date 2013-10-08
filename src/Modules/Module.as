@@ -189,7 +189,7 @@ package Modules {
 			
 			for each (var portLayout:PortLayout in layout.ports) {
 				portLayout.register();
-				portLayout.attemptConnect(); //assymmetric!
+				portLayout.attemptConnect(); //asymmetric!
 			}
 			
 			_lastPosition = null;

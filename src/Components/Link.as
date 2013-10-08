@@ -22,8 +22,10 @@ package Components {
 		}
 		
 		public function get exists():Boolean {
-			return !deleted && (hovering || (source.physParent.exists && destination.physParent.exists &&
-											 destination.source == source));
+			if (hovering)
+				return !deleted;
+			return (source.physParent.exists && destination.physParent.exists &&
+					destination.source == source);
 		}
 		
 		public function get deployed():Boolean {

@@ -908,8 +908,11 @@ package LevelStates {
 			
 			if (blocMoused)
 				return Cursor.GRAB;
-			if (level.canDrawWires && findMousedCarrier())
-				return Cursor.PEN;
+			if (level.canDrawWires) {
+				var carrier:Carrier = findMousedCarrier();
+				if (carrier && (carrier.isSource() || !carrier.getSource()))
+					return Cursor.PEN;
+			}
 			return null;
 		}
 		

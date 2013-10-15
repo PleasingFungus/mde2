@@ -41,6 +41,8 @@ package Modules {
 						controls.push(port);
 				
 				writesToMemory += module.writesToMemory;
+				
+				module.exists = module.deployed = false; //just making sure
 			}
 			
 			averageLoc.x = Math.round(averageLoc.x / modules.length);
@@ -143,6 +145,10 @@ package Modules {
 				return port.dataParent.drive(port);
 			throw new Error("Port in custom-module sans parent!");
 			//return U.V_UNPOWERED; 
+		}
+		
+		override public function getChildren():Vector.<Module> {
+			return modules.slice();
 		}
 		
 		

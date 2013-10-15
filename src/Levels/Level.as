@@ -339,7 +339,7 @@ package Levels {
 			for each (var module:Module in modules) {
 				module.cleanup();
 				module.setLayout();
-				levelState.addModule(module, defaultFixed);
+				levelState.placeModule(module, defaultFixed);
 			}
 			for each (var link:Link in links) {
 				link.placed = false; //cleanup

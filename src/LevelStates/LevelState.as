@@ -161,17 +161,27 @@ package LevelStates {
 			displayWires.push(displayWire);
 		}
 		
-		public function addModule(m:Module, fixed:Boolean = true):void {
+		public function placeModule(m:Module, fixed:Boolean = true, addChildren:Boolean = true):void {
 			if (!m || !m.validPosition)
 				return;
 			
 			m.FIXED = fixed;
 			m.place();
+			registerModule(m, addChildren);
+		}
+		
+		public function registerModule(m:Module, addChildren:Boolean = true):DModule {
 			modules.push(m);
 			
 			var displayModule:DModule = m.generateDisplay();
 			midLayer.add(displayModule);
 			displayModules.push(displayModule);
+			
+			if (addChildren)
+				for each (var module:Module in m.getChildren())
+					registerModule(module);
+			
+			return displayModule;
 		}
 		
 		private function makeUI(includeActives:Boolean = true):void {
@@ -499,9 +509,8 @@ package LevelStates {
 			var newModule:Module = archetype.fromConfig(moduleType, gridLoc);
 			newModule.initialize();
 			
-			modules.push(newModule);
-			var displayModule:DModule = newModule.generateDisplay();
-			displayModules.push(midLayer.add(displayModule));
+			
+			var displayModule:DModule = registerModule(newModule);
 			currentBloc = addBlocFromModule(displayModule);
 			addRecentModule(moduleType);
 		}
@@ -694,12 +703,7 @@ package LevelStates {
 			currentBloc.unravel();
 			currentBloc = null;
 			
-			modules.push(customModule);
-			
-			var displayModule:DModule = customModule.generateDisplay();
-			midLayer.add(displayModule);
-			displayModules.push(displayModule);
-			
+			var displayModule:DModule = registerModule(customModule);
 			currentBloc = addBlocFromModule(displayModule);
 		}
 		
@@ -811,6 +815,14 @@ package LevelStates {
 			for each (var link:DLink in displayLinks)
 				if (link.link.mouseable && link.overlapsPoint(U.mouseFlxLoc))
 					return link;
+			return null;
+		}
+		
+		
+		public function displayModuleFor(module:Module):DModule {
+			for each (var displayModule:DModule in displayModules)
+				if (displayModule.module == module)
+					return displayModule;
 			return null;
 		}
 		
@@ -1263,7 +1275,7 @@ package LevelStates {
 					for each (var wire:Wire in loadedData.wires)
 						addWire(wire, false);
 					for each (var module:Module in loadedData.modules)
-						addModule(module, false);
+						placeModule(module, false, false);
 					for each (var linkPotential:LinkPotential in loadedData.linkPotentials)
 						addLink(linkPotential.manifestPotential(modules), false);
 				} else
@@ -1272,6 +1284,11 @@ package LevelStates {
 			
 			if (!levelLoaded)
 				level.loadIntoState(this, savedString == RESET_SAVE || !savedString);
+			
+			for each (module in modules.slice())
+				for each (var child:Module in module.getChildren())
+					registerModule(child, false); //recursion implicit in getChildren();
+			//do this later for save compat (dubious)
 			
 			if (wires.length && !DEBUG.PRESERVE_WIRES)
 				cleanupWires();

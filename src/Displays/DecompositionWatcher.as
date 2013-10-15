@@ -13,7 +13,7 @@ package Displays {
 	 */
 	public class DecompositionWatcher extends FlxGroup {
 		
-		public var decomposition:DBloc;
+		public var decomposition:DDecomposedBloc;
 		
 		private var currentModule:CustomModule;
 		private var currentDisplayModule:DModule;
@@ -40,7 +40,6 @@ package Displays {
 					//TODO
 					unbind();
 				} else {
-					U.state.modules.splice(U.state.modules.indexOf(currentModule.modules[0]), currentModule.modules.length); //can't possibly go wrong
 					cleanup();
 				}
 			}
@@ -89,7 +88,7 @@ package Displays {
 					port.port.physParent = module;
 				module.setLayout();
 				
-				dModules.push(U.state.midLayer.add(module.generateDisplay()));
+				dModules.push(U.state.displayModuleFor(module));
 				
 				module.solid = false;
 				module.exists = true;
@@ -110,7 +109,8 @@ package Displays {
 		private function decompose():void {
 			for each (var module:Module in currentModule.modules)
 				U.state.modules.push(module);
-			U.state.addDBloc(decomposition = DBloc.fromDisplays(dLinks, dModules, false));
+			U.state.addDBloc(decomposition = DBloc.fromDisplays(dLinks, dModules, false, DDecomposedBloc) as DDecomposedBloc);
+			decomposition.customModule = currentModule;
 		}
 		
 		
@@ -120,8 +120,10 @@ package Displays {
 		}
 		
 		private function cleanup():void {
-			for each (var dModule:DModule in DModule)
+			for each (var dModule:DModule in dModules) {
 				dModule.module.solid = true; //cleanup
+				dModule.module.exists = false;
+			}
 			
 			for each (var port:PortLayout in currentModule)
 				port.port.physParent = currentModule;
@@ -130,7 +132,7 @@ package Displays {
 			currentModule.place();
 			currentModule.exists = true;
 			
-			U.state.midLayer.members.splice(U.state.midLayer.members.indexOf(bg), 1 + dModules.length + dLinks.length); //can't possibly go wrong
+			U.state.midLayer.members.splice(U.state.midLayer.members.indexOf(bg), 1 + dLinks.length); //can't possibly go wrong
 			bg = null;
 			unbind(); 
 		}

@@ -33,7 +33,8 @@ package Displays {
 		public function DModule(module:Module) {
 			super(module.x, module.y);
 			this.module = module;
-			refresh();
+			if (module.exists)
+				refresh();
 		}
 		
 		public function refresh():void {
@@ -93,6 +94,9 @@ package Displays {
 			visible = module.exists;
 			if (!module.exists)
 				return;
+			
+			if (!displayPorts) //first-time update with module existing
+				refresh(); 
 			
 			if (!lastLoc || !module.equals(lastLoc))
 				updatePosition();
@@ -197,6 +201,9 @@ package Displays {
 		}
 		
 		override public function draw():void {
+			if (!displayPorts) //not initialized
+				return;
+			
 			for each (var displayPort:DPort in displayPorts)
 				displayPort.draw();
 			

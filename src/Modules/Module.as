@@ -112,6 +112,9 @@ package Modules {
 				ports.push(new Port(isOutput, this));
 		}
 		
+		
+		
+		
 		public function renderDetails():String {
 			return name;
 		}
@@ -136,6 +139,9 @@ package Modules {
 				desc += " DELAY: " + delay + ".";
 			return desc;
 		}
+		
+		
+		
 		
 		public function drive(port:Port):Value {
 			return U.V_UNPOWERED;
@@ -171,6 +177,10 @@ package Modules {
 			for each (var portLayout:PortLayout in layout.ports)
 				portLayout.port.clearCachedValue();
 		}
+		
+		
+		
+		
 		
 		public function place():Module {
 			deployed = true;
@@ -328,6 +338,11 @@ package Modules {
 					if (port.source)
 						links.push(new Link(port.source, port));
 			return links;
+		}
+		
+		private const NO_CHILDREN:Vector.<Module> = new Vector.<Module>;
+		public function getChildren():Vector.<Module> {
+			return NO_CHILDREN;
 		}
 		
 		

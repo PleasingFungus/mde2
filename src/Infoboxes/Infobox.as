@@ -12,7 +12,7 @@ package Infoboxes {
 	public class Infobox extends FlxGroup {
 		
 		protected var bg:FlxSprite;
-		private var scrollbar:Scrollbar;
+		protected var scrollbar:Scrollbar;
 		private var scroll:int;
 		protected var page:InfoboxPage;
 		private var pageTop:int;
@@ -80,7 +80,7 @@ package Infoboxes {
 				U.buttonManager.moused = true;
 		}
 		
-		private function checkScroll():void {
+		protected function checkScroll():void {
 			var pageHeight:int = getPageHeight();
 			var scrollDistance:int = pageHeight - (pageBottom - pageTop);
 			scrollbar.exists = scrollDistance > 0;

@@ -151,6 +151,10 @@ package Infoboxes {
 				U.state.initialMemory = U.state.level.goal.genMem();
 				memory = U.state.memory = U.state.initialMemory.slice();
 				expectedMemory = U.state.level.goal.genExpectedMem();
+				
+				scrollbar.scrollFraction = 0;
+				checkScroll();
+				
 				init();
 			}, "Generate new example memory", new Key("R")).setScroll(0);
 			add(randomButton);

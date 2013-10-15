@@ -88,7 +88,7 @@ package Displays {
 					port.port.physParent = module;
 				module.setLayout();
 				
-				dModules.push(U.state.displayModuleFor(module));
+				dModules.push(U.state.midLayer.add(module.generateDisplay()));
 				
 				module.solid = false;
 				module.exists = true;
@@ -107,6 +107,9 @@ package Displays {
 		}
 		
 		private function decompose():void {
+			var dModules:Vector.<DModule> = new Vector.<DModule>;
+			for each (var module:Module in currentModule.modules)
+				dModules.push(U.state.displayModuleFor(module));
 			U.state.addDBloc(decomposition = DBloc.fromDisplays(dLinks, dModules, false, DDecomposedBloc) as DDecomposedBloc);
 			decomposition.customModule = currentModule;
 		}
@@ -130,7 +133,7 @@ package Displays {
 			currentModule.place();
 			currentModule.exists = true;
 			
-			U.state.midLayer.members.splice(U.state.midLayer.members.indexOf(bg), 1 + dLinks.length); //can't possibly go wrong
+			U.state.midLayer.members.splice(U.state.midLayer.members.indexOf(bg), 1 + dModules.length + dLinks.length); //can't possibly go wrong
 			bg = null;
 			unbind(); 
 		}

@@ -15,7 +15,6 @@ To Fix
 	asymmetrical behavior by order of part placement (in delay levels only?)
 	thickness problem when zooming back in (when lines are (partially?) offscreen? onscreen?)
 	links occasionally turn gray (???) (same bug as above?)
-	hitting random-mem when scrolled down in the memory list creates an empty area at the top of the list
 	comments for addm/savem are too verbose
 Known But Not Currently Fixable
 	test positioning issues

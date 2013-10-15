@@ -107,8 +107,6 @@ package Displays {
 		}
 		
 		private function decompose():void {
-			for each (var module:Module in currentModule.modules)
-				U.state.modules.push(module);
 			U.state.addDBloc(decomposition = DBloc.fromDisplays(dLinks, dModules, false, DDecomposedBloc) as DDecomposedBloc);
 			decomposition.customModule = currentModule;
 		}

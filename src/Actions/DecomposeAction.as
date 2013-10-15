@@ -30,9 +30,9 @@ package Actions {
 				customModule.exists = false;
 				
 				for each (var module:Module in customModule.modules) {
-					module.setLayout();
 					for each (var port:PortLayout in module.layout.ports)
 						port.port.physParent = module;
+					module.setLayout();
 				}
 			}
 			

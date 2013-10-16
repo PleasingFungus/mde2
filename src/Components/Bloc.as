@@ -200,7 +200,7 @@ package Components {
 				modules.push(module);
 				if (module) {
 					nonNullModules.push(module);
-					U.state.modules.push(module);
+					U.state.registerModule(module).exists = false; //register the module & nil out the dmodule generated - we'll make a better one in dbloc
 					writersRemaining -= module.writesToMemory;
 				}
 			}

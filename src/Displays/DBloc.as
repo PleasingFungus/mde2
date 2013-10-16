@@ -86,17 +86,10 @@ package Displays {
 			if (!FlxG.mouse.justPressed())
 				bloc.moveTo(U.pointToGrid(U.mouseLoc));
 			else if (tick) {
-				if (!U.buttonManager.moused && bloc.validPosition(U.pointToGrid(U.mouseLoc))) {
-					FlxG.camera.shake(0.01 * U.zoom, 0.05);
-					
-					var placeLoc:Point = U.pointToGrid(U.mouseLoc);
-					if (bloc.lastRootedLoc)
-						new MigrateBlocAction(bloc, placeLoc, bloc.lastRootedLoc).execute();
-					else
-						new PlaceBlocAction(bloc, placeLoc).execute();
-					
-					setSelect(false);
-				} else if (U.buttonManager.moused) {
+				var mouseLoc:Point = U.pointToGrid(U.mouseLoc);
+				if (!U.buttonManager.moused && bloc.validPosition(mouseLoc))
+					placeBloc(mouseLoc);
+				else if (U.buttonManager.moused) {
 					bloc.unravel();
 					setSelect(false);
 				}
@@ -124,6 +117,19 @@ package Displays {
 			U.buttonManager.moused = true;
 		}
 		
+		protected function placeBloc(placeLoc:Point):void {
+			FlxG.camera.shake(0.01 * U.zoom, 0.05);
+			execPlaceAction(placeLoc);
+			setSelect(false);
+		}
+		
+		protected function execPlaceAction(placeLoc:Point):void {
+			if (bloc.lastRootedLoc)
+				new MigrateBlocAction(bloc, placeLoc, bloc.lastRootedLoc).execute();
+			else
+				new PlaceBlocAction(bloc, placeLoc).execute();
+		}
+		
 		private function setSelect(selected:Boolean = true):void {
 			for each (var dmodule:DModule in displayModules)
 				dmodule.selected = selected;
@@ -132,8 +138,10 @@ package Displays {
 			bloc.exists = exists = selected;
 		}
 		
-		public static function fromDisplays(DisplayLinks:Vector.<DLink>, DisplayModules:Vector.<DModule>, Rooted:Boolean = true):DBloc {
-			var dBloc:DBloc = new DBloc;
+		public static function fromDisplays(DisplayLinks:Vector.<DLink>, DisplayModules:Vector.<DModule>, Rooted:Boolean = true, blocType:Class = null):DBloc {
+			if (!blocType)
+				blocType = DBloc;
+			var dBloc:DBloc = new blocType;
 			dBloc.displayLinks = DisplayLinks;
 			dBloc.displayModules = DisplayModules;
 			
@@ -175,7 +183,8 @@ package Displays {
 			for each (var dLink:DLink in this.displayLinks)
 				displayLinks.push(dLink);
 			for each (var dModule:DModule in this.displayModules)
-				displayModules.push(dModule);
+				if (displayModules.indexOf(dModule) == -1)
+					displayModules.push(dModule);
 		}
 		
 	}

@@ -97,6 +97,9 @@ package Displays {
 			
 			if (!displayPorts) //first-time update with module existing
 				refresh(); 
+			else if (module.internalLayout && module.internalLayout.nodes.length &&
+					 module.internalLayout.nodes[0] != displayNodes[0].node) //layout regenerated
+				refresh();
 			
 			if (!lastLoc || !module.equals(lastLoc))
 				updatePosition();

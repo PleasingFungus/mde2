@@ -100,6 +100,9 @@ package Components {
 		}
 		
 		public function demanifest():Boolean {
+			for each (var link:Link in links)
+				Link.remove(link);
+			
 			for each (var module:Module in modules)
 				if (!module.FIXED)
 					module.demanifest();

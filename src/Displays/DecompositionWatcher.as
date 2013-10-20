@@ -2,6 +2,7 @@ package Displays {
 	import Components.Bloc;
 	import Components.Link;
 	import Controls.ControlSet;
+	import Helpers.KeyHelper;
 	import Layouts.PortLayout;
 	import Modules.Module;
 	import Modules.CustomModule;
@@ -20,8 +21,11 @@ package Displays {
 		private var bg:ScreenFilter;
 		private var dModules:Vector.<DModule>;
 		private var dLinks:Vector.<DLink>;
+		private var hint:KeyHelper;
 		public function DecompositionWatcher() {
 			super();
+			add(hint = new KeyHelper(ControlSet.CUSTOM_KEY));
+			hint.exists = false;
 		}
 		
 		override public function update():void {
@@ -49,7 +53,7 @@ package Displays {
 			if (currentModule)
 				checkMoused();
 			
-			if (currentModule)
+			if (currentModule) 
 				checkKeys();
 			else
 				findMoused();
@@ -75,6 +79,8 @@ package Displays {
 		
 		private function buildDisplayFor(displayModule:DModule, customModule:CustomModule):void {
 			U.state.midLayer.add(bg = new ScreenFilter(0x80ffffff));
+			
+			hint.exists = true;
 			
 			var bloc:Bloc = customModule.toBloc();
 			bloc.moveTo(customModule); //should center around
@@ -112,6 +118,7 @@ package Displays {
 				dModules.push(U.state.displayModuleFor(module));
 			U.state.addDBloc(decomposition = DBloc.fromDisplays(dLinks, dModules, false, DDecomposedBloc) as DDecomposedBloc);
 			decomposition.customModule = currentModule;
+			hint.exists = false;
 		}
 		
 		
@@ -147,13 +154,24 @@ package Displays {
 			dLinks = null;
 			currentModule = null;
 			currentDisplayModule = null;
-			members = [];
+			hint.exists = false;
 		}
 		
 		override public function draw():void {
+			if (hint.exists)
+				positionHint();
 			super.draw();
 			if (dModules)
 				drawNodeText();
+		}
+		
+		private function positionHint():void {
+			//position
+			var initialX:int = currentDisplayModule.x + currentDisplayModule.width / 2 - hint.width / 2;
+			var initialY:int = currentDisplayModule.y + currentDisplayModule.height / 2 - hint.height / 2;
+			//transform into screenspace
+			hint.x = (initialX - FlxG.camera.scroll.x) * U.zoom// + FlxG.camera.scroll.x;
+			hint.y = (initialY - FlxG.camera.scroll.y) * U.zoom// + FlxG.camera.scroll.y;
 		}
 		
 		private function drawNodeText():void {

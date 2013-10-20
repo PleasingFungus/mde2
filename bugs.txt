@@ -15,6 +15,8 @@ To Fix
 	links occasionally turn gray (???) (same bug as above?)
 	comments for addm/savem are too verbose
 	links not appearing in copy-pasted blocs until placement
+	deleting selected wires doesn't work
+	cancelling decomposition of a custom module doesn't restore it
 Known But Not Currently Fixable
 	test positioning issues
 			flashrects (hints for new modules) are 'above' tooltips; shouldn't be

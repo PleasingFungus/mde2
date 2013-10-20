@@ -14,7 +14,7 @@ package Actions {
 		}
 		
 		override public function execute():Action {
-			assocLinks = bloc.getLinks();
+			assocLinks = bloc.getExternalLinks();
 			
 			for each (var link:Link in assocLinks)
 				Link.remove(link);

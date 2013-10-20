@@ -101,7 +101,8 @@ package Components {
 		
 		public function demanifest():Boolean {
 			for each (var link:Link in links)
-				Link.remove(link);
+				if (!link.deleted) //dubious
+					Link.remove(link);
 			
 			for each (var module:Module in modules)
 				if (!module.FIXED)
@@ -154,6 +155,16 @@ package Components {
 			for each (var module:Module in modules)
 				for each (var link:Link in module.getLinks())
 					if (!link.inVec(links))
+						links.push(link);
+			return links;
+		}
+		
+		public function getExternalLinks():Vector.<Link> {
+			var links:Vector.<Link> = new Vector.<Link>;
+			for each (var module:Module in modules)
+				for each (var link:Link in module.getLinks())
+					if (!link.inVec(links) &&
+						(modules.indexOf(link.source) != -1 || modules.indexOf(link.destination) == -1))
 						links.push(link);
 			return links;
 		}
@@ -213,8 +224,10 @@ package Components {
 				var linkStrings:Array = linkSection.split(U.SAVE_DELIM);
 				for each (var linkString:String in linkStrings) {
 					var link:Link = Link.fromString(linkString, modules);
-					if (link)
+					if (link) {
+						Link.place(link);
 						links.push(link);
+					}
 				}
 			}
 			

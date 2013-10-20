@@ -40,7 +40,7 @@ package Displays {
 		private function checkDecomposition():void {
 			if (!decomposition.exists) {
 				decomposition = null;
-				if (currentModule.modules[0]) {
+				if (currentModule.modules[0].exists) {
 					//TODO
 					unbind();
 				} else {

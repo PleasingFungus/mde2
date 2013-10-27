@@ -1,6 +1,7 @@
 package Layouts.Nodes {
 	import Components.Port;
 	import Components.Wire;
+	import Displays.DNode;
 	import flash.geom.Rectangle;
 	import Modules.Module;
 	import flash.geom.Point;
@@ -69,6 +70,10 @@ package Layouts.Nodes {
 			}
 			
 			return out;
+		}
+		
+		public function generateDisplay():DNode {
+			return new DNode(this);
 		}
 		
 		public function get Loc():Point {

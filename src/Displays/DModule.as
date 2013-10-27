@@ -50,7 +50,7 @@ package Displays {
 			displayConnections = new Vector.<InternalDWire>;
 			if (module.internalLayout) {
 				for each (var node:InternalNode in module.internalLayout.nodes) {
-					displayNodes.push(new DNode(node));
+					displayNodes.push(node.generateDisplay());
 					for each (var connection:InternalWire in node.internalWires)
 						displayConnections.push(new InternalDWire(connection));
 				}

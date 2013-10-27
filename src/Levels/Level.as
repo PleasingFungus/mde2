@@ -293,6 +293,7 @@ package Levels {
 			var pipeShard:LevelShard = delayShard.compositWith(LevelShard.SPD);
 			L_PCPU_Basic = new ShardLevel("Efficiency!", pipeShard);
 			L_PCPU_Basic.predecessors.push(L_PTutorial4);
+			L_PCPU_Basic.displayName = "Efficiency"
 			L_PCPU_Jump = new ShardLevel("Efficient Jump", pipeShard.compositWith( LevelShard.JUMP));
 			L_PCPU_Jump.predecessors.push(L_PCPU_Basic, L_CPU_Branch);
 			L_PCPU_Branch = new ShardLevel("Efficient Branch", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));

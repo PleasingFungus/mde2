@@ -4,6 +4,7 @@ package Levels {
 	import Layouts.InternalLayout;
 	import Layouts.Nodes.StandardNode;
 	import Layouts.Nodes.WideNode;
+	import Menu.StatNode;
 	import Modules.Module;
 	import Modules.ModuleCategory;
 	import Layouts.DefaultLayout;
@@ -47,22 +48,23 @@ package Levels {
 			return new DefaultLayout(this, 2, 5);
 		}
 		
+		private var moduleValue:IntegerValue;
+		private var tickValue:IntegerValue;
 		override protected function generateInternalLayout():InternalLayout {
 			var nodes:Array = [];
 			if (level.fewestModules && level.useModuleRecord) {
-				var moduleValue:IntegerValue = new IntegerValue(level.fewestModules);
-				nodes.push(new WideNode(this, new Point(0, -1), [], null, function getValue():Value {
-					return moduleValue;
-				}));
+				moduleValue = new IntegerValue(level.fewestModules);
+				nodes.push(new StatNode(this, new Point(0, -1), StatNode.MODULE));
 			}
 			if (level.fewestTicks && level.useTickRecord) {
-				var tickValue:IntegerValue = new IntegerValue(level.fewestTicks);
-				nodes.push(new WideNode(this, new Point(0, 1), [], null, function getValue():Value {
-					return tickValue;
-				}));
+				tickValue = new IntegerValue(level.fewestTicks);
+				nodes.push(new StatNode(this, new Point(0, 1), StatNode.TIME));
 			}
 			return new InternalLayout(nodes);
 		}
+		
+		public function get moduleRecord():Value { return moduleValue; }
+		public function get tickRecord():Value { return tickValue; }
 		
 		override public function generateDisplay():DModule {
 			return new DLevelModule(this);

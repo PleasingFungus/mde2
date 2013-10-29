@@ -294,12 +294,27 @@ package Levels {
 			L_PCPU_Basic = new ShardLevel("Efficiency!", pipeShard);
 			L_PCPU_Basic.predecessors.push(L_PTutorial4);
 			L_PCPU_Basic.displayName = "Efficiency"
+			L_PCPU_Basic.info = "This level's a lot like the last tutorial, just with the usual basic instructions (SET/ADD/SAVE) you know so well."
+			L_PCPU_Basic.info += " One thing to keep in mind, though: what happens if you have an instruction which depends directly on a previous instruction?"
+			L_PCPU_Basic.info += "\n\nLet's say you decide to have 'read from registers' in a separate stage from 'write to registers'. (This is reasonable.)"
+			L_PCPU_Basic.info += " In this case, if you have something that writes to a register (e.g. SET R1), followed by an instruction that reads from that register (e.g. ADD R1 R1 -> R2),"
+			L_PCPU_Basic.info += " you'll end up reading the *old* value of the register with the second instruction *before* you write the *new* value in with the first instruction! This problem is called a 'read-before-write' error."
+			L_PCPU_Basic.info += "\n\nThis is a solvable problem - you can use a multiplexer to choose (in the 'read-from-registers' stage) between the values coming out of the registers, and values from later stages (previous instructions)."
+			L_PCPU_Basic.info += " You want to use the newest values possible - so for both registers you're reading, if previous instructions are going to write to that register, select their values instead!"
+			
+			L_PCPU_Load = new ShardLevel("Efficient Load", pipeShard.compositWith(LevelShard.LOAD));
+			L_PCPU_Load.predecessors.push(L_PCPU_Basic, L_CPU_Load);
+			L_PCPU_Load.info = "Load means reading from memory, which is slow enough that it might justify adding a new stage to your pipeline."
+			L_PCPU_Load.info += " Whether or not you add a new stage, you'll probably have to tweak your setup for avoiding read-before-write errors. (This gets trickier with more pipeline stages.)"
+			L_PCPU_Load.info += " Go to!"
+			
+			
 			L_PCPU_Jump = new ShardLevel("Efficient Jump", pipeShard.compositWith( LevelShard.JUMP));
 			L_PCPU_Jump.predecessors.push(L_PCPU_Basic, L_CPU_Branch);
 			L_PCPU_Branch = new ShardLevel("Efficient Branch", pipeShard.compositWith( LevelShard.JUMP, LevelShard.BRANCH));
 			L_PCPU_Branch.predecessors.push(L_PCPU_Jump);
-			L_PCPU_Load = new ShardLevel("Efficient Load", pipeShard.compositWith(LevelShard.LOAD));
-			L_PCPU_Load.predecessors.push(L_PCPU_Basic, L_CPU_Load);
+			
+			
 			var fullEfficientShard:LevelShard = pipeShard.compositWith(LevelShard.ADV, LevelShard.LOAD, LevelShard.JUMP, LevelShard.BRANCH);
 			L_PCPU_Full = new ShardLevel("Full Efficient", fullEfficientShard);
 			L_PCPU_Full.predecessors.push(L_CPU_Full, L_PCPU_Branch, L_PCPU_Load);

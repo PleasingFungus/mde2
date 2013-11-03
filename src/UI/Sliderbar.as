@@ -98,7 +98,7 @@ package UI {
 			var posFraction:Number = (value - valueRange.min) / (valueRange.max - valueRange.min);
 			if (isNaN(posFraction))
 				posFraction = 0.5;
-			slider.x = rail.x + rail.width * posFraction;
+			slider.x = rail.x + (rail.width - slider.width) * posFraction;
 			slider.y = y;
 			
 			if (labelEnabled) {
@@ -129,7 +129,6 @@ package UI {
 		}
 		
 		protected function checkClick():void {
-			var out:*;
 			var adjMouse:FlxPoint = getAdjMouse();
 			var barMoused:Boolean = adjMouse.x >= rail.x && adjMouse.x <= rail.x + rail.width && adjMouse.y >= slider.y && adjMouse.y <= slider.y + slider.height && (!U.buttonManager || !U.buttonManager.moused);
 			if ((barMoused || leftArrow.overlapsPoint(FlxG.mouse, true) || rightArrow.overlapsPoint(FlxG.mouse, true)) && U.buttonManager)
@@ -142,19 +141,13 @@ package UI {
 				} else if (leftArrow.overlapsPoint(FlxG.mouse, true)) {
 					if (config)
 						forceValue(config.decrement());
-					else if (onChange != null) {
-						out = onChange(value - 1);
-						forceValue(out is int ? out as int : value - 1);
-					} else
-						forceValue(value - 1);
+					else 
+						changeValueTo(value - 1);
 				} else if (rightArrow.overlapsPoint(FlxG.mouse, true)) {
 					if (config)
 						forceValue(config.increment());
-					else if (onChange != null) {
-						out = onChange(value + 1);
-						forceValue(out is int ? out as int : value + 1);
-					} else
-						forceValue(value + 1);
+					else 
+						changeValueTo(value + 1);
 				} else if (tick && dieOnClickOutside) {
 					exists = false;
 					if (onDeath != null)
@@ -168,6 +161,17 @@ package UI {
 				else
 					barClicked = false;
 			}
+		}
+		
+		private function changeValueTo(newValue:int):void {
+			if (newValue < valueRange.min || newValue > valueRange.max)
+				return;
+			
+			if (onChange != null) {
+				var out:* = onChange(newValue);
+				forceValue(!(out == null) ? out : newValue);
+			} else
+				forceValue(newValue);
 		}
 		
 		private function getAdjMouse():FlxPoint {

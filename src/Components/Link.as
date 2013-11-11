@@ -22,8 +22,8 @@ package Components {
 		}
 		
 		public function get exists():Boolean {
-			if (hovering)
-				return !deleted;
+			if (deleted)
+				return false; //papering over the problem... deleted should only exist for hovering links, probably
 			return (source.physParent.exists && destination.physParent.exists &&
 					destination.source == source);
 		}
@@ -67,7 +67,7 @@ package Components {
 			destination.source = null;
 		}
 		
-		public static function place(link:Link):Boolean {
+		public static function place(link:Link, force:Boolean = false):Boolean {
 			if (link.hovering) {
 				link.destination = link.findDestinationPort(link.destination.Loc);
 				if (link.destination) {
@@ -91,11 +91,13 @@ package Components {
 				return false;
 			
 			if (link.destination.source == link.source) { //already ext
-				link.deleted = true;
-				return false;
-			}
+				if (!force) {
+					link.deleted = true;
+					return false;
+				}
+			} else
+				link.connect();
 			
-			link.connect();
 			link.placed = true;
 			link.deleted = false;
 			newLinks.push(link);

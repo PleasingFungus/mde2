@@ -92,9 +92,8 @@ package Components {
 			for each (var module:Module in modules)
 				if (!module.FIXED)
 					module.manifest();
-			
 			for each (var link:Link in links)
-				Link.place(link);
+				Link.place(link, true);
 			
 			return true;
 		}

@@ -138,7 +138,15 @@ package Infoboxes {
 			add(commentButton = new GraphicButton(bg.x + INNER_BORDER + bg.width / 2 - 16, bg.y + INNER_BORDER,
 								  displayComments ? _code_sprite : _comment_sprite, function comment():void {
 									  U.state.viewingComments = kludge.displayComments = !kludge.displayComments;
-									  init();
+									  
+									  var scroll:Number = scrollbar.scrollFraction;				
+										scrollbar.scrollFraction = 0;
+										checkScroll();
+									  
+									  init();	
+									  
+										scrollbar.scrollFraction = scroll;
+										checkScroll();
 									},
 								  displayComments ? "View expected memory" : "View instruction info", new Key("C")));
 			commentButton.setScroll(0);
